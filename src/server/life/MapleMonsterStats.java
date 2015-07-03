@@ -41,6 +41,7 @@ public class MapleMonsterStats {
     private final List<MobAttackInfo> mai = new ArrayList<>();
     private BanishInfo banish;
     private int link;
+    private int wp;
 
     public MapleMonsterStats(int id) {
         this.id = id;
@@ -88,6 +89,14 @@ public class MapleMonsterStats {
 
     public void setCharismaEXP(short leve) {
         this.charismaEXP = leve;
+    }
+    
+    public void setWP(int wp) {
+        this.wp = wp;
+    }
+    
+    public int getWP() {
+        return wp;
     }
 
     public void setSelfD(byte selfDestruction_action) {

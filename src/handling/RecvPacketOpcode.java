@@ -652,9 +652,8 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     
     //神之子-開始強化[完成-180]
     ZERO_SCROLL_START(true, (short) 0x1F2),
-    
-    // 0x1F3
-    
+    //神之子-武器潛在能力[完成-180]
+    ZERO_WEAPON_ABILITY(true, (short) 0x1F3),    
     //神之子-武器介面[完成-180]
     ZERO_WEAPON_UI(true, (short) 0x1F4),
     //神之子-與精靈對話[完成-180]
@@ -663,8 +662,8 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     ZERO_WEAPON_SCROLL(true, (short) 0x1F6),
     //神之子-武器成長[完成-180]
     ZERO_WEAPON_UPGRADE(true, (short) 0x1F7),
-    //神之子-武器潛在能力[完成-180]
-    ZERO_WEAPON_ABILITY(true, (short) 0x1F8),
+    //神之子-武器成長[完成-180]
+    ZERO_WEAPON_UPGRADE_START(true, (short) 0x1F8),
 
     //加載角色成功
     LOAD_PLAYER_SCCUCESS(true, (short) 0x1FC),

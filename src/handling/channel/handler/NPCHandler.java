@@ -757,4 +757,22 @@ public class NPCHandler {
             }
         }
     }
+    
+    public static void OpenZeroQuickMoveSpecial(final LittleEndianAccessor slea, MapleClient c) {
+        final int type = slea.readShort();
+        final int selection = slea.readShort();
+        if (c.getPlayer().hasBlockedInventory() || c.getPlayer().isInBlockedMap() || c.getPlayer().getLevel() < 10) {
+            return;
+        }
+        if (type == 2) {
+            switch(selection) {
+                case 17491:
+                    c.getPlayer().changeMap(321190100, 0);
+                    break;
+                case 17996:
+                    c.getPlayer().changeMap(321100000, 0);
+                    break;
+            }
+        }
+    }
 }

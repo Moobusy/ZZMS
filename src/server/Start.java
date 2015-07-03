@@ -160,7 +160,7 @@ public class Start {
         //加載道具訊息(從SQL)
         MapleItemInformationProvider.getInstance().runItems(reload);
         //加載髮型臉型
-        MapleItemInformationProvider.getInstance().loadHairFace(reload);
+        MapleItemInformationProvider.getInstance().loadStyles(reload);
         
         System.out.println("加載技能數據");
         //加載技能

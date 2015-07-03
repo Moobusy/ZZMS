@@ -38,7 +38,10 @@ public class SearchGenerator {
         任務(5),
         技能(6),
         職業(7),
-        包頭(8),
+        伺服器包頭(8),
+        用戶端包頭(9),
+        髮型(10),
+        臉型(11),
         未知;
 
         private int value;
@@ -71,7 +74,10 @@ public class SearchGenerator {
     public static final int 任務 = SearchType.任務.getValue();
     public static final int 技能 = SearchType.技能.getValue();
     public static final int 職業 = SearchType.職業.getValue();
-    public static final int 包頭 = SearchType.包頭.getValue();
+    public static final int 伺服器包頭 = SearchType.伺服器包頭.getValue();
+    public static final int 用戶端包頭 = SearchType.用戶端包頭.getValue();
+    public static final int 髮型 = SearchType.髮型.getValue();
+    public static final int 臉型 = SearchType.臉型.getValue();
     private static final Map<SearchType, Map<Integer, String>> searchs = new HashMap();
 
     public static Map<Integer, String> getSearchs(int type) {
@@ -123,7 +129,21 @@ public class SearchGenerator {
                     values.put(job.getId(), job.name());
                 }
                 break;
-            case 包頭:
+            case 伺服器包頭:
+                for (SendPacketOpcode send : SendPacketOpcode.values()) {
+                    values.put((int) send.getValue(), send.name());
+                }
+                break;
+            case 用戶端包頭:
+                for (RecvPacketOpcode recv : RecvPacketOpcode.values()) {
+                    values.put((int) recv.getValue(), recv.name());
+                }
+                break;
+            case 髮型:
+                values = MapleItemInformationProvider.getInstance().getHairList();
+                break;
+            case 臉型:
+                values = MapleItemInformationProvider.getInstance().getFaceList();
                 break;
         }
 
@@ -179,19 +199,9 @@ public class SearchGenerator {
             case 職業:
                 ss.entrySet().forEach((i) -> ret.add("\r\n#L" + i.getKey() + "#" + i.getValue() + "(" + i.getKey() + ")#l"));
                 break;
-            case 包頭:
-                ret.add("\r\n伺服端包頭:");
-                for (SendPacketOpcode send : SendPacketOpcode.values()) {
-                    if (send.name() != null && send.name().toLowerCase().contains(search.toLowerCase())) {
-                        ret.add("\r\n" + send.name() + " 值: " + send.getValue() + " 16進制: " + HexTool.getOpcodeToString(send.getValue()));
-                    }
-                }
-                ret.add("\r\n用戶端包頭:");
-                for (RecvPacketOpcode recv : RecvPacketOpcode.values()) {
-                    if (recv.name() != null && recv.name().toLowerCase().contains(search.toLowerCase())) {
-                        ret.add("\r\n" + recv.name() + " 值: " + recv.getValue() + " 16進制: " + HexTool.getOpcodeToString(recv.getValue()));
-                    }
-                }
+            case 伺服器包頭:
+            case 用戶端包頭:
+                ss.entrySet().forEach((i) -> ret.add("\r\n" + i.getValue() + " 值: " + i.getKey() + " 16進制: " + HexTool.getOpcodeToString(i.getKey())));
                 break;
             default:
                 sb.append("對不起, 這個檢索類型不被支援");
@@ -219,7 +229,6 @@ public class SearchGenerator {
     }
 
     public static boolean foundData(int type, String search) {
-        String str = searchData(type, search);
-        return !str.startsWith("搜尋不到此") && !str.equalsIgnoreCase("對不起, 這個檢索指令不被支援");
+        return !getSearchData(type, search).isEmpty();
     }
 }

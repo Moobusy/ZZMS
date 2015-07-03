@@ -34,7 +34,7 @@ public class CharacterTransfer implements Externalizable {
             faceMarking, ears, tail, elf, mapid, honourexp, honourlevel, guildid,
             partyid, messengerid, ACash, nxCredit, MaplePoints,
             mount_itemid, mount_exp, points, vpoints, dpoints, epoints, marriageId, maxhp, maxmp, hp, mp,
-            familyid, seniorid, junior1, junior2, currentrep, totalrep, battleshipHP, gachexp, guildContribution, totalWins, totalLosses;
+            familyid, seniorid, junior1, junior2, currentrep, totalrep, battleshipHP, gachexp, guildContribution, totalWins, totalLosses, weaponPoint;
     public byte channel, gender, gmLevel, guildrank, alliancerank, clonez,
             fairyExp, cardStack, buddysize, world, initialSpawnPoint, skinColor, mount_level, mount_Fatigue, subcategory;
     public long lastfametime, TranferTime, exp, meso;
@@ -120,6 +120,7 @@ public class CharacterTransfer implements Externalizable {
         this.ears = chr.getEars();
         this.tail = chr.getTail();
         this.elf = chr.getElf();
+        this.weaponPoint = chr.getWeaponPoint();
         this.mapid = chr.getMapId();
         this.initialSpawnPoint = chr.getInitialSpawnpoint();
         this.marriageId = chr.getMarriageId();
@@ -277,6 +278,7 @@ public class CharacterTransfer implements Externalizable {
         this.ears = in.readInt();
         this.tail = in.readInt();
         this.elf = in.readInt();
+        this.weaponPoint = in.readInt();
         this.mapid = in.readInt();
         this.initialSpawnPoint = in.readByte();
         this.world = in.readByte();
@@ -510,6 +512,7 @@ public class CharacterTransfer implements Externalizable {
         out.writeInt(this.ears);
         out.writeInt(this.tail);
         out.writeInt(this.elf);
+        out.writeInt(this.weaponPoint);
         out.writeInt(this.mapid);
         out.writeByte(this.initialSpawnPoint);
         out.writeByte(this.world);

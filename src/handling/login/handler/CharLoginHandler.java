@@ -511,12 +511,12 @@ public class CharLoginHandler {
             newchar.getStat().mp = 100;
             newchar.setRemainingSp(3, 0); //alpha
             newchar.setRemainingSp(3, 1); //beta
-            newchar.forceCompleteQuest(40900);
-            newchar.forceCompleteQuest(40901);
-            newchar.forceCompleteQuest(40902);
-            newchar.forceCompleteQuest(40903);
-            newchar.forceCompleteQuest(40904);
-            newchar.forceCompleteQuest(40905);
+            newchar.setQuestAdd(MapleQuest.getInstance(40900), (byte) 2, "");
+            newchar.setQuestAdd(MapleQuest.getInstance(40901), (byte) 2, "");
+            newchar.setQuestAdd(MapleQuest.getInstance(40902), (byte) 2, "");
+            newchar.setQuestAdd(MapleQuest.getInstance(40903), (byte) 2, "");
+            newchar.setQuestAdd(MapleQuest.getInstance(40904), (byte) 2, "");
+            newchar.setQuestAdd(MapleQuest.getInstance(40905), (byte) 2, "");
         }
 
         if (job == JobType.幻獸師) {

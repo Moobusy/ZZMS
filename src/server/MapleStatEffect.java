@@ -2645,6 +2645,9 @@ public class MapleStatEffect implements Serializable {
 
     private int calcHPChange(final MapleCharacter applyfrom, final boolean primary) {
         int hpchange = 0;
+        if (this.sourceid == 9001000) {
+            hpchange = 500000;
+        }
         if (info.get(MapleStatInfo.hp) != 0) {
             if (!skill) {
                 if (primary) {

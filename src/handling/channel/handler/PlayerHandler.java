@@ -1079,6 +1079,11 @@ public class PlayerHandler {
                         c.getSession().write(CWvsContext.enableActions());
                         return;
                     }
+                    if (effect.isHide() && chr.isHidden()) {
+                        chr.cancelEffect(effect, false, -1);
+                        c.getSession().write(CWvsContext.enableActions());
+                        return;
+                    }
 //                     System.err.println("pos " + pos);
 //                     System.err.println("effect " + effect.getSourceId());
                     effect.applyTo(c.getPlayer(), pos);

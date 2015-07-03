@@ -1890,6 +1890,10 @@ public final class MapleMap {
             chr.getClient().getSession().write(CWvsContext.BuffPacket.giveSoulGauge(chr.addgetSoulCount(), chr.getEquippedSoulSkill()));
             chr.checkSoulState(false);
         }
+        
+        if (mob.getStats().getWP() > 0 && MapleJob.is神之子(chr.getJob())) {
+            chr.addWeaponPoint(mob.getStats().getWP());
+        }
 
         mdrop.registerExpire(120000);
         if (droptype == 0 || droptype == 1) {

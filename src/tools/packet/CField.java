@@ -5033,6 +5033,26 @@ public class CField {
     }
     
     public static class ZeroPacket {
+        
+        public static byte[] gainWeaponPoint(int gain) {
+            MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
+            
+            mplew.writeShort(SendPacketOpcode.SHOW_STATUS_INFO.getValue());
+            mplew.write(0x20);
+            mplew.writeInt(gain);
+            
+            return mplew.getPacket();
+        }
+
+        public static byte[] updateWeaponPoint(int wp) {
+            MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
+            
+            mplew.writeShort(SendPacketOpcode.ZERO_UPDATE.getValue());
+            mplew.writeInt(wp);
+            
+            return mplew.getPacket();
+        }
+    
         public static byte[] UseWeaponScroll(int Success) {
             MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
             

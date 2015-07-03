@@ -10,7 +10,6 @@ import client.anticheat.ReportType;
 import client.inventory.Item;
 import client.inventory.ItemFlag;
 import client.inventory.MapleInventory;
-import client.inventory.MapleInventoryIdentifier;
 import client.inventory.MapleInventoryType;
 import client.inventory.MaplePet;
 import constants.GameConstants;
@@ -29,6 +28,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import scripting.NPCScriptManager;
 import server.MapleInventoryManipulator;
 import server.MapleItemInformationProvider;
@@ -646,8 +646,23 @@ public class InternCommand {
                             c.getPlayer().dropMessage(6, "搜尋不到此" + type.name());
                             return 0;
                         }
-                        String str = SearchGenerator.searchData(type, search);
-                        c.getSession().write(NPCPacket.getNPCTalk(9010000, (byte) 5, str, "", (byte) 0));
+                        switch (type) {
+                            case 髮型:
+                            case 臉型:
+                                Set<Integer> keySet = SearchGenerator.getSearchData(type, search).keySet();
+                                int[] styles = new int[keySet.size()];
+                                int i = 0;
+                                for (int key : keySet) {
+                                    styles[i] = key;
+                                    i++;
+                                }
+                                c.getSession().write(NPCPacket.getNPCTalkStyle(9010000, "", styles, false));
+                                break;
+                            default:
+                                String str = SearchGenerator.searchData(type, search);
+                                c.getSession().write(NPCPacket.getNPCTalk(9010000, (byte) 5, str, "", (byte) 0));
+                                break;
+                        }
                         return 1;
                     }
                     err = true;

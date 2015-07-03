@@ -421,7 +421,7 @@ public class MapleItemInformationProvider {
         //System.out.println(dataCache.size() + " items loaded.");
     }
 
-    public final void loadHairFace(boolean reload) {
+    public final void loadStyles(boolean reload) {
         if (reload) {
             hairList.clear();
             faceList.clear();

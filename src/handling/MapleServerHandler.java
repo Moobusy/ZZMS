@@ -973,6 +973,9 @@ public class MapleServerHandler extends IoHandlerAdapter {
             case QUICK_MOVE_SPECIAL:
                 NPCHandler.OpenQuickMoveSpecial(slea, c);
                 break;
+            case ZERO_QUICK_MOVE:
+                NPCHandler.OpenZeroQuickMoveSpecial(slea, c);
+                break;
             case BBS_OPERATION:
                 BBSHandler.BBSOperation(slea, c);
                 break;
@@ -1304,6 +1307,8 @@ public class MapleServerHandler extends IoHandlerAdapter {
                 break;
             case ZERO_WEAPON_UPGRADE:
                 PlayerHandler.ZeroHandler.openZeroUpgrade(slea, c);
+                break;
+	    case ZERO_WEAPON_UPGRADE_START:
                 break;
             case ZERO_WEAPON_ABILITY:
                 break;

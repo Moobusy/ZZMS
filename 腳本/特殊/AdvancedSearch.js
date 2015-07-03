@@ -1,4 +1,4 @@
-var status, str, select;
+var status, str, select, list;
 
 function start() {
     status = -1;
@@ -12,7 +12,11 @@ function start() {
     str += "\r\n#L5#任務#l";
     str += "\r\n#L6#技能#l";
     str += "\r\n#L7#職業#l";
-    str += "\r\n#L8#包頭#l";
+    str += "\r\n#L8#伺服器包頭#l";
+    str += "\r\n#L9#用戶端包頭#l";
+    str += "\r\n#L10#髮型#l";
+    str += "\r\n#L11#臉型#l";
+//    str += "\r\n#L12#膚色#l";
     cm.sendSimple(str);
 }
 
@@ -30,7 +34,21 @@ function action(mode, type, selection) {
             cm.sendGetText("請輸入需要檢索的訊息:");
             break;
         case 1:
-            cm.sendOk(cm.searchData(str, cm.getText()));
+            switch (str) {
+                case 10:
+                case 11:
+                case 12:
+                    list = cm.getSearchData(str, cm.getText());
+                    if (list == null) {
+                        cm.sendOk("搜尋不到訊息");
+                        cm.dispose();
+                        return;
+                    }
+                    cm.sendStyle("", list);
+                    break;
+                default:
+                    cm.sendOk(cm.searchData(str, cm.getText()));
+            }
             break;
         case 2:
             if (!cm.foundData(str, cm.getText())) {
@@ -78,6 +96,22 @@ function action(mode, type, selection) {
                     cm.dispose();
                     break;
                 case 8:
+                case 9:
+                    cm.dispose();
+                    break;
+                case 10:
+                    cm.playerMessage(5, "更變髮型, 髮型代碼:" + list[select]);
+                    cm.setHair(list[select]);
+                    cm.dispose();
+                    break;
+                case 11:
+                    cm.playerMessage(5, "更變臉型, 臉型代碼:" + list[select]);
+                    cm.setFace(list[select]);
+                    cm.dispose();
+                    break;
+                case 12:
+                    cm.playerMessage(5, "更變膚色, 膚色代碼:" + list[select]);
+                    cm.setSkin(list[select]);
                     cm.dispose();
                     break;
                 default:

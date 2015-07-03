@@ -592,7 +592,7 @@ public class PacketHelper {
         }
         mplew.writeLong(chr.getExp());
         mplew.writeInt(chr.getFame());
-        mplew.writeInt(0); // 未知
+        mplew.writeInt(chr.getWeaponPoint()); // 神之子武器點數
         mplew.writeLong(chr.getGachExp());
         mplew.writeLong(getTime(-2));
         mplew.writeInt(chr.getMapId());

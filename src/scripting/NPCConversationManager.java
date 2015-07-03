@@ -2711,6 +2711,20 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
         return SearchGenerator.searchData(type, search);
     }
 
+    public int[] getSearchData(int type, String search) {
+        Map<Integer, String> data = SearchGenerator.getSearchData(type, search);
+        if (data.isEmpty()) {
+            return null;
+        }
+        int[] searches = new int[data.size()];
+        int i = 0;
+        for (int key : data.keySet()) {
+            searches[i] = key;
+            i++;
+        }
+        return searches;
+    }
+
     public boolean foundData(int type, String search) {
         return SearchGenerator.foundData(type, search);
     }

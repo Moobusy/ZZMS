@@ -54,6 +54,7 @@ public enum QuickMove {
     }
 
     public enum QuickMoveNPC {//UI.wz\UIWindow2.img\EasyMove\
+//UI.wz\UIWindow2.img\EasyMove\
 
         PVP(0, false, 9070004, 30, "Move to the Battle Mode zone #cBattle Square#, where you can fight against other users.\n#cLv. 30 or above can participate in Battle Square."),
         怪物公園(1, true, 9071003, 20, "和隊員們齊心合力攻略強悍怪物的區域.\n移動到#c<怪物公園>#.\n#c一般怪物公園:  100級以上可參加\n 怪物競技場: 70級 ~ 200級"),
@@ -74,7 +75,7 @@ public enum QuickMove {
         冬季限量武器商店(16, false, 9000153, 30, ""),
         里貝卡(17, true, 9000018, 30, "可使用高級硬幣向里貝卡兌換各種道具裝備。"),
         QM_UNKNOW1(18, false, 0, 30, ""),//一个好像财主的兔子
-        QM_UNKNOW2(19, false, 0, 30, ""),//一个美女NPC
+        彌莎(19, false, 0, 30, ""),
         楓之谷拍賣場(20, false, 0, 30, "可以透過愛格里曲來訪問楓之谷拍賣場."),//178已刪
         戰國露西亞(21, 100, true, 9130033, 30, "測試服專用的便利商店"),//戰國商店
         戰國藍多普(22, 101, false, 9130032, 30, ""),//戰國商店

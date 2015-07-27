@@ -2090,7 +2090,7 @@ public class PlayerHandler {
                     MapleMap to = ChannelServer.getInstance(c.getChannel()).getMapFactory().getMap(targetid);
                     chr.changeMap(to, to.getPortal(0));
                 } else if (chr.isShowInfo()) {
-                    chr.dropMessage(-5, "無觸發傳送：unlock-" + unlock + "warp-" + warp + "targetid-" + targetid);
+                    chr.dropMessage(-5, "無觸發傳送：unlock-" + unlock + " warp-" + warp + " targetid-" + targetid);
                     c.getSession().write(CWvsContext.enableActions());
                 }
             } else if ((portal != null) && (!chr.hasBlockedInventory())) {

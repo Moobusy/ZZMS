@@ -1184,7 +1184,7 @@ public class MapleCharacter extends AnimatedMapleMapObject implements Serializab
             con.setAutoCommit(false);
 
             ps = con.prepareStatement("INSERT INTO characters (level, str, dex, luk, `int`, hp, mp, maxhp, maxmp, sp, hsp, ap, skincolor, gender, job, hair, face, faceMarking, ears, tail, weaponPoint, map, meso, party, buddyCapacity, pets, subcategory, elf, friendshippoints, chatcolour, gm, accountid, name, world, position)"
-                    + "                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", DatabaseConnection.RETURN_GENERATED_KEYS);
+                    + "                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", DatabaseConnection.RETURN_GENERATED_KEYS);
             int index = 0;
 //            if (GameConstants.isZero(chr.getJob())) {
 //               chr.level = 100;

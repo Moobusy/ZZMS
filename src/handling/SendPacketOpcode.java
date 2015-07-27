@@ -102,8 +102,8 @@ public enum SendPacketOpcode implements WritableIntValueHolder {
     SECONDPW_ERROR((short) 0x2D),
     
     // 創建角色第二組密碼驗證[完成]【獲得驗證碼 + 第二組密碼錯誤反饋 + 獲得可建立職業】
-    CREATE_CHAR_RESPONSE((short) 0x4DA),
-    // 0x4DB
+    CREATE_CHAR_RESPONSE((short) 0x4DD),
+    // 0x4DE
     
     //================================
     // CWvsContext::OnPacket 開始
@@ -663,142 +663,141 @@ public enum SendPacketOpcode implements WritableIntValueHolder {
     SKILL_MACRO((short) 0x170),
     
     //================================
-    // CStage::OnPacket 開始(179-完成)
+    // CStage::OnPacket 開始(181-完成)
     //================================ 
     
     // 地圖傳送[完成]
-    WARP_TO_MAP((short) 0x171),
+    WARP_TO_MAP((short) 0x172),
     // 農場[台版關閉]
-    FARM_OPEN((short) 0x172),
+    FARM_OPEN((short) 0x173),
     // 拍賣系統[完成]
-    MTS_OPEN((short) 0x173),
+    MTS_OPEN((short) 0x174),
     // 購物商城[完成]
-    CS_OPEN((short) 0x174),
+    CS_OPEN((short) 0x175),
     // 購物商城信息[完成]
-    CS_INFO((short) 0x175),
+    CS_INFO((short) 0x176),
     CASH_SHOP((short) 0x7FFE),
     
     //================================
-    // CMapLoadable::OnPacket 開始(179-完成)
+    // CMapLoadable::OnPacket 開始(181-完成)
     //================================ 
     
     // 移除BG層[完成]
-    REMOVE_BG_LAYER((short) 0x176),
+    REMOVE_BG_LAYER((short) 0x177),
     // 變更背景[完成]
-    CHANGE_BACKGROUND((short) 0x177),
+    CHANGE_BACKGROUND((short) 0x178),
     // 設置物件狀態
-    SET_MAP_OBJECT_VISIBLE((short) 0x178),
+    SET_MAP_OBJECT_VISIBLE((short) 0x179),
     
-    // 0x179
+    // 0x17A
     
     // 重置畫面[完成]
-    RESET_SCREEN((short) 0x17A),
+    RESET_SCREEN((short) 0x17B),
     
     //================================
-    // CField::OnPacket 開始(178-完成)
+    // CField::OnPacket 開始(181-完成)
     //================================ 
     
     // 地圖阻擋[完成]
-    MAP_BLOCKED((short) 0x17B),
+    MAP_BLOCKED((short) 0x17C),
     // 伺服器阻擋[完成]
-    SERVER_BLOCKED((short) 0x17C),
+    SERVER_BLOCKED((short) 0x17D),
     // 隊伍阻擋[完成]
-    PARTY_BLOCKED((short) 0x17D),
+    PARTY_BLOCKED((short) 0x17E),
     // 裝備效果[完成]
-    SHOW_EQUIP_EFFECT((short) 0x17E),
+    SHOW_EQUIP_EFFECT((short) 0x17F),
     // 组队家族聊天[别人说话可抓到]
-    MULTICHAT((short) 0x17F),
+    MULTICHAT((short) 0x180),
     // 世界聊天模式[完成]
-    WORLD_MULTICHAT((short) 0x180),
+    WORLD_MULTICHAT((short) 0x181),
     // 悄悄话
-    WHISPER((short) 0x181),
+    WHISPER((short) 0x182),
     // 夫妻聊天
-    SPOUSE_CHAT((short) 0x182),
+    SPOUSE_CHAT((short) 0x183),
     // Boss血條[完成]
-    BOSS_ENV((short) 0x183),
+    BOSS_ENV((short) 0x184),
     // 地圖效果[完成]
-    MAP_EFFECT((short) 0x184),
+    MAP_EFFECT((short) 0x185),
     // 祝賀音樂(5100000)[完成]
-    CASH_SONG((short) 0x185),
+    CASH_SONG((short) 0x186),
     // GM效果[完成]
-    GM_EFFECT((short) 0x186),
+    GM_EFFECT((short) 0x187),
     // GM日誌[完成]
-    GM_LOG((short) 0x187),    
+    GM_LOG((short) 0x188),    
     // 選邊站[完成]
-    OX_QUIZ((short) 0x188),
+    OX_QUIZ((short) 0x189),
     // GM活動說明[完成]
-    GMEVENT_INSTRUCTIONS((short) 0x189),
+    GMEVENT_INSTRUCTIONS((short) 0x18A),
     // 計時器[完成]
-    CLOCK((short) 0x18A),
+    CLOCK((short) 0x18B),
     // 船隻移動[完成]
-    BOAT_MOVE((short) 0x18B),
+    BOAT_MOVE((short) 0x18C),
     // 船隻狀態[完成]
-    BOAT_STATE((short) 0x18C),
+    BOAT_STATE((short) 0x18D),
     
-    // 0x18D
     // 0x18E
     // 0x18F
+    // 0x190
     
     // 停止計時[完成]
-    STOP_CLOCK((short) 0x190),
+    STOP_CLOCK((short) 0x191),
     // 納希競技大會分數[完成]
-    ARIANT_SCOREBOARD((short) 0x191),
+    ARIANT_SCOREBOARD((short) 0x192),
     
-    // 0x192
+    // 0x193
     
     // 金字塔更新[完成]
-    PYRAMID_UPDATE((short) 0x193),
+    PYRAMID_UPDATE((short) 0x194),
     // 金字塔分數[完成]
-    PYRAMID_RESULT((short) 0x194),
+    PYRAMID_RESULT((short) 0x195),
     // 快速按鍵[完成]
-    QUICK_SLOT((short) 0x195),
+    QUICK_SLOT((short) 0x196),
     // 移動平臺[完成]
-    MOVE_PLATFORM((short) 0x196),
+    MOVE_PLATFORM((short) 0x197),
     
-    // 0x197 【接收 => 0x2B7】
+    // 0x198 【接收 => 0x2B7】
     
     // 金字塔擊殺數量[完成]
-    PYRAMID_KILL_COUNT((short) 0x198),
+    PYRAMID_KILL_COUNT((short) 0x199),
     
-    // 0x199 [Int][Int][Int][Int][String]
-    // 0x19A [Int][Int][Byte]
-    // 0x19B [Int][Int]
+    // 0x19A [Int][Int][Int][Int][String]
+    // 0x19B [Int][Int][Byte]
+    // 0x19C [Int][Int]
     
     // sub_697DDF {
-    // 0x19C [-]
+    // 0x19D [-]
     // }
     
     // PvP信息[完成]
-    PVP_INFO((short) 0x19D),
+    PVP_INFO((short) 0x19E),
     // 角色站立方向狀態[完成]
-    DIRECTION_STATUS((short) 0x19E),
+    DIRECTION_STATUS((short) 0x19F),
     // 惡魔之力[完成]
-    GAIN_FORCE((short) 0x19F),
+    GAIN_FORCE((short) 0x1A0),
     // 組隊任務達成率[完成]
-    ACHIEVEMENT_RATIO((short) 0x1A0),
+    ACHIEVEMENT_RATIO((short) 0x1A1),
     // 快速移動[完成]
-    QUICK_MOVE((short) 0x1A1),
+    QUICK_MOVE((short) 0x1A2),
     
-    // 0x1A2
     // 0x1A3
-    // 0x1A4 
-    // 0x1A5
-    // 0x1A6 // 副本BOSS技能特效
-    // 0x1A7
-    // 0x1A8 // 副本BOSS技能特效
-    // 0x1A9
+    // 0x1A4
+    // 0x1A5 
+    // 0x1A6
+    // 0x1A7 // 副本BOSS技能特效
+    // 0x1A8
+    // 0x1A9 // 副本BOSS技能特效
     // 0x1AA
     // 0x1AB
     // 0x1AC
     // 0x1AD
-    // 0x1AE // 帳號保護
-    // 0x1AF
+    // 0x1AE
+    // 0x1AF // 帳號保護
     // 0x1B0
     // 0x1B1
     // 0x1B2
-    // 0x1B3 // 完成造型王預賽參加申請
-    // 0x1B4 // 菁英怪物
-    // 0x1B5
+    // 0x1B3
+    // 0x1B4 // 完成造型王預賽參加申請
+    // 0x1B5 // 菁英怪物
     // 0x1B6
     // 0x1B7
     // 0x1B8
@@ -807,114 +806,114 @@ public enum SendPacketOpcode implements WritableIntValueHolder {
     // 0x1BB
     // 0x1BC
     // 0x1BD
+    // 0x1BE
     
     //================================
-    // CUserPool::OnPacket 開始(179-完成)
+    // CUserPool::OnPacket 開始(181-完成)
     //================================ 
 
     // 召喚玩家[完成]
-    SPAWN_PLAYER((short) 0x1BE),
+    SPAWN_PLAYER((short) 0x1BF),
     // 移除玩家[完成]
-    REMOVE_PLAYER_FROM_MAP((short) 0x1BF),
+    REMOVE_PLAYER_FROM_MAP((short) 0x1C0),
     
     //================================
-    // CUserPool::OnUserCommonPacket 開始(179-完成)
+    // CUserPool::OnUserCommonPacket 開始(181-完成)
     //================================ 
     
     // 普通聊天[完成]
-    CHATTEXT((short) 0x1C0),//0x199+1C 176ok
+    CHATTEXT((short) 0x1C1),//0x199+1C 176ok
     // 黑板[完成]
-    CHALKBOARD((short) 0x1C1),
+    CHALKBOARD((short) 0x1C2),
     // 更新玩家[完成]
-    UPDATE_CHAR_BOX((short) 0x1C2),
+    UPDATE_CHAR_BOX((short) 0x1C3),
     // 消費效果[未知]
-    SHOW_CONSUME_EFFECT((short) 0x1C3),
+    SHOW_CONSUME_EFFECT((short) 0x1C4),
     // 使用卷軸效果[完成]
-    SHOW_SCROLL_EFFECT((short) 0x1C4),
+    SHOW_SCROLL_EFFECT((short) 0x1C5),
     
-    // 0x1C5(null)
+    // 0x1C6(null)
     
     // 咒文的痕跡[完成]
-    SHOW_ENCHANTER_EFFECT((short) 0x1C6), 
+    SHOW_ENCHANTER_EFFECT((short) 0x1C7), 
     // 使用魂之珠[完成]
-    SHOW_SOULSCROLL_EFFECT((short) 0x1C7), 
+    SHOW_SOULSCROLL_EFFECT((short) 0x1C8), 
     // 放大鏡效果[完成]
-    SHOW_MAGNIFYING_EFFECT((short) 0x1C8),
+    SHOW_MAGNIFYING_EFFECT((short) 0x1C9),
     // 擴充潛能欄位
-    SHOW_POTENTIAL_EXPANSION((short) 0x1C9),
+    SHOW_POTENTIAL_EXPANSION((short) 0x1CA),
     // 潛能重置效果
-    SHOW_POTENTIAL_RESET((short) 0x1CA),
+    SHOW_POTENTIAL_RESET((short) 0x1CB),
     // 重新設置潛能效果
-    SHOW_BONUS_POTENTIAL_RESET((short) 0x1CB),
+    SHOW_BONUS_POTENTIAL_RESET((short) 0x1CC),
     
-    // 0x1CC 使用幸運卷?
+    // 0x1CD 使用幸運卷?
     
     // 顯示煙花效果
-    SHOW_FIREWORKS_EFFECT((short) 0x1CD),
+    SHOW_FIREWORKS_EFFECT((short) 0x1CE),
     
-    // 0x1CE
     // 0x1CF
     // 0x1D0
+    // 0x1D1
     
     // 顯示星岩效果
-    SHOW_NEBULITE_EFFECT((short) 0x1D1),
+    SHOW_NEBULITE_EFFECT((short) 0x1D2),
     // 顯示合成效果
-    SHOW_FUSION_EFFECT((short) 0x1D2),
+    SHOW_FUSION_EFFECT((short) 0x1D3),
     // PvP攻擊
-    PVP_ATTACK((short) 0x1D3),
+    PVP_ATTACK((short) 0x1D4),
     // PvP煙霧[完成] find:[ invenom ]
-    PVP_MIST((short) 0x1D4),
+    PVP_MIST((short) 0x1D5),
     
-    // 0x1D5
+    // 0x1D6
     
     //PvP冷卻時間
-    PVP_COOL((short) 0x1D6),
+    PVP_COOL((short) 0x1D7),
     //磁場技能
-    TESLA_TRIANGLE((short) 0x1D7),
+    TESLA_TRIANGLE((short) 0x1D8),
     
-    //0x1D8
+    //0x1D9
     
     //跟随状态
-    FOLLOW_EFFECT((short) 0x1D9),
+    FOLLOW_EFFECT((short) 0x1DA),
     //顯示組隊任務獎勵[完成]
-    SHOW_PQ_REWARD((short) 0x1DA),
+    SHOW_PQ_REWARD((short) 0x1DB),
     //工藝效果
-    CRAFT_EFFECT((short) 0x1DB),
+    CRAFT_EFFECT((short) 0x1DC),
     //工藝完成
-    CRAFT_COMPLETE((short) 0x1DC),
+    CRAFT_COMPLETE((short) 0x1DD),
     //採集結束特效
-    HARVESTED_EFFECT((short) 0x1DD),
+    HARVESTED_EFFECT((short) 0x1DE),
     //採集結束
-    HARVESTED((short) 0x1DE),
+    HARVESTED((short) 0x1DF),
     
-    // 0x1DF
+    // 0x1E0
     
     //玩家傷害
-    PLAYER_DAMAGED((short) 0x1E0),
+    PLAYER_DAMAGED((short) 0x1E1),
     //奈特的金字塔
-    NETT_PYRAMID((short) 0x1E1),
+    NETT_PYRAMID((short) 0x1E2),
     //設定特效
-    SET_PHASE((short) 0x1E2),
+    SET_PHASE((short) 0x1E3),
     
-    // 0x1E3
     // 0x1E4
     // 0x1E5
     // 0x1E6
+    // 0x1E7
 
     //潘姆音樂
-    PAMS_SONG((short) 0x1E7),
+    PAMS_SONG((short) 0x1E8),
     //取消椅子
-    CANCEL_CHAIR((short) 0x1E8),
+    CANCEL_CHAIR((short) 0x1E9),
     
-    // 0x1E9
     // 0x1EA
+    // 0x1EB
     
     //攻擊Skin[完成]
-    SHOW_DAMAGE_SKIN((short) 0x1EB),
+    SHOW_DAMAGE_SKIN((short) 0x1EC),
     
-    // 0x1EC (Done)
     // 0x1ED (Done)
-    // 0x1EE
+    // 0x1EE (Done)
     // 0x1EF
     // 0x1F0
     // 0x1F1
@@ -923,168 +922,168 @@ public enum SendPacketOpcode implements WritableIntValueHolder {
     // 0x1F4
     // 0x1F5
     // 0x1F6
+    // 0x1F7
     
     //================================
-    // CUserPool::OnUserPetPacket 開始(179-完成)
+    // CUserPool::OnUserPetPacket 開始(181-完成)
     //================================ 
     
     //召喚寵物[完成]
-    SPAWN_PET((short) 0x1F7),
+    SPAWN_PET((short) 0x1F8),
     //寵物移動[完成]
-    MOVE_PET((short) 0x1F8),
+    MOVE_PET((short) 0x1F9),
     //寵物說話[完成]
-    PET_CHAT((short) 0x1F9),
+    PET_CHAT((short) 0x1FA),
     //變更寵物名稱
-    PET_NAMECHANGE((short) 0x1FA),
+    PET_NAMECHANGE((short) 0x1FB),
     
-    // 0x1FB
+    // 0x1FC
     
     //寵物例外清單[完成]
-    PET_EXCEPTION_LIST((short) 0x1FC),
+    PET_EXCEPTION_LIST((short) 0x1FD),
     //寵物顏色[完成]
-    PET_COLOR((short) 0x1FD),
+    PET_COLOR((short) 0x1FE),
     //寵物大小[完成]
-    PET_SIZE((short) 0x1FE),
+    PET_SIZE((short) 0x1FF),
     
-    // 0x1FF
+    // 0x200
     
     //顯示寵物[完成]
-    SHOW_PET((short) 0x200),
+    SHOW_PET((short) 0x201),
     //寵物指令[完成]
-    PET_COMMAND((short) 0x201),
+    PET_COMMAND((short) 0x202),
     
     //================================
-    // CUserPool::OnUserDragonPacket 開始(179-完成)
+    // CUserPool::OnUserDragonPacket 開始(181-完成)
     //================================ 
     
     //召喚龍神[完成] 
-    DRAGON_SPAWN((short) 0x202),
+    DRAGON_SPAWN((short) 0x203),
     //龍神移動[完成]
-    DRAGON_MOVE((short) 0x203),
+    DRAGON_MOVE((short) 0x204),
     //移除龍神[完成]
-    DRAGON_REMOVE((short) 0x204),
+    DRAGON_REMOVE((short) 0x205),
     
     //================================
-    // CUserPool::OnUserAndroidPacket 開始(179-完成)
+    // CUserPool::OnUserAndroidPacket 開始(181-完成)
     //================================ 
     
     //召喚機器人[完成]
-    ANDROID_SPAWN((short) 0x205),
+    ANDROID_SPAWN((short) 0x206),
     //機器人移動[完成]
-    ANDROID_MOVE((short) 0x206),
+    ANDROID_MOVE((short) 0x207),
     //機器人情緒[完成]
-    ANDROID_EMOTION((short) 0x207),
+    ANDROID_EMOTION((short) 0x208),
     //更新機器人外觀[完成]
-    ANDROID_UPDATE((short) 0x208),
+    ANDROID_UPDATE((short) 0x209),
     //移除機器人[完成]
-    ANDROID_DEACTIVATED((short) 0x209),
+    ANDROID_DEACTIVATED((short) 0x20A),
     
     //================================
-    // CUserPool::OnUserHakuPacket1 開始(179-完成)
+    // CUserPool::OnUserHakuPacket1 開始(181-完成)
     //================================ 
     
     //變更花弧
-    HAKU_CHANGE_1((short) 0x20A),
+    HAKU_CHANGE_1((short) 0x20B),
     
-    // 0x20B
+    // 0x20C
     
     //花狐使用技能後發的(Done)
-    HAKU_USE_BUFF((short) 0x20C),
+    HAKU_USE_BUFF((short) 0x20D),
     //變更花弧
-    HAKU_CHANGE_0((short) 0x20D),
+    HAKU_CHANGE_0((short) 0x20E),
     
-    // 0x20E
+    // 0x20F
     
     //花弧未知
-    HAKU_UNK((short) 0x20F),
+    HAKU_UNK((short) 0x210),
     
     //================================
-    // CUserPool::OnUserHakuPacket2 開始(179-完成)
+    // CUserPool::OnUserHakuPacket2 開始(181-完成)
     //================================ 
     
-    // 0x210
+    // 0x211
     
     //花狐移動
-    HAKU_MOVE((short) 0x211),
+    HAKU_MOVE((short) 0x212),
     //花狐更新
-    HAKU_UPDATE((short) 0x212),
+    HAKU_UPDATE((short) 0x213),
     //變更花狐
-    HAKU_CHANGE((short) 0x213),
+    HAKU_CHANGE((short) 0x214),
     
-    // 0x214[NULL]
     // 0x215[NULL]
+    // 0x216[NULL]
     
     //召喚花狐[完成]
-    SPAWN_HAKU((short) 0x216),
+    SPAWN_HAKU((short) 0x217),
     
-    // 0x217
     // 0x218
+    // 0x219
     
     //================================
-    // CUserPool::OnUserRemotePacket 開始(179-完成)
+    // CUserPool::OnUserRemotePacket 開始(181-完成)
     //================================ 
     
     // 玩家移動[完成]
-    MOVE_PLAYER((short) 0x219),
+    MOVE_PLAYER((short) 0x21A),
     
-    // 0x21A
+    // 0x21B
     
     // 近距離攻擊[完成]
-    CLOSE_RANGE_ATTACK((short) 0x21B),
+    CLOSE_RANGE_ATTACK((short) 0x21C),
     // 遠距離攻擊[完成]
-    RANGED_ATTACK((short) 0x21C),
+    RANGED_ATTACK((short) 0x21D),
     // 魔法攻擊[完成]
-    MAGIC_ATTACK((short) 0x21D),
+    MAGIC_ATTACK((short) 0x21E),
     // 能量攻擊[完成]
-    ENERGY_ATTACK((short) 0x21E),
+    ENERGY_ATTACK((short) 0x21F),
     //技能效果[完成][用主教的创世之破抓到包]
-    SKILL_EFFECT((short) 0x21F),
+    SKILL_EFFECT((short) 0x220),
     //移動攻擊[完成][33121214 - 狂野機關砲]
-    MOVE_ATTACK((short) 0x220),
+    MOVE_ATTACK((short) 0x221),
     //取消技能效果[完成]
-    CANCEL_SKILL_EFFECT((short) 0x221),
+    CANCEL_SKILL_EFFECT((short) 0x222),
     //玩家受到傷害[完成]
-    DAMAGE_PLAYER((short) 0x222),
+    DAMAGE_PLAYER((short) 0x223),
     //玩家面部表情[完成]
-    FACIAL_EXPRESSION((short) 0x223),
+    FACIAL_EXPRESSION((short) 0x224),
     
-    // 0x224
+    // 0x225
     
     //显示物品效果
-    SHOW_EFFECT((short) 0x225),
+    SHOW_EFFECT((short) 0x226),
     //显示头上称号
-    SHOW_TITLE((short) 0x226),
+    SHOW_TITLE((short) 0x227),
     //天使破壞者變更
-    ANGELIC_CHANGE((short) 0x227),
+    ANGELIC_CHANGE((short) 0x228),
     
-    // 0x228
     // 0x229
     // 0x22A
+    // 0x22B
     
     //顯示椅子效果[完成]
-    SHOW_CHAIR((short) 0x22B),
+    SHOW_CHAIR((short) 0x22C),
     //更新玩家外觀[完成]
-    UPDATE_CHAR_LOOK((short) 0x22C),
+    UPDATE_CHAR_LOOK((short) 0x22D),
     //玩家外觀效果[完成]
-    SHOW_FOREIGN_EFFECT((short) 0x22D),
+    SHOW_FOREIGN_EFFECT((short) 0x22E),
     //獲得異常狀態[完成]
-    GIVE_FOREIGN_BUFF((short) 0x22E),
+    GIVE_FOREIGN_BUFF((short) 0x22F),
     //取消異常狀態
-    CANCEL_FOREIGN_BUFF((short) 0x22F),
+    CANCEL_FOREIGN_BUFF((short) 0x230),
     //更新隊員血量
-    UPDATE_PARTYMEMBER_HP((short) 0x230),
+    UPDATE_PARTYMEMBER_HP((short) 0x231),
     //讀取公會名稱[完成]
-    LOAD_GUILD_NAME((short) 0x231),
+    LOAD_GUILD_NAME((short) 0x232),
     //讀取公會標誌[完成]
-    LOAD_GUILD_ICON((short) 0x232),
+    LOAD_GUILD_ICON((short) 0x233),
     //讀取隊伍(Done)
-    LOAD_TEAM((short) 0x233),
+    LOAD_TEAM((short) 0x234),
     //採集
-    SHOW_HARVEST((short) 0x234),
+    SHOW_HARVEST((short) 0x235),
     //PvP血量
-    PVP_HP((short) 0x235),
+    PVP_HP((short) 0x236),
     
-    // 0x236
     // 0x237
     // 0x238
     // 0x239
@@ -1094,152 +1093,152 @@ public enum SendPacketOpcode implements WritableIntValueHolder {
     // 0x23D
     // 0x23E
     // 0x23F
+    // 0x240
     
     //神之子狀態
-    ZERO_MUITTAG((short) 0x240),
+    ZERO_MUITTAG((short) 0x241),
     
-    // 0x241
     // 0x242
     // 0x243
-    // 0x244[NULL]
-    // 0x245
+    // 0x244
+    // 0x245[NULL]
     // 0x246
     // 0x247
     // 0x248
+    // 0x249
     
     //================================
-    // CUserPool::OnUserLocalPacket 開始(179-完成)
+    // CUserPool::OnUserLocalPacket 開始(181-完成)
     //================================ 
     
     // 動畫表情[完成]
-    DIRECTION_FACIAL_EXPRESSION((short) 0x249),
+    DIRECTION_FACIAL_EXPRESSION((short) 0x24A),
     // 畫面移動
-    MOVE_SCREEN((short) 0x24A),
+    MOVE_SCREEN((short) 0x24B),
     // 顯示物品效果[完成]
-    SHOW_SPECIAL_EFFECT((short) 0x24B),
+    SHOW_SPECIAL_EFFECT((short) 0x24C),
     // 武陵道場傳送
-    CURRENT_MAP_WARP((short) 0x24C),
+    CURRENT_MAP_WARP((short) 0x24D),
     
-    // 0x24D
+    // 0x24E
     
     // 使用福包成功(5200000)[完成]
-    MESOBAG_SUCCESS((short) 0x24E),
+    MESOBAG_SUCCESS((short) 0x24F),
     // 使用福包失敗(5200000)[完成]
-    MESOBAG_FAILURE((short) 0x24F),
+    MESOBAG_FAILURE((short) 0x250),
     // 更新任務信息
-    UPDATE_QUEST_INFO((short) 0x250),
+    UPDATE_QUEST_INFO((short) 0x251),
     // 血量減少
-    HP_DECREASE((short) 0x251),
+    HP_DECREASE((short) 0x252),
     // 變更寵物技能[完成]
-    PET_FLAG_CHANGE((short) 0x252),
+    PET_FLAG_CHANGE((short) 0x253),
     // 玩家提示[完成]
-    PLAYER_HINT((short) 0x253),
+    PLAYER_HINT((short) 0x254),
     // 播放事件音效
-    PLAY_EVENT_SOUND((short) 0x254),
+    PLAY_EVENT_SOUND((short) 0x255),
     // 播放迷你遊戲音效
-    PLAY_MINIGAME_SOUND((short) 0x255),
+    PLAY_MINIGAME_SOUND((short) 0x256),
     // 生產用技能
-    MAKER_SKILL((short) 0x256),
+    MAKER_SKILL((short) 0x257),
     
-    // 0x257 (Null)
-    // 0x258
+    // 0x258 (Null)
+    // 0x259
     
     // 開啟介面[完成]
-    OPEN_UI((short) 0x259),
+    OPEN_UI((short) 0x25A),
     
-    // 0x25A
+    // 0x25B
     
     // 開啟選項介面[完成]
-    OPEN_UI_OPTION((short) 0x25B),
+    OPEN_UI_OPTION((short) 0x25C),
     // 鎖定玩家按鍵動作[完成]
-    INTRO_LOCK((short) 0x25C),
+    INTRO_LOCK((short) 0x25D),
     // 劇情鎖定介面[完成]
-    INTRO_ENABLE_UI((short) 0x25D),
+    INTRO_ENABLE_UI((short) 0x25E),
     // 劇情鎖定介面2[完成]
-    INTRO_DISABLE_UI((short) 0x25E),
+    INTRO_DISABLE_UI((short) 0x25F),
     // 召喚初心者幫手[完成]
-    SUMMON_HINT((short) 0x25F),
+    SUMMON_HINT((short) 0x260),
     // 初心者幫手訊息[完成]
-    SUMMON_HINT_MSG((short) 0x260),
+    SUMMON_HINT_MSG((short) 0x261),
     
-    // 0x261
     // 0x262
     // 0x263
+    // 0x264
     
     // 狂狼勇士連擊[完成]
-    ARAN_COMBO((short) 0x264),
+    ARAN_COMBO((short) 0x265),
     // 狂狼勇士鬥氣重生[完成]
-    ARAN_COMBO_RECHARGE((short) 0x265),
+    ARAN_COMBO_RECHARGE((short) 0x266),
     
-    // 0x266
     // 0x267
+    // 0x268
     
     //公告提示[完成]
-    GAME_MSG((short) 0x268),
+    GAME_MSG((short) 0x269),
     //遊戲訊息[完成]
-    GAME_MESSAGE((short) 0x269),//0x236+3 175ok
+    GAME_MESSAGE((short) 0x26A),
     
-    // 0x26A [String][Int]
+    // 0x26B [String][Int]
     
     //
-    BUFF_ZONE_EFFECT((short) 0x26B),
+    BUFF_ZONE_EFFECT((short) 0x26C),
     //
-    DAMAGE_METER((short) 0x26C),
+    DAMAGE_METER((short) 0x26D),
     //炸彈攻擊
-    TIME_BOMB_ATTACK((short) 0x26D),
+    TIME_BOMB_ATTACK((short) 0x26E),
     //跟随移动
-    FOLLOW_MOVE((short) 0x26E),
+    FOLLOW_MOVE((short) 0x26F),
     //跟随信息
-    FOLLOW_MSG((short) 0x26F),
+    FOLLOW_MSG((short) 0x270),
     
-    //　0x270
+    //　0x271
     
     //建立終極冒險家
-    CREATE_ULTIMATE((short) 0x271),
+    CREATE_ULTIMATE((short) 0x272),
     //採集訊息
-    HARVEST_MESSAGE((short) 0x272),
+    HARVEST_MESSAGE((short) 0x273),
     //符文介面
-    RUNE_ACTION((short) 0x273),
+    RUNE_ACTION((short) 0x274),
     //礦物背包
-    OPEN_BAG((short) 0x274),
+    OPEN_BAG((short) 0x275),
     //龍之氣息
-    DRAGON_BLINK((short) 0x275),
+    DRAGON_BLINK((short) 0x276),
     //PvP冰騎士
-    PVP_ICEGAGE((short) 0x276),
+    PVP_ICEGAGE((short) 0x277),
     //位置信息[完成]
-    DIRECTION_INFO((short) 0x277),
+    DIRECTION_INFO((short) 0x278),
     //重新獲得勳章
-    REISSUE_MEDAL((short) 0x278),
+    REISSUE_MEDAL((short) 0x279),
     
-    // 0x279
-    // 0x27A [Int]
+    // 0x27A
+    // 0x27B [Int]
     
     //动画播放[完成]
-    PLAY_MOVIE((short) 0x27B),
+    PLAY_MOVIE((short) 0x27C),
     //蛋糕 vs 派餅 活動
-    CAKE_VS_PIE_MSG((short) 0x27C),
+    CAKE_VS_PIE_MSG((short) 0x27D),
     //幻影俠盜卡片[完成]
-    PHANTOM_CARD((short) 0x27D),
+    PHANTOM_CARD((short) 0x27E),
     
-    // 0x27E [Int]
     // 0x27F [Int]
+    // 0x280 [Int]
     
     //夜光連擊
-    LUMINOUS_COMBO((short) 0x280),
+    LUMINOUS_COMBO((short) 0x281),
     
-    // 0x281
     // 0x282
     // 0x283
     // 0x284
     // 0x285
     // 0x286
+    // 0x287
     
     // sub_6DB241 {+0xE 178ok
-    // 0x287
     // 0x288
+    // 0x289
     // }
     
-    // 0x289
     // 0x28A
     // 0x28B
     // 0x28C
@@ -1248,37 +1247,37 @@ public enum SendPacketOpcode implements WritableIntValueHolder {
     // 0x28F
     // 0x290
     // 0x291
+    // 0x292
     
     //時間膠囊[完成] (3010587)
-    TIME_CAPSULE((short) 0x292),
+    TIME_CAPSULE((short) 0x293),
     
-    // 0x293
     // 0x294
     // 0x295
     // 0x296
+    // 0x297
     
     //神之子衝擊波[完成] (101000102)
-    ZERO_SHOCKWAVE((short) 0x297),
+    ZERO_SHOCKWAVE((short) 0x298),
     //設定槍的名稱[完成]
-    SET_GUN_NAME((short) 0x298),
+    SET_GUN_NAME((short) 0x299),
     //設定槍彈[完成]
-    SET_GUN_AMMO((short) 0x299),
+    SET_GUN_AMMO((short) 0x29A),
     //建立槍[完成]
-    CREATE_GUN((short) 0x29A),
+    CREATE_GUN((short) 0x29B),
     //清除槍[完成]
-    CLEAR_GUN((short) 0x29B),
+    CLEAR_GUN((short) 0x29C),
     
-    // 0x29C
     // 0x29D
     // 0x29E
     // 0x29F
     // 0x2A0
     // 0x2A1
+    // 0x2A2
     
     //戰鬥回復[完成] (101110205)
-    ZERO_BATTLE_HEAL((short) 0x2A2), //0x28E
+    ZERO_BATTLE_HEAL((short) 0x2A3),
     
-    // 0x2A3
     // 0x2A4
     // 0x2A5
     // 0x2A6
@@ -1288,26 +1287,26 @@ public enum SendPacketOpcode implements WritableIntValueHolder {
     // 0x2AA
     // 0x2AB
     // 0x2AC
+    // 0x2AD
         
     //神之子參數(Done)
-    ZERO_OPTION((short) 0x2AD),
+    ZERO_OPTION((short) 0x2AE),
     //翻轉硬幣(Done)
-    FLIP_THE_COIN((short) 0x2AE),
+    FLIP_THE_COIN((short) 0x2AF),
     
-    // 0x2AF
     // 0x2B0
     // 0x2B1
     // 0x2B2
+    // 0x2B3
     
     //幽靈水彩特效(Done) (skill == 80001408)
-    GHOST_WATERCOLOR_EFFECT((short) 0x2B3),
+    GHOST_WATERCOLOR_EFFECT((short) 0x2B4),
     
-    // 0x2B4
+    // 0x2B5
     
     //符文特效(Done) (80001429)
-    RUNE_EFFECT((short) 0x2B5),
+    RUNE_EFFECT((short) 0x2B6),
     
-    // 0x2B6
     // 0x2B7
     // 0x2B8
     // 0x2B9
@@ -1319,18 +1318,18 @@ public enum SendPacketOpcode implements WritableIntValueHolder {
     // 0x2BF
     // 0x2C0
     // 0x2C1
+    // 0x2C2
     
     // Setp GiftID[完成]
-    SETP_GIFT_ID((short) 0x2C2),
+    SETP_GIFT_ID((short) 0x2C3),
     
-    // 0x2C3
+    // 0x2C4
     
     // Step Coin[完成]
-    SETP_COIN((short) 0x2C4),    
+    SETP_COIN((short) 0x2C5),
     //凱撒快速鍵[完成]
-    KAISER_QUICK_KEY((short) 0x2C5),
+    KAISER_QUICK_KEY((short) 0x2C6),
     
-    // 0x2C6
     // 0x2C7
     // 0x2C8
     // 0x2C9
@@ -1361,11 +1360,11 @@ public enum SendPacketOpcode implements WritableIntValueHolder {
     // 0x2E2
     // 0x2E3
     // 0x2E4
+    // 0x2E5
     
     //閃耀方塊反饋 (CField頂端內容有/12的用xRef回找)
-    FLASH_CUBE_RESPONSE((short) 0x2E5),
+    FLASH_CUBE_RESPONSE((short) 0x2E6),
     
-    // 0x2E6
     // 0x2E7
     // 0x2E8
     // 0x2E9
@@ -1382,107 +1381,107 @@ public enum SendPacketOpcode implements WritableIntValueHolder {
     // 0x2F4
     // 0x2F5
     // 0x2F6
+    // 0x2F7
     
-    // 0x2F7 跟技能冷卻很像的Sub
+    // 0x2F8 跟技能冷卻很像的Sub
     
     //技能冷却[完成]
-    COOLDOWN((short) 0x2F8),
+    COOLDOWN((short) 0x2F9),
     
-    // 0x2F9
+    // 0x2FA
 
     //================================
-    // CUser::OnSummonedPacket 開始(179-完成)
+    // CUser::OnSummonedPacket 開始(181-完成)
     //================================ 
     
     //招喚招喚獸[完成]
-    SPAWN_SUMMON((short) 0x02FA),
+    SPAWN_SUMMON((short) 0x02FB),
     //移除招喚獸[完成]
-    REMOVE_SUMMON((short) 0x2FB),
+    REMOVE_SUMMON((short) 0x2FC),
     //招喚獸移動[完成]
-    MOVE_SUMMON((short) 0x2FC),
+    MOVE_SUMMON((short) 0x2FD),
     //招喚獸攻击[完成]
-    SUMMON_ATTACK((short) 0x2FD),
+    SUMMON_ATTACK((short) 0x2FE),
     //PvP招喚獸
-    PVP_SUMMON((short) 0x2FE),
+    PVP_SUMMON((short) 0x2FF),
     //招喚獸技能
-    SUMMON_SKILL_2((short) 0x2FF),
+    SUMMON_SKILL_2((short) 0x300),
     //招喚獸技能
-    SUMMON_SKILL((short) 0x300),
+    SUMMON_SKILL((short) 0x301),
     //招喚獸延遲
-    SUMMON_DELAY((short) 0x301),
+    SUMMON_DELAY((short) 0x302),
     //招喚獸受傷
-    DAMAGE_SUMMON((short) 0x302),
+    DAMAGE_SUMMON((short) 0x303),
     
-    // 0x303
     // 0x304
     // 0x305
     // 0x306
     // 0x307
+    // 0x308
     
     //================================
     // CMobPool::OnMobPacket 開始(179-完成)
     //================================ 
     
     // 怪物召喚[完成]
-    SPAWN_MONSTER((short) 0x308),
+    SPAWN_MONSTER((short) 0x309),
     // 殺除怪物[完成]
-    KILL_MONSTER((short) 0x309),
+    KILL_MONSTER((short) 0x30A),
     // 控制召喚怪物[完成]
-    SPAWN_MONSTER_CONTROL((short) 0x30A),
+    SPAWN_MONSTER_CONTROL((short) 0x30B),
     
-    // 0x30B [Int(MOB_ID)][Short][Int][Byte]
+    // 0x30C [Int(MOB_ID)][Short][Int][Byte]
     
     // 怪物移動[完成]
-    MOVE_MONSTER((short) 0x30C),
+    MOVE_MONSTER((short) 0x30D),
     // 怪物移動回覆[完成]
-    MOVE_MONSTER_RESPONSE((short) 0x30D),
+    MOVE_MONSTER_RESPONSE((short) 0x30E),
     
-    // 0x30E (NULL)
+    // 0x30F (NULL)
     
     //添加怪物状态[完成]
-    APPLY_MONSTER_STATUS((short) 0x30F),
+    APPLY_MONSTER_STATUS((short) 0x310),
     //取消怪物状态[完成]
-    CANCEL_MONSTER_STATUS((short) 0x310),    
+    CANCEL_MONSTER_STATUS((short) 0x311),    
     //怪物暫停重置[完成]
-    MONSTER_SUSPEND_RESET((short) 0x311),
+    MONSTER_SUSPEND_RESET((short) 0x312),
     //影響怪物[完成]
-    MONSTER_AFFECTED((short) 0x312),
+    MONSTER_AFFECTED((short) 0x313),
     //怪物受到伤害
-    DAMAGE_MONSTER((short) 0x313),
+    DAMAGE_MONSTER((short) 0x314),
     //怪物技能特效[完成]
-    SKILL_EFFECT_MOB((short) 0x314),
+    SKILL_EFFECT_MOB((short) 0x315),
     
-    // 0x315 (NULL)
+    // 0x316 (NULL)
     
     //怪物CRC[完成] 接收=> 0x156
-    MONSTER_CRC_CHANGE((short) 0x316),
+    MONSTER_CRC_CHANGE((short) 0x317),
     //顯示怪物HP[完成]
-    SHOW_MONSTER_HP((short) 0x317),
+    SHOW_MONSTER_HP((short) 0x318),
     //捕抓怪物[完成]
-    CATCH_MONSTER((short) 0x318),
+    CATCH_MONSTER((short) 0x319),
     //怪物物品特效[完成]
-    ITEM_EFFECT_MOB((short) 0x319),
+    ITEM_EFFECT_MOB((short) 0x31A),
     
-    // 0x31A
+    // 0x31B
     
     //怪物說話[完成]
-    TALK_MONSTER((short) 0x31B),    
+    TALK_MONSTER((short) 0x31C),
     //移除怪物說話
-    REMOVE_TALK_MONSTER((short) 0x31C),
+    REMOVE_TALK_MONSTER((short) 0x31D),
     //怪物技能延遲[完成]
-    MONSTER_SKILL_DELAY((short) 0x31D),
+    MONSTER_SKILL_DELAY((short) 0x31E),
     //怪物護送全部路徑[完成]
-    MONSTER_ESCORT_FULL_PATH((short) 0x31E),
+    MONSTER_ESCORT_FULL_PATH((short) 0x31F),
     //怪物護送暫停/停止允許[完成]
-    MONSTER_ESCORT_STOP_END_PERMISSION((short) 0x31F),
+    MONSTER_ESCORT_STOP_END_PERMISSION((short) 0x320),
     //怪物護送暫停說話[完成]
-    MONSTER_ESCORT_STOP_SAY((short) 0x320),
+    MONSTER_ESCORT_STOP_SAY((short) 0x321),
     //怪物護送返回前[完成]
-    MONSTER_ESCORT_RETURN_BEFORE((short) 0x321),
+    MONSTER_ESCORT_RETURN_BEFORE((short) 0x322),
     //怪物下個攻擊[完成]
-    MONSTER_NEXT_ATTACK((short) 0x322),
+    MONSTER_NEXT_ATTACK((short) 0x323),
     
-    // 0x323
     // 0x324
     // 0x325
     // 0x326
@@ -1506,49 +1505,49 @@ public enum SendPacketOpcode implements WritableIntValueHolder {
     // 0x338
     // 0x339
     // 0x33A
+    // 0x33B
     
     //怪物攻擊怪物[完成]
-    MOB_TO_MOB_DAMAGE((short) 0x33B),
+    MOB_TO_MOB_DAMAGE((short) 0x33C),
     
-    // 0x33C (NULL)    
+    // 0x33D (NULL)    
     
     //================================
-    // CMobPool::OnAzwanMobPacket 開始(179-完成)
+    // CMobPool::OnAzwanMobPacket 開始(181-完成)
     //================================ 
     
     // 阿斯旺怪物攻擊怪物[完成]
-    AZWAN_MOB_TO_MOB_DAMAGE((short) 0x33D),
+    AZWAN_MOB_TO_MOB_DAMAGE((short) 0x33E),
     // 阿斯旺怪物召喚[完成]
-    AZWAN_SPAWN_MONSTER((short) 0x33E),
+    AZWAN_SPAWN_MONSTER((short) 0x33F),
     // 阿斯旺怪物死亡[完成]
-    AZWAN_KILL_MONSTER((short) 0x33F),
+    AZWAN_KILL_MONSTER((short) 0x340),
     // 阿斯旺控制召喚怪物[完成]
-    AZWAN_SPAWN_MONSTER_CONTROL((short) 0x340),
+    AZWAN_SPAWN_MONSTER_CONTROL((short) 0x341),
     
     //================================
-    // CNpcPool::OnPacket 開始(179-完成)
+    // CNpcPool::OnPacket 開始(181-完成)
     //================================ 
     
     // 召喚Npc[完成]
-    SPAWN_NPC((short) 0x341),
+    SPAWN_NPC((short) 0x342),
     // 移除Npc[完成]
-    REMOVE_NPC((short) 0x342),
+    REMOVE_NPC((short) 0x343),
     
-    // 0x343
+    // 0x344
     
     // 控制召喚Npc[完成]
-    SPAWN_NPC_REQUEST_CONTROLLER((short) 0x344),
+    SPAWN_NPC_REQUEST_CONTROLLER((short) 0x345),
     // Npc動作[完成]
-    NPC_ACTION((short) 0x345),
+    NPC_ACTION((short) 0x346),
     
-    // 0x346
     // 0x347
     // 0x348
+    // 0x349
     
     // 更新NPC狀態信息
-    NPC_UPDATE_LIMITED_INFO((short) 0x349),
+    NPC_UPDATE_LIMITED_INFO((short) 0x34A),
     
-    // 0x34A
     // 0x34B
     // 0x34C
     // 0x34D
@@ -1559,103 +1558,104 @@ public enum SendPacketOpcode implements WritableIntValueHolder {
     // 0x352
     // 0x353
     // 0x354
+    // 0x355
     
     // Npc特殊事件[完成]
-    NPC_SET_SPECIAL_ACTION((short) 0x355),
+    NPC_SET_SPECIAL_ACTION((short) 0x356),
     // 設置Npc腳本[完成]
-    NPC_SCRIPTABLE((short) 0x356),
+    NPC_SCRIPTABLE((short) 0x357),
     
-    // 0x357
+    // 0x358
     
     //================================
-    // CEmployeePool::OnPacket 開始(179-完成)
+    // CEmployeePool::OnPacket 開始(181-完成)
     //================================ 
     
     // 召喚精靈商人
-    SPAWN_HIRED_MERCHANT((short) 0x358),
+    SPAWN_HIRED_MERCHANT((short) 0x359),
     // 移除精靈商人
-    DESTROY_HIRED_MERCHANT((short) 0x359),
+    DESTROY_HIRED_MERCHANT((short) 0x35A),
     
-    // 0x35A
+    // 0x35B
     
     // 精靈商人更新
-    UPDATE_HIRED_MERCHANT((short) 0x35B),
+    UPDATE_HIRED_MERCHANT((short) 0x35C),
     
     //================================
-    // CDropPool::OnPacket 開始(179-完成)
+    // CDropPool::OnPacket 開始(181-完成)
     //================================ 
     
     // 物品掉落[完成]
-    DROP_ITEM_FROM_MAPOBJECT((short) 0x35C),
+    DROP_ITEM_FROM_MAPOBJECT((short) 0x35D),
     
-    // 0x35D (null)
+    // 0x35E (null)
     
     // 物品消失[完成]
-    REMOVE_ITEM_FROM_MAP((short) 0x35E),
+    REMOVE_ITEM_FROM_MAP((short) 0x35F),
     
     //================================
-    // CMessageBoxPool::OnPacket 開始(179-完成)
+    // CMessageBoxPool::OnPacket 開始(181-完成)
     //================================ 
     
     // 召喚風箏錯誤[完成]
-    SPAWN_KITE_ERROR((short) 0x35F),
+    SPAWN_KITE_ERROR((short) 0x360),
     // 召喚風箏[完成]
-    SPAWN_KITE((short) 0x360),
+    SPAWN_KITE((short) 0x361),
     // 移除風箏[完成]
-    DESTROY_KITE((short) 0x361),
+    DESTROY_KITE((short) 0x362),
     
     //================================
-    // CAffectedAreaPool::OnPacket 開始(179-完成)
+    // CAffectedAreaPool::OnPacket 開始(181-完成)
     //================================ 
     
     // 召喚煙霧[完成]
-    SPAWN_MIST((short) 0x362),
+    SPAWN_MIST((short) 0x363),
     // 煙霧未知[完成]
-    MIST_UNK((short) 0x363),
+    MIST_UNK((short) 0x364),
     // 移除煙霧[完成]
-    REMOVE_MIST((short) 0x364),
+    REMOVE_MIST((short) 0x365),
     
     //================================
-    // CTownPortalPool::OnPacket 開始(179-完成)
+    // CTownPortalPool::OnPacket 開始(181-完成)
     //================================ 
     
     // 時空門[完成]
-    SPAWN_DOOR((short) 0x365),
+    SPAWN_DOOR((short) 0x366),
     // 移除時空門[完成]
-    REMOVE_DOOR((short) 0x366),
+    REMOVE_DOOR((short) 0x367),
     
     //================================
-    // COpenGatePool::OnPacket 開始(179-完成)
+    // COpenGatePool::OnPacket 開始(181-完成)
     //================================ 
     
     // 召喚開放通道[完成]
-    MECH_DOOR_SPAWN((short) 0x367),
+    MECH_DOOR_SPAWN((short) 0x368),
     // 移除開放通道[完成]
-    MECH_DOOR_REMOVE((short) 0x368),
+    MECH_DOOR_REMOVE((short) 0x369),
     
     //================================
-    // CReactorPool::OnPacket 開始(179-完成)
+    // CReactorPool::OnPacket 開始(181-完成)
     //================================ 
     
     // 攻擊箱子[完成]
-    REACTOR_HIT((short) 0x369),
+    REACTOR_HIT((short) 0x36A),
     // 箱子移動[完成]
-    REACTOR_MOVE((short) 0x36A),
+    REACTOR_MOVE((short) 0x36B),
     // 召喚箱子[完成]
-    REACTOR_SPAWN((short) 0x36B),
+    REACTOR_SPAWN((short) 0x36C),
     // 箱子未知[完成]
-    REACTOR_UNK((short) 0x36C),
+    REACTOR_UNK((short) 0x36D),
     // 重置箱子[完成]
-    REACTOR_DESTROY((short) 0x36D),
+    REACTOR_DESTROY((short) 0x36E),
     
     //================================
-    // CReactorPool::OnExtractorPacket 開始(179-完成)
+    // CReactorPool::OnExtractorPacket 開始(181-完成)
     //================================ 
     
     // 召喚分解機[完成]
-    SPAWN_EXTRACTOR((short) 0x36E),
+    SPAWN_EXTRACTOR((short) 0x36F),
     // 移除分解機[完成]
-    REMOVE_EXTRACTOR((short) 0x36F),
+    REMOVE_EXTRACTOR((short) 0x370),
     
     //================================
     // CEventsPool::OnPacket 开始
@@ -1980,120 +1980,120 @@ public enum SendPacketOpcode implements WritableIntValueHolder {
     PINK_ZAKUM_SHRINE((short) 0x45B),
     
     //================================
-    // CScriptMan::OnPacket 開始(179-完成)
+    // CScriptMan::OnPacket 開始(181-完成)
     //================================ 
     
     // Npc交談[完成]
-    NPC_TALK((short) 0x461),
+    NPC_TALK((short) 0x464),
     
     //================================
-    // CShopDlg::OnPacket 開始(179-完成)
+    // CShopDlg::OnPacket 開始(181-完成)
     //================================ 
     
     // Npc商店[完成]
-    OPEN_NPC_SHOP((short) 0x462),
+    OPEN_NPC_SHOP((short) 0x465),
     // 購買Npc商店道具[完成]
-    CONFIRM_SHOP_TRANSACTION((short) 0x463),
+    CONFIRM_SHOP_TRANSACTION((short) 0x466),
     
     //================================
-    // CAdminShopDlg::OnPacket 開始(179-完成)
+    // CAdminShopDlg::OnPacket 開始(181-完成)
     //================================ 
     
     // 管理員商店[完成]
-    ADMIN_SHOP_RESULT((short) 0x464),
+    ADMIN_SHOP_RESULT((short) 0x467),
     // 管理員商店-商品[完成]
-    ADMIN_SHOP_COMMODITY((short) 0x465),
+    ADMIN_SHOP_COMMODITY((short) 0x468),
     
     //================================
-    // CAdminShopDlg::OnPacket 結束(179-完成)
+    // CAdminShopDlg::OnPacket 結束(181-完成)
     //================================ 
     
-    // 0x466
-    // 0x467
-    // 0x468
     // 0x469
     // 0x46A
     // 0x46B
     // 0x46C
-    
-    //================================
-    // sub_6F1C61 開始(179-完成)
-    //================================ 
-    
     // 0x46D
     // 0x46E
-    // 0x46F 【靈魂陷阱】
+    // 0x46F
+    
+    //================================
+    // sub_6F1C61 開始(181-完成)
+    //================================ 
+    
     // 0x470
     // 0x471
-    // 0x472
+    // 0x472 【靈魂陷阱】
     // 0x473
-    // 0x474 【姆勒姆勒地城地圖】、【姆勒姆勒的炸彈】
+    // 0x474
     // 0x475
-    
-    //================================
-    // sub_6F1C61 結束(179-完成)
-    //================================ 
-    
     // 0x476
-    // 0x477
-    
-    //================================
-    // sub_6A7380 開始(179-完成)
-    //================================ 
-    
-    
+    // 0x477 【姆勒姆勒地城地圖】、【姆勒姆勒的炸彈】
     // 0x478
     
     //================================
-    // sub_6A7380 結束(179-完成)
+    // sub_6F1C61 結束(181-完成)
     //================================ 
     
     // 0x479
     // 0x47A
     
     //================================
-    // CStoreBankDlg::OnPacket 開始(179-完成)
+    // sub_6A7380 開始(181-完成)
+    //================================ 
+    
+    
+    // 0x47B
+    
+    //================================
+    // sub_6A7380 結束(181-完成)
+    //================================ 
+    
+    // 0x47C
+    // 0x47D
+    
+    //================================
+    // CStoreBankDlg::OnPacket 開始(181-完成)
     //================================
     
     // 倉庫[完成]
-    OPEN_STORAGE((short) 0x47A),
+    OPEN_STORAGE((short) 0x47D),
     
     //================================
-    // CStoreBankDlg::OnPacket 結束(179-完成)
+    // CStoreBankDlg::OnPacket 結束(181-完成)
     //================================
     
     // 富蘭德里訊息
-    MERCH_ITEM_MSG((short) 0x47B),
+    MERCH_ITEM_MSG((short) 0x47E),
     // 富蘭德里倉庫
-    MERCH_ITEM_STORE((short) 0x47C),
+    MERCH_ITEM_STORE((short) 0x47F),
     // 猜拳遊戲[完成]
-    RPS_GAME((short) 0x47D),
+    RPS_GAME((short) 0x480),
     
-    // 0x47E
-    // 0x47F
+    // 0x481
+    // 0x482
     
     // 聊天室[完成]
-    MESSENGER((short) 0x480),
+    MESSENGER((short) 0x483),
     // 玩家互動[完成]
-    PLAYER_INTERACTION((short) 0x481),
+    PLAYER_INTERACTION((short) 0x484),
     
-    // 0x482
-    // 0x483
+    // 0x485
+    // 0x486
     
     // CField_Tournament::OnTournament[完成]
-    TOURNAMENT((short) 0x484),
+    TOURNAMENT((short) 0x487),
     // CField_Tournament::OnTournamentMatchTable[完成]
-    TOURNAMENT_MATCH_TABLE((short) 0x485),
+    TOURNAMENT_MATCH_TABLE((short) 0x488),
     // CField_Tournament::OnTournamentSetPrize[完成]
-    TOURNAMENT_SET_PRIZE((short) 0x486),
+    TOURNAMENT_SET_PRIZE((short) 0x489),
     // CField_Tournament::OnTournamentUEW[完成]
-    TOURNAMENT_UEW((short) 0x487),
+    TOURNAMENT_UEW((short) 0x48A),
     // CField_Tournament::OnTournamentAvatarInfo[完成]
-    TOURNAMENT_CHARACTERS((short) 0x488),
+    TOURNAMENT_CHARACTERS((short) 0x48B),
     // CField_Wedding::OnWeddingProgress[完成]
-    WEDDING_PROGRESS((short) 0x489),
+    WEDDING_PROGRESS((short) 0x48C),
     // CField_Wedding::OnWeddingCeremonyEnd[完成]
-    WEDDING_CEREMONY_END((short) 0x48A),
+    WEDDING_CEREMONY_END((short) 0x48D),
     
     //================================
     // CCashShop::OnPacket 開始
@@ -2195,17 +2195,17 @@ public enum SendPacketOpcode implements WritableIntValueHolder {
     // 0x4BD 羊群牧場[Boolean] 【true => [String][Long]「[String][Long]」* 3】【false => [Int](分數)[Int](排行)[Int](咒文的痕跡)】
 
     //==================================
-    // CFuncKeyMappedMan::OnPacket 開始(179-完成)
+    // CFuncKeyMappedMan::OnPacket 開始(181-完成)
     //==================================
     
     // 鍵盤設置[完成]
-    KEYMAP((short) 0x4D6),
+    KEYMAP((short) 0x4D9),
     // 寵物技能(HP)[完成]
-    PET_AUTO_HP((short) 0x4D7),
+    PET_AUTO_HP((short) 0x4DA),
     // 寵物技能(MP)[完成]
-    PET_AUTO_MP((short) 0x4D8),
+    PET_AUTO_MP((short) 0x4DB),
     // 寵物技能(Buff)[完成]
-    PET_AUTO_CURE((short) 0x4D9),//+0x2E 178ok
+    PET_AUTO_CURE((short) 0x4DC),
     
     //==================================
     // CField::OnGoldHammerRes 開始(179-完成)
@@ -2297,16 +2297,16 @@ public enum SendPacketOpcode implements WritableIntValueHolder {
 
 
     // 每日免費強化任意門[完成]
-    DAY_OF_CHRONOSPHERE((short) 0x567),//179OK
+    DAY_OF_CHRONOSPHERE((short) 0x56D),//181OK
     // 強化任意門錯誤[完成]
-    ERROR_CHRONOSPHERE((short) 0x568),//179OK
+    ERROR_CHRONOSPHERE((short) 0x56E),//181OK
     
     // sub_6DF4C6 {
-    // 0x567
-    // 0x568
-    // 0x569
-    // 0x56A
-    // 0x56B
+    // 0x56D
+    // 0x56E
+    // 0x56F
+    // 0x570
+    // 0x571
     // }
     
     // General
@@ -2553,7 +2553,7 @@ public enum SendPacketOpcode implements WritableIntValueHolder {
 
     public static boolean isRecordHeader(SendPacketOpcode opcode) {
         switch (opcode.name()) {
-//            case "WARP_TO_MAP":
+            case "WARP_TO_MAP":
 //            case "GUILD_OPERATION":
 //            case "PARTY_OPERATION":
 //            case "GIVE_BUFF":

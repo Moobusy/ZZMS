@@ -505,6 +505,7 @@ public class CField {
         UnkFunction3(mplew);
         UnkFunction4(mplew);
         UnkFunction5(mplew);
+        mplew.write(150);
 
         return mplew.getPacket();
     }
@@ -4283,6 +4284,48 @@ public class CField {
             for (int i = 0; i < args.length; i++) {
                 mplew.writeInt(args[i]);
             }
+            return mplew.getPacket();
+        }
+        
+        public static byte[] getArisanNPCTalk(int npc, boolean read, byte msgType, byte type, byte result, String talk) {
+            MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
+
+            mplew.writeShort(SendPacketOpcode.NPC_TALK.getValue());
+            mplew.write(8);
+            mplew.writeInt(npc);
+            mplew.write(read); // Boolean
+            if (read) {
+                mplew.writeInt(0);
+            }
+            mplew.write(msgType);
+            mplew.write(type);
+            mplew.write(result);
+            if ((type & 0x4) != 0) {
+                mplew.writeInt(0);
+            }
+            mplew.writeMapleAsciiString(talk);
+
+            return mplew.getPacket();
+        }
+
+        public static byte[] getDreamWorldNPCTalk(int npc, boolean read, byte msgType, byte type, byte result, int npcId, String talk) {
+            MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
+
+            mplew.writeShort(SendPacketOpcode.NPC_TALK.getValue());
+            mplew.write(8);
+            mplew.writeInt(npc);
+            mplew.write(read); // Boolean
+            if (read) {
+                mplew.writeInt(0);
+            }
+            mplew.write(msgType);
+            mplew.write(type);
+            mplew.write(result);
+            if ((type & 0x4) != 0) {
+                mplew.writeInt(npcId);
+            }
+            mplew.writeMapleAsciiString(talk);
+
             return mplew.getPacket();
         }
 

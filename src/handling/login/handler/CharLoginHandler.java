@@ -501,6 +501,11 @@ public class CharLoginHandler {
             newchar.getStat().maxmp = 805;
             newchar.getStat().mp = 38;
         }
+        
+        if (job == JobType.天使破壞者) {
+            newchar.setQuestAdd(MapleQuest.getInstance(25835), (byte) 2, ""); //任務：愛斯卡達的真面目
+            newchar.setQuestAdd(MapleQuest.getInstance(25829), (byte) 2, ""); //任務：這個技能是什麼？
+        }
 
         if (job == JobType.神之子) {
             newchar.setLevel((short) 100);

@@ -568,7 +568,7 @@ public class PacketHelper {
         mplew.writeInt(chr.getId());
         mplew.writeAsciiString(chr.getName(), 15);
         mplew.write(chr.getGender());
-        mplew.write(1); // addCharCreateStats unk
+        mplew.write(0); // addCharCreateStats unk
         mplew.write(chr.getSkinColor());
         mplew.writeInt(chr.getFace());
         mplew.writeInt(chr.getHair());
@@ -755,6 +755,7 @@ public class PacketHelper {
             addExpirationTime(mplew, item.getExpiration());
             mplew.writeInt(chr == null ? -1 : chr.getExtendedSlots().indexOf(item.getItemId()));
             if (item.getType() == 1) {
+                mplew.write(0); //181+應該是白金鎚子次數
                 final Equip equip = Equip.calculateEquipStats((Equip) item);
                 addEquipStats(mplew, equip);
                 addEquipBonusStats(mplew, equip, hasUniqueId);

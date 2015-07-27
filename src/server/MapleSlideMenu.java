@@ -75,6 +75,9 @@ public class MapleSlideMenu {//UI.wz\UIWindow2.img\SlideMenu\
             PQ803(803, "楓葉丘陵", 807000000, 0, 0, above, 0, 0, true),
             PQ804(804, "尖耳狐狸村", 410000000, 0, 0, above, 0, 0, true),
             PQ805(805, "Jett&俠客", 743050000, 3, 0, above, 0, 0, true),
+            PQ806(806, "幸福山", 0, 3, 0, above, 0, 0, true),
+            PQ807(807, "阿里山", 749080900, 0, 0, above, 0, 0, true),
+            PQ808(808, "虛幻之森", 749081200, 0, 0, above, 0, 0, true),
             PQ908(908, "比叡山本堂", 811000999, 0, 0, above, 0, 0, true),
             PQ993(993, "進擊的巨人", 814000000, 0, 0, above, 0, 0, true),
             DEFAULT(Integer.MAX_VALUE, "Default Map", 999999999, 0, 0, 0, 0, 0, false);

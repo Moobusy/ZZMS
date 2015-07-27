@@ -386,7 +386,7 @@ public class MapleQuest implements Serializable {
 
     private boolean checkNPCOnMap(MapleCharacter player, int npcid) {
         //mir = 1013000
-        return (MapleJob.is龍魔導士(player.getJob()) && npcid == 1013000) || npcid == 9000040 || npcid == 9000066 || (player.getMap() != null && player.getMap().containsNPC(npcid));
+        return (MapleJob.is龍魔導士(player.getJob()) && npcid == 1013000) || MapleJob.is天使破壞者(player.getJob()) && npcid == 3000018 || npcid == 9000040 || npcid == 9000066 || (player.getMap() != null && player.getMap().containsNPC(npcid));
     }
 
     public int getMedalItem() {

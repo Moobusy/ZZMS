@@ -283,6 +283,24 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
         lastMsg = (byte) msgType;
     }
 
+    public void sendArisanNPCTalk(String talk) { // 阿里山
+        sendArisanNPCTalk(false, (byte) 0x0F, (byte) 0x38, (byte) 0x01, talk);
+    }
+
+    public void sendArisanNPCTalk(boolean read, byte msgType, byte type, byte result, String talk) {
+        c.getSession().write(NPCPacket.getArisanNPCTalk(0, false, (byte) msgType, (byte) type, (byte) result, talk));
+        lastMsg = (byte) msgType;
+    }
+
+    public void sendDreamWorldNPCTalk(String talk) { // 虛幻之森
+        sendDreamWorldNPCTalk(false, (byte) 0x02, (byte) 0x05, (byte) 0x00, talk);
+    }
+
+    public void sendDreamWorldNPCTalk(boolean read, byte msgType, byte type, byte result, String talk) {
+        c.getSession().write(NPCPacket.getDreamWorldNPCTalk(0, false, (byte) msgType, (byte) type, (byte) result, id, talk));
+        lastMsg = (byte) msgType;
+    }
+
     public final void DisableUI(final boolean enabled) {
         c.getSession().write(UIPacket.IntroDisableUI(enabled));
     }

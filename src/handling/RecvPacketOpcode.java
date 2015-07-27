@@ -569,6 +569,9 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     BACK_TO_CHARLIST(true, (short) 0x187),
     // 幸運怪物(完成)
     LUCKY_LUCKY_MONSTORY(true, (short) 0x191),
+    
+    // 0x196 創建角色跟刪除角色輸入的驗證碼
+    
     // 快速移動(非打開NPC)
     QUICK_MOVE_SPECIAL(true, (short) 0x197),
     // 神之子鏡子世界地圖傳送[完成-180]
@@ -593,8 +596,9 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     // 0x1BD
     // 0x1BE
     // 0x1BF
-    // 0x1C0
     
+    // 燃燒計畫[完成-181]
+    COMBUSTION_PROJECT(true, (short) 0x1C0),    
     // 變更角色順序[完成-179]
     CHANGE_CHAR_POSITION(true, (short) 0x1C1),
     // 創角進入遊戲[完成-179]
@@ -790,8 +794,8 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     GOLDEN_HAMMER(true, (short) 0x366),
     // 黃金鐵鎚使用完成
     VICIOUS_HAMMER(true, (short) 0x367),
-    // 獲得獎勵[完成-179]
-    REWARD(true, (short) 0x3AD),
+    // 獲得獎勵[完成-181]
+    REWARD(true, (short) 0x3AE),
     
     // 使用世界樹的祝福(2048500)
     USE_ABYSS_SCROLL(true, (short) 0xB2),//175.1錯的

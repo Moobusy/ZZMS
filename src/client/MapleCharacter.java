@@ -2816,28 +2816,28 @@ public class MapleCharacter extends AnimatedMapleMapObject implements Serializab
 
     public void handleShadowBat(int mobid, int skill) {
         if (this.kaiserCombo > 3) {
-//                List<Integer> mobsid = new ArrayList<>();
-//                mobsid.add(mobid);
+                List<Integer> mobsid = new ArrayList<>();
+                mobsid.add(mobid);
 
-//                List<Pair<Integer, Integer>> forceinfo = new ArrayList<>();
-//                forceinfo.add(new Pair<>(3, 1));
-//                client.getSession().write(CField.gainForce(false, this, mobsid, 15, 14000028, forceinfo)); // 到處飛的
+                List<Pair<Integer, Integer>> forceinfo = new ArrayList<>();
+                forceinfo.add(new Pair<>(3, 1));
+                client.getSession().write(CField.gainForce(false, this, mobsid, 15, 14000028, forceinfo)); // 到處飛的
 //                client.getSession().write(CField.gainForce(true, this, mobsid, 16, 14000029, forceinfo)); // 在身邊的
         }
         if (getBuffedValue(MapleBuffStat.SHADOW_BAT) != null && skill != 0) {
             if (this.kaiserCombo >= 7) {
-                System.out.println("暗影蝙蝠::[" + kaiserCombo + "]");
+//                System.out.println("暗影蝙蝠::[" + kaiserCombo + "]");
                 return;
             }
             if (this.kaiserCombo % 3 == 0 && this.kaiserCombo != 0) {
-                System.out.println("暗影蝙蝠::[" + kaiserCombo + "]");
+//                System.out.println("暗影蝙蝠::[" + kaiserCombo + "]");
                 this.kaiserCombo += 1;
                 final MapleSummon tosummon = new MapleSummon(this, 14000027, 1, new Point(this.getTruePosition()), SummonMovementType.CIRCLE_FOLLOW);
                 getMap().spawnSummon(tosummon);
                 addSummon(tosummon);
             } else {
                 this.kaiserCombo += 1;
-                System.out.println("暗影蝙蝠::[" + kaiserCombo + "]");
+//                System.out.println("暗影蝙蝠::[" + kaiserCombo + "]");
             }
         }
     }

@@ -1084,7 +1084,11 @@ public class DamageParse {
         if (MapleJob.is神之子(chr.getJob()) && ret.skill != 0) {
             lea.skip(1); //zero has byte
         }
-        if (ret.skill == 2221012 || ret.skill == 36101008 || ret.skill == 36101001 || ret.skill == 36111009 || ret.skill == 42120003) {
+        if (ret.skill == 2221012 
+                || ret.skill == 36101008 
+                || ret.skill == 36101001 
+                || ret.skill == 36111009                 
+                || ret.skill == 42120003) {
             lea.skip(1);
         }
         lea.skip(GameConstants.isEnergyBuff(ret.skill) ? 1 : 2);

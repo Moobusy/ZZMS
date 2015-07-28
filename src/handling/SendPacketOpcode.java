@@ -660,7 +660,7 @@ public enum SendPacketOpcode implements WritableIntValueHolder {
     FEVER_TIME((short) 0x7FFE), 
     
     // 技能組合[完成]
-    SKILL_MACRO((short) 0x170),
+    SKILL_MACRO((short) 0x171),
     
     //================================
     // CStage::OnPacket 開始(181-完成)
@@ -1852,12 +1852,12 @@ public enum SendPacketOpcode implements WritableIntValueHolder {
     // 0x3DC
     // }
     
-    // 召喚符文[完成]
-    SPAWN_RUNE((short) 0x3E3), // 179OK
-    // 移除符文[完成]
-    REMOVE_RUNE((short) 0x3E4), // 179OK
-    // 重新召喚符文[完成]
-    RESPAWN_RUNE((short) 0x3E5), // 179OK
+    // 召喚符文[完成-181]
+    SPAWN_RUNE((short) 0x3E4),
+    // 移除符文[完成-181]
+    REMOVE_RUNE((short) 0x3E5),
+    // 重新召喚符文[完成-181]
+    RESPAWN_RUNE((short) 0x3E6),
     
     // sub_63AB26 {
     // 0x3E3 【UI/StarCityUI.img/Screen/WorldEvent/%d】
@@ -2207,65 +2207,84 @@ public enum SendPacketOpcode implements WritableIntValueHolder {
     // 寵物技能(Buff)[完成]
     PET_AUTO_CURE((short) 0x4DC),
     
-    //==================================
-    // CField::OnGoldHammerRes 開始(179-完成)
-    //==================================
-    
+    // 0x4DD
+    // 0x4DE
+    // 0x4DF
     // 0x4E0
-    
-    //黃金鐵鎚使用完成[完成]
-    VICIOUS_HAMMER((short) 0x4E1),
-    
+    // 0x4E1
     // 0x4E2
     
-    
     //==================================
-    // CField::OnZeroScroll 開始(179-完成)
+    // CField::OnGoldHammerRes 開始(181-完成)
     //==================================
     
     // 0x4E3
     
-    //神之子使用卷軸[完成]
-    ZERO_SCROLL_START((short) 0x4E4),
-    //神之子武器介面[完成]
-    ZERO_RESULT((short) 0x4E5),
-    //神之子卷軸[完成]
-    ZERO_SCROLL((short) 0x4E6),    
+    //黃金鐵鎚使用完成[完成-181]
+    VICIOUS_HAMMER((short) 0x4E4),
     
-    // 0x4E7
-    // 0x4E8
+    // 0x4E5    
     
     //==================================
-    // CField::OnZeroWeapon 開始(179-完成)
+    // CField::OnPlatinumHammerRes 開始(181-完成)
+    //==================================
+    
+    // 0x4E6 // 181.Add
+    
+    //白金槌子
+    PLATINUM_HAMMER((short) 0x4E7),
+    
+    // 0x4E8 // 181.Add
+    
+    
+    //==================================
+    // CField::OnZeroScroll 開始(181-完成)
+    //==================================
+    
+    // 0x4E9
+    
+    //神之子使用卷軸[完成]
+    ZERO_SCROLL_START((short) 0x4EA),
+    //神之子武器介面[完成]
+    ZERO_RESULT((short) 0x4EB),
+    //神之子卷軸[完成]
+    ZERO_SCROLL((short) 0x4EC),    
+    
+    // 0x4ED
+    // 0x4EE
+    
+    //==================================
+    // CField::OnZeroWeapon 開始(181-完成)
     //==================================
     
     //武器資訊
-    ZERO_WEAPONINFO((short) 0x4E9),    
+    ZERO_WEAPONINFO((short) 0x4EF),    
     //武器成長[完成]
-    ZERO_UPGRADE((short) 0x4EA),
+    ZERO_UPGRADE((short) 0x4F0),
      
     //==================================
-    // CField::OnArrowBlaster 開始(179-完成)
+    // CField::OnArrowBlaster 開始(181-完成)
     //==================================
      
     // 召喚箭座[完成]
-    SPAWN_ARROW_BLASTER((short) 0x4F0),
+    SPAWN_ARROW_BLASTER((short) 0x4F6),
 
-    // 0x4F1 【dispear】
+    // 0x4F7 【dispear】
 
     // 取消箭座[完成]
-    CANCEL_ARROW_BLASTER((short) 0x4F2),
+    CANCEL_ARROW_BLASTER((short) 0x4F8),
 
-    // 0x4F3
-    // 0x4F4
-
-    // 箭座控制[完成]
-    ARROW_BLASTER_CONTROL((short) 0x4F5),
-    // 0x4F6
-    // 0x4F7 【破除封印】
-    // 0x4F8
     // 0x4F9
     // 0x4FA
+
+    // 箭座控制[完成]
+    ARROW_BLASTER_CONTROL((short) 0x4FB),
+    
+    // 0x4FC
+    // 0x4FD 【破除封印】
+    // 0x4FE
+    // 0x4FF
+    // 0x500
     
     //==================================
     // CField::OnArrowBlaster 結束
@@ -2279,12 +2298,10 @@ public enum SendPacketOpcode implements WritableIntValueHolder {
     // 0x4D0
     // }
     
-    // 潛能方塊[完成]
-    STRENGTHEN_UI((short) 0x54C), //179OK
-    
-    // sub_63AC91 {
-    // 0x54D 【階段介面】//179OK
-    // }
+    // 潛能方塊[完成-181]
+    STRENGTHEN_UI((short) 0x552),
+    // 階段介面[完成-181]
+    LEVEL_UI((short) 0x553),
     
     // sub_6921D9 {
     // 0x54B
@@ -2296,10 +2313,10 @@ public enum SendPacketOpcode implements WritableIntValueHolder {
     // }
 
 
-    // 每日免費強化任意門[完成]
-    DAY_OF_CHRONOSPHERE((short) 0x56D),//181OK
-    // 強化任意門錯誤[完成]
-    ERROR_CHRONOSPHERE((short) 0x56E),//181OK
+    // 每日免費強化任意門[完成-181]
+    DAY_OF_CHRONOSPHERE((short) 0x56D),
+    // 強化任意門錯誤[完成-181]
+    ERROR_CHRONOSPHERE((short) 0x56E),
     
     // sub_6DF4C6 {
     // 0x56D

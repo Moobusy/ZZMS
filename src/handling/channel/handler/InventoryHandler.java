@@ -574,6 +574,41 @@ public class InventoryHandler {
             c.getSession().write(CSPacket.GoldenHammer((byte) 0, 1));
         }
     }
+    
+    public static void UsePlatinumHammer(final LittleEndianAccessor slea, final MapleClient c) {
+        //[80 67 93 04] [0B 00 00 00] [40 B8 25 00] [01 00 00 00] [0F 00 00 00]
+        c.getPlayer().updateTick(slea.readInt());
+        byte slot = (byte) slea.readInt();
+        int itemId = slea.readInt();
+        slea.skip(4);
+        byte equipslot = (byte) slea.readInt();
+        Item toUse = c.getPlayer().getInventory(MapleInventoryType.USE).getItem(slot);
+        Equip equip = (Equip) c.getPlayer().getInventory(MapleInventoryType.EQUIP).getItem(equipslot);
+        if (equip == null || toUse == null || toUse.getItemId() != itemId || toUse.getQuantity() < 1 || c.getPlayer().hasBlockedInventory()) {
+            c.getSession().write(CWvsContext.enableActions());
+            return;
+        }
+        MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
+        if (ItemConstants.卷軸.canHammer(equip.getItemId()) && ii.getSlots(equip.getItemId()) > 0 && equip.getPlatinumHammer()< 5) {
+            Map hammerStats = ii.getEquipStats(itemId);
+            int success = hammerStats == null || !hammerStats.containsKey("success") ? 100 : (int) hammerStats.get("success");
+            if (c.getPlayer().isShowInfo()) {
+                c.getPlayer().showMessage(11, "白金鎚子提煉 - 成功幾率: " + success + "%");
+            }
+            if (Randomizer.nextInt(100) <= success) {
+                equip.setUpgradeSlots((byte) (equip.getUpgradeSlots() + 1));
+                c.getSession().write(CSPacket.PlatinumHammer((byte) 0, 0));
+                equip.setPlatinumHammer((byte) (equip.getPlatinumHammer() + 1));
+            } else {
+                c.getSession().write(CSPacket.PlatinumHammer((byte) 0, 1));
+            }            
+            c.getPlayer().forceReAddItem(equip, equip.getPosition() > 0 ? MapleInventoryType.EQUIP : MapleInventoryType.EQUIPPED);
+            MapleInventoryManipulator.removeFromSlot(c, MapleInventoryType.USE, slot, (short) 1, true);
+        } else {
+            c.getPlayer().dropMessage(5, "無法使用白金鎚子提煉的道具。");
+            c.getSession().write(CSPacket.PlatinumHammer((byte) 0, 1));
+        }
+    }
 
     public final static void UseSoulEnchanter(final LittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {//魂卷
         c.getPlayer().updateTick(slea.readInt());

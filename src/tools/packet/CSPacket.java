@@ -994,6 +994,17 @@ public class CSPacket {
          */
         return mplew.getPacket();
     }
+    
+    public static byte[] PlatinumHammer(byte mode, int success) {
+        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
+
+        mplew.writeShort(SendPacketOpcode.PLATINUM_HAMMER.getValue());
+        mplew.write(mode);
+        mplew.writeInt(success);
+        mplew.writeZeroBytes(50);
+
+        return mplew.getPacket();
+    }
 
     public static byte[] changePetFlag(int uniqueId, boolean added, int flagAdded) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();

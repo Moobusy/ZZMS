@@ -443,6 +443,10 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     
     // 使用髮型卷[2540000][完成]
     USE_COSMETIC(true, (short) 0x10A),
+    
+    // DF連擊[完成-181] [意志之劍取消]
+    DF_COMBO(true, (short) 0x10B),
+    
     // 神之子狀態轉換
     ZERO_STAT_CHANGE(true, (short) 0x118),
     // 神之子
@@ -453,11 +457,6 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     PVP_RESPAWN(true, (short) 0x11B),
     
     // 0x11C
-    
-    // 惡魔之力
-    GAIN_FORCE(true, (short) 0x11D),
-    // DF連擊
-    DF_COMBO(true, (short) 0x11E),
     
     // 0x120
     
@@ -561,6 +560,10 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     VIEW_SKILLS(true, (short) 0x166),
     // 撤銷偷竊技能
     CANCEL_OUT_SWIPE(true, (short) 0x167),
+    
+    // 釋放意志之劍[完成-181]
+    RELEASE_TEMPEST_BLADES(true, (short) 0x16E),
+    
     // 更新超級技能(Done)
     UPDATE_HYPER(true, (short) 0x175),
     // 重置超級技能(Done)
@@ -794,6 +797,12 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     GOLDEN_HAMMER(true, (short) 0x366),
     // 黃金鐵鎚使用完成
     VICIOUS_HAMMER(true, (short) 0x367),
+    
+    // 使用白金槌子[完成-181]
+    USE_PLATINUM_HAMMER(true, (short) 0x369),
+    // 使用白金槌子[完成-181]
+    PLATINUM_HAMMER(true, (short) 0x36A),
+    
     // 獲得獎勵[完成-181]
     REWARD(true, (short) 0x3AE),
     

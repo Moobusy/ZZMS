@@ -97,6 +97,7 @@ public enum ItemLoader {
                             equip.setInventoryId(rs.getLong("inventoryitemid"));
                             equip.setOwner(rs.getString("owner"));
                             equip.setExpiration(rs.getLong("expiredate"));
+                            equip.setPlatinumHammer(rs.getByte("PlatinumHammer"));
                             equip.setUpgradeSlots(rs.getByte("upgradeslots"));
                             equip.setLevel(rs.getByte("level"));
                             equip.setStr(rs.getShort("str"));
@@ -221,7 +222,7 @@ public enum ItemLoader {
         query_2.append(", itemid, inventorytype, position, quantity, owner, GM_Log, uniqueid, expiredate, flag, `type`, sender) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         ps = con.prepareStatement(query_2.toString(), Statement.RETURN_GENERATED_KEYS);
         String valueStr = "";
-        int values = 51;
+        int values = 52;
         for (int i = 0; i < values; i++) {
             if (i == (values - 1)) {
                 valueStr += "?";
@@ -272,6 +273,7 @@ public enum ItemLoader {
                 Equip equip = (Equip) item;
                 int i = 0;
                 pse.setLong(++i, iid);
+                pse.setInt(++i, equip.getPlatinumHammer());
                 pse.setInt(++i, equip.getUpgradeSlots());
                 pse.setInt(++i, equip.getLevel());
                 pse.setInt(++i, equip.getStr());

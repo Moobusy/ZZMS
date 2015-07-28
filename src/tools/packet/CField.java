@@ -1590,6 +1590,12 @@ public class CField {
                 mplew.write(true);
                 mplew.write(i);
                 mplew.writeInt(skills[i]);
+                int x = 0;
+                mplew.write(x);
+                if (x != 0) {
+                    mplew.write(0);
+                    mplew.writeInt(0);
+                }
             }
         }
 

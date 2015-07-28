@@ -11,6 +11,7 @@ import handling.RecvPacketOpcode;
 import handling.channel.ChannelServer;
 import java.awt.Point;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.EnumMap;
@@ -31,6 +32,7 @@ import server.maps.FieldLimitType;
 import server.maps.MapleMap;
 import server.maps.MapleMapObject;
 import server.maps.MapleMapObjectType;
+import server.maps.MapleSummon;
 import server.movement.LifeMovementFragment;
 import server.quest.MapleQuest;
 import tools.AttackPair;
@@ -149,18 +151,14 @@ public class PlayerHandler {
             return;
         }
         int transform = slea.readInt();
-//        System.out.println("transform id " + transform);
         if (transform == 5010094) {
-//            System.out.println("acvivate");
             chr.getMap().broadcastMessage(chr, CField.showAngelicBuster(chr.getId(), transform), false);
             chr.getMap().broadcastMessage(chr, CField.updateCharLook(chr, transform == 5010094), false);
             c.getSession().write(CWvsContext.enableActions());
-//        System.out.println("acvivate done");
         } else {
-//            System.out.println("deacvivate");
-//        chr.getMap().broadcastMessage(chr, CField.showAngelicBuster(chr.getId(), transform), false);
-//        chr.getMap().broadcastMessage(chr, CField.updateCharLook(chr, transform == 5010093), false);
-//        c.getSession().write(CWvsContext.enableActions());
+            chr.getMap().broadcastMessage(chr, CField.showAngelicBuster(chr.getId(), transform), false);
+            chr.getMap().broadcastMessage(chr, CField.updateCharLook(chr, transform == 5010093), false);
+            c.getSession().write(CWvsContext.enableActions());
         }
     }
 
@@ -188,6 +186,11 @@ public class PlayerHandler {
 
     public static void absorbingDF(LittleEndianAccessor slea, final MapleClient c) {
         int size = slea.readInt();
+        int skillid = 0;
+        
+        if (MapleJob.is凱撒(c.getPlayer().getJob()) || MapleJob.is隱月(c.getPlayer().getJob()) || MapleJob.is暗夜行者(c.getPlayer().getJob()) || MapleJob.is天使破壞者(c.getPlayer().getJob())) {
+            skillid = slea.readInt();
+        }
         int room = 0;
         byte unk = 0;
         int sn;
@@ -197,7 +200,16 @@ public class PlayerHandler {
             sn = slea.readInt();
             if (MapleJob.is惡魔殺手(c.getPlayer().getJob())) {
 //                c.getPlayer().addMP(c.getPlayer().getStat().getForce(room));
+            }            
+            if (slea.available() > 0 && !MapleJob.is暗夜行者(c.getPlayer().getJob()) && !MapleJob.is天使破壞者(c.getPlayer().getJob())) {
+                unk = slea.readByte();
+                sn = slea.readInt();
             }
+//            if (MapleJob.is隱月(c.getPlayer().getJob()) && 여우령 != 0) {
+//                c.getPlayer().getMap().broadcastMessage(MainPacketCreator.absorbingRFG(c.getPlayer().getId(), skillid, sn));
+//                여우령 = 여우령 - 50;
+//            }
+            
             if (MapleJob.is天使破壞者(c.getPlayer().getJob())) {
                 boolean rand = Randomizer.isSuccess(80);
                 if (sn > 0) {
@@ -205,6 +217,19 @@ public class PlayerHandler {
                         c.getSession().write(JobPacket.AngelicPacket.SoulSeekerRegen(c.getPlayer(), sn));
                     }
                 }
+            }
+            if (MapleJob.is暗夜行者(c.getPlayer().getJob())) {
+//                if (sn > 0) {// && Randomizer.isSuccess(40)) {
+//                    c.getPlayer().getMap().broadcastMessage(MainPacketCreator.giveShadowBatBounce(c.getPlayer().getId(), sn));
+//                    for (MapleSummon summon : c.getPlayer().getSummons().values()) {
+//                        if (summon.getSkill() == 14000027) {
+//                            c.getPlayer().getMap().removeMapObject(summon);
+//                            summon.sendDestroyData(c);
+//                            c.getPlayer().setBatCount(c.getPlayer().getBatCount() - 1);
+//                        }
+//                    }
+//                    c.getPlayer().send(MainPacketCreator.resetActions());
+//                }
             }
             if ((MapleJob.is惡魔復仇者(c.getPlayer().getJob())) && slea.available() >= 8) {
 //                c.getPlayer().getMap().broadcastMessage(MainPacketCreator.ShieldChacingRe(c.getPlayer().getId(), slea.readInt(), slea.readInt(), unk, c.getPlayer().getKeyValue2("schacing")));
@@ -753,6 +778,31 @@ public class PlayerHandler {
             chr.cancelEffect(skill.getEffect(slea.readByte()), false, -1L);
         }
     }
+    
+    public static void releaseTempestBlades(LittleEndianAccessor slea, MapleCharacter chr) {
+        if (!chr.isAlive()) {
+            chr.getClient().getSession().write(CWvsContext.enableActions());
+            return;
+        }
+        final int mobcount = slea.readInt();
+        final List<Integer> oids = new ArrayList<>();
+        for (int i = 0; i < mobcount; i++) {
+            oids.add(slea.readInt());
+        }
+        int skillid = chr.getBuffSource(MapleBuffStat.TEMPEST_BLADES);
+        
+        List<Pair<Integer, Integer>> forceinfo = new ArrayList<>();
+        boolean advanced = skillid == 61120007 || skillid == 61121217;
+        boolean transform = skillid == 61110211 || skillid == 61121217;
+        for (int i = 0; i < (advanced ? 5 : 3); i++) {
+            forceinfo.add(new Pair<>(i + 2, transform ? 4 : 2));
+        }
+        chr.getMap().broadcastMessage(CField.gainForce(false, chr, oids, 2, skillid, forceinfo));
+        
+        MapleStatEffect skill_effect = SkillFactory.getSkill(skillid).getEffect(chr.getTotalSkillLevel(skillid));        
+        chr.cancelEffect(skill_effect, true, 0);
+        chr.cancelBuffStats(MapleBuffStat.TEMPEST_BLADES);
+    }
 
     public static void KaiserQuickKey(LittleEndianAccessor slea, MapleCharacter chr) {
         if (MapleJob.is凱撒(chr.getJob())) {
@@ -807,7 +857,7 @@ public class PlayerHandler {
                 chr.setLinkMid(slea.readInt(), 0);
             }
             if (skill.getId() == 27101202 || skill.getId() == 35001001 || skill.getId() == 35101009) {
-                skill.getEffect(level).applyTo(chr);                
+                skill.getEffect(level).applyTo(chr);
             }
             chr.getMap().broadcastMessage(chr, CField.skillEffect(chr, skillId, level, direction, unk), false);
         }
@@ -944,9 +994,9 @@ public class PlayerHandler {
             case 11121203:
                 if (chr.getBuffSource(MapleBuffStat.SOLUNA_EFFECT) == 11121005) {
                     if (chr.getBuffedValue(MapleBuffStat.SOLUNA_EFFECT) == 1) {
-                        
+
                     } else {
-                        
+
                     }
                 }
                 break;
@@ -1357,6 +1407,13 @@ public class PlayerHandler {
             case 1201011:
                 bulletCount = effect.getAttackCount();
                 DamageParse.applyAttack(attack, skill, chr, skillLevel, maxdamage, effect, AttackType.NON_RANGED);//applyAttack(attack, skill, chr, bulletCount, effect, AttackType.RANGED);
+                break;
+            case 61101002:
+            case 61110211:
+            case 61120007:
+            case 61121217:
+                effect = attack.getAttackEffect(chr, chr.getSkillLevel(attack.skill), skill);
+                DamageParse.applyAttack(attack, skill, chr, skillLevel, attackCount, effect, mirror ? AttackType.NON_RANGED_WITH_MIRROR : AttackType.NON_RANGED);
                 break;
             default:
                 DamageParse.applyAttackMagic(attack, skill, chr, effect, maxdamage);//applyAttackMagic(attack, skill, c.getPlayer(), effect);
@@ -2204,13 +2261,13 @@ public class PlayerHandler {
                 break;
         }
     }
-    
+
     public static class ZeroHandler {
-        
+
         private static int posz;
         private static int typez;
         private static int posz1;
-        
+
         public static void ZeroScrollStart(final LittleEndianAccessor slea, final MapleCharacter chr, final MapleClient c) {
             c.getSession().write(CField.ZeroPacket.UseWeaponScrollStart());
             Equip equip1;
@@ -2227,22 +2284,22 @@ public class PlayerHandler {
                 }
             }
         }
-        
+
         public static void openWeaponUI(final LittleEndianAccessor slea, final MapleClient c) {
             int type = slea.readInt();
             byte type2 = slea.readByte();
             if (type2 == 0) {
                 c.getSession().write(CField.ZeroPacket.OpenWeaponUI(type));
             } else {
-                
+
             }
         }
-        
+
         public static void talkZeroNpc(final LittleEndianAccessor slea, final MapleClient c) {
             c.getSession().write(CField.ZeroPacket.NPCTalk());
             c.getSession().write(CWvsContext.enableActions());
         }
-        
+
         public static void useZeroScroll(final LittleEndianAccessor slea, final MapleClient c) {
             int type = slea.readInt();
             typez = type;
@@ -2250,10 +2307,10 @@ public class PlayerHandler {
             posz = pos;
             slea.skip(8);
             int Success = slea.readInt();
-            
+
             c.getSession().write(CField.ZeroPacket.UseWeaponScroll(Success));
         }
-        
+
         public static void openZeroUpgrade(final LittleEndianAccessor slea, final MapleClient c) {
             MapleCharacter player = c.getPlayer();
             Equip alpha;
@@ -2300,6 +2357,6 @@ public class PlayerHandler {
             }
             c.getSession().write(CField.ZeroPacket.OpenZeroUpgrade(type, level, action, ep.getItemId()));
         }
-        
+
     }
 }

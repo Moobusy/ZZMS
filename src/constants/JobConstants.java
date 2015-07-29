@@ -25,11 +25,12 @@ public class JobConstants {
         重砲指揮官(13, JobFlag.開啟),
         傑諾(14, JobFlag.開啟),
         神之子(15, JobFlag.開啟),
-        隱月(16, JobFlag.開啟),
-        蒼龍俠客(17, JobFlag.開啟),
-        劍豪(18, JobFlag.開啟),
-        陰陽師(19, JobFlag.開啟),
-        幻獸師(20, JobFlag.開啟);
+        隱月(16, JobFlag.開啟),        
+        皮卡啾(17, JobFlag.開啟),
+        蒼龍俠客(18, JobFlag.開啟),
+        劍豪(19, JobFlag.開啟),
+        陰陽師(20, JobFlag.開啟),
+        幻獸師(21, JobFlag.開啟);
         private final int jobType, flag;
 
         private LoginJob(int jobType, JobFlag flag) {

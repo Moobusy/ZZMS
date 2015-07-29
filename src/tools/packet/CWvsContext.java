@@ -1742,7 +1742,8 @@ public class CWvsContext {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
         mplew.writeShort(SendPacketOpcode.SYSTEM_PROCESS_LIST.getValue());
-        mplew.write(1);
+        mplew.write(0);
+        mplew.writeInt(0);
 
         return mplew.getPacket();
     }

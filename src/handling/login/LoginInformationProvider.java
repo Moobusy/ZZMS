@@ -34,6 +34,7 @@ public class LoginInformationProvider {
         傑諾(14, MapleJob.傑諾.getId(), 931050920, false, false, true, false, false, false, false, false, false),
         神之子(15, MapleJob.神之子.getId(), 100000000, false, false, false, false, false, true, false, false, false),//321000000 = zero starter map
         隱月(16, MapleJob.隱月.getId(), 910000000, false, false, false, false, true, true, false, false, false),
+        皮卡啾(17, MapleJob.皮卡啾.getId(), 100000000, false, false, false, false, false, false, false, false, false),//End map for tutorial
         蒼龍俠客(17, MapleJob.初心者.getId(), 552000050, false, false, false, false, true, false, false, false, false),//End map for tutorial
         劍豪(18, MapleJob.劍豪.getId(), 807100010, false, false, false, true, false, false, false, false, true),//half stater map TODO real tutorial
         陰陽師(19, MapleJob.陰陽師.getId(), 807100110, false, false, false, true, false, false, false, false, true),

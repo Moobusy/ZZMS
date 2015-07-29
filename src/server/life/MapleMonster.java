@@ -72,7 +72,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
     private WeakReference<MapleMonster> sponge = new WeakReference<>(null);
     private int linkoid = 0, lastNode = -1, highestDamageChar = 0, linkCID = 0; // Just a reference for monster EXP distribution after dead
     private WeakReference<MapleCharacter> controller = new WeakReference<>(null);
-    private boolean fake = false, dropsDisabled = false, controllerHasAggro = false;
+    private boolean fake = false, dropsDisabled = false, controllerHasAggro = false, controllerKnowsAboutAggro;
     private final Collection<AttackerEntry> attackers = new LinkedList<>();
     private EventInstanceManager eventInstance;
     private MonsterListener listener = null;
@@ -637,6 +637,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         if (immediateAggro) {
             setControllerHasAggro(true);
         }
+        setControllerKnowsAboutAggro(false);
     }
 
     public final void addListener(final MonsterListener listener) {
@@ -1698,4 +1699,22 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         endBelong = System.currentTimeMillis() + (stats.isBoss() ? 300000 : 30000); //30 seconds for the person to kill it.
     }
     /* Anti KS */
+    
+    public boolean isAttackedBy(MapleCharacter chr) {
+        for (AttackerEntry aentry : attackers) {
+            if (aentry.contains(chr)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isControllerKnowsAboutAggro() {
+        return controllerKnowsAboutAggro;
+    }
+
+    public void setControllerKnowsAboutAggro(boolean controllerKnowsAboutAggro) {
+        this.controllerKnowsAboutAggro = controllerKnowsAboutAggro;
+    }
+
 }

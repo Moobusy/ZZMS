@@ -120,6 +120,22 @@ public class MobHandler {
             FileoutputUtil.log(FileoutputUtil.Movement_Log, "怪物移動錯誤 AIOBE Type2 : 怪物ID " + monster.getId() + "\r\n錯誤訊息:" + e + "\r\n封包:\r\n" + slea.toString(true));
             return;
         }
+        
+        if (monster.getController() != c.getPlayer()) {
+            if (monster.isAttackedBy(c.getPlayer())) {// aggro and controller change
+                monster.switchController(c.getPlayer(), true);
+            } else {
+                return;
+            }
+        } else if (skill == -1 && monster.isControllerKnowsAboutAggro() && !monster.isFirstAttack()) {
+            monster.setControllerHasAggro(false);
+            monster.setControllerKnowsAboutAggro(false);
+        }
+        boolean aggro = monster.isControllerHasAggro();
+        if (aggro) {
+            monster.setControllerKnowsAboutAggro(true);
+        }
+
         if ((MapleJob.is夜光(chr.getJob()))
                 && (Randomizer.nextInt(100) < 20)) {
             chr.applyBlackBlessingBuff(1);

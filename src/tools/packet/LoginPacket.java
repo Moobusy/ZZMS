@@ -83,7 +83,7 @@ public class LoginPacket {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
         mplew.writeShort(SendPacketOpcode.ACCOUNT_INFO.getValue());
-        getAuthSuccess(mplew, client, true);
+        getAuthSuccess(mplew, client, false);
 
         return mplew.getPacket();
     }
@@ -277,6 +277,7 @@ public class LoginPacket {
         mplew.write(world.getWorld());
         mplew.writeMapleAsciiString(LoginServer.getServerName());
         mplew.write(world.getFlag());
+        mplew.write(0);
         mplew.writeMapleAsciiString(world.getWorldTip());
         mplew.writeShort(100);
         mplew.writeShort(100);
@@ -316,6 +317,7 @@ public class LoginPacket {
         mplew.write(-1);
         mplew.write(0);
         mplew.write(0); // Boolean [0:-、1:遊戲帳號保護政策]
+        mplew.write(0);
 
         return mplew.getPacket();
     }
@@ -386,7 +388,7 @@ public class LoginPacket {
         mplew.write(3);
         mplew.write((secondpw != null) && (secondpw.length() > 0) ? 1 : 0);// 第二組密碼
         mplew.writeInt(charslots);
-        mplew.writeInt(0); // 50級角色卡角色數量
+        mplew.writeInt(1); // 50級角色卡角色數量
         mplew.writeInt(-1);
         mplew.writeReversedLong(PacketHelper.getTime(System.currentTimeMillis()));
         mplew.write(0); // 變更角色名稱開關[0:關、1:開]

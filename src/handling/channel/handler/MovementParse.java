@@ -256,8 +256,10 @@ public class MovementParse {
             if (move instanceof LifeMovement) {
                 if (move instanceof StaticLifeMovement) {
                     final Point position = ((LifeMovement) move).getPosition();
-                    position.y += yoffset;
-                    target.setPosition(position);
+                    if (position != null) {
+                        position.y += yoffset;
+                        target.setPosition(position);
+                    }
                 }
                 target.setStance(((LifeMovement) move).getNewstate());
                 target.setNewFh(((LifeMovement) move).getNewFh());

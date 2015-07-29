@@ -438,8 +438,10 @@ public class CField {
         mplew.writeInt(chr.getClient().getChannel() - 1);
         mplew.write(0);
         mplew.writeInt(0);
-        mplew.write(1);
+        mplew.write(CharInfo ? 1 : 2);
         mplew.writeInt(0);
+        mplew.writeInt(1298);
+        mplew.writeInt(330);
         mplew.write(CharInfo);
 
         int v104 = 0;
@@ -481,6 +483,11 @@ public class CField {
         mplew.writeBoolean(false);
         mplew.write(0);
         mplew.write(GameConstants.isSeparatedSp(chr.getJob()) ? 1 : 0); // v109
+        boolean v88 = false;
+        mplew.writeBoolean(v88);
+        if (v88) {
+            mplew.writeInt(0);
+        }
         if (false) {
             int v18 = 0;
             mplew.write(v18);
@@ -493,11 +500,11 @@ public class CField {
             }
         }
 
-        UnkFunction2(mplew, 45564);
+        UnkFunction2(mplew, 48140);
 
         boolean v116 = false;
         mplew.writeBoolean(v116);
-        if (v116) {
+        if (v116) { // Function
             mplew.writeInt(0);
             mplew.write(0);
             mplew.writeLong(0);
@@ -506,6 +513,11 @@ public class CField {
         UnkFunction4(mplew);
         UnkFunction5(mplew);
         mplew.write(150);
+        int v5 = 0;
+        mplew.writeInt(v5);
+        for (int i = 0; i < v5; i++) {
+            mplew.writeInt(0);
+        }
 
         return mplew.getPacket();
     }
@@ -524,8 +536,8 @@ public class CField {
             mplew.writeInt(0);
             int v5 = 0;
             mplew.write(v5);
-            if (v5 >= 9) {
-                for (int i = 0; i <= 9; i++) {
+            if (v5 >= 0xA) {
+                for (int i = 0; i <= 10; i++) {
                     mplew.writeInt(0);
                     mplew.writeInt(0);
                     mplew.writeInt(0);

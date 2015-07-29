@@ -1245,6 +1245,7 @@ public final class MapleMap {
             if (monster.isFirstAttack()) {
                 newController.controlMonster(monster, true);
                 monster.setControllerHasAggro(true);
+                monster.setControllerKnowsAboutAggro(true);
             } else {
                 newController.controlMonster(monster, false);
             }
@@ -2702,9 +2703,15 @@ public final class MapleMap {
             charactersLock.writeLock().unlock();
         }
         removeMapObject(chr);
+        broadcastMessage(CField.removePlayerFromMap(chr.getId()));
+        for (MapleMonster monster : chr.getControlledMonsters()) {
+            monster.setController(null);
+            monster.setControllerHasAggro(false);
+            monster.setControllerKnowsAboutAggro(false);
+            updateMonsterController(monster);
+        }
         chr.checkFollow();
         chr.removeExtractor();
-        broadcastMessage(CField.removePlayerFromMap(chr.getId()));
 
         if (chr.getSummonedFamiliar() != null) {
             chr.removeVisibleFamiliar();

@@ -180,6 +180,7 @@ public enum MapleJob {
     幻獸師2轉(11210),
     幻獸師3轉(11211),
     幻獸師4轉(11212),
+    皮卡啾(13000),
     未知(999999),
     ;
     private final int jobid;

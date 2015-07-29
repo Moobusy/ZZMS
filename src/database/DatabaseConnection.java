@@ -109,6 +109,11 @@ public class DatabaseConnection {
             poolProps.setUsername(ServerConfig.SQL_USER);
             poolProps.setPassword(ServerConfig.SQL_PASSWORD);
             
+            
+            poolProps.setMinIdle(20);     
+            poolProps.setInitialSize(30);
+            poolProps.setMaxIdle(100);            
+            
             dataSource.setPoolProperties(poolProps);
             
         } catch (Exception e) {

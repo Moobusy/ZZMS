@@ -498,6 +498,8 @@ public class PacketHelper {
 
     public static void addCharCreateStats(MaplePacketLittleEndianWriter mplew, MapleCharacter chr) {
         mplew.writeInt(chr.getId());
+        mplew.writeInt(0);
+        mplew.writeInt(0);
         mplew.writeAsciiString(chr.getName(), 15);
         mplew.write(chr.getGender());
         mplew.write(0); // addCharCreateStats unk
@@ -525,7 +527,7 @@ public class PacketHelper {
         }
         mplew.writeLong(chr.getExp());
         mplew.writeInt(chr.getFame());
-        mplew.writeInt(0); // 未知
+        mplew.writeInt(chr.getWeaponPoint()); // 未知
         mplew.writeLong(chr.getGachExp());
         mplew.writeLong(DateUtil.getFileTimestamp(System.currentTimeMillis()));
         mplew.writeInt(chr.getMapId());
@@ -565,6 +567,8 @@ public class PacketHelper {
     }
 
     public static void addCharStats(MaplePacketLittleEndianWriter mplew, MapleCharacter chr) {
+        mplew.writeInt(0);
+        mplew.writeInt(0);
         mplew.writeInt(chr.getId());
         mplew.writeAsciiString(chr.getName(), 15);
         mplew.write(chr.getGender());

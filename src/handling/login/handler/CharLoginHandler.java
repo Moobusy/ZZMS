@@ -314,7 +314,7 @@ public class CharLoginHandler {
         }
         for (JobConstants.LoginJob j : JobConstants.LoginJob.values()) {
             if (j.getJobType() == job_type) {
-                if (j.getFlag() != JobConstants.LoginJob.JobFlag.開啟.getFlag()) {
+                if (!j.enableCreate()) {
                     System.out.println("未開放的職業被嘗試創建");
                     return;
                 }

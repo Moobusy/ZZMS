@@ -109,10 +109,15 @@ public class DatabaseConnection {
             poolProps.setUsername(ServerConfig.SQL_USER);
             poolProps.setPassword(ServerConfig.SQL_PASSWORD);
             
-            
-            poolProps.setMinIdle(20);     
+            // 同時所能建立的連線最大數量。若為負值，則無上限。
+            poolProps.setMaxActive(100);
+            // 同時所能允許閒置的連線最大數量。若為負值，則無上限。
+            poolProps.setMaxIdle(10);
             poolProps.setInitialSize(30);
-            poolProps.setMaxIdle(100);            
+            // 值為 true 時，當已建立的連線閒置時間超過 removeAbandonedTimout 設定值時，就會將連線棄置及移除。
+//            poolProps.setRemoveAbandoned(true);
+            // 超過閒置秒數的連線會被移除。預設值：300
+//            poolProps.setRemoveAbandonedTimeout(300);            
             
             dataSource.setPoolProperties(poolProps);
             

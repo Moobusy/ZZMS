@@ -113,7 +113,7 @@ public class LoginPacket {
         if (JobConstants.enableJobs) {
             mplew.write(JobConstants.jobOrder);
             for (LoginJob j : LoginJob.values()) {
-                mplew.write(j.getFlag());
+                mplew.write(j.enableCreate());
                 mplew.writeShort(1);
             }
         }
@@ -197,7 +197,7 @@ public class LoginPacket {
                 if (JobConstants.enableJobs) {
                     mplew.write(JobConstants.jobOrder);
                     for (LoginJob j : LoginJob.values()) {
-                        mplew.write(j.getFlag());
+                        mplew.write(j.enableCreate());
                         mplew.writeShort(1);
                     }
                 }
@@ -388,7 +388,7 @@ public class LoginPacket {
         mplew.write(3);
         mplew.write((secondpw != null) && (secondpw.length() > 0) ? 1 : 0);// 第二組密碼
         mplew.writeInt(charslots);
-        mplew.writeInt(1); // 50級角色卡角色數量
+        mplew.writeInt(0); // 50級角色卡角色數量
         mplew.writeInt(-1);
         mplew.writeReversedLong(PacketHelper.getTime(System.currentTimeMillis()));
         mplew.write(0); // 變更角色名稱開關[0:關、1:開]

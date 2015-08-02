@@ -1155,7 +1155,7 @@ public final class MapleMap {
         mapobjectlocks.get(MapleMapObjectType.REACTOR).readLock().lock();
         try {
             for (MapleMapObject obj : mapobjects.get(MapleMapObjectType.REACTOR).values()) {
-                ((MapleReactor) obj).forceHitReactor(state);
+                ((MapleReactor) obj).forceHitReactor(null, state);
             }
         } finally {
             mapobjectlocks.get(MapleMapObjectType.REACTOR).readLock().unlock();
@@ -3253,7 +3253,7 @@ public final class MapleMap {
                     MapTimer.getInstance().schedule(new Runnable() {
                         @Override
                         public void run() {
-                            reactor.forceHitReactor((byte) 0);
+                            reactor.forceHitReactor(c.getPlayer(), (byte) 0);
                         }
                     }, reactor.getDelay());
                 }

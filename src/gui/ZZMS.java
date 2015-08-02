@@ -613,7 +613,7 @@ public class ZZMS extends javax.swing.JFrame {
         jTextField24.setText(String.valueOf(ServerConstants.MIRACLE_RATE));
         jTextField25.setText(String.valueOf(ServerConstants.SHARK_VERSION));
 
-        jToggleButton1.setSelected(JobConstants.LoginJob.valueOf((String) jComboBox4.getSelectedItem()).getFlag() == 1);
+        jToggleButton1.setSelected(JobConstants.LoginJob.valueOf((String) jComboBox4.getSelectedItem()).enableCreate());
         jToggleButton1.setText(jToggleButton1.isSelected() ? "開啟" : "關閉");
         resetWorldPanel();
     }
@@ -2931,14 +2931,14 @@ public class ZZMS extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton41ActionPerformed
 
     private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
-        JobConstants.LoginJob.valueOf((String) jComboBox4.getSelectedItem()).setFlag(jToggleButton1.isSelected() ? 1 : 0);
+        JobConstants.LoginJob.valueOf((String) jComboBox4.getSelectedItem()).setEnableCreate(jToggleButton1.isSelected());
         jToggleButton1.setText(jToggleButton1.isSelected() ? "開啟" : "關閉");
         JOptionPane.showMessageDialog(null, "更變成功。");
     }//GEN-LAST:event_jToggleButton1ActionPerformed
 
     private void jComboBox4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox4ActionPerformed
         JobConstants.LoginJob j = JobConstants.LoginJob.valueOf((String) jComboBox4.getSelectedItem());
-        jToggleButton1.setSelected(j.getFlag() == 1);
+        jToggleButton1.setSelected(j.enableCreate());
         jToggleButton1.setText(jToggleButton1.isSelected() ? "開啟" : "關閉");
     }//GEN-LAST:event_jComboBox4ActionPerformed
 

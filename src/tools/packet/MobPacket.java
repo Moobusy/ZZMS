@@ -506,7 +506,7 @@ public class MobPacket {
         writeMaskFromList(mplew, buffs);
         for (MonsterStatusEffect buff : buffs) {
             mobstat.add(buff.getStati());
-            if (buff.getStati().getBitNumber() < MonsterStatus.MBS59.getBitNumber()) {
+            if (buff.getStati().getBitNumber() < MonsterStatus.BLEED.getBitNumber()) {
                 mplew.writeInt(buff.getX());
                 if (buff.getMobSkill() != null) {
                     mplew.writeShort(buff.getMobSkill().getSkillId());
@@ -539,10 +539,10 @@ public class MobPacket {
             mplew.writeInt(0);
             mplew.writeInt(0);
         }
-        if (mobstat.contains(MonsterStatus.MBS59)) {
+        if (mobstat.contains(MonsterStatus.MBS61)) {
             mplew.writeInt(0);
         }
-        if (mobstat.contains(MonsterStatus.MBS63)) {
+        if (mobstat.contains(MonsterStatus.MBS65)) {
             int result = 0;
             mplew.write(result);
             if (result != 0) {
@@ -570,6 +570,9 @@ public class MobPacket {
         if (mobstat.contains(MonsterStatus.MBS54)) {
             mplew.writeInt(0);
         }
+        if (mobstat.contains(MonsterStatus.MBS56)) {
+            mplew.writeInt(0);
+        }
         if (mobstat.contains(MonsterStatus.BLEED)) {
             int v4 = 0;
             int v23 = 0;
@@ -590,11 +593,11 @@ public class MobPacket {
                 } while (v23 < v4);
             }
         }
-        if (mobstat.contains(MonsterStatus.MBS61)) {
+        if (mobstat.contains(MonsterStatus.MBS63)) {
             mplew.write(0);
             mplew.write(0);
         }
-        if (mobstat.contains(MonsterStatus.MBS62)) {
+        if (mobstat.contains(MonsterStatus.MBS64)) {
             mplew.write(0);
         }
         if (mobstat.contains(MonsterStatus.MONSTER_BOMB)) {
@@ -602,15 +605,15 @@ public class MobPacket {
             mplew.writeInt(0);
             mplew.writeInt(0);
         }
-        if (mobstat.contains(MonsterStatus.MBS64)) {
+        if (mobstat.contains(MonsterStatus.MBS66)) {
             mplew.writeMapleAsciiString("");
         }
-        if (mobstat.contains(MonsterStatus.MBS65)) {
+        if (mobstat.contains(MonsterStatus.MBS67)) {
             mplew.writeInt(0);
             mplew.writeInt(0);
             mplew.writeInt(0);
         }
-        if (mobstat.contains(MonsterStatus.MBS66)) {
+        if (mobstat.contains(MonsterStatus.MBS68)) {
             mplew.writeInt(0);
             mplew.writeInt(0);
             mplew.writeShort(0);
@@ -623,23 +626,23 @@ public class MobPacket {
             mplew.writeShort(0);
             mplew.writeInt(0);
         }
-        if (mobstat.contains(MonsterStatus.MBS68)) {
-            mplew.writeInt(0);
-            mplew.writeInt(0);
-            mplew.writeInt(0);
-            mplew.writeInt(0);
-            mplew.writeInt(0);
-        }
-        if (mobstat.contains(MonsterStatus.MBS69)) {
-            mplew.writeInt(0);
-            mplew.writeInt(0);
-            mplew.writeInt(0);
-            mplew.writeInt(0);
-            mplew.writeInt(0);
-            mplew.writeInt(0);
-            mplew.writeInt(0);
-        }
         if (mobstat.contains(MonsterStatus.MBS70)) {
+            mplew.writeInt(0);
+            mplew.writeInt(0);
+            mplew.writeInt(0);
+            mplew.writeInt(0);
+            mplew.writeInt(0);
+        }
+        if (mobstat.contains(MonsterStatus.MBS71)) {
+            mplew.writeInt(0);
+            mplew.writeInt(0);
+            mplew.writeInt(0);
+            mplew.writeInt(0);
+            mplew.writeInt(0);
+            mplew.writeInt(0);
+            mplew.writeInt(0);
+        }
+        if (mobstat.contains(MonsterStatus.MBS72)) {
             mplew.writeInt(0);
             mplew.writeInt(0);
             mplew.writeInt(0);
@@ -691,10 +694,10 @@ public class MobPacket {
         mplew.writeInt(-1);
         mplew.writeInt(-1);
         mplew.write(0);
-        mplew.writeInt(0);
+        mplew.writeLong(0);
         mplew.writeInt(-1);
         mplew.write(0);
         mplew.write(-1);
-        mplew.writeInt(0); // 178+
+        mplew.writeInt(0);
     }
 }

@@ -61,6 +61,7 @@ import tools.packet.JobPacket.AvengerPacket;
 import tools.packet.JobPacket.LuminousPacket;
 import tools.packet.JobPacket.PhantomPacket;
 import tools.packet.JobPacket.XenonPacket;
+import tools.packet.provider.SpecialEffectType;
 
 public class MapleCharacter extends AnimatedMapleMapObject implements Serializable, MapleCharacterLook {
 
@@ -3462,7 +3463,7 @@ public class MapleCharacter extends AnimatedMapleMapObject implements Serializab
             characterCard.recalcLocalStats(this);
             stats.recalcLocalStats(this);
             client.getSession().write(CWvsContext.updatePlayerStats(statup, this));
-            map.broadcastMessage(this, EffectPacket.showJobChangeEffect(this), false);
+            map.broadcastMessage(this, EffectPacket.showEffect(this, SpecialEffectType.CHANGE_JOB), false);
             this.map.broadcastMessage(this, CField.updateCharLook(this, false), false);
             silentPartyUpdate();
             guildUpdate();
@@ -3965,7 +3966,7 @@ public class MapleCharacter extends AnimatedMapleMapObject implements Serializab
                 if (charms > 0xFF) {
                     charms = 0xFF;
                 }
-                client.getSession().write(EffectPacket.useCharm((byte) charms, (byte) 0, true));
+                client.getSession().write(EffectPacket.showEffect(null, SpecialEffectType.USE_AMULET, new int[]{1, charms, 0, 0}));
             } else {
                 float diepercentage;
                 long expforlevel = getNeededExp();
@@ -4911,7 +4912,7 @@ public class MapleCharacter extends AnimatedMapleMapObject implements Serializab
         obtainHyperSP();
         stats.setInfo(maxhp, maxmp, maxhp, maxmp);
         client.getSession().write(CWvsContext.updatePlayerStats(statup, this));
-        map.broadcastMessage(this, EffectPacket.showLevelupEffect(getId()), false);
+        map.broadcastMessage(this, EffectPacket.showEffect(this, SpecialEffectType.LEVEL_UP), false);
         characterCard.recalcLocalStats(this);
         stats.recalcLocalStats(this);
         silentPartyUpdate();

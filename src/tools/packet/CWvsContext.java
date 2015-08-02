@@ -33,6 +33,7 @@ import tools.HexTool;
 import tools.Pair;
 import tools.StringUtil;
 import tools.data.MaplePacketLittleEndianWriter;
+import tools.packet.provider.SpecialEffectType;
 
 public class CWvsContext {
 
@@ -1531,7 +1532,7 @@ public class CWvsContext {
         mplew.writeInt(level2);
         mplew.write(1);
         mplew.writeInt((skil.startsWith("9200")) || (skil.startsWith("9201")) ? 100 : chance);
-
+        
         return mplew.getPacket();
     }
 
@@ -1743,7 +1744,6 @@ public class CWvsContext {
 
         mplew.writeShort(SendPacketOpcode.SYSTEM_PROCESS_LIST.getValue());
         mplew.write(0);
-        mplew.writeInt(0);
 
         return mplew.getPacket();
     }
@@ -3458,7 +3458,9 @@ public class CWvsContext {
 
         public static byte[] getShowItemGain(int itemId, short quantity, boolean inChat) {
             if (inChat) {
-                return CField.EffectPacket.getShowItemGain(itemId, quantity);
+                Map<Integer, Integer> items = new HashMap();
+                items.put(itemId, (int) quantity);
+                return CField.EffectPacket.showEffect(null, SpecialEffectType.ITEM_OPERATION_EFFECT, items);
             }
 
             if (ServerConfig.LOG_PACKETS) {
@@ -5279,7 +5281,7 @@ public class CWvsContext {
         mplew.writeInt(mode);
         mplew.write(1);
         mplew.writeInt(amount);
-
+        
         return mplew.getPacket();
     }
 
@@ -5292,7 +5294,7 @@ public class CWvsContext {
         mplew.writeInt(mode);
         mplew.write(is ? 1 : 0);
         mplew.writeInt(amount);
-
+        
         return mplew.getPacket();
     }
 
@@ -5516,21 +5518,18 @@ public class CWvsContext {
             mplew.writeShort(SendPacketOpcode.EQUIPMENT_ENCHANT.getValue());
             mplew.write(0x32);
             mplew.write(feverTime ? 1 : 0);
-            mplew.write(/*scrolls.size()*/0);
-//            int num = 0;
-//            for (EchantScroll scroll : scrolls) {
-//                mplew.writeInt(num);
-//                mplew.writeMapleAsciiString(scroll.getName());
-//                mplew.writeInt(scroll.getMask());
-//                if (scroll.getMask() > 0) {
-//                    for (int i : scroll.getValues()) {
-//                        mplew.writeInt(i);
-//                    }
-//                }
-//                mplew.writeInt(scroll.getCost());
-//                mplew.writeInt(scroll.getViewType());
-//                num++;
-//            }
+            mplew.write(scrolls.size());
+            for (EchantScroll scroll : scrolls) {
+                mplew.writeInt(scroll.getViewType());
+                mplew.writeMapleAsciiString(scroll.getName());
+                mplew.writeInt(scroll.getMask());
+                if (scroll.getMask() > 0) {
+                    for (int i : scroll.getValues()) {
+                        mplew.writeInt(i);
+                    }
+                }
+                mplew.writeInt(scroll.getCost());
+            }
 
             return mplew.getPacket();
         }

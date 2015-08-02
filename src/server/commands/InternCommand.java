@@ -425,7 +425,7 @@ public class InternCommand {
             gotomaps.put("瑞恩村", 140000000);
             gotomaps.put("昭和村", 801000000);
             gotomaps.put("新加坡", 540000000);
-            gotomaps.put("六條岔路", 104020000);
+            gotomaps.put("六條岔道", 104020000);
             gotomaps.put("奇幻村", 105000000);
             gotomaps.put("楓之港", 2000000);
             gotomaps.put("綠樹村", 866000000);

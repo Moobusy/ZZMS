@@ -439,8 +439,8 @@ public class CField {
         mplew.write(0);
         mplew.writeInt(0);
         mplew.write(CharInfo ? 1 : 2);
-        mplew.writeInt(0);
-        mplew.writeInt(1298);
+        mplew.writeInt(0x63);
+        mplew.writeInt(0x794);
         mplew.writeInt(330);
         mplew.write(CharInfo);
 
@@ -3028,16 +3028,18 @@ public class CField {
     }
 
     //[8A 16 25 00] [03] [9D 07 7F 01] [06 01 00 06]
-    public static byte[] triggerReactor(MapleReactor reactor, int stance) {
+    public static byte[] triggerReactor(final MapleCharacter c, MapleReactor reactor, int stance) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
         mplew.writeShort(SendPacketOpcode.REACTOR_HIT.getValue());
         mplew.writeInt(reactor.getObjectId());
         mplew.write(reactor.getState());
         mplew.writePos(reactor.getTruePosition());
-        mplew.writeInt(stance);
-        //mplew.write(0);
-        //mplew.write(4);
+        mplew.writeShort(stance);
+        mplew.write(0);
+        mplew.write(0);
+        mplew.writeInt(c.getId());
+        
         return mplew.getPacket();
     }
 
@@ -5179,8 +5181,24 @@ public class CField {
     }
 
     public static class EffectPacket {
-
-        public static byte[] showEffect(MapleCharacter chr, SpecialEffectType effect, int value) {
+        
+        public static byte[] showEffect(MapleCharacter chr, SpecialEffectType effect) {
+            return showEffect(chr, effect, null, null, null);
+        }
+        
+        public static byte[] showEffect(MapleCharacter chr, SpecialEffectType effect, int[] value) {
+            return showEffect(chr, effect, value, null, null);
+        }
+        
+        public static byte[] showEffect(MapleCharacter chr, SpecialEffectType effect, Map<Integer, Integer> items) {
+            return showEffect(chr, effect, null, null, items);
+        }
+        
+        public static byte[] showEffect(MapleCharacter chr, SpecialEffectType effect, int[] value, String[] str) {
+            return showEffect(chr, effect, value, str, null);
+        }
+        
+        public static byte[] showEffect(MapleCharacter chr, SpecialEffectType effect, int[] value, String[] str, Map<Integer, Integer> items) {
             MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
             if (chr == null) {
                 mplew.writeShort(SendPacketOpcode.SHOW_SPECIAL_EFFECT.getValue());
@@ -5191,35 +5209,281 @@ public class CField {
             mplew.write((int) effect.getValue());
 
             switch (effect) {
-                case ITEM_OPERATION_EFFECT:
-                    int size = 0;
-                    mplew.write(size);
-                    for (int i = 0; i < size; i++) {
-                        mplew.writeInt(0);
-                        mplew.writeInt(0);
+                case LEVEL_UP:
+                    // Nothing...
+                    break;
+                case LOCAL_SKILL_EFFECT:                    
+                case REMOTE_SKILL_EFFECT:
+                    // This is a long code
+                    break;
+                case ZERO_EFFECT:
+                    int skill = 0;
+                    mplew.writeInt(value[0]);
+                    mplew.write(value[1]);                    
+                    if (skill == 25121006 || skill == 31111003) {
+                        mplew.writeInt(value[2]);
                     }
-                    mplew.writeMapleAsciiString("");
-                    mplew.writeInt(0);
+                    break;
+                case MECHANIC_EFFECT:
+                    mplew.writeInt(value[0]);
+                    mplew.write(value[1]);
+                    mplew.writeInt(value[2]);
+                    mplew.writeInt(value[3]);
+                    break;
+                case UNK_5:
+                    mplew.writeInt(value[0]);
+                    mplew.writeInt(value[1]);
+                    mplew.writeInt(value[2]);
+                    mplew.write(value[3]);
+                    mplew.write(value[4]);
+                    break;
+                case UNK_6:
+                    mplew.writeInt(value[0]);
+                    mplew.write(value[1]);
+                    break;
+                case ITEM_OPERATION_EFFECT:
+                    mplew.write(items.size());
+//                    if (size <= v3) {
+//                        mplew.writeMapleAsciiString("");
+//                        mplew.writeInt(0);
+//                    }
+                    items.entrySet().forEach((item) -> {
+                        mplew.writeInt(item.getKey());
+                        mplew.writeInt(item.getValue());
+                    });
+                    break;
+                case UNK_8:
+                    mplew.write(value[0]);
+                    mplew.writeInt(value[1]);
                     break;
                 case SKILL_FLYING_OBJECT:
-                    mplew.writeInt(value);
-                    if (value == 11121013 || value == 12100029 || value == 13121009 || value == 36110005 || value == 65101006) {
-                        mplew.writeInt(0);
-                        mplew.writeInt(0);
-                        mplew.writeInt(0);
+                    mplew.writeInt(value[0]);
+                    if (value[0] == 11121013 || (int) value[0] == 12100029 || (int) value[0] == 13121009 || value[0] == 36110005 || value[0] == 65101006) {
+                        mplew.writeInt(value[1]);
+                        mplew.writeInt(value[2]);
+                        mplew.writeInt(value[3]);
                     }
-                    if (value == 32111016) {
-                        mplew.write(0);
-                        mplew.write(0);
-                        mplew.writeInt(0);
-                        mplew.writeInt(0);
-                        mplew.writeInt(0);
+                    if (value[0] == 32111016) {
+                        mplew.write(value[1]);
+                        mplew.write(value[2]);
+                        mplew.writeInt(value[3]);
+                        mplew.writeInt(value[4]);
+                        mplew.writeInt(value[5]);
+                        mplew.writeInt(value[6]);
+                    }
+                    break;
+                case UNK_A:
+                    // Nothing...
+                    break;
+                case USE_AMULET:
+                    mplew.writeInt(value[0]); // 1 = 護身符, 2 = 紡織輪, 4 = 戰鬥機器人
+                    mplew.write(value[1]); // 剩餘次數
+                    mplew.write(value[2]);
+                    if (value[0] != 1 || value[0] != 2 || value[0] != 4)
+                        mplew.writeInt(value[3]); // Unk
+                    break;
+                case UNK_C:
+                    mplew.writeInt(0);
+                    break;
+                case MULUNG_DOJO_UP:
+                case CHANGE_JOB:
+                case QUET_COMPLETE:
+                    // Nothing...
+                    break;
+                case HEAL_EFFECT:
+                    mplew.write(value[0]);
+                    break;
+                case UNK_11:
+                    mplew.writeInt(0);
+                    break;
+                case UNK_12:
+                    mplew.writeMapleAsciiString("");
+                    break;
+                case UNK_13:
+                    // Nothing...
+                    break;
+                case REWARD_ITEM:
+                    mplew.writeInt(0);
+                    boolean res = false;
+                    mplew.write(res);
+                    if (res)
+                        break;
+                    mplew.writeMapleAsciiString("");
+                    break;
+                case ITEM_LEVEL_UP:
+                    // Nothing...
+                    break;
+                case ITEM_MAKER_SUCCESS:
+                    mplew.writeInt(0);
+                    break;
+                case DODGE_CHANCE:
+                    // Nothing...
+                    break;
+                case WZ:
+                    mplew.writeInt(value[0]);
+                    break;
+                case UNK_19:
+                    mplew.write(value[0]);
+                    mplew.writeInt(value[1]);
+                    mplew.write(value[2]);
+                    mplew.writeMapleAsciiString("");
+                    break;
+                case UNK_1A:
+                    mplew.write(0);
+                    break;
+                case UNK_1B:
+                case WZ_NEW:
+                    mplew.writeMapleAsciiString("");
+                    break;
+                case UNK_1D:
+                    // Nothing...
+                    break;
+                case UNK_1E:
+                    mplew.writeInt(0);
+                    mplew.writeMapleAsciiString("");
+                    break;
+                case UNK_1F:
+                case CASH_ITEM:
+                case HP_HEALED:
+                    // Nothing...
+                    break;
+                case UNK_22:
+                    mplew.writeInt(0);
+                    break;
+                case CHAMPION:
+                    mplew.writeInt(0);
+                    mplew.writeInt(0);
+                    break;
+                case UNK_24:
+                case UNK_25:
+                    mplew.writeInt(0);
+                    break;
+                case UNK_26:
+                    mplew.writeInt(0);
+                    mplew.writeInt(0);
+                    mplew.write(0);
+                    break;
+                case UNK_27:
+                case UNK_28:
+                case UNK_29:
+                case UNK_2A:
+                case UNK_2B:
+                case CRAFTING:
+                    // Nothing...
+                    break;
+                case UNK_2D:
+                    mplew.writeMapleAsciiString("");
+                    int res2d = 0;
+                    mplew.write(res2d);
+                    mplew.writeInt(0);
+                    if (res2d == 2) {
                         mplew.writeInt(0);
                     }
                     break;
+                case UNK_2E:
+                case UNK_2F:
+                    mplew.writeInt(0);
+                    break;
+                case UNK_30:
+                    // Nothing...
+                    break;
+                case UNK_31:
+                    // Nothing...
+                    break;
+                case UNK_32:
+                    // Nothing...
+                    break;
+                case UNK_33:
+                    // Nothing...
+                    break;
+                case UNSEAL_BOX:
+                    mplew.writeInt(value[0]);
+                    mplew.writeInt(value[1]);
+                    break;
+                case DUBL_START:
+                case UNK_36:
+                    mplew.write(value[0]);
+                    break;
+                case RECHARGE:
+                    mplew.writeInt(value[0]);
+                    mplew.writeInt(value[1]);
+                    break;
+                case UNK_38:
+                    // Nothing...
+                    break;
+                case UNK_39:
+                    // This is a long code...
+                    break;
+                case UNK_3A:
+                    mplew.writeInt(value[0]);
+                    break;
+                case UNK_3B:
+                    // Nothing...
+                    break;
+                case UNK_3C:
+                    mplew.write(0);
+                    mplew.write(0);
+                    mplew.writeInt(0);
+                    mplew.writeInt(0);
+                    break;
+                case UNK_3D:
+                    mplew.writeInt(0);
+                    break;
+                case UNK_3E:
+                    // Nothing...
+                    break;
+                case UNK_3F:
+                    boolean res3f = false;
+                    mplew.writeBoolean(res3f);
+                    if (!res3f) {
+                        mplew.writeInt(0);
+                        mplew.write(0);
+                    }
+                    break;
+                case UNK_40:
+                    mplew.writeInt(0);
+                    mplew.writeInt(0);
+                    mplew.writeInt(0);
+                    break;
+                case UNK_41:
+                    // if (fun??)
+                    mplew.writeShort(0);
+                    break;
+                case UNK_42:
+                    mplew.writeInt(0);
+                    mplew.writeInt(0);
+                    break;
+                case UNK_43:
+                    // Nothing...
+                    break;
                 case FIRE_EFFECT:
+                case UNK_45:
                     mplew.writeInt(0);
                     mplew.writeInt(0);
+                    break;
+                case UNK_46:
+                    mplew.writeInt(0);
+                    mplew.writeInt(0);
+                    mplew.writeInt(0);
+                    break;
+                case UNK_47:
+                    mplew.writeInt(0);
+                    mplew.writeInt(0);
+                    break;
+                case UNK_48:
+                    mplew.writeShort(0);
+                    mplew.writeInt(0);
+                    mplew.write(0);
+                    mplew.write(0);
+                    mplew.write(0);
+                    break;
+                case UNK_49:
+                case UNK_4A:
+                    // Nothing
+                    break;
+                case UNK_4B:
+                    mplew.writeInt(0);
+                    mplew.writeMapleAsciiString("");
                     break;
             }
             return mplew.getPacket();
@@ -5237,10 +5501,6 @@ public class CField {
             mplew.write(effect);
 
             return mplew.getPacket();
-        }
-
-        public static byte[] showLevelupEffect(int cid) {
-            return EffectPacket.showEffect(null, SpecialEffectType.LEVEL_UP, 0);
         }
 
         public static byte[] showDiceEffect(int skillid, int effectid, int effectid2, int level) {
@@ -5262,18 +5522,6 @@ public class CField {
             mplew.writeInt(skillid);
             mplew.write(level);
             mplew.write(0);
-
-            return mplew.getPacket();
-        }
-
-        public static byte[] getShowItemGain(int itemId, short quantity) {
-            MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-
-            mplew.writeShort(SendPacketOpcode.SHOW_SPECIAL_EFFECT.getValue());
-            mplew.write(0x7);
-            mplew.write(1);
-            mplew.writeInt(itemId);
-            mplew.writeInt(quantity);
 
             return mplew.getPacket();
         }
@@ -5315,32 +5563,11 @@ public class CField {
 
             return mplew.getPacket();
         }
-
-        public static byte[] Mulung_DojoUp2() {
-            MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-
-            mplew.writeShort(SendPacketOpcode.SHOW_SPECIAL_EFFECT.getValue());
-            mplew.write(0xD);
-
-            return mplew.getPacket();
-        }
-
-        public static byte[] showJobChangeEffect(MapleCharacter cid) {
-            return EffectPacket.showEffect(cid, SpecialEffectType.CHANGE_JOB, 0);
-        }
-
+        
         public static byte[] showRewardItemAnimation(int itemId, String effect) {
             return showRewardItemAnimation(itemId, effect, -1);
         }
-
-        public static byte[] showQuetCompleteEffect() {
-            return showQuetCompleteEffect(null);
-        }
-
-        public static byte[] showQuetCompleteEffect(MapleCharacter cid) {
-            return EffectPacket.showEffect(cid, SpecialEffectType.QUET_COMPLETE, 0);
-        }
-
+        
         public static byte[] showRewardItemAnimation(int itemId, String effect, int from_playerid) {
             MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 

@@ -1925,7 +1925,7 @@ public class MapleStatEffect implements Serializable {
         EnumMap stat = new EnumMap(MapleBuffStat.class);
         stat.put(MapleBuffStat.BLACK_BLESSING, combo);
         applyto.getClient().getSession().write(CWvsContext.BuffPacket.giveBuff(this.sourceid, 0, stat, this, applyto));
-        applyto.getClient().getSession().write(CField.EffectPacket.showEffect(applyto, SpecialEffectType.SKILL_FLYING_OBJECT, 27100003));
+        applyto.getClient().getSession().write(CField.EffectPacket.showEffect(applyto, SpecialEffectType.SKILL_FLYING_OBJECT, new int[] {27100003}));
     }
 
     public final void applyLunarTideBuff(MapleCharacter applyto) {

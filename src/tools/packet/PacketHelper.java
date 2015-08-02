@@ -567,9 +567,9 @@ public class PacketHelper {
     }
 
     public static void addCharStats(MaplePacketLittleEndianWriter mplew, MapleCharacter chr) {
-        mplew.writeInt(0);
-        mplew.writeInt(0);
         mplew.writeInt(chr.getId());
+        mplew.writeInt(chr.getId());
+        mplew.writeInt(2);
         mplew.writeAsciiString(chr.getName(), 15);
         mplew.write(chr.getGender());
         mplew.write(0); // addCharCreateStats unk
@@ -598,7 +598,7 @@ public class PacketHelper {
         mplew.writeInt(chr.getFame());
         mplew.writeInt(chr.getWeaponPoint()); // 神之子武器點數
         mplew.writeLong(chr.getGachExp());
-        mplew.writeLong(getTime(-2));
+        mplew.writeLong(getTime(System.currentTimeMillis()));
         mplew.writeInt(chr.getMapId());
         mplew.write(chr.getInitialSpawnpoint());
         mplew.writeShort(chr.getSubcategory());
@@ -624,8 +624,8 @@ public class PacketHelper {
         mplew.writeInt(0);
         addPartTimeJob(mplew, MapleCharacter.getPartTime(chr.getId()));
         chr.getCharacterCard().connectData(mplew);
-        mplew.writeReversedLong(getTime(-2));
-        mplew.write(0); // 178+
+        mplew.writeReversedLong(getTime(System.currentTimeMillis()));
+        mplew.write(1); // 178+
         mplew.writeZeroBytes(25);
         mplew.write(0);
         mplew.write(0);
@@ -1003,7 +1003,7 @@ public class PacketHelper {
         mplew.writeLong(mask);
         mplew.write(0);
         for (int i = 0; i < 3; i++) {
-            mplew.writeInt(-1);
+            mplew.writeInt(-2);
         }
 
         int v7 = 0;
@@ -1176,7 +1176,7 @@ public class PacketHelper {
             }
         }
         if ((mask & 0x10000000) != 0 || (mask & 0x20000000) != 0) {
-            addStealSkills(mplew, chr);//幻影複製技能訊息
+            addStealSkills(mplew, chr);//幻影複製技能訊息 [52+16]Byte
         }
         if ((mask & 0x80000000) != 0) {
             addAbilityInfo(mplew, chr);//角色內在能力訊息
@@ -1269,7 +1269,7 @@ public class PacketHelper {
             int v3 = 0;
             mplew.write(v3);
             if (v3 > 0) {
-                mplew.write(0);
+                // addInventoryInfo
                 mplew.writeInt(0);
             }
         }
@@ -1307,7 +1307,7 @@ public class PacketHelper {
             boolean v4 = false;
             mplew.write(v4);
             if (v4) {
-                mplew.write(0);
+                // addInventoryInfo
                 mplew.writeInt(0);
                 mplew.writeInt(0);
             }
@@ -1325,8 +1325,8 @@ public class PacketHelper {
                 mplew.write(0);
                 mplew.writeInt(1);
                 mplew.writeInt(0);
-                mplew.writeInt(0);//100
-                mplew.writeLong(getTime(-2));
+                mplew.writeInt(100);//100
+                mplew.writeLong(getTime(System.currentTimeMillis()));
             }
             int v192 = 0;
             mplew.writeShort(v192);

@@ -1661,7 +1661,7 @@ public class SuperGMCommand {
                 c.getPlayer().dropMessage(6, splitted[0] + " <反應堆OID>");
                 return 0;
             }
-            c.getPlayer().getMap().getReactorByOid(Integer.parseInt(splitted[1])).forceHitReactor(Byte.parseByte(splitted[2]));
+            c.getPlayer().getMap().getReactorByOid(Integer.parseInt(splitted[1])).forceHitReactor(c.getPlayer(), Byte.parseByte(splitted[2]));
             return 1;
         }
     }

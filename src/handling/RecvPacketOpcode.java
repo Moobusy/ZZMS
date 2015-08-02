@@ -77,352 +77,353 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     
     ////////////////////////////////////////////////
     
-    // 變更地圖[完成-179]
-    CHANGE_MAP(true, (short) 0x7FFE),
+    // 變更地圖[完成-182]
+    CHANGE_MAP(true, (short) 0xA8),
     // 變更頻道[完成-179]
-    CHANGE_CHANNEL(true, (short) 0x7FFE),
-    // 0x58
-    // 0x59
-    // 0x5A
-    // 購物商城[完成-179]
-    ENTER_CASH_SHOP(true, (short) 0x7FFE),
-    // PvP開始[完成]
-    ENTER_PVP(true, (short) 0x7FFE),
-    // 0x5D
-    // 阿斯旺開始[完成]
-    ENTER_AZWAN(true, (short) 0x7FFE),
-    // 阿斯旺活動
-    ENTER_AZWAN_EVENT(true, (short) 0x7FFE),
-    // 離開阿斯旺
-    LEAVE_AZWAN(true, (short) 0x7FFE),
-    // PvP隊伍
-    ENTER_PVP_PARTY(true, (short) 0x7FFE),
-    // 離開PvP[完成]
-    LEAVE_PVP(true, (short) 0x7FFE),
-    // 玩家移動[完成-179]
-    MOVE_PLAYER(true, (short) 0x7FFE),
-    
-    // 0x66
-    
-    // 取消椅子[完成-179]
-    CANCEL_CHAIR(true, (short) 0x7FFE),
-    // 使用椅子[完成-179]
-    USE_CHAIR(true, (short) 0x7FFE),
-    
-    // 0x69
-    
-    // 近距離攻擊[完成-179]
-    CLOSE_RANGE_ATTACK(true, (short) 0x7FFE),
-    // 遠距離攻擊[完成-179]
-    RANGED_ATTACK(true, (short) 0x7FFE),
-    // 魔法攻擊[完成-179]
-    MAGIC_ATTACK(true, (short) 0x7FFE),
-    // 被動攻擊(抗壓...)[推測]
-    PASSIVE_ATTACK(true, (short) 0x7FFE),
-    
-    // 0x6E
-    // 0x6F
-    
-    // 角色受傷[完成-179]
-    TAKE_DAMAGE(true, (short) 0x7FFE),
-    // PvP攻擊[推測]
-    PVP_ATTACK(true, (short) 0x7FFE),
-    // 普通聊天[完成-179]
-    GENERAL_CHAT(true, (short) 0x7FFE),
-    // 關閉黑板[完成-179]
-    CLOSE_CHALKBOARD(true, (short) 0x7FFE),
-    // 臉部情緒[完成-179]
-    FACE_EXPRESSION(true, (short) 0x7FFE),
-    // 機器人臉部情緒[推測]
-    FACE_ANDROID(true, (short) 0x7FFE),
-    // 使用物品效果[完成-179]
-    USE_ITEMEFFECT(true, (short) 0x7FFE),
-    // 使用原地復活[推測]
-    WHEEL_OF_FORTUNE(true, (short) 0x7FFE),
-    // 使用稱號效果[完成]
-    USE_TITLE(true, (short) 0x7FFE),
-    
-    // 0x79
-    
-    // 變更天使破壞者外觀
-    ANGELIC_CHANGE(true, (short) 0x7FFE),
-    
-    // 0x7B
-    // 0x7C
-    // 0x7D
-    // 0x7E
-    // 0x7F
-    // 0x80
-    // 0x81
-    
-    // Npc交談[完成-179]
-    NPC_TALK(true, (short) 0x7FFE),
-    
-    // 0x83
-    
-    // Npc詳細交談[完成-179]
-    NPC_TALK_MORE(true, (short) 0x7FFE),
-    // Npc商店[完成-179]
-    NPC_SHOP(true, (short) 0x7FFE),
-    // 倉庫[完成]
-    STORAGE(true, (short) 0x7FFE),
-    // 精靈商人[完成]
-    USE_HIRED_MERCHANT(true, (short) 0x7FFE),
-    // 精靈商人物品[完成]
-    MERCH_ITEM_STORE(true, (short) 0x7FFE),
-    // 宅配操作[完成]
-    PACKAGE_OPERATION(true, (short) 0x7FFE),
-    // 取消開放通道
-    MECH_CANCEL(true, (short) 0x7FFE),
-    
-    // 0x8B
-    // 0x8C
-    // 0x8D
-    // 0x8E
-    // 0x8F
-    
-    // 智慧貓頭鷹(5230000)[完成]
-    OWL(true, (short) 0x7FFE),
-    // 智慧貓頭鷹購買
-    OWL_WARP(true, (short) 0x7FFE),
-    
-    // 0x92
-    
-    // 管理員商店[完成-179]
-    ADMIN_SHOP(false, (short) 0x7FFE),
-    // 向上整理[完成-179]
-    ITEM_SORT(true, (short) 0x7FFE),
-    // 種類排序[完成-179]
-    ITEM_GATHER(true, (short) 0x7FFE),
-    // 物品移動[完成-179]
-    ITEM_MOVE(true, (short) 0x7FFE),
-    
-    // 0x97 【輸入觀戰板內容】
-    
-    // 移動道具至背包欄位[完成]
-    MOVE_BAG(true, (short) 0x7FFE),
-    // 背包道具至道具欄位
-    SWITCH_BAG(true, (short) 0x7FFE),
-    
-    // 0x9A
-    
-    // 使用物品[完成-179]
-    USE_ITEM(true, (short) 0x7FFE),
-    // 取消物品效果[完成]
-    CANCEL_ITEM_EFFECT(true, (short) 0x7FFE),
-    
-    // 0x9D
-    
-    // 使用召喚包(2100017)[完成-179]
-    USE_SUMMON_BAG(true, (short) 0x7FFE),
-    // 寵物飼料[完成]
-    PET_FOOD(true, (short) 0x7FFE),
-    // 提神飲料[推測]
-    USE_MOUNT_FOOD(true, (short) 0x7FFE),
-    // 使用腳本物品[完成-179]
-    USE_SCRIPTED_NPC_ITEM(true, (short) 0x7FFE),
-    // 使用製作書
-    USE_RECIPE(true, (short) 0x7FFE),
-    
-    // 0xA3
-    // 0xA4
-    // 0xA5
-    
-    // 使用商城道具[完成]
-    USE_CASH_ITEM(true, (short) 0x7FFE),
-    // 使用捕捉道具
-    USE_CATCH_ITEM(true, (short) 0x7FFE),
-    // 是否允許寵物拾取道具[完成]
-    ALLOW_PET_LOOT(true, (short) 0x7FFE),
-    // 是否允許寵物自動餵食[完成]
-    ALLOW_PET_AOTO_EAT(true, (short) 0x7FFE),
-    // 使用附加潛能印章
-    USE_ADDITIONAL_ITEM(true, (short) 0x7FFE),
-    
+    CHANGE_CHANNEL(true, (short) 0xA9),
+    // 0xAA
     // 0xAB
     // 0xAC
-    
-    // 使用技能書[完成]
-    USE_SKILL_BOOK(true, (short) 0x7FFE),
-    
-    // 0xAE
+    // 購物商城[完成-179]
+    ENTER_CASH_SHOP(true, (short) 0xAD),
+    // PvP開始[完成]
+    ENTER_PVP(true, (short) 0xAE),
     // 0xAF
-    // 0xB0
+    // 阿斯旺開始[完成]
+    ENTER_AZWAN(true, (short) 0xB0),
+    // 阿斯旺活動
+    ENTER_AZWAN_EVENT(true, (short) 0xB1),
+    // 離開阿斯旺
+    LEAVE_AZWAN(true, (short) 0xB2),
+    // PvP隊伍
+    ENTER_PVP_PARTY(true, (short) 0xB3),
+    // 離開PvP[完成]
+    LEAVE_PVP(true, (short) 0xB4),
     
-    // 經驗瓶(2230000)[完成]
-    USE_EXP_POTION(true, (short) 0x7FFE),
-    
-    // 0xB2
-    // 0xB3
-    // 0xB4
     // 0xB5
     // 0xB6
     
-    // 智慧貓頭鷹開始搜索
-    USE_OWL_MINERVA(true, (short) 0x7FFE),
-    // 使用瞬移之石
-    USE_TELE_ROCK(true, (short) 0x7FFE),
-    // 使用回家卷軸[完成-179]
-    USE_RETURN_SCROLL(true, (short) 0x7FFE),    
-    // 移動至梅斯特鎮[完成-179]
-    MOVE_ARDENTMILL(true, (short) 0x7FFE),    
-    // 使用卷軸[完成]
-    USE_UPGRADE_SCROLL(true, (short) 0x7FFE),
-    // 使用卷軸保護卡(5064300)[完成]
-    USE_FLAG_SCROLL(true, (short) 0x7FFE),
-    // 使用裝備強化卷軸[完成]
-    USE_EQUIP_SCROLL(true, (short) 0x7FFE),
+    // 玩家移動[完成-182]
+    MOVE_PLAYER(true, (short) 0xB7),    
+    // 取消椅子[完成-179]
+    CANCEL_CHAIR(true, (short) 0xB8),
+    // 使用椅子[完成-179]
+    USE_CHAIR(true, (short) 0xB9),
     
-    // 0xBE
+    // 0xBA
+    
+    // 近距離攻擊[完成-179]
+    CLOSE_RANGE_ATTACK(true, (short) 0xBB),
+    // 遠距離攻擊[完成-179]
+    RANGED_ATTACK(true, (short) 0xBC),
+    // 魔法攻擊[完成-179]
+    MAGIC_ATTACK(true, (short) 0xBD),
+    // 被動攻擊(抗壓...)[推測]
+    PASSIVE_ATTACK(true, (short) 0xBE),
+    
     // 0xBF
     // 0xC0
     
-    // 使用潛能賦予卷軸[完成]
-    USE_POTENTIAL_SCROLL(true, (short) 0x7FFE),
-    // 使用附加潛在能力賦予卷軸[完成]
-    USE_BONUS_POTENTIAL_SCROLL(true, (short) 0x7FFE),
-    // 使用烙的印章(2049500)[完成]
-    USE_CARVED_SEAL(true, (short) 0x7FFE),
-    // 使用奇怪的方塊(2710000)[完成]
-    USE_CRAFTED_CUBE(true, (short) 0x7FFE),
+    // 角色受傷[完成-179]
+    TAKE_DAMAGE(true, (short) 0xC1),
+    // PvP攻擊[推測]
+    PVP_ATTACK(true, (short) 0xC2),
+    // 普通聊天[完成-182]
+    GENERAL_CHAT(true, (short) 0xC3),
+    // 關閉黑板[完成-179]
+    CLOSE_CHALKBOARD(true, (short) 0xC4),
+    // 臉部情緒[完成-179]
+    FACE_EXPRESSION(true, (short) 0xC5),
+    // 機器人臉部情緒[推測]
+    FACE_ANDROID(true, (short) 0xC6),
+    // 使用物品效果[完成-179]
+    USE_ITEMEFFECT(true, (short) 0xC7),
+    // 使用原地復活[推測]
+    WHEEL_OF_FORTUNE(true, (short) 0xC8),
+    // 使用稱號效果[完成]
+    USE_TITLE(true, (short) 0xC9),
     
-    // 0xC5
+    // 0xCA
     
-    // 靈魂卷軸[2590002][完成]
-    USE_SOUL_ENCHANTER(true, (short) 0x7FFE),
-    // 靈魂寶珠[2591001][完成]
-    USE_SOUL_SCROLL(true, (short) 0x7FFE),
-    // 咒語的痕跡[4001832][完成]
-    EQUIPMENT_ENCHANT(true, (short) 0x7FFE),
-    
-    // 0xC9
-    
-    // 使用背包[4330009][完成]
-    USE_BAG(true, (short) 0x7FFE),
-    // 使用放大鏡[2460001][完成]
-    USE_MAGNIFY_GLASS(true, (short) 0x7FFE),
+    // 變更天使破壞者外觀
+    ANGELIC_CHANGE(true, (short) 0xCB),
     
     // 0xCC
     // 0xCD
     // 0xCE
     // 0xCF
-    
-    // 使用能力點數[完成-179]
-    DISTRIBUTE_AP(true, (short) 0x7FFE),
-    // 自動分配能力點數[完成-179]
-    AUTO_ASSIGN_AP(true, (short) 0x7FFE),
-    
+    // 0xD0
+    // 0xD1
     // 0xD2
     
-    // 自動恢復HP/MP[完成-179]
-    HEAL_OVER_TIME(true, (short) 0x7FFE),
+    // Npc交談[完成-182]
+    NPC_TALK(true, (short) 0xD3),
     
-    // 0xD4 [Int][Long][Short][Short]
-    // 0xD5
+    // 0xD4
     
-    // 使用技能點數[完成-179]
-    DISTRIBUTE_SP(true, (short) 0x7FFE),
-    // 角色使用技能[完成-179]
-    SPECIAL_SKILL(true, (short) 0x7FFE),
-    // 取消輔助效果[完成-179]
-    CANCEL_BUFF(true, (short) 0x7FFE),
-    // 技能效果[完成-179]
-    SKILL_EFFECT(true, (short) 0x7FFE),
-    // 楓幣掉落[完成-179]
-    MESO_DROP(true, (short) 0x7FFE),
-    // 添加名聲[推測]
-    GIVE_FAME(true, (short) 0x7FFE),
+    // Npc詳細交談[完成-182]
+    NPC_TALK_MORE(true, (short) 0xD5),
+    // Npc商店[完成-182]
+    NPC_SHOP(true, (short) 0xD6),
+    // 倉庫[完成]
+    STORAGE(true, (short) 0xD7),
+    // 精靈商人[完成]
+    USE_HIRED_MERCHANT(true, (short) 0xD8),
+    // 精靈商人物品[完成]
+    MERCH_ITEM_STORE(true, (short) 0xD9),
+    // 宅配操作[完成]
+    PACKAGE_OPERATION(true, (short) 0xDA),
+    // 取消開放通道
+    MECH_CANCEL(true, (short) 0xDB),
     
     // 0xDC
-    
-    // 角色信息[完成-179]
-    CHAR_INFO_REQUEST(true, (short) 0x7FFE),
-    // 召喚寵物[完成]
-    SPAWN_PET(true, (short) 0x7FFE),
-    
+    // 0xDD
+    // 0xDE
     // 0xDF
+    // 0xE0
     
-    // 取消異常效果
-    CANCEL_DEBUFF(true, (short) 0x7FFE),
-    // 腳本地圖[完成]
-    CHANGE_MAP_SPECIAL(true, (short) 0x7FFE),
-    // 使用時空門
-    USE_INNER_PORTAL(true, (short) 0x7FFE),
+    // 智慧貓頭鷹(5230000)[完成]
+    OWL(true, (short) 0xE1),
+    // 智慧貓頭鷹購買
+    OWL_WARP(true, (short) 0xE2),
     
     // 0xE3
     
-    // 使用瞬移之石[完成]
-    TROCK_ADD_MAP(true, (short) 0x7FFE),
-    // 使用測謊機
-    LIE_DETECTOR(true, (short) 0x7FFE),
-    // 測謊機技能
-    LIE_DETECTOR_SKILL(true, (short) 0x7FFE),
-    // 確認測謊機驗證碼 
-    LIE_DETECTOR_RESPONSE(true, (short) 0x7FFE),
-    // 重新整理測謊機驗證碼
-    LIE_DETECTOR_REFRESH(true, (short) 0x7FFE),
-    // 舉報玩家
-    REPORT(true, (short) 0x7FFE),
-    // 任務操作[完成-179]
-    QUEST_ACTION(true, (short) 0x7FFE),
-    // 重新領取勳章
-    REISSUE_MEDAL(true, (short) 0x7FFE),
-    // 輔助效果回應
-    BUFF_RESPONSE(true, (short) 0x7FFE),
+    // 管理員商店[完成-179]
+    ADMIN_SHOP(false, (short) 0xE4),
+    // 向上整理[完成-179]
+    ITEM_SORT(true, (short) 0xE5),
+    // 種類排序[完成-179]
+    ITEM_GATHER(true, (short) 0xE6),
+    // 物品移動[完成-179]
+    ITEM_MOVE(true, (short) 0xE7),
     
-    // 0xED
+    // 0xE8 【輸入觀戰板內容】
+    
+    // 移動道具至背包欄位[完成]
+    MOVE_BAG(true, (short) 0xE9),
+    // 背包道具至道具欄位
+    SWITCH_BAG(true, (short) 0xEA),
+    
+    // 0xEB
+    
+    // 使用物品[完成-179]
+    USE_ITEM(true, (short) 0xEC),
+    // 取消物品效果[完成]
+    CANCEL_ITEM_EFFECT(true, (short) 0xED),
+    
     // 0xEE
-    // 0xEF
-    // 0xF0
-    // 0xF1
     
-    // 技能組合[完成-179]
-    SKILL_MACRO(true, (short) 0x7FFE),
+    // 使用召喚包(2100017)[完成-179]
+    USE_SUMMON_BAG(true, (short) 0xEF),
+    // 寵物飼料[完成]
+    PET_FOOD(true, (short) 0xF0),
+    // 提神飲料[推測]
+    USE_MOUNT_FOOD(true, (short) 0xF1),
+    // 使用腳本物品[完成-179]
+    USE_SCRIPTED_NPC_ITEM(true, (short) 0xF2),
+    // 使用製作書
+    USE_RECIPE(true, (short) 0xF3),
     
-    // 0xF3
-    
-    // 獎勵道具[完成]
-    REWARD_ITEM(true, (short) 0x7FFE),
-    
+    // 0xF4
     // 0xF5
     // 0xF6
-    // 0xF7
+    
+    // 使用商城道具[完成]
+    USE_CASH_ITEM(true, (short) 0xF7),
+    // 使用捕捉道具
+    USE_CATCH_ITEM(true, (short) 0xF8),
+    // 是否允許寵物拾取道具[完成]
+    ALLOW_PET_LOOT(true, (short) 0xF9),
+    // 是否允許寵物自動餵食[完成]
+    ALLOW_PET_AOTO_EAT(true, (short) 0xFA),
+    // 使用附加潛能印章
+    USE_ADDITIONAL_ITEM(true, (short) 0xFB),
+    
+    // 0xFC
+    // 0xFD
+    
+    // 使用技能書[完成]
+    USE_SKILL_BOOK(true, (short) 0xFE),
+    
+    // 0xFF
+    // 0x100
+    // 0x101
+    
+    // 經驗瓶(2230000)[完成]
+    USE_EXP_POTION(true, (short) 0x102),
+    
+    // 0x103
+    // 0x104
+    // 0x105
+    // 0x106
+    // 0x107
+    
+    // 智慧貓頭鷹開始搜索
+    USE_OWL_MINERVA(true, (short) 0x108),
+    // 使用瞬移之石
+    USE_TELE_ROCK(true, (short) 0x109),
+    // 使用回家卷軸[完成-179]
+    USE_RETURN_SCROLL(true, (short) 0x10A),    
+    // 移動至梅斯特鎮[完成-179]
+    MOVE_ARDENTMILL(true, (short) 0x10B),    
+    // 使用卷軸[完成]
+    USE_UPGRADE_SCROLL(true, (short) 0x10C),
+    // 使用卷軸保護卡(5064300)[完成]
+    USE_FLAG_SCROLL(true, (short) 0x10D),
+    // 使用裝備強化卷軸[完成]
+    USE_EQUIP_SCROLL(true, (short) 0x10E),
+    
+    // 0x10F
+    // 0x110
+    // 0x111
+    
+    // 使用潛能賦予卷軸[完成]
+    USE_POTENTIAL_SCROLL(true, (short) 0x112),
+    // 使用附加潛在能力賦予卷軸[完成]
+    USE_BONUS_POTENTIAL_SCROLL(true, (short) 0x113),
+    // 使用烙的印章(2049500)[完成]
+    USE_CARVED_SEAL(true, (short) 0x114),
+    // 使用奇怪的方塊(2710000)[完成]
+    USE_CRAFTED_CUBE(true, (short) 0x115),
+    
+    // 0x116
+    
+    // 靈魂卷軸[2590002][完成]
+    USE_SOUL_ENCHANTER(true, (short) 0x117),
+    // 靈魂寶珠[2591001][完成]
+    USE_SOUL_SCROLL(true, (short) 0x118),
+    // 咒語的痕跡[4001832][完成]
+    EQUIPMENT_ENCHANT(true, (short) 0x119),
+    
+    // 0x11A
+    
+    // 使用背包[4330009][完成]
+    USE_BAG(true, (short) 0x11B),
+    // 使用放大鏡[2460001][完成]
+    USE_MAGNIFY_GLASS(true, (short) 0x11C),
+    
+    // 0x11D
+    // 0x11E
+    // 0x11F
+    // 0x120
+    
+    // 使用能力點數[完成-179]
+    DISTRIBUTE_AP(true, (short) 0x121),
+    // 自動分配能力點數[完成-179]
+    AUTO_ASSIGN_AP(true, (short) 0x122),
+    
+    // 0x123
+    
+    // 自動恢復HP/MP[完成-179]
+    HEAL_OVER_TIME(true, (short) 0x124),
+    
+    // 0x125 [Int][Long][Short][Short]
+    // 0x126
+    
+    // 使用技能點數[完成-179]
+    DISTRIBUTE_SP(true, (short) 0x127),
+    // 角色使用技能[完成-179]
+    SPECIAL_SKILL(true, (short) 0x128),
+    // 取消輔助效果[完成-179]
+    CANCEL_BUFF(true, (short) 0x129),
+    // 技能效果[完成-179]
+    SKILL_EFFECT(true, (short) 0x12A),
+    // 楓幣掉落[完成-179]
+    MESO_DROP(true, (short) 0x12B),
+    // 添加名聲[推測]
+    GIVE_FAME(true, (short) 0x12C),
+    
+    // 0x12D
+    
+    // 角色信息[完成-179]
+    CHAR_INFO_REQUEST(true, (short) 0x12E),
+    // 召喚寵物[完成]
+    SPAWN_PET(true, (short) 0x12F),
+    
+    // 0x130
+    
+    // 取消異常效果
+    CANCEL_DEBUFF(true, (short) 0x131),
+    // 腳本地圖[完成-182]
+    CHANGE_MAP_SPECIAL(true, (short) 0x132),
+    // 使用時空門
+    USE_INNER_PORTAL(true, (short) 0x133),
+    
+    // 0x134
+    
+    // 使用瞬移之石[完成]
+    TROCK_ADD_MAP(true, (short) 0x135),
+    // 使用測謊機
+    LIE_DETECTOR(true, (short) 0x136),
+    // 測謊機技能
+    LIE_DETECTOR_SKILL(true, (short) 0x137),
+    // 確認測謊機驗證碼 
+    LIE_DETECTOR_RESPONSE(true, (short) 0x138),
+    // 重新整理測謊機驗證碼
+    LIE_DETECTOR_REFRESH(true, (short) 0x139),
+    // 舉報玩家
+    REPORT(true, (short) 0x13A),
+    // 任務操作[完成-182]
+    QUEST_ACTION(true, (short) 0x13B),
+    // 重新領取勳章
+    REISSUE_MEDAL(true, (short) 0x13C),
+    // 輔助效果回應
+    BUFF_RESPONSE(true, (short) 0x13D),
+    
+    // 0x13E
+    // 0x13F
+    // 0x140
+    // 0x141
+    // 0x142
+    
+    // 技能組合[完成-179]
+    SKILL_MACRO(true, (short) 0x143),
+    
+    // 0x144
+    
+    // 獎勵道具[完成]
+    REWARD_ITEM(true, (short) 0x145),
+    
+    // 0x146
+    // 0x147
+    // 0x148
     
     // 鍛造技能
-    ITEM_MAKER(true, (short) 0x7FFE),
+    ITEM_MAKER(true, (short) 0x149),
     // 全部修理(勇士之村(辛德))
-    REPAIR_ALL(true, (short) 0x7FFE),
+    REPAIR_ALL(true, (short) 0x14A),
     // 裝備修理
-    REPAIR(true, (short) 0x7FFE),
+    REPAIR(true, (short) 0x14B),
     
-    // 0xFB
-    // 0xFC
+    // 0x14C
+    // 0x14D
     
     // 請求跟隨()
-    FOLLOW_REQUEST(true, (short) 0x7FFE),
+    FOLLOW_REQUEST(true, (short) 0x14E),
     
-    // 0xFE
+    // 0x14F
     
     // 組隊任務獎勵[完成]
-    PQ_REWARD(true, (short) 0x7FFE),
+    PQ_REWARD(true, (short) 0x150),
     // 請求跟隨回覆
-    FOLLOW_REPLY(true, (short) 0x7FFE),
+    FOLLOW_REPLY(true, (short) 0x151),
     // 自動跟隨回覆()
-    AUTO_FOLLOW_REPLY(true, (short) 0x7FFE),
+    AUTO_FOLLOW_REPLY(true, (short) 0x152),
     // 能力值信息[完成-182]
     PROFESSION_INFO(true, (short) 0x153),
     // 使用培養皿[完成]
-    USE_POT(true, (short) 0x7FFE),
+    USE_POT(true, (short) 0x154),
     // 清理培養皿[完成]
-    CLEAR_POT(true, (short) 0x7FFE),
+    CLEAR_POT(true, (short) 0x155),
     // 餵食培養皿
-    FEED_POT(true, (short) 0x7FFE),
+    FEED_POT(true, (short) 0x156),
     // 治癒培養皿
-    CURE_POT(true, (short) 0x7FFE),
+    CURE_POT(true, (short) 0x157),
     // 培養皿獎勵
-    REWARD_POT(true, (short) 0x7FFE),
+    REWARD_POT(true, (short) 0x158),
     // 阿斯旺復活
-    AZWAN_REVIVE(true, (short) 0x7FFE),
+    AZWAN_REVIVE(true, (short) 0x159),
     
     // 0x109
     
@@ -506,8 +507,8 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     
     // 0x13E
     
-    // 變更鍵盤設置[完成]
-    CHANGE_KEYMAP(true, (short) 0x7FFE),
+    // 變更鍵盤設置[完成-182]
+    CHANGE_KEYMAP(true, (short) 0x190),
     // 猜拳遊戲[完成]
     RPS_GAME(true, (short) 0x7FFE),
     
@@ -553,38 +554,74 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     UPDATE_HYPER(true, (short) 0x7FFE),
     // 重置超級技能(Done)
     RESET_HYPER(true, (short) 0x7FFE),
-    // 返回選角界面[完成-179]
-    BACK_TO_CHARLIST(true, (short) 0x7FFE),
-    // 幸運怪物(完成)
-    LUCKY_LUCKY_MONSTORY(true, (short) 0x7FFE),
     
     // 創建角色跟刪除角色輸入的驗證碼[完成-182]
     SECURITY_CODE(true, (short) 0x1E7),
     
+    // 0x1E8
+    
+    // 返回選角界面[完成-182]
+    BACK_TO_CHARLIST(true, (short) 0x1D8),
+    
+    // 0x1EA
+    // 0x1EB
+    // 0x1EC
+    // 0x1ED
+    // 0x1EE
+    // 0x1EF
+    // 0x1F0
+    // 0x1F1
+    // 0x1F2
+    // 0x1F3
+    
+    // 幸運怪物(完成)
+    LUCKY_LUCKY_MONSTORY(true, (short) 0x1F4),
+    
+    // 0x1F5
+    // 0x1F6
+    // 0x1F7
+    // 0x1F8
+    // 0x1F9
+    
     // 快速移動(非打開NPC)
-    QUICK_MOVE_SPECIAL(true, (short) 0x7FFE),
+    QUICK_MOVE_SPECIAL(true, (short) 0x1FA),
     // 神之子鏡子世界地圖傳送[完成-180]
-    ZERO_QUICK_MOVE(true, (short) 0x7FFE),
+    ZERO_QUICK_MOVE(true, (short) 0x1FB),
+    
+    // 0x1FC
+    // 0x1FD
+    // 0x1FE
+    // 0x1FF
+    // 0x200
+    // 0x201
+    // 0x202
+    // 0x203
+    // 0x204
+    
     // 活動卡片[完成]
-    EVENT_CARD(true, (short) 0x7FFE), //0x19C+6(or 5 ?) 178 未知
+    EVENT_CARD(true, (short) 0x205), //0x19C+6(or 5 ?) 178 未知
     // 凱撒快速鍵(176-Done)
-    KAISER_QUICK_KEY(true, (short) 0x7FFE),
+    KAISER_QUICK_KEY(true, (short) 0x206),
+    
+    // 0x207
+    // 0x208
+    // 0x209
     
     // 賓果[完成-179]
-    BINGO(true, (short) 0x7FFE),
+    BINGO(true, (short) 0x20A),
     
-    // 0x1B4
-    // 0x1B5
-    // 0x1B6
-    // 0x1B7
-    // 0x1B8
-    // 0x1B9
-    // 0x1BA
-    // 0x1BB
-    // 0x1BC
-    // 0x1BD
-    // 0x1BE
-    // 0x1BF
+    // 0x20B
+    // 0x20C
+    // 0x20D
+    // 0x20E
+    // 0x20F
+    // 0x210
+    // 0x211
+    // 0x212
+    // 0x213
+    // 0x214
+    // 0x215
+    // 0x216
     
     // 燃燒計畫[完成-182]
     COMBUSTION_PROJECT(true, (short) 0x217),    
@@ -613,6 +650,9 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     HAKU_ACTION(true, (short) 0x7FFE),
     // 影朋花狐使用輔助技能
     HAKU_USE_BUFF(true, (short) 0x7FFE),
+    
+    //
+    //
 
     //召唤兽移动[177-完成]
     MOVE_SUMMON(true, (short) 0x7FFE),
@@ -637,14 +677,19 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     QUEST_ITEM(true, (short) 0x7FFE),
     //快速欄按鍵(176.Done)
     QUICK_SLOT(true, (short) 0x7FFE),
-
     //按下按鈕
     BUTTON_PRESSED(true, (short) 0x7FFE),
+    
+    //
 
     // 操控角色完成反饋[完成]
     DIRECTION_COMPLETE(true, (short) 0x7FFE),
-    //進程列表
-    SYSTEM_PROCESS_LIST(true, (short) 0x7FFE),
+    
+    //
+    //
+    
+    //進程列表[完成-182]
+    SYSTEM_PROCESS_LIST(true, (short) 0x247),
     
     //神之子-開始強化[完成-180]
     ZERO_SCROLL_START(true, (short) 0x7FFE),
@@ -665,6 +710,7 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     LOAD_PLAYER_SCCUCESS(true, (short) 0x7FFE),
     // 箭座控制[完成]
     ARROW_BLASTER_ACTION(true, (short) 0x7FFE),
+    
     // 遊戲嚮導[完成-179]
     GUIDE_TRANSFER(true, (short) 0x7FFE),
     
@@ -719,12 +765,24 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     AUTO_AGGRO(true, (short) 0x7FFE),
     // 怪物自爆
     MONSTER_BOMB(true, (short) 0x7FFE),
-    // Npc動作(包括說話)[完成-179]
-    NPC_ACTION(true, (short) 0x7FFE),
-    // 拾取物品[完成-179]
-    ITEM_PICKUP(true, (short) 0x7FFE),
-    // 攻擊箱子
-    DAMAGE_REACTOR(true, (short) 0x7FFE),
+    // Npc動作(包括說話)[完成-182]
+    NPC_ACTION(true, (short) 0x303),
+    
+    // 304
+    // 305
+    // 306
+    // 307
+    // 308
+    // 309
+    
+    // 拾取物品[完成]
+    ITEM_PICKUP(true, (short) 0x30A),
+    
+    // 30B
+    // 30C
+    
+    // 攻擊箱子[完成-182]
+    DAMAGE_REACTOR(true, (short) 0x30D),
     // 雙擊箱子
     TOUCH_REACTOR(true, (short) 0x7FFE),
     // 召喚分解機[完成]
@@ -798,7 +856,7 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     // 使用世界樹的祝福(2048500)
     USE_ABYSS_SCROLL(true, (short) 0x7FFE),//175.1錯的
     MONSTER_BOOK_DROPS(true, (short) 0x7FFE),//7C
-
+    
     // General
     RSA_KEY(false, (short) 0x7FFE),
     MAPLETV((short) 0x7FFE),
@@ -826,89 +884,89 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     CHANGE_CODEX_SET(true, (short) 0x7FFE),//7A
     CODEX_UNK(true, (short) 0x7FFE),//7B
 
-    USE_NEBULITE(true, (short) 0xA0),//9E
-    USE_ALIEN_SOCKET(true, (short) 0xA1),//9F
-    USE_ALIEN_SOCKET_RESPONSE(true, (short) 0xA2),//A0
-    USE_NEBULITE_FUSION(true, (short) 0xA3),//A1
+    USE_NEBULITE(true, (short) 0x7FFE),//9E
+    USE_ALIEN_SOCKET(true, (short) 0x7FFE),//9F
+    USE_ALIEN_SOCKET_RESPONSE(true, (short) 0x7FFE),//A0
+    USE_NEBULITE_FUSION(true, (short) 0x7FFE),//A1
 
-    TOT_GUIDE(true, (short) 0xB4),//B6
+    TOT_GUIDE(true, (short) 0x7FFE),//B6
 
-    GET_BOOK_INFO(true, (short) 0x999),//DC
-    USE_FAMILIAR(true, (short) 0x999),//DD
-    SPAWN_FAMILIAR(true, (short) 0xE1),//DE
-    RENAME_FAMILIAR(true, (short) 0xE2),//DF
-    PET_BUFF(true, (short) 0xE3),//E0
+    GET_BOOK_INFO(true, (short) 0x7FFE),//DC
+    USE_FAMILIAR(true, (short) 0x7FFE),//DD
+    SPAWN_FAMILIAR(true, (short) 0x7FFE),//DE
+    RENAME_FAMILIAR(true, (short) 0x7FFE),//DF
+    PET_BUFF(true, (short) 0x7FFE),//E0
 
     //    BUFF_RESPONSE(true, (short) 0xEF),//EC
 
-    USE_TREASURE_CHEST(true, (short) 0x999),
-    REQUEST_FAMILY(true, (short) 0x146),//13D
-    OPEN_FAMILY(true, (short) 0x147),//13E
-    FAMILY_OPERATION(true, (short) 0x148),//13F
-    DELETE_JUNIOR(true, (short) 0x149),//140
-    DELETE_SENIOR(true, (short) 0x14A),//141
-    ACCEPT_FAMILY(true, (short) 0x14B),//142
-    USE_FAMILY(true, (short) 0x14C),//143
-    FAMILY_PRECEPT(true, (short) 0x14D),//144
-    FAMILY_SUMMON(true, (short) 0x14E),//145
-    SOLOMON_EXP(true, (short) 0x151),//151
-    NEW_YEAR_CARD(true, (short) 0x11E),
-    XMAS_SURPRISE(true, (short) 0x111),
-    TWIN_DRAGON_EGG(true, (short) 0x112),
-    YOUR_INFORMATION(true, (short) 0x16F),//163
-    FIND_FRIEND(true, (short) 0x170),//164
-    PINKBEAN_CHOCO_OPEN(true, (short) 0x171),//165
-    PINKBEAN_CHOCO_SUMMON(true, (short) 0x172),//166
-    BUY_SILENT_CRUSADE(true, (short) 0x127),
-    CASSANDRAS_COLLECTION(true, (short) 0x178),//new v145
-    BUDDY_ADD(true, (short) 0x1A2),
+    USE_TREASURE_CHEST(true, (short) 0x7FFE),
+    REQUEST_FAMILY(true, (short) 0x7FFE),//13D
+    OPEN_FAMILY(true, (short) 0x7FFE),//13E
+    FAMILY_OPERATION(true, (short) 0x7FFE),//13F
+    DELETE_JUNIOR(true, (short) 0x7FFE),//140
+    DELETE_SENIOR(true, (short) 0x7FFE),//141
+    ACCEPT_FAMILY(true, (short) 0x7FFE),//142
+    USE_FAMILY(true, (short) 0x7FFE),//143
+    FAMILY_PRECEPT(true, (short) 0x7FFE),//144
+    FAMILY_SUMMON(true, (short) 0x7FFE),//145
+    SOLOMON_EXP(true, (short) 0x7FFE),//151
+    NEW_YEAR_CARD(true, (short) 0x7FFE),
+    XMAS_SURPRISE(true, (short) 0x7FFE),
+    TWIN_DRAGON_EGG(true, (short) 0x7FFE),
+    YOUR_INFORMATION(true, (short) 0x7FFE),//163
+    FIND_FRIEND(true, (short) 0x7FFE),//164
+    PINKBEAN_CHOCO_OPEN(true, (short) 0x7FFE),//165
+    PINKBEAN_CHOCO_SUMMON(true, (short) 0x7FFE),//166
+    BUY_SILENT_CRUSADE(true, (short) 0x7FFE),
+    CASSANDRAS_COLLECTION(true, (short) 0x7FFE),//new v145
+    BUDDY_ADD(true, (short) 0x7FFE),
     //
 
     //HAKU_1D8(true, (short) 0x1D8),//test
     //HAKU_1D9(true, (short) 0x1D9),//test
-    PVP_SUMMON(true, (short) 0x1CE),//1BE
+    PVP_SUMMON(true, (short) 0x7FFE),//1BE
 
-    MOVE_FAMILIAR(true, (short) 0x1DC),//1DC
-    TOUCH_FAMILIAR(true, (short) 0x1DD),//1DD
-    ATTACK_FAMILIAR(true, (short) 0x1DE),//1DE
-    REVEAL_FAMILIAR(true, (short) 0x1DF),//1DF
+    MOVE_FAMILIAR(true, (short) 0x7FFE),//1DC
+    TOUCH_FAMILIAR(true, (short) 0x7FFE),//1DD
+    ATTACK_FAMILIAR(true, (short) 0x7FFE),//1DE
+    REVEAL_FAMILIAR(true, (short) 0x7FFE),//1DF
 
-    FRIENDLY_DAMAGE(true, (short) 0x21B),//211
-    HYPNOTIZE_DMG(true, (short) 0x21D),//213
+    FRIENDLY_DAMAGE(true, (short) 0x7FFE),//211
+    HYPNOTIZE_DMG(true, (short) 0x7FFE),//213
 
-    MOB_BOMB(true, (short) 0x221),//217
-    MOB_NODE(true, (short) 0x222),//218
-    DISPLAY_NODE(true, (short) 0x223),//219
-    MONSTER_CARNIVAL(true, (short) 0x224),//21A
+    MOB_BOMB(true, (short) 0x7FFE),//217
+    MOB_NODE(true, (short) 0x7FFE),//218
+    DISPLAY_NODE(true, (short) 0x7FFE),//219
+    MONSTER_CARNIVAL(true, (short) 0x7FFE),//21A
 
-    CLICK_REACTOR(true, (short) 0x23A),//230
-    CANDY_RANKING(true, (short) 0x185),
-    COCONUT(true, (short) 0x186),
-    SHIP_OBJECT(true, (short) 0x999),
-    PLACE_FARM_OBJECT(false, (short) 0x278),
-    FARM_SHOP_BUY(false, (short) 0x27D),
-    FARM_COMPLETE_QUEST(false, (short) 0x281),
-    FARM_NAME(false, (short) 0x282),
-    HARVEST_FARM_BUILDING(false, (short) 0x283),
-    USE_FARM_ITEM(false, (short) 0x284),
-    RENAME_MONSTER(false, (short) 0x999),
-    NURTURE_MONSTER(false, (short) 0x295),
-    EXIT_FARM(false, (short) 0x299),
-    FARM_QUEST_CHECK(false, (short) 0x29D),
-    FARM_FIRST_ENTRY(false, (short) 0x2A8),
-    PYRAMID_BUY_ITEM(true, (short) 0x999),
-    CLASS_COMPETITION(true, (short) 0x999),
-    MAGIC_WHEEL(true, (short) 0x999),
-    BLACK_FRIDAY(true, (short) 0x2BE),
-    RECEIVE_GIFT_EFFECT(true, (short) 0x2F5),//new v145
-    UPDATE_RED_LEAF(true, (short) 0x29C),
+    CLICK_REACTOR(true, (short) 0x7FFE),//230
+    CANDY_RANKING(true, (short) 0x7FFE),
+    COCONUT(true, (short) 0x7FFE),
+    SHIP_OBJECT(true, (short) 0x7FFE),
+    PLACE_FARM_OBJECT(false, (short) 0x7FFE),
+    FARM_SHOP_BUY(false, (short) 0x7FFE),
+    FARM_COMPLETE_QUEST(false, (short) 0x7FFE),
+    FARM_NAME(false, (short) 0x7FFE),
+    HARVEST_FARM_BUILDING(false, (short) 0x7FFE),
+    USE_FARM_ITEM(false, (short) 0x7FFE),
+    RENAME_MONSTER(false, (short) 0x7FFE),
+    NURTURE_MONSTER(false, (short) 0x7FFE),
+    EXIT_FARM(false, (short) 0x7FFE),
+    FARM_QUEST_CHECK(false, (short) 0x7FFE),
+    FARM_FIRST_ENTRY(false, (short) 0x7FFE),
+    PYRAMID_BUY_ITEM(true, (short) 0x7FFE),
+    CLASS_COMPETITION(true, (short) 0x7FFE),
+    MAGIC_WHEEL(true, (short) 0x7FFE),
+    BLACK_FRIDAY(true, (short) 0x7FFE),
+    RECEIVE_GIFT_EFFECT(true, (short) 0x7FFE),//new v145
+    UPDATE_RED_LEAF(true, (short) 0x7FFE),
     //Not Placed:
-    SPECIAL_STAT(false, (short) 0x10C),//107
+    SPECIAL_STAT(false, (short) 0x7FFE),//107
 
-    DRESSUP_TIME(true, (short) 0x999),
-    OS_INFORMATION(true, (short) 0x1E6),//1D6
-    LUCKY_LOGOUT(true, (short) 0x2B6),
-    MESSENGER_RANKING(true, (short) 0x1DD),
+    DRESSUP_TIME(true, (short) 0x7FFE),
+    OS_INFORMATION(true, (short) 0x7FFE),//1D6
+    LUCKY_LOGOUT(true, (short) 0x7FFE),
+    MESSENGER_RANKING(true, (short) 0x7FFE),
     UNKNOWN((short) 0x7FFE);
     private short code;
 

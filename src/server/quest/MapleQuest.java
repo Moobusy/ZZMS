@@ -22,6 +22,7 @@ import server.farm.MapleFarmQuestRequirement;
 import tools.Pair;
 import tools.StringUtil;
 import tools.packet.CField.EffectPacket;
+import tools.packet.provider.SpecialEffectType;
 
 public class MapleQuest implements Serializable {
 
@@ -334,8 +335,8 @@ public class MapleQuest implements Serializable {
             // we save forfeits only for logging purposes, they shouldn't matter anymore
             // completion time is set by the constructor
 
-            c.getClient().getSession().write(EffectPacket.showQuetCompleteEffect());
-            c.getMap().broadcastMessage(c, EffectPacket.showQuetCompleteEffect(c), false);
+            c.getClient().getSession().write(EffectPacket.showEffect(null, SpecialEffectType.QUET_COMPLETE));
+            c.getMap().broadcastMessage(c, EffectPacket.showEffect(c, SpecialEffectType.QUET_COMPLETE), false);
         }
     }
 
@@ -372,8 +373,8 @@ public class MapleQuest implements Serializable {
         final MapleQuestStatus newStatus = new MapleQuestStatus(this, (byte) 2, npc);
         newStatus.setForfeited(c.getQuest(this).getForfeited());
         c.updateQuest(newStatus);
-        c.getClient().getSession().write(EffectPacket.showQuetCompleteEffect());
-        c.getMap().broadcastMessage(c, EffectPacket.showQuetCompleteEffect(c), false);
+        c.getClient().getSession().write(EffectPacket.showEffect(null, SpecialEffectType.QUET_COMPLETE));
+        c.getMap().broadcastMessage(c, EffectPacket.showEffect(c, SpecialEffectType.QUET_COMPLETE), false);
     }
 
     public int getId() {

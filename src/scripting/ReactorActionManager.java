@@ -126,7 +126,7 @@ public class ReactorActionManager extends AbstractPlayerInteraction {
             }
         }
         if (bigby != null) {
-            bigby.forceHitReactor((byte) (bigby.getState() + 1));
+            bigby.forceHitReactor(c.getPlayer(), (byte) (bigby.getState() + 1));
             if (bigby.getState() == 10) {
                 return 2;
             }

@@ -219,6 +219,7 @@ public class EquipmentEnchant {
         if (ItemConstants.類型.武器(eq.getItemId())) {
             switch (reqJob) {
                 case 0: {
+                    
                     scrolls.add(EchantScroll.攻擊_力量_100);
                     scrolls.add(EchantScroll.攻擊_力量_70);
                     scrolls.add(EchantScroll.攻擊_力量_30);

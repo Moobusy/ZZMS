@@ -20,6 +20,7 @@
  */
 package server.maps;
 
+import client.MapleCharacter;
 import client.MapleClient;
 import java.awt.Rectangle;
 import scripting.ReactorScriptManager;
@@ -133,10 +134,10 @@ public class MapleReactor extends MapleMapObject {
         ReactorScriptManager.getInstance().act(c, this);
     }
 
-    public void forceHitReactor(final byte newState) {
+    public void forceHitReactor(final MapleCharacter c, final byte newState) {
         setState(newState);
         setTimerActive(false);
-        map.broadcastMessage(CField.triggerReactor(this, (short) 0));
+        map.broadcastMessage(CField.triggerReactor(c, this, (short) 0));
     }
 
     //hitReactor command for item-triggered reactors
@@ -145,7 +146,7 @@ public class MapleReactor extends MapleMapObject {
     }
 
     public void forceTrigger() {
-        map.broadcastMessage(CField.triggerReactor(this, (short) 0));
+        map.broadcastMessage(CField.triggerReactor(null, this, (short) 0));
     }
 
     public void delayedDestroyReactor(long delay) {
@@ -168,14 +169,14 @@ public class MapleReactor extends MapleMapObject {
                     if ((stats.getType(state) < 100 || stats.getType(state) == 999) && delay > 0) { //reactor broken
                         map.destroyReactor(getObjectId());
                     } else { //item-triggered on final step
-                        map.broadcastMessage(CField.triggerReactor(this, stance));
+                        map.broadcastMessage(CField.triggerReactor(c.getPlayer(), this, stance));
                     }
                     //if (rid > 200011) {
                     ReactorScriptManager.getInstance().act(c, this);
                     //}
                 } else { //reactor not broken yet
                     boolean done = false;
-                    map.broadcastMessage(CField.triggerReactor(this, stance)); //magatia is weird cause full beaker can be activated by gm hat o.o
+                    map.broadcastMessage(CField.triggerReactor(c.getPlayer(), this, stance)); //magatia is weird cause full beaker can be activated by gm hat o.o
                     if (state == stats.getNextState(state) || rid == 2618000 || rid == 2309000) { //current state = next state, looping reactor
                         if (rid > 200011) {
                             ReactorScriptManager.getInstance().act(c, this);
@@ -186,7 +187,7 @@ public class MapleReactor extends MapleMapObject {
                         if (!done && rid > 200011) {
                             ReactorScriptManager.getInstance().act(c, this);
                         }
-                        scheduleSetState(state, oldState, stats.getTimeOut(state));
+                        scheduleSetState(c.getPlayer(), state, oldState, stats.getTimeOut(state));
                     }
                 }
             }
@@ -224,12 +225,12 @@ public class MapleReactor extends MapleMapObject {
         }, delay);
     }
 
-    public void scheduleSetState(final byte oldState, final byte newState, long delay) {
+    public void scheduleSetState(final MapleCharacter c, final byte oldState, final byte newState, long delay) {
         MapTimer.getInstance().schedule(new Runnable() {
             @Override
             public void run() {
                 if (MapleReactor.this.state == oldState) {
-                    forceHitReactor(newState);
+                    forceHitReactor(c, newState);
                 }
             }
         }, delay);

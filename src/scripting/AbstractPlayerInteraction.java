@@ -55,6 +55,7 @@ import tools.packet.CField.UIPacket;
 import tools.packet.CWvsContext;
 import tools.packet.CWvsContext.InfoPacket;
 import tools.packet.PetPacket;
+import tools.packet.provider.SpecialEffectType;
 
 public abstract class AbstractPlayerInteraction {
 
@@ -1082,7 +1083,7 @@ public abstract class AbstractPlayerInteraction {
         c.getPlayer().updateInfoQuest(7215, "0");
         //c.getSession().write(InfoPacket.updateInfoQuest(1207, "min=1;tuto=1")); //old - 1207, "pt=1;min=4;belt=1;tuto=1")); //todo
         //c.getSession().write(InfoPacket.updateInfoQuest(7281, "item=0;chk=0;cNum=0;sec=" + sec + ";stage=0;lBonus=0"));
-        c.getSession().write(EffectPacket.Mulung_DojoUp2());
+        c.getSession().write(EffectPacket.showEffect(null, SpecialEffectType.MULUNG_DOJO_UP));
         c.getSession().write(CField.instantMapWarp((byte) 6));
     }
 

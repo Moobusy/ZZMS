@@ -3058,7 +3058,7 @@ public class InventoryHandler {
                     if (c.getPlayer().getInventory(MapleInventoryType.CASH).getNumFreeSlot() >= 1 && c.getPlayer().getInventory(MapleInventoryType.EQUIP).getNumFreeSlot() >= 1) {
                         if (Randomizer.nextInt(100) < 30) { //30% for Hilla's Pet
                             if (MapleInventoryManipulator.checkSpace(c, 5000217, 1, "") && MapleInventoryManipulator.removeById(c, MapleInventoryType.USE, toUse.getItemId(), 1, true, false)) {
-                                MapleInventoryManipulator.addById(c, 5000217, (short) 1, "", MaplePet.createPet(5000217, "Blackheart", 1, 0, 100, MapleInventoryIdentifier.getInstance(), 0, (short) 0, 0), 45, MapleInventoryManipulator.DAY, "從 " + toUse + " 的道具腳本中獲得, 時間:" + FileoutputUtil.CurrentReadable_Date());
+                                MapleInventoryManipulator.addById(c, 5000217, (short) 1, "", MaplePet.createPet(5000217, "Blackheart", 1, 0, 100, MapleInventoryIdentifier.getInstance(), 0, (short) 0x1E7F, 0), 45, MapleInventoryManipulator.DAY, "從 " + toUse + " 的道具腳本中獲得, 時間:" + FileoutputUtil.CurrentReadable_Date());
                             } else {
                                 c.getPlayer().dropMessage(0, "Please make more space");
                             }
@@ -5241,7 +5241,7 @@ public class InventoryHandler {
                         MapleInventoryManipulator.addFromDrop(c, mapitem.getItem(), true/*, mapitem.getDropper() instanceof MapleMonster*/);
                         removeItem(chr, mapitem, ob);
                     } else {
-                        MapleInventoryManipulator.addById(c, mapitem.getItemId(), (short) 1, "", MaplePet.createPet(mapitem.getItemId(), MapleItemInformationProvider.getInstance().getName(mapitem.getItemId()), 1, 0, 100, MapleInventoryIdentifier.getInstance(), 0, (short) 0, 0), 90, MapleInventoryManipulator.DAY, null);
+                        MapleInventoryManipulator.addById(c, mapitem.getItemId(), (short) 1, "", MaplePet.createPet(mapitem.getItemId(), MapleItemInformationProvider.getInstance().getName(mapitem.getItemId()), 1, 0, 100, MapleInventoryIdentifier.getInstance(), 0, (short) 0x1E7F, 0), 90, MapleInventoryManipulator.DAY, null);
                         removeItem_Pet(chr, mapitem, mapitem.getItemId());
                     }
                 } else {

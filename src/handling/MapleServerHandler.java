@@ -184,7 +184,7 @@ public class MapleServerHandler extends IoHandlerAdapter {
 
     @Override
     public void sessionClosed(final IoSession session) throws Exception {
-        final MapleClient client = (MapleClient) session.getAttribute(MapleClient.CLIENT_KEY);
+        MapleClient client = (MapleClient) session.getAttribute(MapleClient.CLIENT_KEY);
 
         if (client != null) {
             try {
@@ -194,6 +194,7 @@ public class MapleServerHandler extends IoHandlerAdapter {
                 session.close(true);
                 session.removeAttribute(MapleClient.CLIENT_KEY);
                 session.removeAttribute(MaplePacketDecoder.DECODER_STATE_KEY);
+                client = null;
             }
         }
         super.sessionClosed(session);

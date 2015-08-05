@@ -10,10 +10,6 @@ import tools.EncodingDetect;
 
 public enum RecvPacketOpcode implements WritableIntValueHolder {
 
-    
-    
-    
-    
     // 未知[完成-179] [01 00 00 00 00 00 00 00 00]
     STRANGE_DATA(false, (short) 0x2A),
     
@@ -811,23 +807,23 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     // 0x2CB 【楓葉戰士選擇模式】
 
     // 玩家更新
-    PLAYER_UPDATE(true, (short) 0x7FFE),
+    PLAYER_UPDATE(true, (short) 0x3B3),
     // 購物商城更新[完成]
-    CS_UPDATE(true, (short) 0x7FFE),
-    // 購買點數道具[完成-179]
-    BUY_CS_ITEM(true, (short) 0x7FFE),
+    CS_UPDATE(true, (short) 0x3B4),
+    // 購買點數道具[完成-182]
+    BUY_CS_ITEM(true, (short) 0x3B5),
     // 使用兌換券[完成]
-    COUPON_CODE(true, (short) 0x7FFE),
+    COUPON_CODE(true, (short) 0x3B6),
     
-    // 0x34B
+    // 0x3B7
     
     // 購物商城送禮[完成]
-    CS_GIFT(true, (short) 0x7FFE),
+    CS_GIFT(true, (short) 0x3B8),
     
-    // 0x34D
+    // 0x3B9
     
     // 儲存造型設計[完成]
-    CASH_CATEGORY(true, (short) 0x7FFE),
+    CASH_CATEGORY(true, (short) 0x3BA),
     
     // 0x34F
     // 0x350
@@ -854,8 +850,8 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     REWARD(true, (short) 0x3AE),
     
     // 使用世界樹的祝福(2048500)
-    USE_ABYSS_SCROLL(true, (short) 0x7FFE),//175.1錯的
-    MONSTER_BOOK_DROPS(true, (short) 0x7FFE),//7C
+    USE_ABYSS_SCROLL(true, (short) 0x7FFE),
+    MONSTER_BOOK_DROPS(true, (short) 0x7FFE),
     
     // General
     RSA_KEY(false, (short) 0x7FFE),
@@ -874,72 +870,62 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     ENABLE_SPECIAL_CREATION(true, (short) 0x7FFE),
     CREATE_SPECIAL_CHAR(true, (short) 0x7FFE),
     AUTH_SECOND_PASSWORD(true, (short) 0x7FFE),
-    WRONG_PASSWORD(false, (short) 0x7FFE),//v145
-
-    /*
-     * Channel Opcodes.
-     * Used for in-game packets.
-     */
+    WRONG_PASSWORD(false, (short) 0x7FFE),
     ENTER_FARM(true, (short) 0x7FFE),
-    CHANGE_CODEX_SET(true, (short) 0x7FFE),//7A
-    CODEX_UNK(true, (short) 0x7FFE),//7B
+    CHANGE_CODEX_SET(true, (short) 0x7FFE),
+    CODEX_UNK(true, (short) 0x7FFE),
 
-    USE_NEBULITE(true, (short) 0x7FFE),//9E
-    USE_ALIEN_SOCKET(true, (short) 0x7FFE),//9F
-    USE_ALIEN_SOCKET_RESPONSE(true, (short) 0x7FFE),//A0
-    USE_NEBULITE_FUSION(true, (short) 0x7FFE),//A1
+    USE_NEBULITE(true, (short) 0x7FFE),
+    USE_ALIEN_SOCKET(true, (short) 0x7FFE),
+    USE_ALIEN_SOCKET_RESPONSE(true, (short) 0x7FFE),
+    USE_NEBULITE_FUSION(true, (short) 0x7FFE),
 
-    TOT_GUIDE(true, (short) 0x7FFE),//B6
+    TOT_GUIDE(true, (short) 0x7FFE),
 
-    GET_BOOK_INFO(true, (short) 0x7FFE),//DC
-    USE_FAMILIAR(true, (short) 0x7FFE),//DD
-    SPAWN_FAMILIAR(true, (short) 0x7FFE),//DE
-    RENAME_FAMILIAR(true, (short) 0x7FFE),//DF
-    PET_BUFF(true, (short) 0x7FFE),//E0
-
-    //    BUFF_RESPONSE(true, (short) 0xEF),//EC
-
+    GET_BOOK_INFO(true, (short) 0x7FFE),
+    USE_FAMILIAR(true, (short) 0x7FFE),
+    SPAWN_FAMILIAR(true, (short) 0x7FFE),
+    RENAME_FAMILIAR(true, (short) 0x7FFE),
+    PET_BUFF(true, (short) 0x7FFE),
     USE_TREASURE_CHEST(true, (short) 0x7FFE),
-    REQUEST_FAMILY(true, (short) 0x7FFE),//13D
-    OPEN_FAMILY(true, (short) 0x7FFE),//13E
-    FAMILY_OPERATION(true, (short) 0x7FFE),//13F
-    DELETE_JUNIOR(true, (short) 0x7FFE),//140
-    DELETE_SENIOR(true, (short) 0x7FFE),//141
-    ACCEPT_FAMILY(true, (short) 0x7FFE),//142
-    USE_FAMILY(true, (short) 0x7FFE),//143
-    FAMILY_PRECEPT(true, (short) 0x7FFE),//144
-    FAMILY_SUMMON(true, (short) 0x7FFE),//145
-    SOLOMON_EXP(true, (short) 0x7FFE),//151
+    REQUEST_FAMILY(true, (short) 0x7FFE),
+    OPEN_FAMILY(true, (short) 0x7FFE),
+    FAMILY_OPERATION(true, (short) 0x7FFE),
+    DELETE_JUNIOR(true, (short) 0x7FFE),
+    DELETE_SENIOR(true, (short) 0x7FFE),
+    ACCEPT_FAMILY(true, (short) 0x7FFE),
+    USE_FAMILY(true, (short) 0x7FFE),
+    FAMILY_PRECEPT(true, (short) 0x7FFE),
+    FAMILY_SUMMON(true, (short) 0x7FFE),
+    SOLOMON_EXP(true, (short) 0x7FFE),
     NEW_YEAR_CARD(true, (short) 0x7FFE),
     XMAS_SURPRISE(true, (short) 0x7FFE),
     TWIN_DRAGON_EGG(true, (short) 0x7FFE),
-    YOUR_INFORMATION(true, (short) 0x7FFE),//163
-    FIND_FRIEND(true, (short) 0x7FFE),//164
-    PINKBEAN_CHOCO_OPEN(true, (short) 0x7FFE),//165
-    PINKBEAN_CHOCO_SUMMON(true, (short) 0x7FFE),//166
+    YOUR_INFORMATION(true, (short) 0x7FFE),
+    FIND_FRIEND(true, (short) 0x7FFE),
+    PINKBEAN_CHOCO_OPEN(true, (short) 0x7FFE),
+    PINKBEAN_CHOCO_SUMMON(true, (short) 0x7FFE),
     BUY_SILENT_CRUSADE(true, (short) 0x7FFE),
-    CASSANDRAS_COLLECTION(true, (short) 0x7FFE),//new v145
+    CASSANDRAS_COLLECTION(true, (short) 0x7FFE),
     BUDDY_ADD(true, (short) 0x7FFE),
-    //
+    //HAKU_1D8(true, (short) 0x1D8),
+    //HAKU_1D9(true, (short) 0x1D9),
+    PVP_SUMMON(true, (short) 0x7FFE),
 
-    //HAKU_1D8(true, (short) 0x1D8),//test
-    //HAKU_1D9(true, (short) 0x1D9),//test
-    PVP_SUMMON(true, (short) 0x7FFE),//1BE
+    MOVE_FAMILIAR(true, (short) 0x7FFE),
+    TOUCH_FAMILIAR(true, (short) 0x7FFE),
+    ATTACK_FAMILIAR(true, (short) 0x7FFE),
+    REVEAL_FAMILIAR(true, (short) 0x7FFE),
 
-    MOVE_FAMILIAR(true, (short) 0x7FFE),//1DC
-    TOUCH_FAMILIAR(true, (short) 0x7FFE),//1DD
-    ATTACK_FAMILIAR(true, (short) 0x7FFE),//1DE
-    REVEAL_FAMILIAR(true, (short) 0x7FFE),//1DF
+    FRIENDLY_DAMAGE(true, (short) 0x7FFE),
+    HYPNOTIZE_DMG(true, (short) 0x7FFE),
 
-    FRIENDLY_DAMAGE(true, (short) 0x7FFE),//211
-    HYPNOTIZE_DMG(true, (short) 0x7FFE),//213
+    MOB_BOMB(true, (short) 0x7FFE),
+    MOB_NODE(true, (short) 0x7FFE),
+    DISPLAY_NODE(true, (short) 0x7FFE),
+    MONSTER_CARNIVAL(true, (short) 0x7FFE),
 
-    MOB_BOMB(true, (short) 0x7FFE),//217
-    MOB_NODE(true, (short) 0x7FFE),//218
-    DISPLAY_NODE(true, (short) 0x7FFE),//219
-    MONSTER_CARNIVAL(true, (short) 0x7FFE),//21A
-
-    CLICK_REACTOR(true, (short) 0x7FFE),//230
+    CLICK_REACTOR(true, (short) 0x7FFE),
     CANDY_RANKING(true, (short) 0x7FFE),
     COCONUT(true, (short) 0x7FFE),
     SHIP_OBJECT(true, (short) 0x7FFE),
@@ -958,13 +944,13 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     CLASS_COMPETITION(true, (short) 0x7FFE),
     MAGIC_WHEEL(true, (short) 0x7FFE),
     BLACK_FRIDAY(true, (short) 0x7FFE),
-    RECEIVE_GIFT_EFFECT(true, (short) 0x7FFE),//new v145
+    RECEIVE_GIFT_EFFECT(true, (short) 0x7FFE),
     UPDATE_RED_LEAF(true, (short) 0x7FFE),
     //Not Placed:
-    SPECIAL_STAT(false, (short) 0x7FFE),//107
+    SPECIAL_STAT(false, (short) 0x7FFE),
 
     DRESSUP_TIME(true, (short) 0x7FFE),
-    OS_INFORMATION(true, (short) 0x7FFE),//1D6
+    OS_INFORMATION(true, (short) 0x7FFE),
     LUCKY_LOGOUT(true, (short) 0x7FFE),
     MESSENGER_RANKING(true, (short) 0x7FFE),
     UNKNOWN((short) 0x7FFE);

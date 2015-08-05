@@ -187,7 +187,8 @@ public class MaplePet implements Serializable {
 
     public static final MaplePet createPet(final int itemid, final int uniqueid) {
         MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
-        return createPet(itemid, ii.getName(itemid), 1, 0, 100, uniqueid, itemid == 5000054 ? 18000 : 0, ii.getPetFlagInfo(itemid), 0);
+        // 寵物技能修正為台版官服預設值
+        return createPet(itemid, ii.getName(itemid), 1, 0, 100, uniqueid, itemid == 5000054 ? 18000 : 0, /*ii.getPetFlagInfo(itemid)*/(short) 0x1E7F, 0);
     }
 
     public static final MaplePet createPet(int itemid, String name, int level, int closeness, int fullness, int uniqueid, int secondsLeft, short flag, int skillId) {

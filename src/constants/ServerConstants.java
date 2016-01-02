@@ -51,9 +51,9 @@ public class ServerConstants {
 
     // GMS stuff
     public static boolean TESPIA = false;
-    public static short MAPLE_VERSION = (short) 182;
-    public static String MAPLE_PATCH = "2";
-    public static MapleType MAPLE_TYPE = MapleType.台港澳;
+    public static short MAPLE_VERSION = (short) 184;
+    public static String MAPLE_PATCH = "1";
+    public static MapleType MAPLE_TYPE = MapleType.台灣;
 
     // Server stuff
     public static boolean USE_LOCALHOST = false;
@@ -88,16 +88,16 @@ public class ServerConstants {
         日本(3, "Shift_JIS"),
         中国(4, "GB18030"),
         //5 - 測試機
-        台港澳(6, "BIG5-HKSCS"),
+        台灣(6, "BIG5-HKSCS"),
         SEA(7, "UTF-8"),
         GLOBAL(8, "UTF-8"),
         BRAZIL(9, "UTF-8");
         byte type;
-        final String ascii;
+        final String ANSI;
 
-        private MapleType(int type, String ascii) {
+        private MapleType(int type, String ANSI) {
             this.type = (byte) type;
-            this.ascii = ascii;
+            this.ANSI = ANSI;
         }
 
         public byte getType() {
@@ -111,8 +111,8 @@ public class ServerConstants {
             }
         }
 
-        public String getAscii() {
-            return ascii;
+        public String getANSI() {
+            return ANSI;
         }
 
         public void setType(int type) {

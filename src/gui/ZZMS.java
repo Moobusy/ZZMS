@@ -26,6 +26,7 @@ import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.awt.Toolkit;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.Connection;
@@ -82,6 +83,7 @@ public class ZZMS extends javax.swing.JFrame {
     private ImageIcon icon = new ImageIcon(this.getClass().getClassLoader().getResource("Image/Icon.png"));
     private Map<Windows, javax.swing.JFrame> windows = new HashMap<>();
     private boolean charInitFinished = false;
+    private static boolean MYSQL = false;
 
     public static final ZZMS getInstance() {
         return instance;
@@ -122,6 +124,7 @@ public class ZZMS extends javax.swing.JFrame {
         //</editor-fold>
 
         initComponents();
+        worldList.setSelectedItem(WorldConstants.getMainWorld().name());
         resetWorldPanel();
         resetSetting(false);
     }
@@ -185,6 +188,68 @@ public class ZZMS extends javax.swing.JFrame {
         channelCount.setText(String.valueOf(world.getChannelCount()));
         worldTip.setText(String.valueOf(world.getWorldTip()));
         scrollingMessage.setText(String.valueOf(world.getScrollMessage()));
+    }
+
+    public static boolean runExe(String processName) {
+        return runExe(processName, null);
+    }
+
+    public static boolean runExe(String processName, String cmd) {
+        if (!(new File("MySQL/bin/mysqld.exe")).exists()) {
+            return false;
+        }
+        if (findProcess(processName)) {
+            killProcess(processName);
+        }
+        try {
+            Runtime.getRuntime().exec(processName + (cmd == null || cmd.isEmpty() ? "" : (" " + cmd)));
+        } catch (IOException ex) {
+            Logger.getLogger(ZZMS.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return true;
+    }
+
+    public static boolean killProcess(String processName) {
+        if (processName.split("/").length > 1) {
+            processName = processName.split("/")[processName.split("/").length - 1];
+        }
+        if (findProcess(processName)) {
+            try {
+                Runtime.getRuntime().exec("taskkill /F /IM " + processName);
+            } catch (IOException ex) {
+                Logger.getLogger(ZZMS.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean findProcess(String processName) {
+        if (processName.split("/").length > 1) {
+            processName = processName.split("/")[processName.split("/").length - 1];
+        }
+        BufferedReader bufferedReader = null;
+        try {
+            Process proc = Runtime.getRuntime().exec("cmd /c tasklist");
+            bufferedReader = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+            String line = null;
+            while ((line = bufferedReader.readLine()) != null) {
+                if (line.contains(processName)) {
+                    return true;
+                }
+            }
+            return false;
+        } catch (IOException ex) {
+            Logger.getLogger(ZZMS.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        } finally {
+            if (bufferedReader != null) {
+                try {
+                    bufferedReader.close();
+                } catch (Exception ex) {
+                }
+            }
+        }
     }
 
     private void initCharacterPannel() {
@@ -493,6 +558,69 @@ public class ZZMS extends javax.swing.JFrame {
         windows.get(w).setVisible(true);
     }
 
+    public void addCharTable(MapleCharacter chr) {
+        String sp = "";
+        for (int s = 0; s < chr.getRemainingSps().length; s++) {
+            sp += chr.getRemainingSps()[s];
+            if (s < chr.getRemainingSps().length - 1) {
+                sp += ",";
+            }
+        }
+        String hsp = "";
+        for (int s = 0; s < chr.getRemainingHSps().length; s++) {
+            hsp += chr.getRemainingHSps()[s];
+            if (s < chr.getRemainingHSps().length - 1) {
+                hsp += ",";
+            }
+        }
+        ((DefaultTableModel) charTable.getModel()).insertRow(charTable.getRowCount(), new Object[]{
+            "離線",
+            chr.getId(),
+            chr.getAccountID(),
+            chr.getWorld(),
+            chr.getName(),
+            chr.getLevel(),
+            chr.getExp(),
+            chr.getStr(),
+            chr.getDex(),
+            chr.getInt(),
+            chr.getLuk(),
+            chr.getStat().getHp(),
+            chr.getStat().getMp(),
+            chr.getStat().getMaxHp(),
+            chr.getStat().getMaxMp(),
+            chr.getMeso(),
+            chr.getJob(),
+            chr.getSkinColor(),
+            chr.getGender(),
+            chr.getFame(),
+            chr.getHair(),
+            chr.getFace(),
+            chr.getFaceMarking(),
+            chr.getTail(),
+            chr.getEars(),
+            chr.getRemainingAp(),
+            chr.getMapId(),
+            chr.getGMLevel(),
+            chr.getBuddyCapacity(),
+            chr.getGuildId(),
+            chr.getGuildRank(),
+            chr.getAllianceRank(),
+            sp,
+            hsp,
+        });
+    }
+
+    public void removeCharTable(int cid) {
+        for (int i = 0; i < charTable.getRowCount(); i++) {
+            int id = (Integer) charTable.getValueAt(i, 1);
+            if (id == cid) {
+                ((DefaultTableModel) charTable.getModel()).removeRow(i);
+                break;
+            }
+        }
+    }
+
     public void updateCharTable(boolean login, MapleCharacter chr) {
         if (chr == null) {
             return;
@@ -523,6 +651,7 @@ public class ZZMS extends javax.swing.JFrame {
                 charTable.setValueAt(chr.getFame(), i, j++);
                 charTable.setValueAt(chr.getHair(), i, j++);
                 charTable.setValueAt(chr.getFace(), i, j++);
+                charTable.setValueAt(chr.getFaceMarking(), i, j++);
                 charTable.setValueAt(chr.getTail(), i, j++);
                 charTable.setValueAt(chr.getEars(), i, j++);
                 charTable.setValueAt(chr.getRemainingAp(), i, j++);
@@ -542,9 +671,9 @@ public class ZZMS extends javax.swing.JFrame {
                 charTable.setValueAt(sp, i, j++);
                 String hsp = "";
                 for (int s = 0; s < chr.getRemainingHSps().length; s++) {
-                    sp += chr.getRemainingHSps()[s];
+                    hsp += chr.getRemainingHSps()[s];
                     if (s < chr.getRemainingHSps().length - 1) {
-                        sp += ",";
+                        hsp += ",";
                     }
                 }
                 charTable.setValueAt(hsp, i, j++);
@@ -888,7 +1017,7 @@ public class ZZMS extends javax.swing.JFrame {
         jLabel45 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("真正楓之谷伺服端");
+        setTitle("真正楓之谷伺服端 Base on HelisiumDEV V148");
         setIconImage(icon.getImage());
         setResizable(false);
 
@@ -1718,7 +1847,7 @@ public class ZZMS extends javax.swing.JFrame {
             .addGroup(jPanel34Layout.createSequentialGroup()
                 .addComponent(jButton36, javax.swing.GroupLayout.PREFERRED_SIZE, 278, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton37, javax.swing.GroupLayout.DEFAULT_SIZE, 294, Short.MAX_VALUE))
+                .addComponent(jButton37, javax.swing.GroupLayout.DEFAULT_SIZE, 302, Short.MAX_VALUE))
             .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING)
         );
         jPanel34Layout.setVerticalGroup(
@@ -1796,7 +1925,7 @@ public class ZZMS extends javax.swing.JFrame {
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 870, Short.MAX_VALUE)
+            .addGap(0, 878, Short.MAX_VALUE)
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1809,7 +1938,7 @@ public class ZZMS extends javax.swing.JFrame {
         jPanel8.setLayout(jPanel8Layout);
         jPanel8Layout.setHorizontalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 870, Short.MAX_VALUE)
+            .addGap(0, 878, Short.MAX_VALUE)
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -2525,7 +2654,7 @@ public class ZZMS extends javax.swing.JFrame {
         jPanel28.setLayout(jPanel28Layout);
         jPanel28Layout.setHorizontalGroup(
             jPanel28Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 865, Short.MAX_VALUE)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 873, Short.MAX_VALUE)
         );
         jPanel28Layout.setVerticalGroup(
             jPanel28Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -2541,7 +2670,7 @@ public class ZZMS extends javax.swing.JFrame {
         jPanel29.setLayout(jPanel29Layout);
         jPanel29Layout.setHorizontalGroup(
             jPanel29Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 865, Short.MAX_VALUE)
+            .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 873, Short.MAX_VALUE)
         );
         jPanel29Layout.setVerticalGroup(
             jPanel29Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -2557,7 +2686,7 @@ public class ZZMS extends javax.swing.JFrame {
         jPanel30.setLayout(jPanel30Layout);
         jPanel30Layout.setHorizontalGroup(
             jPanel30Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 865, Short.MAX_VALUE)
+            .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 873, Short.MAX_VALUE)
         );
         jPanel30Layout.setVerticalGroup(
             jPanel30Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -2573,7 +2702,7 @@ public class ZZMS extends javax.swing.JFrame {
         jPanel31.setLayout(jPanel31Layout);
         jPanel31Layout.setHorizontalGroup(
             jPanel31Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 865, Short.MAX_VALUE)
+            .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 873, Short.MAX_VALUE)
         );
         jPanel31Layout.setVerticalGroup(
             jPanel31Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -2589,7 +2718,7 @@ public class ZZMS extends javax.swing.JFrame {
         jPanel32.setLayout(jPanel32Layout);
         jPanel32Layout.setHorizontalGroup(
             jPanel32Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane8, javax.swing.GroupLayout.DEFAULT_SIZE, 865, Short.MAX_VALUE)
+            .addComponent(jScrollPane8, javax.swing.GroupLayout.DEFAULT_SIZE, 873, Short.MAX_VALUE)
         );
         jPanel32Layout.setVerticalGroup(
             jPanel32Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -2615,7 +2744,7 @@ public class ZZMS extends javax.swing.JFrame {
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 870, Short.MAX_VALUE)
+            .addGap(0, 878, Short.MAX_VALUE)
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -2721,7 +2850,6 @@ public class ZZMS extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton16ActionPerformed
 
     private void jTextField13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField13ActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_jTextField13ActionPerformed
 
     private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton18ActionPerformed
@@ -2954,10 +3082,24 @@ public class ZZMS extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(null, "數據載入完成。");
     }//GEN-LAST:event_jButton43ActionPerformed
 
+    public static class Shutdown implements Runnable {
+
+        @Override
+        public void run() {
+            if (MYSQL) {
+                killProcess("mysqld.exe");
+            }
+        }
+    }
+
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
+        if (System.getProperties().getProperty("os.name").toLowerCase().contains("windows")) {
+            MYSQL = runExe("MySQL/bin/mysqld.exe", "--character-set-server=UTF8");
+        }
+        Runtime.getRuntime().addShutdownHook(new Thread(new Shutdown()));
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> ZZMS.getInstance().setVisible(true));
         Properties p = new Properties(System.getProperties());

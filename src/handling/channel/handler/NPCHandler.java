@@ -42,7 +42,8 @@ public class NPCHandler {
         int length = (int) slea.available();
         if (length == 10) {
             mplew.writeInt(slea.readInt());
-            mplew.writeShort(slea.readShort());
+            mplew.write(slea.readByte());
+            mplew.write(slea.readByte());
             mplew.writeInt(slea.readInt());
         } else if (length > 6) {
             mplew.write(slea.read(length - 9));
@@ -111,7 +112,10 @@ public class NPCHandler {
             if (c.getPlayer().isShowErr()) {
                 c.getPlayer().showInfo("NPC對話", true, "無法進行對話,hasBlockedInventory-" + chr.hasBlockedInventory());
             }
-            c.getPlayer().dropMessage(-1, "你當前已經和1個NPC對話了. 如果不是請輸入 @解卡 指令進行解卡。");
+            NPCConversationManager cm = NPCScriptManager.getInstance().getCM(c);
+            if (cm == null || (cm.getType() != ScriptType.ON_USER_ENTER && cm.getType() != ScriptType.ON_FIRST_USER_ENTER)) {
+                c.getPlayer().dropMessage(-1, "你當前已經和1個NPC對話了. 如果不是請輸入 @解卡 指令進行解卡。");
+            }
             return;
         }
         if (npc.hasShop()) {
@@ -204,7 +208,10 @@ public class NPCHandler {
                     if (c.getPlayer().isShowErr()) {
                         c.getPlayer().showInfo("NPC對話", true, "無法進行對話,hasBlockedInventory-" + chr.hasBlockedInventory());
                     }
-                    c.getPlayer().dropMessage(-1, "你當前已經和1個NPC對話了. 如果不是請輸入 @解卡 指令進行解卡。");
+                    NPCConversationManager cm = NPCScriptManager.getInstance().getCM(c);
+                    if (cm == null || (cm.getType() != ScriptType.ON_USER_ENTER && cm.getType() != ScriptType.ON_FIRST_USER_ENTER)) {
+                        c.getPlayer().dropMessage(-1, "你當前已經和1個NPC對話了. 如果不是請輸入 @解卡 指令進行解卡。");
+                    }
                     return;
                 }
                 //c.getPlayer().updateTick(slea.readInt());
@@ -217,7 +224,10 @@ public class NPCHandler {
                     if (c.getPlayer().isShowErr()) {
                         c.getPlayer().showInfo("NPC對話", true, "無法進行對話,hasBlockedInventory-" + chr.hasBlockedInventory());
                     }
-                    c.getPlayer().dropMessage(-1, "你當前已經和1個NPC對話了. 如果不是請輸入 @解卡 指令進行解卡。");
+                    NPCConversationManager cm = NPCScriptManager.getInstance().getCM(c);
+                    if (cm == null || (cm.getType() != ScriptType.ON_USER_ENTER && cm.getType() != ScriptType.ON_FIRST_USER_ENTER)) {
+                        c.getPlayer().dropMessage(-1, "你當前已經和1個NPC對話了. 如果不是請輸入 @解卡 指令進行解卡。");
+                    }
                     return;
                 }
                 //c.getPlayer().updateTick(slea.readInt());
@@ -292,7 +302,7 @@ public class NPCHandler {
                         storage.store(item);
                         chr.dropMessage(1, "道具欄空間不足。");
                     } else {
-                        MapleInventoryManipulator.addFromDrop(c, item, false);
+                        MapleInventoryManipulator.addFromDrop(c, item);
                         storage.sendTakenOut(c, GameConstants.getInventoryType(item.getItemId()));
                     }
                 } else {
@@ -400,28 +410,18 @@ public class NPCHandler {
     public static void NPCMoreTalk(final LittleEndianAccessor slea, final MapleClient c) {
         final byte lastMsg = slea.readByte(); // 00 (last msg type I think)
 
-        if (lastMsg == 0x12 && c.getPlayer().hasMapScript()) {
-            byte action = slea.readByte();
-            if (action != 1) {
+        if (lastMsg == 0x22) {
+            final NPCConversationManager cm = NPCScriptManager.getInstance().getCM(c);
+            if (cm == null || c.getPlayer().getConversation() == 0 || cm.getLastMsg() != lastMsg) {
                 return;
             }
-            byte lastbyte = slea.readByte(); // 00 = end chat, 01 == follow
-            if (lastbyte == 0) {
-                c.getSession().write(CWvsContext.enableActions());
+            cm.setLastMsg((byte) -1);
+            if (cm.getType() == ScriptType.QUEST_START) {
+                NPCScriptManager.getInstance().startQuest(c, (byte) 1, lastMsg, -1);
+            } else if (cm.getType() == ScriptType.QUEST_END) {
+                NPCScriptManager.getInstance().endQuest(c, (byte) 1, lastMsg, -1);
             } else {
-                switch (c.getPlayer().getMapScript().getLeft()) {
-                    case directionInfo:
-                        MapScriptMethods.startDirectionInfo(c.getPlayer(), true);
-                        break;
-                    case onFirstUserEnter:
-                        MapScriptMethods.startScript_FirstUser(c, c.getPlayer().getMapScript().getRight());
-                        break;
-                    case onUserEnter:
-                        MapScriptMethods.startScript_User(c, c.getPlayer().getMapScript().getRight());
-                        break;
-                }
-//                MapScriptMethods.startDirectionInfo(c.getPlayer(), lastMsg == 0x13);
-//                c.getSession().write(CWvsContext.enableActions());
+                NPCScriptManager.getInstance().action(c, (byte) 1, lastMsg, -1);
             }
             return;
         }
@@ -484,21 +484,6 @@ public class NPCHandler {
     }
 
     public static void DirectionComplete(final LittleEndianAccessor slea, final MapleClient c) {
-        if (c.getPlayer().hasMapScript()) {
-            switch (c.getPlayer().getMapScript().getLeft()) {
-                case directionInfo:
-                    MapScriptMethods.startDirectionInfo(c.getPlayer(), true);
-                    break;
-                case onFirstUserEnter:
-                    MapScriptMethods.startScript_FirstUser(c, c.getPlayer().getMapScript().getRight());
-                    break;
-                case onUserEnter:
-                    MapScriptMethods.startScript_User(c, c.getPlayer().getMapScript().getRight());
-                    break;
-            }
-            return;
-        }
-
         final NPCConversationManager cm = NPCScriptManager.getInstance().getCM(c);
 
         if (cm == null || c.getPlayer().getConversation() == 0) {
@@ -569,7 +554,6 @@ public class NPCHandler {
         //drpq level 105 weapons - ~420k per %; 2k per durability point
         //explorer level 30 weapons - ~10 mesos per %
         final int price = (int) Math.ceil(rPercentage * ii.getPrice(eq.getItemId()) / (ii.getReqLevel(eq.getItemId()) < 70 ? 100.0 : 1.0)); // / 100 for level 30?
-        //TODO: need more data on calculating off client
         if (c.getPlayer().getMeso() < price) {
             return;
         }
@@ -662,19 +646,20 @@ public class NPCHandler {
     public static void OpenQuickMoveNpc(final LittleEndianAccessor slea, final MapleClient c) {
         final int npcid = slea.readInt();
         if (c.getPlayer().hasBlockedInventory() || c.getPlayer().isInBlockedMap() || c.getPlayer().getLevel() < 10) {
-            c.getPlayer().dropMessage(-1, "你當前已經和1個NPC對話了. 如果不是請輸入 @解卡 指令進行解卡。");
+            NPCConversationManager cm = NPCScriptManager.getInstance().getCM(c);
+            if (cm == null || (cm.getType() != ScriptType.ON_USER_ENTER && cm.getType() != ScriptType.ON_FIRST_USER_ENTER)) {
+                c.getPlayer().dropMessage(-1, "你當前已經和1個NPC對話了. 如果不是請輸入 @解卡 指令進行解卡。");
+            }
             return;
         }
         int npcId = -1;
-        for (QuickMove qm : QuickMove.values()) {
-            if (qm.getMap() == c.getPlayer().getMapId()) {
-                List<QuickMove.QuickMoveNPC> qmn = new LinkedList();
-                long npcs = qm.getNPCFlag();
-                for (QuickMove.QuickMoveNPC npc : QuickMove.QuickMoveNPC.values()) {
-                    if ((npcs & npc.getValue()) != 0 && npc.getId() == npcid) {
-                        npcId = npcid;
-                        break;
-                    }
+        QuickMove qm = QuickMove.getByMap(c.getPlayer().getMapId());
+        if (qm != null) {
+            long npcs = qm.getNPCFlag();
+            for (QuickMove.QuickMoveNPC npc : QuickMove.QuickMoveNPC.values()) {
+                if ((npcs & npc.getValue()) != 0 && npc.getId() == npcid) {
+                    npcId = npcid;
+                    break;
                 }
             }
         }
@@ -693,6 +678,10 @@ public class NPCHandler {
             return;
         }
         final MapleNPC npc = MapleLifeFactory.getNPC(npcId);
+        if (npc == null) {
+            System.err.println("未找到QuickMove的NPC:" + npcId);
+            return;
+        }
         if (npc.hasShop()) {
             c.getPlayer().setConversation(1);
             npc.sendShop(c);
@@ -707,30 +696,27 @@ public class NPCHandler {
             return;
         }
         QuickMove.QuickMoveNPC quickMove = null;
-        for (QuickMove qm : QuickMove.values()) {
-            if (qm.getMap() == c.getPlayer().getMapId()) {
-                long npcs = qm.getNPCFlag();
-                int i = 0;
-                for (QuickMove.QuickMoveNPC npc : QuickMove.QuickMoveNPC.values()) {
-                    if (!npc.show() || (npcs & npc.getValue()) == 0) {
-                        continue;
-                    }
-                    if (selection == i++) {
-                        quickMove = npc;
-                        break;
-                    }
+        QuickMove qm = QuickMove.getByMap(c.getPlayer().getMapId());
+        int i = 0;
+        if (qm != null) {
+            long npcs = qm.getNPCFlag();
+            for (QuickMove.QuickMoveNPC npc : QuickMove.QuickMoveNPC.values()) {
+                if (!npc.show() || (npcs & npc.getValue()) == 0) {
+                    continue;
                 }
-                break;
+                if (selection == i++ && npc.getId() == 0) {
+                    quickMove = npc;
+                    break;
+                }
             }
         }
 
         if (quickMove == null && QuickMove.GLOBAL_NPC != 0 && !GameConstants.isBossMap(c.getPlayer().getMapId()) && !GameConstants.isTutorialMap(c.getPlayer().getMapId())) {
-            int i = 0;
             for (QuickMove.QuickMoveNPC npc : QuickMove.QuickMoveNPC.values()) {
                 if (!npc.show() || (QuickMove.GLOBAL_NPC & npc.getValue()) == 0) {
                     continue;
                 }
-                if (selection == i++) {
+                if (selection == i++ && npc.getId() == 0) {
                     quickMove = npc;
                     break;
                 }
@@ -744,8 +730,12 @@ public class NPCHandler {
         int npcId = 0;
         String special = null;
         switch (quickMove) {
+            case 彌莎:
+                npcId = 9000226;
+                special = "聚合功能";
+                break;
             default:
-                System.err.println("未處理QuickMove動作, 類型:" + quickMove.getType());
+                System.err.println("未處理QuickMove動作, 類型:" + quickMove.name());
         }
         if (npcId > 0) {
             final MapleNPC npc = MapleLifeFactory.getNPC(npcId);
@@ -753,7 +743,7 @@ public class NPCHandler {
                 c.getPlayer().setConversation(1);
                 npc.sendShop(c);
             } else {
-                NPCScriptManager.getInstance().start(c, npcId, null);
+                NPCScriptManager.getInstance().start(c, npcId, special);
             }
         }
     }

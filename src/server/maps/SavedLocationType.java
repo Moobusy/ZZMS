@@ -37,7 +37,9 @@ public enum SavedLocationType {
     PINK_ZAKUM(12),
     MONSTER_PARK(13),
     TUTORIAL(14),
-    BPRETURN(15);
+    BPRETURN(15),
+    CRYSTALGARDEN(16),
+    ;
     private final int index;
 
     private SavedLocationType(int index) {

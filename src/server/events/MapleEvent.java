@@ -88,12 +88,9 @@ public abstract class MapleEvent {
             chr.modifyCSPoints(1, cs, true);
             chr.dropMessage(5, "You gained " + cs + " cash.");
         } else if (reward == 2) {
-            chr.setVPoints(chr.getVPoints() + 1);
-            chr.dropMessage(5, "You gained 1 Vote Point.");
-        } else if (reward == 3) {
             chr.addFame(10);
             chr.dropMessage(5, "You gained 10 Fame.");
-        } else if (reward == 4) {
+        } else if (reward == 3) {
             chr.dropMessage(5, "There was no reward.");
         } else {
             int max_quantity = 1;

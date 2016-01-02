@@ -18,27 +18,31 @@ import tools.Pair;
 
 public enum ItemLoader {
 
-    INVENTORY("inventoryitems", "inventoryequipment", 0, "characterid"),
-    STORAGE("inventoryitems", "inventoryequipment", 1, "accountid"),
-    CASHSHOP("csitems", "csequipment", 2, "accountid"),
-    HIRED_MERCHANT("hiredmerchitems", "hiredmerchequipment", 5, "packageid"),
-    PACKAGE("dueyitems", "dueyequipment", 6, "packageid");
-    private final int value;
-    private final String table, table_equip, arg;
+    INVENTORY(0),
+    STORAGE(1, true),
+    CASHSHOP(2, true),
+    HIRED_MERCHANT(5),
+    PACKAGE(6),
+    MTS(8),
+    MTS_TRANSFER(9);
 
-    private ItemLoader(String table, String table_equip, int value, String arg) {
-        this.table = table;
-        this.table_equip = table_equip;
+    private final int value;
+    private final boolean account;
+
+    private ItemLoader(int value) {
         this.value = value;
-        this.arg = arg;
+        this.account = false;
+    }
+
+    private ItemLoader(int value, boolean account) {
+        this.value = value;
+        this.account = account;
     }
 
     public static boolean isExistsByUniqueid(int uniqueid) {
         for (ItemLoader il : ItemLoader.values()) {
             StringBuilder query = new StringBuilder();
-            query.append("SELECT * FROM ");
-            query.append(il.table);
-            query.append(" WHERE `type` = ? AND uniqueid = ?");
+            query.append("SELECT * FROM `inventoryitems` WHERE `type` = ? AND uniqueid = ?");
             try {
                 PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement(query.toString());
                 ps.setInt(1, il.value);
@@ -66,13 +70,8 @@ public enum ItemLoader {
     public Map<Long, Pair<Item, MapleInventoryType>> loadItems(boolean login, int id) throws SQLException {
         Map<Long, Pair<Item, MapleInventoryType>> items = new LinkedHashMap<>();
         StringBuilder query = new StringBuilder();
-        query.append("SELECT * FROM `");
-        query.append(table);
-        query.append("` LEFT JOIN `");
-        query.append(table_equip);
-        query.append("` USING (`inventoryitemid`) WHERE `type` = ?");
-        query.append(" AND `");
-        query.append(arg);
+        query.append("SELECT * FROM `inventoryitems` LEFT JOIN `inventoryequipment` USING (`inventoryitemid`) WHERE `type` = ? AND `");
+        query.append(account ? "accountid" : "characterid");
         query.append("` = ?");
 
         if (login) {
@@ -129,14 +128,14 @@ public enum ItemLoader {
                             equip.setPotential(rs.getInt("potential5"), 2, true);
                             equip.setPotential(rs.getInt("potential6"), 3, true);
                             equip.setFusionAnvil(rs.getInt("fusionAnvil"));
-                            equip.setSocket1(rs.getInt("socket1"));
-                            equip.setSocket2(rs.getInt("socket2"));
-                            equip.setSocket3(rs.getInt("socket3"));
+                            equip.setSocket(rs.getInt("socket1"), 1);
+                            equip.setSocket(rs.getInt("socket2"), 2);
+                            equip.setSocket(rs.getInt("socket3"), 3);
                             equip.setGiftFrom(rs.getString("sender"));
                             equip.setIncSkill(rs.getInt("incSkill"));
                             equip.setPVPDamage(rs.getShort("pvpDamage"));
                             equip.setCharmEXP(rs.getShort("charmEXP"));
-                            equip.setEnhanctBuff(rs.getByte("enhanctBuff"));
+                            equip.setEnhanctBuff(rs.getShort("enhanctBuff"));
                             equip.setReqLevel(rs.getByte("reqLevel"));
                             equip.setYggdrasilWisdom(rs.getByte("yggdrasilWisdom"));
                             equip.setFinalStrike(rs.getByte("finalStrike") > 0);
@@ -175,7 +174,7 @@ public enum ItemLoader {
                         item.setExpiration(rs.getLong("expiredate"));
                         item.setGMLog(rs.getString("GM_Log"));
                         item.setGiftFrom(rs.getString("sender"));
-                        //item.setExp(rs.getInt("exp")); //TODO: test
+                        //item.setExp(rs.getInt("exp"));
                         if (ItemConstants.類型.寵物(item.getItemId())) {
                             if (item.getUniqueId() > -1) {
                                 MaplePet pet = MaplePet.loadFromDb(item.getItemId(), item.getUniqueId(), item.getPosition());
@@ -201,10 +200,8 @@ public enum ItemLoader {
 
     public void saveItems(List<Pair<Item, MapleInventoryType>> items, final Connection con, int id) throws SQLException {
         StringBuilder query = new StringBuilder();
-        query.append("DELETE FROM `");
-        query.append(table);
-        query.append("` WHERE `type` = ? AND `");
-        query.append(arg);
+        query.append("DELETE FROM `inventoryitems` WHERE `type` = ? AND `");
+        query.append(account ? "accountid" : "characterid");
         query.append("` = ?");
 
         PreparedStatement ps = con.prepareStatement(query.toString());
@@ -215,12 +212,11 @@ public enum ItemLoader {
         if (items == null) {
             return;
         }
-        StringBuilder query_2 = new StringBuilder("INSERT INTO `");
-        query_2.append(table);
-        query_2.append("` (");
-        query_2.append(arg);
+        StringBuilder query_2 = new StringBuilder("INSERT INTO `inventoryitems` (");
+        query_2.append(account ? "accountid" : "characterid");
         query_2.append(", itemid, inventorytype, position, quantity, owner, GM_Log, uniqueid, expiredate, flag, `type`, sender) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         ps = con.prepareStatement(query_2.toString(), Statement.RETURN_GENERATED_KEYS);
+
         String valueStr = "";
         int values = 52;
         for (int i = 0; i < values; i++) {
@@ -230,7 +226,7 @@ public enum ItemLoader {
                 valueStr += "?, ";
             }
         }
-        PreparedStatement pse = con.prepareStatement("INSERT INTO " + table_equip + " VALUES (DEFAULT, " + valueStr + ")");
+        PreparedStatement pse = con.prepareStatement("INSERT INTO `inventoryequipment` VALUES (DEFAULT, " + valueStr + ")");
         final Iterator<Pair<Item, MapleInventoryType>> iter = items.iterator();
         Pair<Item, MapleInventoryType> pair;
         while (iter.hasNext()) {
@@ -304,13 +300,13 @@ public enum ItemLoader {
                 pse.setInt(++i, equip.getPotential(2, true));
                 pse.setInt(++i, equip.getPotential(3, true));
                 pse.setInt(++i, equip.getFusionAnvil());
-                pse.setInt(++i, equip.getSocket1());
-                pse.setInt(++i, equip.getSocket2());
-                pse.setInt(++i, equip.getSocket3());
+                pse.setInt(++i, equip.getSocket(1));
+                pse.setInt(++i, equip.getSocket(2));
+                pse.setInt(++i, equip.getSocket(3));
                 pse.setInt(++i, equip.getIncSkill());
                 pse.setShort(++i, equip.getCharmEXP());
                 pse.setShort(++i, equip.getPVPDamage());
-                pse.setByte(++i, equip.getEnhanctBuff());
+                pse.setShort(++i, equip.getEnhanctBuff());
                 pse.setByte(++i, equip.getReqLevel());
                 pse.setByte(++i, equip.getYggdrasilWisdom());
                 pse.setByte(++i, (byte) (equip.getFinalStrike() ? 1 : 0));

@@ -13,13 +13,17 @@ import client.SkillFactory;
 import client.inventory.Item;
 import client.inventory.MapleInventory;
 import client.inventory.MapleInventoryType;
+import constants.GameConstants;
+import constants.ItemConstants;
 import constants.JobConstants;
 import constants.ServerConfig;
 import constants.ServerConstants;
 import constants.WorldConstants;
 import database.DatabaseConnection;
+import gui.ZZMS;
 import handling.channel.ChannelServer;
 import handling.login.LoginInformationProvider;
+import handling.login.LoginInformationProvider.JobInfoFlag;
 import handling.login.LoginInformationProvider.JobType;
 import handling.login.LoginServer;
 import handling.login.LoginWorker;
@@ -38,6 +42,7 @@ import java.util.Map;
 import server.MapleItemInformationProvider;
 import server.quest.MapleQuest;
 import tools.FileoutputUtil;
+import tools.HexTool;
 import tools.Triple;
 import tools.data.LittleEndianAccessor;
 import tools.packet.CField;
@@ -294,20 +299,22 @@ public class CharLoginHandler {
     }
 
     public static void CreateChar(final LittleEndianAccessor slea, final MapleClient c) {
-        String name;
         byte gender, skin, unk;
         short subcategory;
-        int face, hair, hairColor = -1, hat = -1, top, bottom = -1, glove = -1, shoes, weapon, cape = -1, faceMark = -1, ears = -1, tail = -1, shield = -1;
-        JobType job;
-        name = slea.readMapleAsciiString();
-        if (!MapleCharacterUtil.canCreateChar(name, false)) {
+        Map<JobInfoFlag, Integer> infos = new LinkedHashMap();
+
+        String name = slea.readMapleAsciiString();
+        LoginInformationProvider li = LoginInformationProvider.getInstance();
+        MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
+        if (!MapleCharacterUtil.canCreateChar(name, false) || (li.isForbiddenName(name) && !c.isGM())) {
             System.out.println("非法創建角色名: " + name);
             return;
         }
         int keymapType = slea.readInt(); //按鍵模式: 0-基本模式; 1-進階模式
-        slea.readInt(); //
+        slea.readInt(); // 還不知道是什麼
+
         int job_type = slea.readInt();
-        job = JobType.getByType(job_type);
+        JobType job = JobType.getByType(job_type);
         if (job == null) {
             System.out.println("發現新職業類型: " + job_type);
             return;
@@ -315,74 +322,74 @@ public class CharLoginHandler {
         for (JobConstants.LoginJob j : JobConstants.LoginJob.values()) {
             if (j.getJobType() == job_type) {
                 if (!j.enableCreate()) {
-                    System.out.println("未開放的職業被嘗試創建");
+                    System.err.println("未開放的職業被嘗試創建");
                     return;
                 }
             }
         }
+
         subcategory = slea.readShort();
+        if ((subcategory != 0 && job != JobType.影武者) || (subcategory != 1 && job == JobType.影武者)) {
+            System.err.println("創建職業子類別異常:" + subcategory);
+            return;
+        }
         gender = slea.readByte();
         skin = slea.readByte();
+        boolean skinOk = skin == 0;
+        switch (job) {
+            case 皇家騎士團:
+            case 米哈逸:
+                skin = 10;
+                skinOk = true;
+                break;
+            case 狂狼勇士:
+                skin = 11;
+                skinOk = true;
+                break;
+            case 精靈遊俠:
+                skin = 12;
+                skinOk = true;
+                break;
+            case 惡魔:
+                skinOk = skinOk || skin == 13;
+                break;
+        }
+        if (!skinOk) {
+            System.err.println("創建職業皮膚顏色錯誤, 職業:" + job.name() + " 皮膚:" + skin);
+            return;
+        }
         unk = slea.readByte(); //6/7/8/9
-        face = slea.readInt();
-        hair = slea.readInt();
-//        if (job.hairColor) {
-//            hairColor = slea.readInt();
-//        }
-//        if (job.skinColor) {
-//            slea.readInt();
-//        }
-        if (job.faceMark) {
-            faceMark = slea.readInt();
+        // 驗證創建角色的可選項是否正確
+        int index = 0;
+        for (JobInfoFlag jf : JobInfoFlag.values()) {
+            if (jf.check(job.flag)) {
+                int value = slea.readInt();
+                if (!li.isEligibleItem(gender, index, job.type, value)) {
+                    System.err.println("創建角色確認道具出錯 - 性別:" + gender + " 職業:" + job.name() + " 類型:" + jf.name() + " 值:" + value);
+                    return;
+                }
+                if (jf == JobInfoFlag.尾巴 || jf == JobInfoFlag.耳朵) {
+                    value = ItemConstants.getEffectItemID(value);
+                }
+                infos.put(jf, value);
+                index++;
+            } else {
+                infos.put(jf, 0);
+            }
         }
-        if (job.ears) {
-            ears = slea.readInt();
+
+        if (slea.available() != 0) {
+            System.err.println("創建角色讀取訊息出錯, 有未讀取訊息: " + HexTool.toString(slea.read((int) slea.available())));
+            return;
         }
-        if (job.tail) {
-            tail = slea.readInt();
-        }
-        if (job.hat) {
-            hat = slea.readInt();
-        }
-        top = slea.readInt();
-        if (job.bottom) {
-            bottom = slea.readInt();
-        }
-        if (job.cape) {
-            cape = slea.readInt();
-        }
-        shoes = slea.readInt();
-        if (job.glove) {
-            glove = slea.readInt();
-        }
-        weapon = slea.readInt();
-        if (slea.available() >= 4) {
-            shield = slea.readInt();
-        }
-//        int index = 0;
-//        boolean noSkin = job == JobType.惡魔 || job == JobType.精靈遊俠 || job == JobType.蒼龍俠客;
-//        int[] items = new int[]{face, hair, hairColor, noSkin ? -1 : skin, faceMark, hat, top, bottom, cape, shoes, weapon, shield};
-//        for (int i : items) {
-//          if (i > -1) {
-//        if (!LoginInformationProvider.getInstance().isEligibleItem(gender, index, job.type, i)) {
-//          System.out.println(gender + " | " + index + " | " + job.type + " | " + i);
-//          return;
-//           }
-//             index++;
-//         }
+
         //讀取創建角色默認配置
         MapleCharacter newchar = MapleCharacter.getDefault(c, job);
         newchar.setWorld((byte) c.getWorld());
-        newchar.setFace(face);
-        newchar.setSecondFace(face);
-        if (hairColor < 0) {
-            hairColor = 0;
-        }
-        if (job != JobType.米哈逸) {
-            hair += hairColor;
-        }
-        newchar.setHair(hair);
-        newchar.setSecondHair(hair);
+        newchar.setFace(infos.get(JobInfoFlag.臉型));
+        newchar.setSecondFace(infos.get(JobInfoFlag.臉型));
+        newchar.setHair(infos.get(JobInfoFlag.髮型));
+        newchar.setSecondHair(infos.get(JobInfoFlag.髮型));
         if (job == JobType.天使破壞者) {
             newchar.setSecondFace(21173);
             newchar.setSecondHair(37141);
@@ -393,42 +400,26 @@ public class CharLoginHandler {
         newchar.setGender(gender);
         newchar.setName(name);
         newchar.setSkinColor(skin);
-        if (faceMark < 0) {
-            faceMark = 0;
-        }
-        newchar.setFaceMarking(faceMark);
-        int[] wrongEars = {1004062, 1004063, 1004064};
-        int[] correctEars = {5010116, 5010117, 5010118};
-        int[] wrongTails = {1102661, 1102662, 1102663};
-        int[] correctTails = {5010119, 5010120, 5010121};
-        for (int i = 0; i < wrongEars.length; i++) {
-            if (ears == wrongEars[i]) {
-                ears = correctEars[i];
-            }
-        }
-        for (int i = 0; i < wrongTails.length; i++) {
-            if (tail == wrongTails[i]) {
-                tail = correctTails[i];
-            }
-        }
-        if (ears < 0) {
-            ears = 0;
-        }
-        newchar.setEars(ears);
-        if (tail < 0) {
-            tail = 0;
-        }
-        newchar.setTail(tail);
-        final MapleItemInformationProvider li = MapleItemInformationProvider.getInstance();
+        newchar.setFaceMarking(infos.get(JobInfoFlag.臉飾));
+        newchar.setEars(infos.get(JobInfoFlag.耳朵));
+        newchar.setTail(infos.get(JobInfoFlag.尾巴));
         final MapleInventory equip = newchar.getInventory(MapleInventoryType.EQUIPPED);
         Item item;
         //-1 Hat | -2 Face | -3 Eye acc | -4 Ear acc | -5 Topwear 
         //-6 Bottom | -7 Shoes | -8 glove | -9 Cape | -10 Shield | -11 Weapon
-        //todo check zero's beta weapon slot
-        int[][] equips = new int[][]{{hat, -1}, {top, -5}, {bottom, -6}, {cape, -9}, {shoes, -7}, {glove, -8}, {weapon, -11}, {shield, -10}};
+        int[][] equips = new int[][]{
+            {infos.get(JobInfoFlag.帽子), -1},
+            {infos.get(JobInfoFlag.衣服), -5},
+            {infos.get(JobInfoFlag.褲裙), -6},
+            {infos.get(JobInfoFlag.披風), -9},
+            {infos.get(JobInfoFlag.鞋子), -7},
+            {infos.get(JobInfoFlag.手套), -8},
+            {infos.get(JobInfoFlag.武器), -11},
+            {infos.get(JobInfoFlag.副手), -10}
+        };
         for (int[] i : equips) {
             if (i[0] > 0) {
-                item = li.getEquipById(i[0]);
+                item = ii.getEquipById(i[0]);
                 item.setPosition((byte) i[1]);
                 item.setGMLog("創建角色獲得, 時間 " + FileoutputUtil.CurrentReadable_Time());
                 equip.addFromDB(item);
@@ -437,27 +428,28 @@ public class CharLoginHandler {
         // Additional skills for all first job classes. Some skills are not added by default,
         // so adding the skill ID here between the {}, will give the skills you entered to the desired job.
         int[][] skills = new int[][]{
-            {30000074/*自由精神*/},//末日反抗軍Resistance
-            {1281/*回歸楓之谷*/},//冒險家Explorer
-            {10000252/*元素位移*/, 10001244/*元素狂刃*/, 10001254/*元素閃現*/},//皇家騎士團Cygnus
-            {/*20000194找回的記憶*/},//狂狼勇士Aran
-            {20010022/*龍飛行*/},//龍魔導士Evan
-            {}, //精靈遊俠Mercedes
+            {},//末日反抗軍Resistance
+            {/*1281回歸楓之谷*/},//冒險家Explorer
+            {},//皇家騎士團Cygnus
+            {},//狂狼勇士Aran
+            {},//龍魔導士Evan
+            {},//精靈遊俠Mercedes
             {},//惡魔Demon
             {},//幻影俠盜Phantom
             {},//影武者Dualblade
             {},//米哈逸Mihile
             {20040216/*光蝕*/, 20040217/*暗蝕*/, 20040219/*平衡*/, 20040220/*平衡*/, 20040221/*光明力量*/, 20041222/*星光順移*/},//夜光Luminous
             {},//凱撒Kaiser
-            {60011216/*繼承人*/, 60011218/*魔法起重機*/, 60011220/*白日夢*/, 60011221/*配飾*/, 60011222/*魔法變身*/},//天使破壞者AngelicBuster
+            {},//天使破壞者AngelicBuster
             {},//重炮指揮官Cannoneer
-            {30020232/*蓄能系統*/, 30020234/*全能增幅 I*/, 30020240/*多樣化裝扮*/, 30021238/*刀舞*/},//傑諾Xenon
+            {/*30021238刀舞*/},//傑諾Xenon
             {100000279/*時之意志*/, 100000282/*雙重打擊*/, 100001262/*神殿回歸*/, 100001263/*時之威能*/, 100001264/*聖靈神速*/, 100001265/*爆裂跳躍*/, 100001266/*爆裂衝刺*/, 100001268/*時之庇護*/},//神之子Zero
             {20051284/*閃現*/, 20050285/*精靈降臨1式*/},//隱月Eunwol
-            {228/*草上飛*/},//蒼龍俠客Jett
-            {40010000/*天賦的才能*/, 40010067/*攻守兼備*/, 40011023/*心刀*/},//劍豪Hayato
+            {},//皮卡啾PinkBean
+            {},//蒼龍俠客Jett
+            {},//劍豪Hayato
             {},//陰陽師Kanna
-            {110001251/*管理連結技能*/}//幻獸師BeastTamer
+            {/*110001251管理連結技能*/}//幻獸師BeastTamer
         };
         if (skills[job.type].length > 0) {
             final Map<Skill, SkillEntry> ss = new HashMap<>();
@@ -469,112 +461,37 @@ public class CharLoginHandler {
                     maxLevel = s.getMasterLevel();
                 }
                 ss.put(s, new SkillEntry((byte) 1, (byte) maxLevel, -1));
-            }            
-            if (job == JobType.神之子) {
-                ss.put(SkillFactory.getSkill(101000103), new SkillEntry((byte) 8, (byte) 10, -1));
-                ss.put(SkillFactory.getSkill(101000203), new SkillEntry((byte) 8, (byte) 10, -1));
             }
-            if (job == JobType.幻獸師) {
-                ss.put(SkillFactory.getSkill(110001511), new SkillEntry((byte) 0, (byte) 30, -1));
-                ss.put(SkillFactory.getSkill(110001512), new SkillEntry((byte) 0, (byte) 5, -1));
-                ss.put(SkillFactory.getSkill(110000513), new SkillEntry((byte) 0, (byte) 30, -1));
-                ss.put(SkillFactory.getSkill(110000515), new SkillEntry((byte) 0, (byte) 10, -1));
+            if (job == JobType.神之子) {
+                ss.put(SkillFactory.getSkill(101000103), new SkillEntry((byte) 8, (byte) 10, -1));//璃之力
+                ss.put(SkillFactory.getSkill(101000203), new SkillEntry((byte) 8, (byte) 10, -1));//琉之力
             }
             newchar.changeSkillLevel_Skip(ss, false);
         }
-        int[][] guidebooks = new int[][]{{4161001, 0}, {4161047, 1}, {4161048, 2000}, {4161052, 2001}, {4161054, 3}, {4161079, 2002}};
-        int guidebook = 0;
-        for (int[] i : guidebooks) {
-            if (newchar.getJob() == i[1]) {
-                guidebook = i[0];
-            } else if (newchar.getJob() / 1000 == i[1]) {
-                guidebook = i[0];
-            }
-        }
-        if (guidebook > 0) {
-            newchar.getInventory(MapleInventoryType.ETC).addItem(new Item(guidebook, (byte) 0, (short) 1, (byte) 0));
-        }
 
-        if (job == JobType.幻影俠盜) {
-            newchar.getStat().maxhp = 850;
-            newchar.getStat().hp = 140;
-            newchar.getStat().maxmp = 805;
-            newchar.getStat().mp = 38;
+        String info =
+                "\r\n\r\n名字: " + name
+                + "\r\n職業: " + job.name() + "(序號" + job_type + ")"
+                + "\r\n子類別: " + subcategory
+                + "\r\n性別: " + gender
+                + "\r\n皮膚: " + skin
+                + "\r\n未知值: " + unk;
+        for (Map.Entry<JobInfoFlag, Integer> i : infos.entrySet()) {
+            info += "\r\n" + i.getKey().name() + i.getValue();
         }
-        
-        if (job == JobType.天使破壞者) {
-            newchar.setQuestAdd(MapleQuest.getInstance(25835), (byte) 2, ""); //任務：愛斯卡達的真面目
-            newchar.setQuestAdd(MapleQuest.getInstance(25829), (byte) 2, ""); //任務：這個技能是什麼？
-        }
+        info += "\r\n\r\n";
+        FileoutputUtil.log(FileoutputUtil.Create_Character, info);
 
-        if (job == JobType.神之子) {
-            newchar.setLevel((short) 100);
-            newchar.getStat().str = 518;
-            newchar.getStat().maxhp = 6910;
-            newchar.getStat().hp = 6910;
-            newchar.getStat().maxmp = 100;
-            newchar.getStat().mp = 100;
-            newchar.setRemainingSp(3, 0); //alpha
-            newchar.setRemainingSp(3, 1); //beta
-            newchar.setQuestAdd(MapleQuest.getInstance(40900), (byte) 2, "");
-            newchar.setQuestAdd(MapleQuest.getInstance(40901), (byte) 2, "");
-            newchar.setQuestAdd(MapleQuest.getInstance(40902), (byte) 2, "");
-            newchar.setQuestAdd(MapleQuest.getInstance(40903), (byte) 2, "");
-            newchar.setQuestAdd(MapleQuest.getInstance(40904), (byte) 2, "");
-            newchar.setQuestAdd(MapleQuest.getInstance(40905), (byte) 2, "");
-        }
-
-        if (job == JobType.幻獸師) {
-            newchar.setLevel((short) 10);
-            newchar.getStat().maxhp = 567;
-            newchar.getStat().hp = 551;
-            newchar.getStat().maxmp = 270;
-            newchar.getStat().mp = 263;
-            newchar.setRemainingAp(45);
-            newchar.setRemainingSp(3, 0);
-        }
-
-        if (ServerConfig.LOG_PACKETS) {
-            FileoutputUtil.log(FileoutputUtil.Create_Character,
-                    "\r\n\r\n名字: " + name
-                    + "\r\n職業: " + job_type
-                    + "\r\n性別: " + gender
-                    + "\r\n皮膚: " + skin
-                    + "\r\n頭髮顏色: " + unk
-                    + "\r\n臉型: " + face
-                    + "\r\n髮型: " + hair
-                    + "\r\n臉飾: " + faceMark
-                    + "\r\n耳朵: " + ears
-                    + "\r\n尾巴: " + tail
-                    + "\r\n帽子: " + hat
-                    + "\r\n上衣: " + top
-                    + "\r\n褲子: " + bottom
-                    + "\r\n披風:" + cape
-                    + "\r\n鞋子: " + shoes
-                    + "\r\n手套: " + glove
-                    + "\r\n武器: " + weapon
-                    + "\r\n盾牌: " + shield
-                    + "\r\n\r\n"
-            );
-        }
-        
         // 修正進階按鍵不完全
         if (keymapType == 1) {
-            int[] keyValue = new int[] {0x10, 0x11, 0x12, 0x13, 0x1E, 0x1F, 0x20, 0x21, 0x02, 0x03, 
-                                        0x04, 0x05, 0x1D, 0x38, 0x2C, 0x2D, 0x06, 0x07, 0x08, 0x09, 
-                                        0x2E, 0x16, 0x17, 0x24, 0x0A, 0x0B, 0x25, 0x31};
-            StringBuilder ret = new StringBuilder();
-            for (int i = 0; i < 28; i++) {
-                ret.append(keyValue[i]).append(",");
-            }
-            ret.deleteCharAt(ret.length() - 1);
-            newchar.getQuestNAdd(MapleQuest.getInstance(123000)).setCustomData(ret.toString());
+            newchar.setQuestAdd(MapleQuest.getInstance(GameConstants.QUICK_SLOT), (byte) 0, "16,17,18,19,30,31,32,33,2,3,4,5,29,56,44,45,6,7,8,9,46,22,23,36,10,11,37,49");
         }
 
         if (MapleCharacterUtil.canCreateChar(name, c.isGM()) && (!LoginInformationProvider.getInstance().isForbiddenName(name) || c.isGM()) && (c.isGM() || c.canMakeCharacter(c.getWorld()))) {
             MapleCharacter.saveNewCharToDB(newchar, job, subcategory, keymapType);
             c.getSession().write(LoginPacket.addNewCharEntry(newchar, true));
             c.createdChar(newchar.getId());
+            ZZMS.getInstance().addCharTable(newchar);
             //newchar.newCharRewards();
         } else {
             c.getSession().write(LoginPacket.addNewCharEntry(newchar, false));
@@ -603,11 +520,11 @@ public class CharLoginHandler {
 
         final byte gender = c.getPlayer().getGender();
 
-        //JobType errorCheck = JobType.Adventurer;
-        //if (!LoginInformationProvider.getInstance().isEligibleItem(gender, 0, errorCheck.type, face)) {
-        //    c.getSession().write(CWvsContext.enableActions());
-        //    return;
-        //}
+        JobType errorCheck = JobType.冒險家;
+        if (!LoginInformationProvider.getInstance().isEligibleItem(gender, 0, errorCheck.type, face)) {
+            c.getSession().write(CWvsContext.enableActions());
+            return;
+        }
         JobType jobType = JobType.終極冒險家;
 
         MapleCharacter newchar = MapleCharacter.getDefault(c, jobType);
@@ -670,7 +587,6 @@ public class CharLoginHandler {
         newchar.changeSkillLevel_Skip(ss, false);
         final MapleItemInformationProvider li = MapleItemInformationProvider.getInstance();
 
-        //TODO: Make this GMS - Like
         int[] items = new int[]{1142257, hat, top, shoes, glove, weapon, hat + 1, top + 1, shoes + 1, glove + 1, weapon + 1}; //brilliant = fine+1
         for (byte i = 0; i < items.length; i++) {
             Item item = li.getEquipById(items[i]);
@@ -707,6 +623,7 @@ public class CharLoginHandler {
         if (state == 0) {
             state = (byte) c.deleteCharacter(Character_ID);
         }
+        ZZMS.getInstance().removeCharTable(Character_ID);
         c.getSession().write(LoginPacket.deleteCharResponse(Character_ID, state));
     }
 

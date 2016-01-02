@@ -35,9 +35,10 @@ public enum QuickMove {
             | QuickMoveNPC.皇家美髮.getValue()
             | QuickMoveNPC.皇家整形.getValue()
             | QuickMoveNPC.里貝卡.getValue()
-            | QuickMoveNPC.楓之谷拍賣場.getValue();
+            | QuickMoveNPC.楓之谷拍賣場.getValue()
+            | QuickMoveNPC.初音未來.getValue();
     public final static long GLOBAL_NPC = 
-            QuickMoveNPC.戰國露西亞.getValue()
+            QuickMoveNPC.彌莎.getValue()
             | QuickMoveNPC.次元傳送門.getValue();
 
     private QuickMove(int map, long npc) {
@@ -53,8 +54,16 @@ public enum QuickMove {
         return npc;
     }
 
+    public static QuickMove getByMap(int map) {
+        for (QuickMove qm : QuickMove.values()) {
+            if (qm.getMap() == map) {
+                return qm;
+            }
+        }
+        return null;
+    }
+
     public enum QuickMoveNPC {//UI.wz\UIWindow2.img\EasyMove\
-//UI.wz\UIWindow2.img\EasyMove\
 
         PVP(0, false, 9070004, 30, "Move to the Battle Mode zone #cBattle Square#, where you can fight against other users.\n#cLv. 30 or above can participate in Battle Square."),
         怪物公園(1, true, 9071003, 20, "和隊員們齊心合力攻略強悍怪物的區域.\n移動到#c<怪物公園>#.\n#c一般怪物公園:  100級以上可參加\n 怪物競技場: 70級 ~ 200級"),
@@ -75,11 +84,12 @@ public enum QuickMove {
         冬季限量武器商店(16, false, 9000153, 30, ""),
         里貝卡(17, true, 9000018, 30, "可使用高級硬幣向里貝卡兌換各種道具裝備。"),
         QM_UNKNOW1(18, false, 0, 30, ""),//一个好像财主的兔子
-        彌莎(19, false, 0, 30, ""),
+        彌莎(19, true, 0, 10, "有多種功能的便捷NPC"),
         楓之谷拍賣場(20, false, 0, 30, "可以透過愛格里曲來訪問楓之谷拍賣場."),//178已刪
-        戰國露西亞(21, 100, true, 9130033, 30, "測試服專用的便利商店"),//戰國商店
+        戰國露西亞(21, 100, false, 9130033, 30, ""),//戰國商店
         戰國藍多普(22, 101, false, 9130032, 30, ""),//戰國商店
-        次元傳送門(23, 2, true, 3000012, 10, "使用可傳送到任意城市的#c<次元傳送門>#。");
+        初音未來(23, 102, true, 812000000, 30, "移動至初音未來合作特設地圖#c<初音未來的演唱會會場>#。"),
+        次元傳送門(24, 2, true, 3000012, 10, "使用可傳送到任意城市的#c<次元傳送門>#。");
         private final long value;
         private final int type, id, level;
         private final String desc;

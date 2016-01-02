@@ -79,6 +79,7 @@ import tools.packet.CSPacket;
 import tools.packet.CWvsContext;
 import tools.packet.CWvsContext.Reward;
 import tools.packet.JobPacket;
+import tools.packet.SkillPacket;
 
 public class PlayersHandler {
 
@@ -460,12 +461,12 @@ public class PlayersHandler {
             errcode = 0x15;
         }
         if (errcode > 0) {
-            c.getSession().write(CWvsContext.sendEngagement((byte) errcode, 0, null, null));
+            c.getSession().write(SkillPacket.sendEngagement((byte) errcode, 0, null, null));
             c.getSession().write(CWvsContext.enableActions());
             return;
         }
         c.getPlayer().setMarriageItemId(itemid);
-        WriteFuture write = chr.getClient().getSession().write(CWvsContext.sendEngagementRequest(c.getPlayer().getName(), c.getPlayer().getId()));
+        WriteFuture write = chr.getClient().getSession().write(SkillPacket.sendEngagementRequest(c.getPlayer().getName(), c.getPlayer().getId()));
     }
 
     public static void RingAction(final LittleEndianAccessor slea, final MapleClient c) {
@@ -481,7 +482,7 @@ public class PlayersHandler {
             final int id = slea.readInt();
             final MapleCharacter chr = c.getChannelServer().getPlayerStorage().getCharacterByName(name);
             if (c.getPlayer().getMarriageId() > 0 || chr == null || chr.getId() != id || chr.getMarriageItemId() <= 0 || !chr.haveItem(chr.getMarriageItemId(), 1) || chr.getMarriageId() > 0 || !chr.isAlive() || chr.getEventInstance() != null || !c.getPlayer().isAlive() || c.getPlayer().getEventInstance() != null) {
-                c.getSession().write(CWvsContext.sendEngagement((byte) 0x1D, 0, null, null));
+                c.getSession().write(SkillPacket.sendEngagement((byte) 0x1D, 0, null, null));
                 c.getSession().write(CWvsContext.enableActions());
                 return;
             }
@@ -489,7 +490,7 @@ public class PlayersHandler {
                 final int itemid = chr.getMarriageItemId();
                 final int newItemId = itemid == 2240000 ? 1112803 : (itemid == 2240001 ? 1112806 : (itemid == 2240002 ? 1112807 : (itemid == 2240003 ? 1112809 : (1112300 + (itemid - 2240004)))));
                 if (!MapleInventoryManipulator.checkSpace(c, newItemId, 1, "") || !MapleInventoryManipulator.checkSpace(chr.getClient(), newItemId, 1, "")) {
-                    c.getSession().write(CWvsContext.sendEngagement((byte) 0x15, 0, null, null));
+                    c.getSession().write(SkillPacket.sendEngagement((byte) 0x15, 0, null, null));
                     c.getSession().write(CWvsContext.enableActions());
                     return;
                 }
@@ -511,7 +512,7 @@ public class PlayersHandler {
 
                     MapleInventoryManipulator.removeById(chr.getClient(), MapleInventoryType.USE, chr.getMarriageItemId(), 1, false, false);
 
-                    chr.getClient().getSession().write(CWvsContext.sendEngagement((byte) 0x10, newItemId, chr, c.getPlayer()));
+                    chr.getClient().getSession().write(SkillPacket.sendEngagement((byte) 0x10, newItemId, chr, c.getPlayer()));
                     chr.setMarriageId(c.getPlayer().getId());
                     c.getPlayer().setMarriageId(chr.getId());
 
@@ -522,7 +523,7 @@ public class PlayersHandler {
                 }
 
             } else {
-                chr.getClient().getSession().write(CWvsContext.sendEngagement((byte) 0x1E, 0, null, null));
+                chr.getClient().getSession().write(SkillPacket.sendEngagement((byte) 0x1E, 0, null, null));
             }
             c.getSession().write(CWvsContext.enableActions());
             chr.setMarriageItemId(0);
@@ -1238,7 +1239,6 @@ public class PlayersHandler {
     }
 
     public static void updateRedLeafHigh(LittleEndianAccessor slea, MapleClient c) { //not finished yet
-        //TODO: load and set red leaf high in sql
         slea.readInt(); //questid or something
         slea.readInt(); //joe joe quest
         int joejoe = slea.readInt();
@@ -1402,7 +1402,6 @@ public class PlayersHandler {
                     return;
                 }
                 if ((skillid != 35111004 && skillid != 35121013) || chr.getBuffSource(MapleBuffStat.MECH_CHANGE) != skillid) { // Battleship
-                    c.getSession().write(CField.skillCooldown(skillid, effect.getCooldown(chr)));
                     chr.addCooldown(skillid, System.currentTimeMillis(), effect.getCooldown(chr) * 1000);
                 }
             }
@@ -1478,7 +1477,6 @@ public class PlayersHandler {
             visProjectile = ipp.getItemId();
         }
         maxdamage *= skillDamage / 100.0;
-        maxdamage *= chr.getStat().dam_r / 100.0;
         final List<AttackPair> ourAttacks = new ArrayList<>(mobCount);
         final boolean area = inArea(chr);
         boolean didAttack = false, killed = false;
@@ -1504,7 +1502,7 @@ public class PlayersHandler {
                             double ourDamage = Randomizer.nextInt((int) Math.abs(Math.round(rawDamage - min)) + 2) + min;
                             if (attacked.getStat().dodgeChance > 0 && Randomizer.nextInt(100) < attacked.getStat().dodgeChance) {
                                 ourDamage = 0;
-                            } else if (attacked.hasDisease(MapleDisease.DARKNESS) && Randomizer.nextInt(100) < 50) {
+                            } else if (attacked.hasDisease(MapleDisease.黑暗) && Randomizer.nextInt(100) < 50) {
                                 ourDamage = 0;
                                 //i dont think level actually matters or it'd be too op
                                 //} else if (attacked.getLevel() > chr.getLevel() && Randomizer.nextInt(100) < (attacked.getLevel() - chr.getLevel())) {
@@ -1552,7 +1550,7 @@ public class PlayersHandler {
                     addedScore += Math.min(attacked.getStat().getHp() / 100, (totalHPLoss / 100) + (totalMPLoss / 100)); //ive NO idea
                     attacked.addMPHP(-totalHPLoss, -totalMPLoss);
                     ourAttacks.add(new AttackPair(attacked.getId(), attacked.getPosition(), attacks));
-                    chr.onAttack(attacked.getStat().getCurrentMaxHp(), attacked.getStat().getCurrentMaxMp(attacked.getJob()), skillid, attacked.getObjectId(), totalHPLoss, 0);
+                    chr.onAttack(attacked.getStat().getCurrentMaxHp(), attacked.getStat().getCurrentMaxMp(), skillid, attacked.getObjectId(), totalHPLoss, 0);
                     attacked.getCheatTracker().setAttacksWithoutHit(false);
                     if (totalHPLoss > 0) {
                         didAttack = true;
@@ -1580,18 +1578,18 @@ public class PlayersHandler {
                         if (chr.getBuffSource(MapleBuffStat.WK_CHARGE) == 1211006 || chr.getBuffSource(MapleBuffStat.WK_CHARGE) == 21101006) {
                             final MapleStatEffect eff = chr.getStatForBuff(MapleBuffStat.WK_CHARGE);
                             if (eff.makeChanceResult()) {
-                                attacked.giveDebuff(MapleDisease.FREEZE, 1, eff.getDuration(), MapleDisease.FREEZE.getDisease(), 1);
+                                attacked.giveDebuff(MapleDisease.冰凍, 1, eff.getDuration(), MapleDisease.冰凍.getDisease(), 1);
                             }
                         }
                     } else if (chr.getBuffedValue(MapleBuffStat.HAMSTRING) != null) {
                         final MapleStatEffect eff = chr.getStatForBuff(MapleBuffStat.HAMSTRING);
                         if (eff != null && eff.makeChanceResult()) {
-                            attacked.giveDebuff(MapleDisease.SLOW, 100 - Math.abs(eff.getX()), eff.getDuration(), MapleDisease.SLOW.getDisease(), 1);
+                            attacked.giveDebuff(MapleDisease.緩慢, 100 - Math.abs(eff.getX()), eff.getDuration(), MapleDisease.緩慢.getDisease(), 1);
                         }
                     } else if (chr.getBuffedValue(MapleBuffStat.SLOW) != null) {
                         final MapleStatEffect eff = chr.getStatForBuff(MapleBuffStat.SLOW);
                         if (eff != null && eff.makeChanceResult()) {
-                            attacked.giveDebuff(MapleDisease.SLOW, 100 - Math.abs(eff.getX()), eff.getDuration(), MapleDisease.SLOW.getDisease(), 1);
+                            attacked.giveDebuff(MapleDisease.緩慢, 100 - Math.abs(eff.getX()), eff.getDuration(), MapleDisease.緩慢.getDisease(), 1);
                         }
                     } else if (chr.getJob() == 412 || chr.getJob() == 422 || chr.getJob() == 434 || chr.getJob() == 1411 || chr.getJob() == 1412) {
                         int[] skills = {4120005, 4220005, 4340001, 14110004};
@@ -1602,7 +1600,7 @@ public class PlayersHandler {
                                 if (chr.getTotalSkillLevel(skill) > 0) {
                                     final MapleStatEffect venomEffect = skill.getEffect(chr.getTotalSkillLevel(skill));
                                     if (venomEffect.makeChanceResult()) {// THIS MIGHT ACTUALLY BE THE DOT
-                                        attacked.giveDebuff(MapleDisease.POISON, 1, venomEffect.getDuration(), MapleDisease.POISON.getDisease(), 1);
+                                        attacked.giveDebuff(MapleDisease.中毒, 1, venomEffect.getDuration(), MapleDisease.中毒.getDisease(), 1);
                                     }
                                     break;
                                 }

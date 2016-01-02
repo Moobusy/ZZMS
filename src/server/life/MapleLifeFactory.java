@@ -300,7 +300,7 @@ public class MapleLifeFactory {
                 }
             }
 
-            for (int i = 0; true; i++) { // TODO: Check and reprint all available values again..doing like below is a ridiculous way
+            for (int i = 0; true; i++) {
                 final MapleData monsterAtt = monsterInfoData.getChildByPath("attack/" + i);
                 final MapleData attackData = monsterData.getChildByPath("attack" + (i + 1) + "/info");
                 if (attackData == null || monsterAtt == null) {

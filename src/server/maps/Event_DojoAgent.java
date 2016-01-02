@@ -248,7 +248,7 @@ public class Event_DojoAgent {
             }else if (currentmap.getId() == 925032300) {//End Hard
                 final MapleMap mappzz = ch.getMapFactory().getMap(925020003);//rooftop
                 c.changeMap(mappzz, mappzz.getPortal(1));
-                c.getClient().getSession().write(CField.UIPacket.openUI(72));// Dojo ui TODO add points?
+                c.getClient().getSession().write(CField.UIPacket.openUI(72));// Dojo ui
             } else {
 
                 //final int nextmapid = 925020000 + ((thisStage + 1) * 100);

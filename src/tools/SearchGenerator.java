@@ -7,6 +7,8 @@ package tools;
 import client.MapleJob;
 import client.Skill;
 import client.SkillFactory;
+import client.inventory.MapleInventoryType;
+import constants.GameConstants;
 import handling.RecvPacketOpcode;
 import handling.SendPacketOpcode;
 import java.util.ArrayList;
@@ -85,8 +87,11 @@ public class SearchGenerator {
     }
 
     public static Map<Integer, String> getSearchs(SearchType type) {
+        Map<Integer, String> value = null;
         if (searchs.containsKey(type)) {
             return searchs.get(type);
+        } else if ((type == SearchType.臉型 || type == SearchType.髮型) && searchs.containsKey(SearchType.道具)) {
+            value = searchs.get(SearchType.道具);
         }
 
         Map<Integer, String> values = new TreeMap<>((v1, v2) -> v1.compareTo(v2));
@@ -140,10 +145,20 @@ public class SearchGenerator {
                 }
                 break;
             case 髮型:
-                values = MapleItemInformationProvider.getInstance().getHairList();
-                break;
             case 臉型:
-                values = MapleItemInformationProvider.getInstance().getFaceList();
+                if (value == null) {
+                    value = new TreeMap<>((v1, v2) -> v1.compareTo(v2));
+                    for (ItemInformation itemInfo : MapleItemInformationProvider.getInstance().getAllItems()) {
+                        value.put(itemInfo.itemId, itemInfo.name);
+                    }
+                    searchs.put(SearchType.道具, value);
+                }
+                MapleInventoryType iType = type == SearchType.髮型 ? MapleInventoryType.HAIR : MapleInventoryType.FACE;
+                for (Map.Entry<Integer, String> entry : value.entrySet()) {
+                    if (GameConstants.getInventoryType(entry.getKey()) == iType) {
+                        values.put(entry.getKey(), entry.getValue());
+                    }
+                }
                 break;
         }
 
@@ -182,7 +197,7 @@ public class SearchGenerator {
                 ss.keySet().forEach((i) -> ret.add("\r\n#L" + i + "##i" + i + ":# #z" + i + "#(" + i + ")#l"));
                 break;
             case NPC:
-                ss.entrySet().forEach((i) -> ret.add("\r\n#L" + i.getKey() + "##p" + i.getKey() + "##" + i.getValue() + "(" + i.getKey() + ")#l"));
+                ss.entrySet().forEach((i) -> ret.add("\r\n#L" + i.getKey() + "##p" + i.getKey() + "#(" + i.getKey() + ")#l"));
                 break;
             case 地圖:
                 ss.keySet().forEach((i) -> ret.add("\r\n#L" + i + "##m" + i + "#(" + i + ")#l"));

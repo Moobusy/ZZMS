@@ -75,6 +75,9 @@ public class ConvertOpcodes {
             RecvPacketOpcode.loadValues();
             out = new FileOutputStream(recvopsName, false);
             for (RecvPacketOpcode recv : RecvPacketOpcode.values()) {
+                if (recv == RecvPacketOpcode.UNKNOWN) {
+                    break;
+                }
                 if (positive) {
                     sb.append(recv.name()).append(" = ").append(decimal ? recv.getValue() : HexTool.getOpcodeToString(recv.getValue())).append("\r\n");
                 } else {
@@ -93,6 +96,9 @@ public class ConvertOpcodes {
             SendPacketOpcode.loadValues();
             out = new FileOutputStream(sendopsName, false);
             for (SendPacketOpcode send : SendPacketOpcode.values()) {
+                if (send == SendPacketOpcode.UNKNOWN) {
+                    break;
+                }
                 if (positive) {
                     sb.append(send.name()).append(" = ").append(decimal ? send.getValue(false) : HexTool.getOpcodeToString(send.getValue(false))).append("\r\n");
                 } else {

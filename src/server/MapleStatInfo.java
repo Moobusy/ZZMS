@@ -73,6 +73,15 @@ public enum MapleStatInfo {
     soulmpCon(0),
     fixdamage(0), //Fixed damage dealt upon using skill
     forceCon(0), //Fury Cost
+    gauge(0),
+    hcCooltime(0),
+    hcHp(0),
+    hcProp(0),
+    hcReflect(0),
+    hcSubProp(0),
+    hcSubTime(0),
+    hcSummonHp(0),
+    hcTime(0),
     MDF(0),
     powerCon(0), //Surplus Energy Cost
     hp(0), //Restore HP/Heal
@@ -86,15 +95,18 @@ public enum MapleStatInfo {
     indieEva(0), //Avoidability +
     indieJump(0), //Jump Increase +
     indieMad(0), //Magic Damage Increase
+    indieMadR(0),
     indieMhp(0), //Max HP Increase +
     indiePdd(0),// ??
     indieMdd(0),//MDEF?
     indieTerR(0),
+    indieBDR(0),
     indieAsrR(0),
     indieMhpR(0), //Max HP Increase %
     indieMmp(0), //Max MP Increase +
     indieMmpR(0), //Max MP Increase %
     indiePad(0), //Damage Increase
+    indiePadR(0),
     indieSpeed(0), //Speed +
     indieBooster(0), //Attack Speed
     indieCr(0), //Critical?
@@ -156,6 +168,8 @@ public enum MapleStatInfo {
     pdd2mdx(0), //When hit with a magical attack, damage equal to #pdd2mdx% of Weapon DEF is ignored
     pddR(0), //Weapon DEF %
     pddX(0), //Weapon DEF
+    pdR(0), // 傷害增加
+    stanceProp(0), // 格擋(泰山)
     period(0), //[Guild/Professions] time taken
     price(0), //[Guild] price to purchase
     priceUnit(0), //[Guild] Price stuffs

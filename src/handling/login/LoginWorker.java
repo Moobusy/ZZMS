@@ -61,7 +61,7 @@ public class LoginWorker {
 
         if (c.finishLogin() == 0) {
             c.getSession().write(LoginPacket.getAuthSuccessRequest(c));
-            if (ServerConstants.MAPLE_TYPE == ServerConstants.MapleType.台港澳) {
+            if (ServerConstants.MAPLE_TYPE == ServerConstants.MapleType.台灣) {
                 CharLoginHandler.ServerListRequest(c);
             }
 

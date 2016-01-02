@@ -27,11 +27,18 @@ public class AttackPair {
 
     public int objectid;
     public Point point;
+    public short unktype;
     public List<Pair<Integer, Boolean>> attack;
 
     public AttackPair(int objectid, List<Pair<Integer, Boolean>> attack) {
         this.objectid = objectid;
         this.attack = attack;
+    }
+
+    public AttackPair(int objectid, List<Pair<Integer, Boolean>> attack, short unktype) {
+        this.objectid = objectid;
+        this.attack = attack;
+        this.unktype = unktype;
     }
 
     public AttackPair(int objectid, Point point, List<Pair<Integer, Boolean>> attack) {

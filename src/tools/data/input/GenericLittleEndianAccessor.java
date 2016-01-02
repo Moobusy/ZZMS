@@ -150,7 +150,7 @@ public class GenericLittleEndianAccessor implements LittleEndianAccessor {
             ret[x] = (byte) readByte();
         }
         try {
-            return new String(ret, ServerConstants.MAPLE_TYPE.getAscii());
+            return new String(ret, ServerConstants.MAPLE_TYPE.getANSI());
         } catch (UnsupportedEncodingException e) {
             System.err.println(e);
         }

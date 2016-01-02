@@ -10,7 +10,7 @@ function action(mode, type, selection) {
 		status++;
 	} else {
 		status = 0;
-		cm.AranTutInstructionalBubble("UI/tutorial.img/22");
+		cm.showWZEffectNew("UI/tutorial.img/22");
 		cm.dispose();
 	}
 }

@@ -3,6 +3,6 @@
 */
 
 function enter(pi) {
-    pi.openNpc(2030013);
-	return true;
+    pi.clearSavedLocation("BPReturn");
+    pi.warp(211042300, 2);
 }

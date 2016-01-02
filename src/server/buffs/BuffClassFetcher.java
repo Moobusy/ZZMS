@@ -34,6 +34,9 @@ import server.buffs.buffclasses.beasttamer.BeastTamerBuff;
 import server.buffs.buffclasses.cygnus.BlazeWizardBuff;
 import server.buffs.buffclasses.cygnus.NightWalkerBuff;
 import server.buffs.buffclasses.gamemaster.GameMasterBuff;
+import server.buffs.buffclasses.hero.EunWolBuff;
+import server.buffs.buffclasses.kinesis.KinesisBufff;
+import server.buffs.buffclasses.pinkbean.PinkBeanBuff;
 
 /**
  *
@@ -48,29 +51,32 @@ public class BuffClassFetcher {
         ThiefBuff.class,
         PirateBuff.class,
         ChivalrousBuff.class,
+        GameMasterBuff.class,
         DawnWarriorBuff.class,
+        BlazeWizardBuff.class,
+        NightWalkerBuff.class,
         WindArcherBuff.class,
         ThunderBreakerBuff.class,
-        MihileBuff.class,
         AranBuff.class,
         EvanBuff.class,
         MercedesBuff.class,
         PhantomBuff.class,
         LuminousBuff.class,
+        EunWolBuff.class,
+        DemonBuff.class,
+        BattleMageBuff.class,
+        WildHunterBuff.class,
+        MechanicBuff.class,
+        XenonBuff.class,
+        HayatoBuff.class,
+        KannaBuff.class,
+        MihileBuff.class,
         KaiserBuff.class,
         AngelicBusterBuff.class,
-        XenonBuff.class,
-        NightWalkerBuff.class,
-        BlazeWizardBuff.class,
-        WildHunterBuff.class,
-        BattleMageBuff.class,
-        MechanicBuff.class,
-        DemonBuff.class,
-        KannaBuff.class,
-        HayatoBuff.class,
         ZeroBuff.class,
         BeastTamerBuff.class,
-        GameMasterBuff.class
+        PinkBeanBuff.class,
+        KinesisBufff.class,
     };
 
     public static boolean getHandleMethod(MapleStatEffect eff, int skillid) {

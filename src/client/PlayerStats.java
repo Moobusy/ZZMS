@@ -23,6 +23,7 @@ import java.util.Map.Entry;
 import server.MapleInventoryManipulator;
 import server.MapleItemInformationProvider;
 import server.MapleStatEffect;
+import server.MapleStatInfo;
 import server.StructItemOption;
 import server.StructSetItem;
 import server.StructSetItem.SetItem;
@@ -30,6 +31,7 @@ import server.life.Element;
 import tools.Pair;
 import tools.Triple;
 import tools.data.MaplePacketLittleEndianWriter;
+import tools.packet.CField;
 import tools.packet.CField.EffectPacket;
 import tools.packet.CWvsContext.InventoryPacket;
 import tools.packet.JobPacket;
@@ -48,16 +50,24 @@ public class PlayerStats implements Serializable {
     public transient int incMaxDF;
     private transient float localmaxbasedamage, localmaxbasepvpdamage, localmaxbasepvpdamageL;
     public transient boolean equippedWelcomeBackRing, hasClone, Berserk;
-    public transient double expBuff, dropBuff, mesoBuff, cashBuff, mesoGuard, mesoGuardMeso, expMod, dropMod, pickupRange, dam_r, bossdam_r;
+    public transient double expBuff, indieExp, dropBuff, mesoBuff, cashBuff, mesoGuard, mesoGuardMeso, expMod, dropMod, pickupRange, dam_r, bossdam_r;
     public transient int recoverHP, recoverMP, mpconReduce, mpconPercent, incMesoProp, reduceCooltime, coolTimeR, suddenDeathR, expLossReduceR, DAMreflect, DAMreflect_rate, ignoreDAMr, ignoreDAMr_rate, ignoreDAM, ignoreDAM_rate,
             hpRecover, hpRecoverProp, hpRecoverPercent, mpRecover, mpRecoverProp, RecoveryUP, BuffUP, RecoveryUP_Skill, BuffUP_Skill,
-            incAllskill, combatOrders, ignoreTargetDEF, defRange, BuffUP_Summon, dodgeChance, speed, jump, harvestingTool,
+            incAllskill, combatOrders, ignoreTargetDEF, defRange, BuffUP_Summon, dodgeChance, speed, speedMax, jump, harvestingTool,
             equipmentBonusExp, cashMod, levelBonus, ASR, TER, pickRate, decreaseDebuff, equippedFairy, equippedSummon,
             pvpDamage, hpRecoverTime, mpRecoverTime, dot, dotTime, questBonus, pvpRank, pvpExp, wdef, mdef, trueMastery, damX, reduceDamageRate;
-    public transient int def, element_ice, element_fire, element_light, element_psn;
+    public transient int def, element_ice, element_fire, element_light, element_psn, raidenCount, raidenPorp, stanceProp;
     public int hp, maxhp, mp, maxmp, str, dex, luk, int_;
     private transient int percent_hp, percent_mp, percent_str, percent_dex, percent_int, percent_luk, percent_acc, percent_atk, percent_matk, percent_wdef, percent_mdef,
             add_hp, add_mp, add_str, add_dex, add_int, add_luk, add_acc, add_atk, add_matk, add_wdef, add_mdef;
+    private final Map<Integer, Integer> add_skill_duration = new HashMap();
+    private final Map<Integer, Integer> add_skill_attackCount = new HashMap();
+    private final Map<Integer, Integer> add_skill_targetPlus = new HashMap();
+    private final Map<Integer, Integer> add_skill_bossDamageRate = new HashMap();
+    private final Map<Integer, Integer> add_skill_dotTime = new HashMap();
+    private final Map<Integer, Integer> add_skill_prop = new HashMap();
+    private final Map<Integer, Integer> add_skill_coolTimeR = new HashMap();
+    private final Map<Integer, Integer> add_skill_ignoreMobpdpR = new HashMap();
 
     public void recalcLocalStats(MapleCharacter chra) {
         recalcLocalStats(false, chra);
@@ -75,7 +85,9 @@ public class PlayerStats implements Serializable {
         localstr = getStr();//力量
         localluk = getLuk();//運氣
         speed = 100;//速度
+        speedMax = 140; // 最大移動速度
         jump = 100;//跳躍力
+        stanceProp = 0; // 格擋, 泰山
         pickupRange = 0.0;//撿取範圍
         decreaseDebuff = 0;
         ASR = 0;
@@ -115,9 +127,10 @@ public class PlayerStats implements Serializable {
         pvpDamage = 0;
         mesoGuard = 50.0;//楓幣護盾
         mesoGuardMeso = 0.0;
-        dam_r = 100.0;//總傷
-        bossdam_r = 100.0;//BOSS傷
-        expBuff = 100.0;//經驗BUFF
+        dam_r = 100.0;//增加百分比傷害 - 總傷
+        bossdam_r = 100.0;//增加BOSS百分比傷害 - BOSS傷
+        expBuff = 100.0;//經驗倍率加持
+        indieExp = 100.0;//加持獎勵經驗
         cashBuff = 100.0;//樂豆點BUFF
         dropBuff = 100.0;//掉寶BUFF
         mesoBuff = 100.0;//楓幣BUFF
@@ -136,7 +149,7 @@ public class PlayerStats implements Serializable {
         ignoreDAMr_rate = 0;//無視傷害百分比概率
         ignoreDAM = 0;//無視傷害
         ignoreDAM_rate = 0;//無視傷害幾率
-        ignoreTargetDEF = 0;
+        ignoreTargetDEF = 0;//無視目標防御力
         hpRecover = 0;//HP恢復
         hpRecoverProp = 0;//HP恢復概率
         hpRecoverPercent = 0;//HP恢復百分比
@@ -167,12 +180,21 @@ public class PlayerStats implements Serializable {
         skillsIncrement.clear();
         damageIncrease.clear();
         setHandling.clear();
+        add_skill_duration.clear();
+        add_skill_attackCount.clear();
+        add_skill_targetPlus.clear();
+        add_skill_dotTime.clear();
+        add_skill_prop.clear();
+        add_skill_coolTimeR.clear();
+        add_skill_ignoreMobpdpR.clear();
         harvestingTool = 0;
         element_fire = 100;
         element_ice = 100;
         element_light = 100;
         element_psn = 100;
         def = 100;
+        raidenCount = 0;
+        raidenPorp = 0;
         reduceDamageRate = 0;
     }
 
@@ -196,6 +218,7 @@ public class PlayerStats implements Serializable {
         }
         StructItemOption soc;
         final Map<Skill, SkillEntry> sData = new HashMap<>();
+        //裝備屬性處理
         final Iterator<Item> itera = chra.getInventory(MapleInventoryType.EQUIPPED).newList().iterator();
         while (itera.hasNext()) {
             final Equip equip = (Equip) itera.next();
@@ -255,26 +278,110 @@ public class PlayerStats implements Serializable {
             percent_int += equip.getAllStat();
             percent_luk += equip.getAllStat();
             switch (equip.getItemId()) {
-                case 1112127:
+                case 1112127: // Welcome Back
                     equippedWelcomeBackRing = true;
                     break;
-                case 1122017:
+                case 1122017: //精靈墜飾
                     equippedFairy = 10;
                     break;
                 case 1122158:
                     equippedFairy = 5;
                     break;
-                case 1112594:
+                case 1112585: // 天使祝福
                     equippedSummon = 1085;
                     break;
-                case 1112585:
-                    equippedSummon = 1085;
+                case 1112594: // 雪花天使祝福
+                    equippedSummon = 1090;
                     break;
-                case 1112586:
+                case 1112586: // 黑天使祝福
                     equippedSummon = 1087;
                     break;
-                case 1112663:
+                case 1112663: // 白色精靈祝福
                     equippedSummon = 1179;
+                    break;
+                case 1113020: // 戰神祝福
+                    equippedSummon = 80001262;
+                    break;
+                case 1112735: // 白天使祝福
+                    equippedSummon = 80001154;
+                    break;
+                case 1114200: // 瑪瑙戒指 "遭遇"
+                    equippedSummon = 80001518;
+                    break;
+                case 1114201: // 瑪瑙戒指 "共用"
+                    equippedSummon = 80001519;
+                    break;
+                case 1114202: // 瑪瑙戒指 "共用"
+                    equippedSummon = 80001520;
+                    break;
+                case 1114203: // 瑪瑙戒指 "共用"
+                    equippedSummon = 80001521;
+                    break;
+                case 1114204: // 瑪瑙戒指 "共用"
+                    equippedSummon = 80001522;
+                    break;
+                case 1114205: // 瑪瑙戒指 "共用"
+                    equippedSummon = 80001523;
+                    break;
+                case 1114206: // 瑪瑙戒指 "共用"
+                    equippedSummon = 80001524;
+                    break;
+                case 1114207: // 瑪瑙戒指 "成長"
+                    equippedSummon = 80001525;
+                    break;
+                case 1114208: // 瑪瑙戒指 "成長"
+                    equippedSummon = 80001526;
+                    break;
+                case 1114209: // 瑪瑙戒指 "成長"
+                    equippedSummon = 80001527;
+                    break;
+                case 1114210: // 瑪瑙戒指 "成長"
+                    equippedSummon = 80001528;
+                    break;
+                case 1114211: // 瑪瑙戒指 "成長"
+                    equippedSummon = 80001529;
+                    break;
+                case 1114212: // 瑪瑙戒指 "成長"
+                    equippedSummon = 80001530;
+                    break;
+                case 1114219: // 瑪瑙戒指 "遭遇"
+                    equippedSummon = 80001715;
+                    break;
+                case 1114220: // 瑪瑙戒指 "共用"
+                    equippedSummon = 80001716;
+                    break;
+                case 1114221: // 瑪瑙戒指 "共用"
+                    equippedSummon = 80001717;
+                    break;
+                case 1114222: // 瑪瑙戒指 "共用"
+                    equippedSummon = 80001718;
+                    break;
+                case 1114223: // 瑪瑙戒指 "共用"
+                    equippedSummon = 80001719;
+                    break;
+                case 1114224: // 瑪瑙戒指 "共用"
+                    equippedSummon = 80001720;
+                    break;
+                case 1114225: // 瑪瑙戒指 "共用"
+                    equippedSummon = 80001721;
+                    break;
+                case 1114226: // 瑪瑙戒指 "完成"
+                    equippedSummon = 80001722;
+                    break;
+                case 1114227: // 瑪瑙戒指 "完成"
+                    equippedSummon = 80001723;
+                    break;
+                case 1114228: // 瑪瑙戒指 "完成"
+                    equippedSummon = 80001724;
+                    break;
+                case 1114229: // 瑪瑙戒指 "完成"
+                    equippedSummon = 80001725;
+                    break;
+                case 1114230: // 瑪瑙戒指 "完成"
+                    equippedSummon = 80001726;
+                    break;
+                case 1114231: // 瑪瑙戒指 "完成"
+                    equippedSummon = 80001727;
                     break;
                 default:
                     for (int eb_bonus : GameConstants.Equipments_Bonus) {
@@ -320,6 +427,7 @@ public class PlayerStats implements Serializable {
                 localmaxhp_ += ix.getLeft();
                 localmaxmp_ += ix.getRight();
             }
+            //潛能屬性處理
             if (equip.getState(false) >= 17 || equip.getState(true) >= 17) {
                 final int[] potentials = {equip.getPotential(1, false), equip.getPotential(2, false), equip.getPotential(3, false), equip.getPotential(1, true), equip.getPotential(2, true), equip.getPotential(3, true),};
                 for (final int i : potentials) {
@@ -333,8 +441,9 @@ public class PlayerStats implements Serializable {
                     }
                 }
             }
+            //星岩屬性處理
             if (equip.getSocketState() > 15) {
-                final int[] sockets = {equip.getSocket1(), equip.getSocket2(), equip.getSocket3()};
+                final int[] sockets = {equip.getSocket(1), equip.getSocket(2), equip.getSocket(3)};
                 for (final int i : sockets) {
                     if (i > 0) {
                         soc = ii.getSocketInfo(i);
@@ -346,13 +455,16 @@ public class PlayerStats implements Serializable {
                     }
                 }
             }
+            //耐久度處理
             if (equip.getDurability() > 0) {
                 durabilityHandling.add(equip);
             }
+            //
             if (GameConstants.getMaxLevel(equip.getItemId()) > 0 && (GameConstants.getStatFromWeapon(equip.getItemId()) == null ? (equip.getEquipLevel() <= GameConstants.getMaxLevel(equip.getItemId())) : (equip.getEquipLevel() < GameConstants.getMaxLevel(equip.getItemId())))) {
                 equipLevelHandling.add(equip);
             }
         }
+        //套裝屬性處理
         final Iterator<Entry<Integer, Integer>> iter = setHandling.entrySet().iterator();
         while (iter.hasNext()) {
             final Entry<Integer, Integer> entry = iter.next();
@@ -454,20 +566,6 @@ public class PlayerStats implements Serializable {
             }
         }
 
-        if (first_login && chra.getLevel() >= 30) {
-            //大天使,黑天使,白色天使
-            int[] skills = {1085, 1087, 1179};
-            for (int skillId : skills) {
-                if (chra.isIntern()) { //!job lol
-                    for (int i = 0; i < allJobs.length; i++) {
-                        sData.put(SkillFactory.getSkill(skillId + allJobs[i]), new SkillEntry((byte) -1, (byte) 0, -1));
-                    }
-                } else {
-                    sData.put(SkillFactory.getSkill(getSkillByJob(skillId, chra.getJob())), new SkillEntry((byte) -1, (byte) 0, -1));
-                }
-            }
-        }
-
         // add to localmaxhp_ if percentage plays a role in it, else add_hp
         handleBuffStats(chra);
         Integer buff = chra.getBuffedValue(MapleBuffStat.ENHANCED_MAXHP);
@@ -498,7 +596,7 @@ public class PlayerStats implements Serializable {
                         passive_sharpeye_rate += e.getCr();
                         watk += e.getAttackX();
                         magic += e.getMagicX();
-                        expBuff *= (e.getEXPRate() + 100.0) / 100.0;
+                        expBuff *= e.getEXPRate() / 100.0;
                         dodgeChance += e.getER();
                         percent_wdef += e.getWDEFRate();
                         percent_mdef += e.getMDEFRate();
@@ -576,7 +674,13 @@ public class PlayerStats implements Serializable {
 
         localmaxhp_ += chra.getTrait(MapleTraitType.will).getLevel() * 20;
         localmaxhp_ += addmaxhp;
+        if (MapleJob.is陰陽師(chra.getJob())) {
+            localmaxhp_ += addmaxmp;
+        }
         localmaxhp_ += Math.floor((percent_hp * localmaxhp_) / 100.0f);
+        if (MapleJob.is陰陽師(chra.getJob())) {
+            localmaxhp_ += Math.floor((percent_mp * localmaxhp_) / 100.0f);
+        }
         localmaxhp = Math.min(500000, Math.abs(Math.max(-500000, localmaxhp_)));
 
         localmaxmp_ += Math.floor((percent_mp * localmaxmp_) / 100.0f);
@@ -621,11 +725,16 @@ public class PlayerStats implements Serializable {
             }
         }
         chra.changeSkillLevel_Skip(sData, false);
-        if (MapleJob.is惡魔殺手(chra.getJob())) {
+        if (MapleJob.is惡魔殺手(chra.getJob()) || MapleJob.is凱內西斯(chra.getJob())) {
             localmaxmp = GameConstants.getMPByJob(chra.getJob());
             localmaxmp += this.incMaxDF;
         } else if (MapleJob.is神之子(chra.getJob())) {
             localmaxmp = 100;
+        } else if (MapleJob.is陰陽師(chra.getJob())) {
+            localmaxmp = 100;
+            localmaxmp += this.incMaxDF;
+        } else if (MapleJob.isNotMpJob(chra.getJob()) && chra.getJob() != 3001) {
+            localmaxmp = 0;
         }
         if (MapleJob.is惡魔復仇者(chra.getJob())) {
             chra.getClient().getSession().write(JobPacket.AvengerPacket.giveAvengerHpBuff(hp));
@@ -641,7 +750,6 @@ public class PlayerStats implements Serializable {
         }
         calculateMaxBaseDamage(Math.max(magic, watk), pvpDamage, chra);
         trueMastery = Math.min(100, trueMastery);
-        passive_sharpeye_min_percent = (short) Math.min(passive_sharpeye_min_percent, passive_sharpeye_max_percent);
         if (oldmaxhp != 0 && oldmaxhp != localmaxhp) {
             chra.updatePartyMemberHP();
         }
@@ -651,826 +759,8 @@ public class PlayerStats implements Serializable {
         Skill bx;
         int bof;
         MapleStatEffect eff;
-        if (MapleJob.is皇家騎士團(chra.getJob())) {
-            bx = SkillFactory.getSkill(2000006);
-            bof = chra.getTotalSkillLevel(bx);
-            if (bof > 0) {
-                eff = bx.getEffect(bof);
-                percent_hp += eff.getX();
-                percent_mp += eff.getX();
-            }
-        }
-        switch (chra.getJob()) {
-            case 100:
-            case 110:
-            case 111:
-            case 112:
-            case 120:
-            case 121:
-            case 122:
-            case 130:
-            case 131:
-            case 132: {
-                bx = SkillFactory.getSkill(1000009);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    speed += eff.getPassiveSpeed();
-                    jump += eff.getPassiveJump();
-                    speed += eff.getSpeedMax();
-                    addmaxhp += eff.getLevelToMaxHp() * chra.getLevel();
-                }
-                bx = SkillFactory.getSkill(1001003);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    percent_hp += eff.getPercentHP();
-                }
-                break;
-            }
-            case 200:
-            case 210:
-            case 211:
-            case 212:
-            case 220:
-            case 221:
-            case 222:
-            case 230:
-            case 231:
-            case 232: {
-                bx = SkillFactory.getSkill(2000006);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    percent_mp += bx.getEffect(bof).getPercentMP();
-                    maxmp += bx.getEffect(bof).getLevelToMaxMp() * chra.getLevel();
-                }
-                break;
-            }
-            case 322: { // Crossbowman
-                bx = SkillFactory.getSkill(3220004);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    watk += eff.getX();
-                    trueMastery += eff.getMastery();
-                    passive_sharpeye_min_percent += eff.getCriticalMin();
-                }
-                bx = SkillFactory.getSkill(3220009);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    percent_hp += eff.getPercentHP();
-                    ignoreTargetDEF += eff.getIgnoreMob();
-                }
-                bx = SkillFactory.getSkill(3220005);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0 && chra.getBuffedValue(MapleBuffStat.SPIRIT_LINK) != null) {
-                    eff = bx.getEffect(bof);
-                    percent_hp += eff.getX();
-                    dam_r *= (eff.getDamage() + 100.0) / 100.0;
-                    bossdam_r *= (eff.getDamage() + 100.0) / 100.0;
-                }
-                break;
-            }
-            case 312: { // Bowmaster
-                bx = SkillFactory.getSkill(3120005);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    watk += bx.getEffect(bof).getX();
-                }
-                bx = SkillFactory.getSkill(3120011);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    percent_hp += eff.getPercentHP();
-                    ignoreTargetDEF += eff.getIgnoreMob();
-                }
-                bx = SkillFactory.getSkill(3120006);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0 && chra.getBuffedValue(MapleBuffStat.SPIRIT_LINK) != null) {
-                    eff = bx.getEffect(bof);
-                    percent_hp += eff.getX();
-                    dam_r *= (eff.getDamage() + 100.0) / 100.0;
-                    bossdam_r *= (eff.getDamage() + 100.0) / 100.0;
-                }
-                break;
-            }
-            case 400: // Thief
-            case 410: // Assassin
-            case 411: // Hermit
-            case 412: // Night Lord
-            case 420: // Bandit
-            case 421: // Chief Bandit
-            case 422: { // Shadower
-                bx = SkillFactory.getSkill(4001005); // Haste
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    speed += eff.getSpeedMax();
-                }
-                // 4000010: Magic Theft, invisible.
-                if (chra.getJob() >= 410 && chra.getJob() <= 412) {
-                    bx = SkillFactory.getSkill(4100007); // Physical Training
-                    bof = chra.getTotalSkillLevel(bx);
-                    if (bof > 0) {
-                        eff = bx.getEffect(bof);
-                        localluk += eff.getLukX();
-                        localdex += eff.getDexX();
-                    }
-                }
-                if (chra.getJob() == 411 || chra.getJob() == 412) {
-                    bx = SkillFactory.getSkill(4110008); // Enveloping Darkness
-                    bof = chra.getTotalSkillLevel(bx);
-                    if (bof > 0) {
-                        eff = bx.getEffect(bof);
-                        percent_hp += eff.getPercentHP();
-                        ASR += eff.getASRRate();
-                        TER += eff.getTERRate();
-                    }
-                    bx = SkillFactory.getSkill(4110012); // Expert Throwing Star Handling
-                    bof = chra.getTotalSkillLevel(bx);
-                    if (bof > 0) {
-                        eff = bx.getEffect(bof);
-                        damageIncrease.put(4001344, eff.getDAMRate());
-                        damageIncrease.put(4101008, eff.getDAMRate());
-                        damageIncrease.put(4101009, eff.getDAMRate());
-                        damageIncrease.put(4101010, eff.getDAMRate());
-                    }
-                    bx = SkillFactory.getSkill(4110014);
-                    bof = chra.getTotalSkillLevel(bx);
-                    if (bof > 0) {
-                        eff = bx.getEffect(bof);
-                        RecoveryUP += eff.getX() - 100;
-                    }
-                }
-                if (chra.getJob() == 412) {
-                    bx = SkillFactory.getSkill(4121014); // Dark Harmony
-                    bof = chra.getTotalSkillLevel(bx);
-                    if (bof > 0) {
-                        eff = bx.getEffect(bof);
-                        ignoreTargetDEF += eff.getIgnoreMob();
-                    }
-                }
 
-                bx = SkillFactory.getSkill(4200006);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    percent_hp += eff.getPercentHP();
-                    ASR += eff.getASRRate();
-                    TER += eff.getTERRate();
-                }
-                bx = SkillFactory.getSkill(4210000);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    percent_wdef += eff.getX();
-                    percent_mdef += eff.getX();
-                }
-                break;
-            }
-            case 431: // Blade Acolyte
-            case 432: // Blade Specialist
-            case 433: // Blade Lord
-            case 434: { // Blade Master
-                bx = SkillFactory.getSkill(4001006); // Haste
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    speed += eff.getSpeedMax();
-                }
-
-                bx = SkillFactory.getSkill(4310004);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    percent_hp += eff.getPercentHP();
-                    ASR += eff.getASRRate();
-                    TER += eff.getTERRate();
-                }
-                bx = SkillFactory.getSkill(4341006);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    percent_wdef += eff.getWDEFRate();
-                    percent_mdef += eff.getMDEFRate();
-                }
-                break;
-            }
-            case 510:
-            case 511:
-            case 512: {
-                bx = SkillFactory.getSkill(5100009);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    percent_hp += bx.getEffect(bof).getPercentHP();
-                }
-                break;
-            }
-            case 501:
-            case 530:
-            case 531:
-            case 532: {
-                bx = SkillFactory.getSkill(5010003);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    watk += bx.getEffect(bof).getAttackX();
-                }
-                bx = SkillFactory.getSkill(5300008);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    localstr += eff.getStrX();
-                    localdex += eff.getDexX();
-                }
-                bx = SkillFactory.getSkill(5311001);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    damageIncrease.put(5301001, bx.getEffect(bof).getDAMRate());
-                }
-                bx = SkillFactory.getSkill(5310007);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    percent_hp += eff.getHpR();
-                    ASR += eff.getASRRate();
-                    percent_wdef += eff.getWDEFRate();
-                }
-                bx = SkillFactory.getSkill(5310006);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    watk += bx.getEffect(bof).getAttackX();
-                }
-                bx = SkillFactory.getSkill(5321009);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    dam_r *= (eff.getDAMRate() + 100.0) / 100.0;
-                    bossdam_r *= (eff.getDAMRate() + 100.0) / 100.0;
-                    ignoreTargetDEF += eff.getIgnoreMob();
-                }
-                break;
-            }
-            case 508:
-            case 570:
-            case 571:
-            case 572: { // Jett
-                bx = SkillFactory.getSkill(5080000); // Comet Booster
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    accuracy += eff.getAccX();
-                    jump += eff.getPassiveJump();
-                    speed += eff.getSpeedMax(); // TODO: split speed max and speed. (speed have a limit, while speedMax will add to the max)
-                } // TODO: research more on percentage hp/mp and stats, which doesn't take effect to note.
-                bx = SkillFactory.getSkill(5080004); // Shadow Heart
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    passive_sharpeye_rate += eff.getCr();
-                    passive_sharpeye_min_percent += eff.getCriticalMin();
-                }
-                // 5081010, 5081011: Hidden
-                if (chra.getJob() >= 570) {
-                    bx = SkillFactory.getSkill(5700003); // Physical Training
-                    bof = chra.getTotalSkillLevel(bx);
-                    if (bof > 0) {
-                        eff = bx.getEffect(bof);
-                        localstr += eff.getStrX();
-                        localdex += eff.getDexX();
-                    }
-                }
-                if (chra.getJob() >= 571) {
-                    bx = SkillFactory.getSkill(5710004); // High Life
-                    bof = chra.getTotalSkillLevel(bx);
-                    if (bof > 0) {
-                        eff = bx.getEffect(bof);
-                        percent_wdef += eff.getWDEFRate();
-                        percent_mdef += eff.getMDEFRate();
-                        add_hp += eff.getMaxHpX();
-                        add_mp += eff.getMaxMpX();
-                    }
-                    bx = SkillFactory.getSkill(5710005); // Cutting Edge
-                    bof = chra.getTotalSkillLevel(bx);
-                    if (bof > 0) {
-                        eff = bx.getEffect(bof);
-                        passive_sharpeye_rate += eff.getCr();
-                        ignoreTargetDEF += eff.getIgnoreMob();
-                    }
-                }
-                if (chra.getJob() == 572) {
-                    bx = SkillFactory.getSkill(5720008); // Collateral Damage
-                    bof = chra.getTotalSkillLevel(bx);
-                    if (bof > 0) {
-                        eff = bx.getEffect(bof);
-                        passive_sharpeye_rate += eff.getCr();
-                        passive_sharpeye_min_percent += eff.getCriticalMin();
-                        passive_sharpeye_max_percent += eff.getCriticalMax();
-                        bossdam_r += eff.getBossDamage();
-                    }
-                    // TODO: 5721009, 5720012(Counterattack)
-                }
-                break;
-            }
-            case 1100:
-            case 1110:
-            case 1111:
-            case 1112: {
-                bx = SkillFactory.getSkill(11000005);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    percent_hp += bx.getEffect(bof).getPercentHP();
-                }
-                break;
-            }
-            case 1200:
-            case 1210:
-            case 1211:
-            case 1212: {
-                bx = SkillFactory.getSkill(12120008);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    dot += bx.getEffect(bof).getY();
-                }
-                bx = SkillFactory.getSkill(12000024);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    reduceDamageRate += bx.getEffect(bof).getX();
-                }
-
-                bx = SkillFactory.getSkill(12000025);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    percent_mp += bx.getEffect(bof).getPercentMP();
-                    addmaxmp += bx.getEffect(bof).getLevelToMaxMp() * chra.getLevel();
-                }
-                bx = SkillFactory.getSkill(12100008);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    localint_ += bx.getEffect(bof).getIntX();
-                }
-                bx = SkillFactory.getSkill(12110001);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    mpconPercent += eff.getX() - 100;
-                    dam_r += eff.getY();
-                    bossdam_r += eff.getY();
-                }
-                break;
-            }
-            case 1510:
-            case 1511:
-            case 1512: {
-                bx = SkillFactory.getSkill(15100007);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    percent_hp += bx.getEffect(bof).getPercentHP();
-                }
-                break;
-            }
-            case 2003: {// Phantom noob
-                // Phantom Instinct - 20030204
-                // Dexterous Training - 20030206
-                bx = SkillFactory.getSkill(20030204); // +10% crit rate
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    passive_sharpeye_rate += eff.getCr();
-                    passive_sharpeye_min_percent += eff.getCriticalMin();
-                }
-                bx = SkillFactory.getSkill(20030206); // +40 DEX, Base Avoidability: +20%
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    localdex += eff.getDexX();
-                    dodgeChance += eff.getER();
-                }
-                break;
-            }
-            case 2200:
-            case 2210:
-            case 2211:
-            case 2212:
-            case 2213:
-            case 2214:
-            case 2215:
-            case 2216:
-            case 2217:
-            case 2218: {
-                magic += chra.getTotalSkillLevel(SkillFactory.getSkill(22000000));
-                bx = SkillFactory.getSkill(22150000);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    mpconPercent += eff.getX() - 100;
-                    dam_r *= eff.getY() / 100.0;
-                    bossdam_r *= eff.getY() / 100.0;
-                }
-                bx = SkillFactory.getSkill(22160000);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    dam_r *= (eff.getDamage() + 100.0) / 100.0;
-                    bossdam_r *= (eff.getDamage() + 100.0) / 100.0;
-                }
-                bx = SkillFactory.getSkill(22170001); // magic mastery, this is an invisible skill
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    magic += eff.getX();
-                    trueMastery += eff.getMastery();
-                    passive_sharpeye_min_percent += eff.getCriticalMin();
-                }
-                break;
-            }
-            case 2112: {
-                bx = SkillFactory.getSkill(21120001);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    watk += eff.getX();
-                    trueMastery += eff.getMastery();
-                    passive_sharpeye_min_percent += eff.getCriticalMin();
-                }
-                break;
-            }
-            case 2400:
-            case 2410:
-            case 2411:
-            case 2412: { // Phantom
-                // Blanc Carte - 24100003
-                // Cane Mastery - 24100004
-                // Luck of Phantom Thief - 24111002
-                // 24111003- uses monlight effect, but is Misfortune Protection
-                // 24110004 - Flash and Flee -> active
-                // 24111005 - Moonlight
-                // 24111006 - Phantom Charge
-                // 24111008- Breeze Carte, (hidden), linked to phantom charge
-                // 24121000 - Ultimate Drive
-                // 24120002 - Noir Carte
-                // 24121003 - Twilight
-                // 24121004 - Pray of Aria
-                // 24121005 - Tempest of Card
-                // 24120006 - Cane Expert
-                // 24121007 - Soul Steal
-                // 24121008 - Maple Warrior
-                // 24121009 - Hero's will
-                // 24121010 - Some linked skill (Twilight)
-                bx = SkillFactory.getSkill(24001002); // Swift Phantom
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    speed += eff.getPassiveSpeed();
-                    jump += eff.getPassiveJump();
-                }
-                bx = SkillFactory.getSkill(24000003); // Quick Evasion
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    dodgeChance += eff.getX();
-                }
-                bx = SkillFactory.getSkill(24100006); //Luck Monopoly
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    localluk += eff.getLukX();
-                }
-                bx = SkillFactory.getSkill(24110007); // Acute Sense
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    passive_sharpeye_rate += eff.getCr();
-                    passive_sharpeye_min_percent += eff.getCriticalMin();
-                }
-                bx = SkillFactory.getSkill(24111002); //Luck of Phantom Thief
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    localluk += eff.getLukX();
-                }
-                break;
-            }
-            case 2005:
-            case 2510:
-            case 2511:
-            case 2512: {
-                bx = SkillFactory.getSkill(25000105);//乾坤一体
-                bof = chra.getSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    percent_hp += eff.getPercentHP();
-                    percent_mp += eff.getPercentMP();
-//                    wdef += eff.getWdefX();
-//                    mdef += eff.getMdefX();
-                }
-                bx = SkillFactory.getSkill(25101205); //后方移动
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    dodgeChance += eff.getER();
-                }
-                bx = SkillFactory.getSkill(25100106); //拳甲修炼
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    trueMastery += eff.getMastery();
-                }
-                bx = SkillFactory.getSkill(25100108);//力量锻炼
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    localstr += eff.getStrX();
-                }
-                bx = SkillFactory.getSkill(25110107);//精灵凝聚第3招
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-//                    percent_damage += eff.getDAMRate();
-                    watk += eff.getAttackX();
-                }
-                bx = SkillFactory.getSkill(25110108); //招魂式
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-//                    wdef += eff.getWdefX();
-//                    mdef += eff.getMdefX();
-                    ASR += eff.getASRRate();
-                    TER += eff.getTERRate();
-                }
-                bx = SkillFactory.getSkill(25120112); //精灵凝聚第4招
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-//                    percent_ignore_mob_def_rate += eff.getIgnoreMob();
-//                    percent_boss_damage_rate += eff.getBossDamage();
-                }
-                bx = SkillFactory.getSkill(25120113); //高级拳甲修炼
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    trueMastery += eff.getMastery();
-                    passive_sharpeye_min_percent += eff.getCriticalMin();
-                    passive_sharpeye_max_percent += eff.getCriticalMax();
-                }
-                break;
-            }
-            case 3001:
-            case 3100:
-            case 3110:
-            case 3111:
-            case 3112: {
-                mpRecoverProp = 100;
-                bx = SkillFactory.getSkill(31000003);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    percent_hp += bx.getEffect(bof).getHpR();
-                }
-                bx = SkillFactory.getSkill(31100007);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    damageIncrease.put(31000004, eff.getDAMRate());
-                    damageIncrease.put(31001006, eff.getDAMRate());
-                    damageIncrease.put(31001007, eff.getDAMRate());
-                    damageIncrease.put(31001008, eff.getDAMRate());
-                }
-                bx = SkillFactory.getSkill(31100005);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    localstr += eff.getStrX();
-                    localdex += eff.getDexX();
-                }
-                bx = SkillFactory.getSkill(31100010);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    damageIncrease.put(31000004, eff.getX());
-                    damageIncrease.put(31001006, eff.getX());
-                    damageIncrease.put(31001007, eff.getX());
-                    damageIncrease.put(31001008, eff.getX());
-                }
-                bx = SkillFactory.getSkill(31111007);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    dam_r *= (eff.getDAMRate() + 100.0) / 100.0;
-                    bossdam_r *= (eff.getDAMRate() + 100.0) / 100.0;
-                }
-                bx = SkillFactory.getSkill(31110008);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    dodgeChance += eff.getX();
-                    // HACK: shouldn't be here
-                    hpRecoverPercent += eff.getY();
-                    hpRecoverProp += eff.getX();
-                    //mpRecover += eff.getY(); // handle in takeDamage
-                    //mpRecoverProp += eff.getX();
-                }
-                bx = SkillFactory.getSkill(31110009);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    mpRecover += 1;
-                    mpRecoverProp += eff.getProb();
-                }
-                bx = SkillFactory.getSkill(31111006);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    dam_r *= (eff.getX() + 100.0) / 100.0;
-                    bossdam_r *= (eff.getX() + 100.0) / 100.0;
-                    passive_sharpeye_rate += eff.getY();
-                }
-                bx = SkillFactory.getSkill(31121006);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    ignoreTargetDEF += bx.getEffect(bof).getIgnoreMob();
-                }
-                bx = SkillFactory.getSkill(31120011);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    damageIncrease.put(31000004, eff.getX());
-                    damageIncrease.put(31001006, eff.getX());
-                    damageIncrease.put(31001007, eff.getX());
-                    damageIncrease.put(31001008, eff.getX());
-                }
-                bx = SkillFactory.getSkill(31120008);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    watk += eff.getAttackX();
-                    trueMastery += eff.getMastery();
-                    passive_sharpeye_min_percent += eff.getCriticalMin();
-                }
-                bx = SkillFactory.getSkill(31120010);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    percent_wdef += bx.getEffect(bof).getT();
-                }
-                bx = SkillFactory.getSkill(30010112);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    bossdam_r += eff.getBossDamage();
-                    mpRecover += eff.getX();
-                    mpRecoverProp += eff.getBossDamage(); //yes
-                }
-                bx = SkillFactory.getSkill(30010185);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    chra.getTrait(MapleTraitType.will).addLocalExp(GameConstants.getTraitExpNeededForLevel(eff.getY()));
-                    chra.getTrait(MapleTraitType.charisma).addLocalExp(GameConstants.getTraitExpNeededForLevel(eff.getZ()));
-                }
-                bx = SkillFactory.getSkill(30010111);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    hpRecoverPercent += eff.getX();
-                    hpRecoverProp += eff.getProb(); //yes
-                }
-                break;
-            }
-            case 3211:
-            case 3212: {
-                bx = SkillFactory.getSkill(32110000);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    ASR += bx.getEffect(bof).getASRRate();
-                    TER += bx.getEffect(bof).getTERRate();
-                }
-                bx = SkillFactory.getSkill(32110001);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    dam_r *= (eff.getDAMRate() + 100.0) / 100.0;
-                    bossdam_r *= (eff.getDAMRate() + 100.0) / 100.0;
-                    passive_sharpeye_min_percent += eff.getCriticalMin();
-                }
-                bx = SkillFactory.getSkill(32120000);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    magic += bx.getEffect(bof).getMagicX();
-                }
-                bx = SkillFactory.getSkill(32120001);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    dodgeChance += bx.getEffect(bof).getER();
-                }
-                bx = SkillFactory.getSkill(32120009);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    percent_hp += bx.getEffect(bof).getPercentHP();
-                }
-                break;
-            }
-            case 3300:
-            case 3310:
-            case 3311:
-            case 3312: {
-                bx = SkillFactory.getSkill(33120000);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    watk += eff.getX();
-                    trueMastery += eff.getMastery();
-                    passive_sharpeye_min_percent += eff.getCriticalMin();
-                }
-                bx = SkillFactory.getSkill(33110000);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    dam_r *= (eff.getDamage() + 100.0) / 100.0;
-                    bossdam_r *= (eff.getDamage() + 100.0) / 100.0;
-                }
-                bx = SkillFactory.getSkill(33120010);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    ignoreTargetDEF += eff.getIgnoreMob();
-                    dodgeChance += eff.getER();
-                }
-                bx = SkillFactory.getSkill(32110001);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    dam_r *= (eff.getDAMRate() + 100.0) / 100.0;
-                    bossdam_r *= (eff.getDAMRate() + 100.0) / 100.0;
-                }
-                break;
-            }
-            case 3510:
-            case 3511:
-            case 3512: {
-                bx = SkillFactory.getSkill(35100000);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    watk += bx.getEffect(bof).getAttackX();
-                }
-                bx = SkillFactory.getSkill(35120000);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    trueMastery += bx.getEffect(bof).getMastery();
-                }
-                break;
-            }
-            case 11200:
-            case 11210:
-            case 11211:
-            case 11212: {
-                bx = SkillFactory.getSkill(112000011); // Well Fed
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    localint_ += eff.getIntX();
-                    percent_hp += bx.getEffect(bof).getPercentHP();
-                }
-
-                bx = SkillFactory.getSkill(112000010); // Dumb Luck
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    percent_wdef += eff.getWDEFRate();
-                    dam_r *= (eff.getDAMRate() + 100.0) / 100.0;
-                }
-
-                bx = SkillFactory.getSkill(112000015); // Fort Follow-Up
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    dam_r *= (eff.getDAMRate() + 100.0) / 100.0;
-                }
-
-                bx = SkillFactory.getSkill(112000014); // Bear Strength
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    passive_sharpeye_rate += eff.getCr();
-                    passive_sharpeye_min_percent += eff.getCriticalMin();
-                    passive_sharpeye_max_percent += eff.getCriticalMax();
-                    magic += eff.getMagicX();
-                }
-
-                bx = SkillFactory.getSkill(112000013); // Fort the Brave
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    magic += eff.getMagicX();
-                }
-
-                bx = SkillFactory.getSkill(112000020); // Billowing Trumpet
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    magic += eff.getMagicX();
-                }
-                break;
-            }
-        }
+        //兩個連結技能
         bx = SkillFactory.getSkill(80000000);
         bof = chra.getSkillLevel(bx);
         if (bof > 0) {
@@ -1488,12 +778,81 @@ public class PlayerStats implements Serializable {
             eff = bx.getEffect(bof);
             bossdam_r += eff.getBossDamage();
         }
-        bx = SkillFactory.getSkill(80001040);
+
+        //精靈的祝福
+        bx = SkillFactory.getSkill(GameConstants.getBOF_ForJob(chra.getJob()));
         bof = chra.getSkillLevel(bx);
         if (bof > 0) {
-            expBuff *= (bx.getEffect(bof).getEXPRate() + 100.0) / 100.0;
+            eff = bx.getEffect(bof);
+            watk += eff.getX();
+            magic += eff.getY();
+            accuracy += eff.getX();
         }
-        if (MapleJob.is冒險家(chra.getJob())) {
+
+        //女皇的祝福
+        bx = SkillFactory.getSkill(GameConstants.getEmpress_ForJob(chra.getJob()));
+        bof = chra.getSkillLevel(bx);
+        if (bof > 0) {
+            eff = bx.getEffect(bof);
+            watk += eff.getX();
+            magic += eff.getY();
+            accuracy += eff.getZ();
+        }
+
+        int job = chra.getJob();
+        if (MapleJob.is冒險家(job)) {
+            if (MapleJob.is劍士(job)) {
+                // 戰鬥技能
+                bx = SkillFactory.getSkill(1000009);
+                bof = chra.getPassiveLevel(bx);
+                if (bof > 0) {
+                    eff = bx.getEffect(bof);
+                    speed += eff.getPassiveSpeed();
+                    jump += eff.getPassiveJump();
+                    speed += eff.getSpeedMax();
+                    addmaxhp += eff.getLevelToMaxHp() * chra.getLevel();
+                }
+                // 自身強化
+                bx = SkillFactory.getSkill(1001003);
+                bof = chra.getPassiveLevel(bx);
+                if (bof > 0) {
+                    eff = bx.getEffect(bof);
+                    percent_hp += eff.getPercentHP();
+                }
+            } else if (MapleJob.is法師(job)) {
+                // 魔力增幅
+                bx = SkillFactory.getSkill(2000006);
+                bof = chra.getPassiveLevel(bx);
+                if (bof > 0) {
+                    eff = bx.getEffect(bof);
+                    percent_mp += eff.getPercentMP();
+                    addmaxmp += eff.getLevelToMaxMp() * chra.getLevel();
+                }
+            } else if (MapleJob.is弓箭手(job)) {
+                bx = SkillFactory.getSkill(3000002);
+                bof = chra.getPassiveLevel(bx);
+                if (bof > 0) {
+                    defRange += bx.getEffect(bof).getRange();
+                }
+            } else if (MapleJob.is盜賊(job) && chra.getSubcategory() == 0) {
+                // 幻化術
+                bx = SkillFactory.getSkill(4000000);
+                bof = chra.getPassiveLevel(bx);
+                if (bof > 0) {
+                    eff = bx.getEffect(bof);
+                    accuracy += eff.getX();
+                    dodgeChance += eff.getY();
+                }
+                // 速度激發
+                bx = SkillFactory.getSkill(4001005);
+                bof = chra.getPassiveLevel(bx);
+                if (bof > 0) {
+                    eff = bx.getEffect(bof);
+                    speedMax += eff.getSpeedMax();
+                }
+            } else if (MapleJob.is海盜(job) && !MapleJob.is重砲指揮官(job) && !MapleJob.is蒼龍俠客(job)) {
+            }
+
             bx = SkillFactory.getSkill(74);
             bof = chra.getSkillLevel(bx);
             if (bof > 0) {
@@ -1541,673 +900,1313 @@ public class PlayerStats implements Serializable {
                 percent_hp += eff.getHpR();
                 percent_mp += eff.getMpR();
             }
+        } else if (MapleJob.is皇家騎士團(job)) {
+            System.err.println("職業未處理被動技能:" + job);
+        } else if (MapleJob.is末日反抗軍(job) && !MapleJob.is惡魔(job) && !MapleJob.is傑諾(job)) {
+            bx = SkillFactory.getSkill(30000002);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                RecoveryUP += eff.getX() - 100;
+            }
         }
-        bx = SkillFactory.getSkill(GameConstants.getBOF_ForJob(chra.getJob()));
-        bof = chra.getSkillLevel(bx);
-        if (bof > 0) {
-            eff = bx.getEffect(bof);
-            watk += eff.getX();
-            magic += eff.getY();
-            accuracy += eff.getX();
-        }
 
-        bx = SkillFactory.getSkill(GameConstants.getEmpress_ForJob(chra.getJob()));
-        bof = chra.getSkillLevel(bx);
-        if (bof > 0) {
-            eff = bx.getEffect(bof);
-            watk += eff.getX();
-            magic += eff.getY();
-            accuracy += eff.getZ();
-        }
-        switch (chra.getJob()) {
-            case 210:
-            case 211:
-            case 212: { // IL
-                bx = SkillFactory.getSkill(2100007);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    localint_ += bx.getEffect(bof).getIntX();
-                }
-                bx = SkillFactory.getSkill(2110000);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    dotTime += eff.getX();
-                    dot += eff.getZ();
-                }
-                bx = SkillFactory.getSkill(2110001);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    mpconPercent += eff.getX() - 100;
-                    dam_r *= eff.getY() / 100.0;
-                    bossdam_r *= eff.getY() / 100.0;
-                }
-                bx = SkillFactory.getSkill(2121003);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    damageIncrease.put(2111003, eff.getX());
-                }
-                bx = SkillFactory.getSkill(2120009);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    magic += eff.getMagicX();
-                    BuffUP_Skill += eff.getX();
-                }
-                bx = SkillFactory.getSkill(2121005);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    TER += bx.getEffect(bof).getTERRate();
-                }
-                bx = SkillFactory.getSkill(2121009);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    magic += bx.getEffect(bof).getMagicX();
-                }
-                bx = SkillFactory.getSkill(2120010);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    dam_r *= (eff.getX() * eff.getY() + 100.0) / 100.0;
-                    bossdam_r *= (eff.getX() * eff.getY() + 100.0) / 100.0;
-                    ignoreTargetDEF += eff.getIgnoreMob();
-                }
-                break;
+        if (MapleJob.is英雄(job)) {
+            // 武器精通
+            bx = SkillFactory.getSkill(1100000);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                trueMastery += eff.getMastery();
+                accuracy += eff.getX();
             }
-            case 220:
-            case 221:
-            case 222: { // IL
-                bx = SkillFactory.getSkill(2200007);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    localint_ += bx.getEffect(bof).getIntX();
-                }
-                bx = SkillFactory.getSkill(2210000);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    dot += bx.getEffect(bof).getZ();
-                }
-                bx = SkillFactory.getSkill(2210001);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    mpconPercent += eff.getX() - 100;
-                    dam_r += dam_r * (eff.getY() / 100.0);
-                    bossdam_r += bossdam_r * (eff.getY() / 100.0);
-                }
-                bx = SkillFactory.getSkill(2220009);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    magic += eff.getMagicX();
-                    BuffUP_Skill += eff.getX();
-                }
-                bx = SkillFactory.getSkill(2221005);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    TER += bx.getEffect(bof).getTERRate();
-                }
-                bx = SkillFactory.getSkill(2221009);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    magic += bx.getEffect(bof).getMagicX();
-                }
-                bx = SkillFactory.getSkill(2220010);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    dam_r += dam_r * ((eff.getX() * eff.getY() + 100.0) / 100.0);
-                    bossdam_r *= bossdam_r * ((eff.getX() * eff.getY() + 100.0) / 100.0);
-                    ignoreTargetDEF += eff.getIgnoreMob();
-                }
-                break;
+            // 體能訓練
+            bx = SkillFactory.getSkill(1100009);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                localstr += eff.getStrX();
+                localdex += eff.getDexX();
             }
-            case 1211:
-            case 1212: { // flame
-                bx = SkillFactory.getSkill(12110001);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    mpconPercent += eff.getX() - 100;
-                    dam_r += dam_r * (eff.getY() / 100.0);
-                    bossdam_r += bossdam_r * (eff.getY() / 100.0);
-                }
+            // 恢復術
+            bx = SkillFactory.getSkill(1110011);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                ASR += eff.getASRRate();
+                TER += eff.getTERRate();
+            }
+            // 戰鬥精通
+            bx = SkillFactory.getSkill(1120012);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                ignoreTargetDEF += eff.getIgnoreMob();
+            }
+            // 進階終極攻擊
+            bx = SkillFactory.getSkill(1120013);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                watk += eff.getAttackX();
+                accuracy += eff.getAccR();
+                damageIncrease.put(1100002, eff.getDamage());
+            }
+            // 反抗姿態
+            bx = SkillFactory.getSkill(1120014);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                stanceProp += eff.info.get(MapleStatInfo.stanceProp);
+            }
+        } else if (MapleJob.is聖騎士(job)) {
+            // 武器精通
+            bx = SkillFactory.getSkill(1200000);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                trueMastery += eff.getMastery();
+                accuracy += eff.getX();
+            }
+            // 體能訓練
+            bx = SkillFactory.getSkill(1200009);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                localstr += eff.getStrX();
+                localdex += eff.getDexX();
+            }
+            // 盾防精通
+            bx = SkillFactory.getSkill(1210001);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                ASR += bx.getEffect(bof).getASRRate();
+                TER += bx.getEffect(bof).getTERRate();
+            }
+            // 反抗姿態
+            bx = SkillFactory.getSkill(1220017);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                stanceProp += eff.info.get(MapleStatInfo.stanceProp);
+            }
+        } else if (MapleJob.is黑騎士(job)) {
+            // 武器精通
+            bx = SkillFactory.getSkill(1300000);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                trueMastery += eff.getMastery();
+                accuracy += eff.getX();
+            }
+            // 體能訓練
+            bx = SkillFactory.getSkill(1300009);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                localstr += eff.getStrX();
+                localdex += eff.getDexX();
+            }
+            // 暗黑之力
+            bx = SkillFactory.getSkill(1310009);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                passive_sharpeye_rate += eff.getCr();
+                passive_sharpeye_min_percent += eff.getCriticalMin();
+                hpRecoverProp += eff.getProb();
+                hpRecoverPercent += eff.getX();
+            }
+            // 恢復術
+            bx = SkillFactory.getSkill(1310010);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                ASR += eff.getASRRate();
+                TER += eff.getTERRate();
+            }
+            // 反抗姿態
+            bx = SkillFactory.getSkill(1320017);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                stanceProp += eff.info.get(MapleStatInfo.stanceProp);
+            }
+        } else if (MapleJob.is大魔導士_火毒(job)) {
+            bx = SkillFactory.getSkill(2100007);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                localint_ += bx.getEffect(bof).getIntX();
+            }
+            bx = SkillFactory.getSkill(2110000);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                dotTime += eff.getX();
+                dot += eff.getZ();
+            }
+            bx = SkillFactory.getSkill(2110001);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                mpconPercent += eff.getX() - 100;
+                dam_r *= eff.getY() / 100.0;
+                bossdam_r *= eff.getY() / 100.0;
+            }
+            bx = SkillFactory.getSkill(2121003);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                damageIncrease.put(2111003, eff.getX());
+            }
+            bx = SkillFactory.getSkill(2120009);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                magic += eff.getMagicX();
+                BuffUP_Skill += eff.getX();
+            }
+            bx = SkillFactory.getSkill(2121005);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                TER += bx.getEffect(bof).getTERRate();
+            }
+            bx = SkillFactory.getSkill(2121009);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                magic += bx.getEffect(bof).getMagicX();
+            }
+            bx = SkillFactory.getSkill(2120010);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                dam_r *= (eff.getX() * eff.getY() + 100.0) / 100.0;
+                bossdam_r *= (eff.getX() * eff.getY() + 100.0) / 100.0;
+                ignoreTargetDEF += eff.getIgnoreMob();
+            }
+        } else if (MapleJob.is大魔導士_冰雷(job)) {
+            bx = SkillFactory.getSkill(2200007);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                localint_ += bx.getEffect(bof).getIntX();
+            }
+            bx = SkillFactory.getSkill(2210000);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                dot += bx.getEffect(bof).getZ();
+            }
+            bx = SkillFactory.getSkill(2210001);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                mpconPercent += eff.getX() - 100;
+                dam_r += dam_r * (eff.getY() / 100.0);
+                bossdam_r += bossdam_r * (eff.getY() / 100.0);
+            }
+            bx = SkillFactory.getSkill(2220009);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                magic += eff.getMagicX();
+                BuffUP_Skill += eff.getX();
+            }
+            bx = SkillFactory.getSkill(2221005);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                TER += bx.getEffect(bof).getTERRate();
+            }
+            bx = SkillFactory.getSkill(2221009);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                magic += bx.getEffect(bof).getMagicX();
+            }
+            bx = SkillFactory.getSkill(2220010);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                dam_r += dam_r * ((eff.getX() * eff.getY() + 100.0) / 100.0);
+                bossdam_r *= bossdam_r * ((eff.getX() * eff.getY() + 100.0) / 100.0);
+                ignoreTargetDEF += eff.getIgnoreMob();
+            }
+        } else if (MapleJob.is主教(job)) {
+            bx = SkillFactory.getSkill(2300007);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                localint_ += bx.getEffect(bof).getIntX();
+            }
+            bx = SkillFactory.getSkill(2310008);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                passive_sharpeye_rate += bx.getEffect(bof).getCr();
+            }
+            bx = SkillFactory.getSkill(2320010);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                magic += eff.getMagicX();
+                BuffUP_Skill += eff.getX();
+            }
+            bx = SkillFactory.getSkill(2321010);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                magic += bx.getEffect(bof).getMagicX();
+            }
+            bx = SkillFactory.getSkill(2320005);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                ASR += bx.getEffect(bof).getASRRate();
+            }
+            bx = SkillFactory.getSkill(2320011);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                dam_r += dam_r * ((eff.getX() * eff.getY() + 100.0) / 100.0);
+                bossdam_r += bossdam_r * ((eff.getX() * eff.getY() + 100.0) / 100.0);
+                ignoreTargetDEF += eff.getIgnoreMob();
+            }
+        } else if (MapleJob.is箭神(job)) {
+            bx = SkillFactory.getSkill(3100006);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                damageIncrease.put(3001004, eff.getX());
+                damageIncrease.put(3001005, eff.getY());
+                localstr += eff.getStrX();
+                localdex += eff.getDexX();
+            }
+            bx = SkillFactory.getSkill(3110007);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                dodgeChance += bx.getEffect(bof).getER();
+            }
+            // 弓術精通
+            bx = SkillFactory.getSkill(3120005);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                watk += eff.getX();
+                trueMastery += eff.getMastery();
+                passive_sharpeye_min_percent += eff.getCriticalMin();
+            }
+        } else if (MapleJob.is神射手(job)) {
+            // 弩術精通
+            bx = SkillFactory.getSkill(3220004);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                watk += eff.getX();
+                trueMastery += eff.getMastery();
+                passive_sharpeye_min_percent += eff.getCriticalMin();
+            }
+            bx = SkillFactory.getSkill(3200006);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                damageIncrease.put(3001004, eff.getX());
+                damageIncrease.put(3001005, eff.getY());
+                localstr += eff.getStrX();
+                localdex += eff.getDexX();
+            }
+            bx = SkillFactory.getSkill(3220010);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                damageIncrease.put(3211006, bx.getEffect(bof).getDamage() - 150);
+            }
+            bx = SkillFactory.getSkill(3210007);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                dodgeChance += bx.getEffect(bof).getER();
+            }
+        } else if (MapleJob.is夜使者(job)) {
+            // 精準暗器
+            bx = SkillFactory.getSkill(4100000);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                trueMastery += eff.getMastery();
+                accuracy += eff.getX();
+            }
+            // 強力投擲
+            bx = SkillFactory.getSkill(4100001);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                passive_sharpeye_rate += eff.getProb();
+                passive_sharpeye_min_percent += eff.getCriticalMin();
+            }
+            // 體能訓練
+            bx = SkillFactory.getSkill(4100007);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                localdex += eff.getDexX();
+                localluk += eff.getLukX();
+            }
+            // 永恆黑暗
+            bx = SkillFactory.getSkill(4110008);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                ASR += eff.getASRRate();
+                percent_hp += eff.getPercentHP();
+                TER += eff.getTERRate();
+            }
+            // 鏢術精通
+            bx = SkillFactory.getSkill(4110012);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                dam_r += eff.info.get(MapleStatInfo.pdR);
+            }
+            // 藥劑精通
+            bx = SkillFactory.getSkill(4110014);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                passive_sharpeye_min_percent += eff.getCriticalMin();
+                passive_sharpeye_max_percent += eff.getCriticalMax();
+                RecoveryUP += eff.getX() - 100;
+            }
+            // 瞬身迴避
+            bx = SkillFactory.getSkill(4120002);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                dodgeChance += eff.getProb();
+            }
+            // 暗器精通
+            bx = SkillFactory.getSkill(4120012);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                passive_sharpeye_max_percent += eff.getCriticalMax();
+                trueMastery += eff.getMastery();
+                watk += eff.getX();
+            }
+            // 黑暗能量
+            bx = SkillFactory.getSkill(4121014);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                ignoreTargetDEF += eff.getIgnoreMob();
+            }
+            // 絕對領域
+            bx = SkillFactory.getSkill(4121015);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                bossdam_r += eff.getBossDamage();
+            }
+        } else if (MapleJob.is暗影神偷(job)) {
+            // 精準之刀
+            bx = SkillFactory.getSkill(4200000);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                trueMastery += eff.getMastery();
+                accuracy += eff.getX();
+            }
+            // 體能訓練
+            bx = SkillFactory.getSkill(4200007);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                localdex += eff.getDexX();
+                localluk += eff.getLukX();
+            }
+            // 強化盾
+            bx = SkillFactory.getSkill(4200010);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0 && ItemConstants.類型.盾牌(chra.getInventory(MapleInventoryType.EQUIPPED).getItem((short) -10).getItemId())) {
+                eff = bx.getEffect(bof);
+                percent_wdef += eff.getWDEFRate();
+                percent_mdef += eff.getMDEFRate();
+                dodgeChance += bx.getEffect(bof).getER();
+                watk += eff.getY();
+            }
+            // 貪婪
+            bx = SkillFactory.getSkill(4210012);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                mesoBuff *= (eff.getMesoRate() + 100.0) / 100.0;
+                pickRate += eff.getU();
+                mesoGuard -= eff.getV();
+                mesoGuardMeso -= eff.getW();
+                // 楓幣炸彈
+                damageIncrease.put(4211006, eff.getX());
+                watk += eff.getAttackX();
+            }
+            // 永恆黑暗
+            bx = SkillFactory.getSkill(4210013);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                ASR += eff.getASRRate();
+                percent_hp += eff.getPercentHP();
+                TER += eff.getTERRate();
+            }
+            // 瞬身迴避
+            bx = SkillFactory.getSkill(4220002);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                dodgeChance += eff.getProb();
+            }
+            // 進階精準之刀
+            bx = SkillFactory.getSkill(4220012);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                passive_sharpeye_min_percent += eff.getCriticalMin();
+                trueMastery += eff.getMastery();
+                watk += eff.getX();
+            }
+            // 致命爆擊
+            bx = SkillFactory.getSkill(4220015);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                passive_sharpeye_max_percent += eff.getCriticalMax();
+            }
+            // 瞬步連擊
+            bx = SkillFactory.getSkill(4221007);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                dam_r += eff.info.get(MapleStatInfo.pdR);
+            }
+            // 暗殺本能
+            bx = SkillFactory.getSkill(4221013);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                ignoreTargetDEF += eff.getIgnoreMob();
+            }
+        } else if (MapleJob.is影武者(job) || (job == 400 && chra.getSubcategory() == 1)) {
+            // 下忍 被動
+            // 精準雙刀
+            bx = SkillFactory.getSkill(4300000);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                trueMastery += eff.getMastery();
+                accuracy += eff.getX();
+            }
+            // 自我速度激發
+            bx = SkillFactory.getSkill(4301003);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                speedMax += eff.getSpeedMax();
+            }
+            // 中忍 被動
+            // 體能訓練
+            bx = SkillFactory.getSkill(4310006);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                localdex += eff.getDexX();
+                localluk += eff.getLukX();
+            }
+            // 隱忍 被動
+            // 竊取生命
+            bx = SkillFactory.getSkill(4330007);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                hpRecoverProp += eff.getProb();
+                hpRecoverPercent += eff.getX();
+            }
+            // 激進黑暗
+            bx = SkillFactory.getSkill(4330008);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                ASR += eff.getASRRate();
+                percent_hp += eff.getPercentHP();
+                TER += eff.getTERRate();
+            }
+            // 血雨暴風狂斬
+            bx = SkillFactory.getSkill(4331000);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                damageIncrease.put(4301004, eff.getDAMRate());
+                damageIncrease.put(4321006, eff.getDAMRate());
+            }
+            // 影武者 被動
+            // 幻影替身
+            bx = SkillFactory.getSkill(4341006);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                dodgeChance += eff.getER();
+                percent_wdef += eff.getWDEFRate();
+                percent_mdef += eff.getMDEFRate();
+            }
+            // 雙刀流精通
+            bx = SkillFactory.getSkill(4300000);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                trueMastery += eff.getMastery();
+                accuracy += eff.getX();
+            }
+        } else if (MapleJob.is拳霸(job)) {
+            bx = SkillFactory.getSkill(5100009);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                percent_hp += bx.getEffect(bof).getPercentHP();
+            }
+            bx = SkillFactory.getSkill(5110008);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) { //Backspin Blow, Double Uppercut, and Corkscrew Blow
+                eff = bx.getEffect(bof);
+                damageIncrease.put(5101002, eff.getX());
+                damageIncrease.put(5101003, eff.getY());
+                damageIncrease.put(5101004, eff.getZ());
+            }
+        } else if (MapleJob.is槍神(job)) {
+            bx = SkillFactory.getSkill(5220001);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) { //Flamethrower and Ice Splitter
+                eff = bx.getEffect(bof);
+                damageIncrease.put(5211004, eff.getDamage());
+                damageIncrease.put(5211005, eff.getDamage());
+            }
+        } else if (MapleJob.is重砲指揮官(job)) {
+            bx = SkillFactory.getSkill(5010003);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                watk += bx.getEffect(bof).getAttackX();
+            }
+            bx = SkillFactory.getSkill(5300008);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                localstr += eff.getStrX();
+                localdex += eff.getDexX();
+            }
+            bx = SkillFactory.getSkill(5310007);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                percent_hp += eff.getHpR();
+                ASR += eff.getASRRate();
+                percent_wdef += eff.getWDEFRate();
+            }
+            bx = SkillFactory.getSkill(5310006);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                watk += bx.getEffect(bof).getAttackX();
+            }
+        } else if (MapleJob.is蒼龍俠客(job)) {
+            System.err.println("職業未處理被動技能:" + job);
+        } else if (MapleJob.is聖魂劍士(job)) {
+            bx = SkillFactory.getSkill(11000005);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                percent_hp += bx.getEffect(bof).getPercentHP();
+            }
+        } else if (MapleJob.is烈焰巫師(job)) {
+            bx = SkillFactory.getSkill(12120008);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                dot += bx.getEffect(bof).getY();
+            }
+            bx = SkillFactory.getSkill(12000024);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                reduceDamageRate += bx.getEffect(bof).getX();
+            }
+            bx = SkillFactory.getSkill(12000025);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                percent_mp += bx.getEffect(bof).getPercentMP();
+                addmaxmp += bx.getEffect(bof).getLevelToMaxMp() * chra.getLevel();
+            }
+            bx = SkillFactory.getSkill(12100008);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                localint_ += bx.getEffect(bof).getIntX();
+            }
+            bx = SkillFactory.getSkill(12110001);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                mpconPercent += eff.getX() - 100;
+                dam_r += eff.getY();
+                bossdam_r += eff.getY();
+            }
+            bx = SkillFactory.getSkill(12110001);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                mpconPercent += eff.getX() - 100;
+                dam_r += dam_r * (eff.getY() / 100.0);
+                bossdam_r += bossdam_r * (eff.getY() / 100.0);
+            }
 
-                bx = SkillFactory.getSkill(12111004);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    TER += bx.getEffect(bof).getTERRate();
-                }
-                break;
+            bx = SkillFactory.getSkill(12111004);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                TER += bx.getEffect(bof).getTERRate();
             }
-            case 230:
-            case 231:
-            case 232: { // Bishop
-                bx = SkillFactory.getSkill(2300007);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    localint_ += bx.getEffect(bof).getIntX();
-                }
-                bx = SkillFactory.getSkill(2310008);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    passive_sharpeye_rate += bx.getEffect(bof).getCr();
-                }
-                bx = SkillFactory.getSkill(2320010);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    magic += eff.getMagicX();
-                    BuffUP_Skill += eff.getX();
-                }
-                bx = SkillFactory.getSkill(2321010);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    magic += bx.getEffect(bof).getMagicX();
-                }
-                bx = SkillFactory.getSkill(2320005);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    ASR += bx.getEffect(bof).getASRRate();
-                }
-                bx = SkillFactory.getSkill(2320011);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    dam_r += dam_r * ((eff.getX() * eff.getY() + 100.0) / 100.0);
-                    bossdam_r += bossdam_r * ((eff.getX() * eff.getY() + 100.0) / 100.0);
-                    ignoreTargetDEF += eff.getIgnoreMob();
-                }
-                break;
+        } else if (MapleJob.is破風使者(job)) {
+            bx = SkillFactory.getSkill(13000001);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                defRange += bx.getEffect(bof).getRange();
             }
-            case 2002:
-            case 2300:
-            case 2310:
-            case 2311:
-            case 2312: {
-                bx = SkillFactory.getSkill(20021110);
-                bof = chra.getSkillLevel(bx);
-                if (bof > 0) {
-                    expBuff *= (bx.getEffect(bof).getEXPRate() + 100.0) / 100.0;
-                }
-                bx = SkillFactory.getSkill(20020112);
-                bof = chra.getSkillLevel(bx);
-                if (bof > 0) {
-                    chra.getTrait(MapleTraitType.charm).addLocalExp(GameConstants.getTraitExpNeededForLevel(30));
-                }
-                bx = SkillFactory.getSkill(23000001);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    dodgeChance += bx.getEffect(bof).getER();
-                }
-                bx = SkillFactory.getSkill(23100008);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    localstr += eff.getStrX();
-                    localdex += eff.getDexX();
-                }
-                bx = SkillFactory.getSkill(23110004);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    dodgeChance += bx.getEffect(bof).getProb();
-                }
-                bx = SkillFactory.getSkill(23110004);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    damageIncrease.put(23101001, bx.getEffect(bof).getDAMRate());
-                }
-                bx = SkillFactory.getSkill(23121004);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    dodgeChance += bx.getEffect(bof).getProb();
-                }
-                bx = SkillFactory.getSkill(23120009);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    watk += bx.getEffect(bof).getX();
-                }
-                bx = SkillFactory.getSkill(23120010);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    ignoreTargetDEF += bx.getEffect(bof).getX(); //or should we do 100?
-                }
-                bx = SkillFactory.getSkill(23120011);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    damageIncrease.put(23101001, bx.getEffect(bof).getDAMRate());
-                }
-                bx = SkillFactory.getSkill(23120012);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    watk += bx.getEffect(bof).getAttackX();
-                }
-                break;
+            bx = SkillFactory.getSkill(13110008);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                dodgeChance += bx.getEffect(bof).getER();
             }
-            case 1300:
-            case 1310:
-            case 1311:
-            case 1312: {
-                bx = SkillFactory.getSkill(13000001);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    defRange += bx.getEffect(bof).getRange();
-                }
-                bx = SkillFactory.getSkill(13110008);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    dodgeChance += bx.getEffect(bof).getER();
-                }
-                bx = SkillFactory.getSkill(13110003);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    trueMastery += eff.getMastery();
-                    passive_sharpeye_min_percent += eff.getCriticalMin();
-                }
-                break;
+            bx = SkillFactory.getSkill(13110003);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                trueMastery += eff.getMastery();
+                passive_sharpeye_min_percent += eff.getCriticalMin();
             }
-            case 300:
-            case 310:
-            case 311:
-            case 312: {
-                bx = SkillFactory.getSkill(3000002);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    defRange += bx.getEffect(bof).getRange();
-                }
-                bx = SkillFactory.getSkill(3100006);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    damageIncrease.put(3001004, eff.getX());
-                    damageIncrease.put(3001005, eff.getY());
-                    localstr += eff.getStrX();
-                    localdex += eff.getDexX();
-                }
-                bx = SkillFactory.getSkill(3110007);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    dodgeChance += bx.getEffect(bof).getER();
-                }
-                bx = SkillFactory.getSkill(3120005);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    trueMastery += eff.getMastery();
-                    passive_sharpeye_min_percent += eff.getCriticalMin();
-                }
-                break;
+        } else if (MapleJob.is暗夜行者(job)) {
+            bx = SkillFactory.getSkill(14110003);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                RecoveryUP += eff.getX() - 100;
+                BuffUP += eff.getY() - 100;
             }
-            case 320:
-            case 321:
-            case 322: {
-                bx = SkillFactory.getSkill(3000002);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    defRange += bx.getEffect(bof).getRange();
-                }
-                bx = SkillFactory.getSkill(3200006);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    damageIncrease.put(3001004, eff.getX());
-                    damageIncrease.put(3001005, eff.getY());
-                    localstr += eff.getStrX();
-                    localdex += eff.getDexX();
-                }
-                bx = SkillFactory.getSkill(3220010);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    damageIncrease.put(3211006, bx.getEffect(bof).getDamage() - 150);
-                }
-                bx = SkillFactory.getSkill(3210007);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    dodgeChance += bx.getEffect(bof).getER();
-                }
-                break;
+            bx = SkillFactory.getSkill(14000001);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                defRange += bx.getEffect(bof).getRange();
             }
-            case 422: {
-                bx = SkillFactory.getSkill(4221007);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) { //Savage Blow, Steal, and Assaulter
-                    eff = bx.getEffect(bof);
-                    damageIncrease.put(4201005, eff.getDAMRate());
-                    damageIncrease.put(4201004, eff.getDAMRate());
-                    damageIncrease.put(4211002, eff.getDAMRate());
-                }
-                bx = SkillFactory.getSkill(4210012);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    mesoBuff *= (eff.getMesoRate() + 100.0) / 100.0;
-                    pickRate += eff.getU();
-                    mesoGuard -= eff.getV();
-                    mesoGuardMeso -= eff.getW();
-                    damageIncrease.put(4211006, eff.getX());
-                }
-                break;
+        } else if (MapleJob.is閃雷悍將(job)) {
+            System.err.println("職業未處理被動技能:" + job);
+        } else if (MapleJob.is狂狼勇士(job)) {
+            bx = SkillFactory.getSkill(21101006);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                dam_r += dam_r * ((eff.getDAMRate() + 100.0) / 100.0);
+                bossdam_r += bossdam_r * ((eff.getDAMRate() + 100.0) / 100.0);
             }
-            case 433:
-            case 434: {
-                bx = SkillFactory.getSkill(4330007);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    hpRecoverProp += eff.getProb();
-                    hpRecoverPercent += eff.getX();
-                }
-                bx = SkillFactory.getSkill(4341002);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) { //Fatal Blow, Slash Storm, Tornado Spin, Bloody Storm, Upper Stab, and Flying Assaulter
-                    eff = bx.getEffect(bof);
-                    damageIncrease.put(4311002, eff.getDAMRate());
-                    damageIncrease.put(4311003, eff.getDAMRate());
-                    damageIncrease.put(4321000, eff.getDAMRate());
-                    damageIncrease.put(4321001, eff.getDAMRate());
-                    damageIncrease.put(4331000, eff.getDAMRate());
-                    damageIncrease.put(4331004, eff.getDAMRate());
-                    damageIncrease.put(4331005, eff.getDAMRate());
-                }
-                bx = SkillFactory.getSkill(4341006);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    dodgeChance += bx.getEffect(bof).getER();
-                }
-                break;
+            bx = SkillFactory.getSkill(21110002);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                damageIncrease.put(21000004, bx.getEffect(bof).getW());
             }
-            case 2110:
-            case 2111:
-            case 2112: { // Aran
-                bx = SkillFactory.getSkill(21101006);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    dam_r += dam_r * ((eff.getDAMRate() + 100.0) / 100.0);
-                    bossdam_r += bossdam_r * ((eff.getDAMRate() + 100.0) / 100.0);
-                }
-                bx = SkillFactory.getSkill(21110002);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    damageIncrease.put(21000004, bx.getEffect(bof).getW());
-                }
-                bx = SkillFactory.getSkill(21111010);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    ignoreTargetDEF += bx.getEffect(bof).getIgnoreMob();
-                }
-                bx = SkillFactory.getSkill(21120002);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    damageIncrease.put(21100007, bx.getEffect(bof).getZ());
-                }
-                bx = SkillFactory.getSkill(21120011);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    damageIncrease.put(21100002, eff.getDAMRate());
-                    damageIncrease.put(21110003, eff.getDAMRate());
-                }
-                break;
+            bx = SkillFactory.getSkill(21111010);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                ignoreTargetDEF += bx.getEffect(bof).getIgnoreMob();
             }
-            case 3511:
-            case 3512: {
-                bx = SkillFactory.getSkill(35110014);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) { //ME-07 Drillhands, Atomic Hammer
-                    eff = bx.getEffect(bof);
-                    damageIncrease.put(35001003, eff.getDAMRate());
-                    damageIncrease.put(35101003, eff.getDAMRate());
-                }
-                bx = SkillFactory.getSkill(35121006);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) { //Satellite
-                    eff = bx.getEffect(bof);
-                    damageIncrease.put(35111001, eff.getDAMRate());
-                    damageIncrease.put(35111009, eff.getDAMRate());
-                    damageIncrease.put(35111010, eff.getDAMRate());
-                }
-                bx = SkillFactory.getSkill(35120001);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) { //Satellite
-                    eff = bx.getEffect(bof);
-                    damageIncrease.put(35111005, eff.getX());
-                    damageIncrease.put(35111011, eff.getX());
-                    damageIncrease.put(35121009, eff.getX());
-                    damageIncrease.put(35121010, eff.getX());
-                    damageIncrease.put(35121011, eff.getX());
-                    BuffUP_Summon += eff.getY();
-                }
-                break;
+            bx = SkillFactory.getSkill(21120001);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                watk += eff.getX();
+                trueMastery += eff.getMastery();
+                passive_sharpeye_min_percent += eff.getCriticalMin();
             }
-            case 110:
-            case 111:
-            case 112: {
-                bx = SkillFactory.getSkill(1100009);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    damageIncrease.put(1001004, eff.getX());
-                    damageIncrease.put(1001005, eff.getY());
-                    localstr += eff.getStrX();
-                    localdex += eff.getDexX();
-                }
-                bx = SkillFactory.getSkill(1110009);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    dam_r *= eff.getDamage() / 100.0;
-                    bossdam_r *= eff.getDamage() / 100.0;
-                }
-                bx = SkillFactory.getSkill(1120012);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    ignoreTargetDEF += bx.getEffect(bof).getIgnoreMob();
-                }
-                bx = SkillFactory.getSkill(1120013);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    watk += eff.getAttackX();
-                    damageIncrease.put(1100002, eff.getDamage());
-                }
-                break;
+            bx = SkillFactory.getSkill(21120002);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                damageIncrease.put(21100007, bx.getEffect(bof).getZ());
             }
-            case 120:
-            case 121:
-            case 122: {
-                bx = SkillFactory.getSkill(1200009);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    damageIncrease.put(1001004, eff.getX());
-                    damageIncrease.put(1001005, eff.getY());
-                    localstr += eff.getStrX();
-                    localdex += eff.getDexX();
-                }
-                bx = SkillFactory.getSkill(1220006);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    ASR += bx.getEffect(bof).getASRRate();
-                    TER += bx.getEffect(bof).getTERRate();
-                }
-                break;
+            bx = SkillFactory.getSkill(21120011);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                damageIncrease.put(21100002, eff.getDAMRate());
+                damageIncrease.put(21110003, eff.getDAMRate());
             }
-            case 511:
-            case 512: {
-                bx = SkillFactory.getSkill(5110008);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) { //Backspin Blow, Double Uppercut, and Corkscrew Blow
-                    eff = bx.getEffect(bof);
-                    damageIncrease.put(5101002, eff.getX());
-                    damageIncrease.put(5101003, eff.getY());
-                    damageIncrease.put(5101004, eff.getZ());
-                }
-                break;
+        } else if (MapleJob.is龍魔導士(job)) {
+            bx = SkillFactory.getSkill(22000000);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                magic += bof;
             }
-            case 520:
-            case 521:
-            case 522: {
-                bx = SkillFactory.getSkill(5220001);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) { //Flamethrower and Ice Splitter
-                    eff = bx.getEffect(bof);
-                    damageIncrease.put(5211004, eff.getDamage());
-                    damageIncrease.put(5211005, eff.getDamage());
-                }
-                break;
+            bx = SkillFactory.getSkill(22150000);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                mpconPercent += eff.getX() - 100;
+                dam_r *= eff.getY() / 100.0;
+                bossdam_r *= eff.getY() / 100.0;
             }
-            case 130:
-            case 131:
-            case 132: {
-                bx = SkillFactory.getSkill(1300009);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    damageIncrease.put(1001004, eff.getX());
-                    damageIncrease.put(1001005, eff.getY());
-                    localstr += eff.getStrX();
-                    localdex += eff.getDexX();
-                }
-                bx = SkillFactory.getSkill(1310009);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    passive_sharpeye_rate += eff.getCr();
-                    passive_sharpeye_min_percent += eff.getCriticalMin();
-                    hpRecoverProp += eff.getProb();
-                    hpRecoverPercent += eff.getX();
-                }
-                bx = SkillFactory.getSkill(1320006);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    dam_r *= (eff.getDamage() + 100.0) / 100.0;
-                    bossdam_r *= (eff.getDamage() + 100.0) / 100.0;
-                }
-                break;
+            bx = SkillFactory.getSkill(22160000);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                dam_r *= (eff.getDamage() + 100.0) / 100.0;
+                bossdam_r *= (eff.getDamage() + 100.0) / 100.0;
             }
-            case 1400:
-            case 1410:
-            case 1411:
-            case 1412: {
-                bx = SkillFactory.getSkill(14110003);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    RecoveryUP += eff.getX() - 100;
-                    BuffUP += eff.getY() - 100;
-                }
-                bx = SkillFactory.getSkill(14000001);
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    defRange += bx.getEffect(bof).getRange();
-                }
-                break;
+            bx = SkillFactory.getSkill(22170001); // magic mastery, this is an invisible skill
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                magic += eff.getX();
+                trueMastery += eff.getMastery();
+                passive_sharpeye_min_percent += eff.getCriticalMin();
             }
-            case 5000: // Mihile 0
-            case 5100: // Mihile 1
-            case 5110: // Mihile 2
-            case 5111: // Mihile 3
-            case 5112: { // Mihile 4
-                // Mihile 1st Job Passive Skills
-                bx = SkillFactory.getSkill(51000000); // Mihile || HP Boost
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    percent_hp += bx.getEffect(bof).getPercentHP();
-                }
-                bx = SkillFactory.getSkill(51000001); // Mihile || Soul Shield
-                bof = chra.getTotalSkillLevel(bx);
+        } else if (MapleJob.is精靈遊俠(job)) {
+            bx = SkillFactory.getSkill(20021110);
+            bof = chra.getSkillLevel(bx);
+            if (bof > 0) {
+                expBuff *= bx.getEffect(bof).getEXPRate() / 100.0;
+            }
+            bx = SkillFactory.getSkill(20020112);
+            bof = chra.getSkillLevel(bx);
+            if (bof > 0) {
+                chra.getTrait(MapleTraitType.charm).addLocalExp(GameConstants.getTraitExpNeededForLevel(30));
+            }
+            bx = SkillFactory.getSkill(23000001);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                dodgeChance += bx.getEffect(bof).getER();
+            }
+            bx = SkillFactory.getSkill(23100008);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                localstr += eff.getStrX();
+                localdex += eff.getDexX();
+            }
+            bx = SkillFactory.getSkill(23110004);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                dodgeChance += bx.getEffect(bof).getProb();
+            }
+            bx = SkillFactory.getSkill(23110004);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                damageIncrease.put(23101001, bx.getEffect(bof).getDAMRate());
+            }
+            bx = SkillFactory.getSkill(23121004);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                dodgeChance += bx.getEffect(bof).getProb();
+            }
+            bx = SkillFactory.getSkill(23120009);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                watk += bx.getEffect(bof).getX();
+            }
+            bx = SkillFactory.getSkill(23120010);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                ignoreTargetDEF += bx.getEffect(bof).getX(); //or should we do 100?
+            }
+            bx = SkillFactory.getSkill(23120011);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                damageIncrease.put(23101001, bx.getEffect(bof).getDAMRate());
+            }
+            bx = SkillFactory.getSkill(23120012);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                watk += bx.getEffect(bof).getAttackX();
+            }
+        } else if (MapleJob.is幻影俠盜(job)) {
+            bx = SkillFactory.getSkill(20030204); // +10% crit rate
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                passive_sharpeye_rate += eff.getCr();
+                passive_sharpeye_min_percent += eff.getCriticalMin();
+            }
+            bx = SkillFactory.getSkill(20030206); // +40 DEX, Base Avoidability: +20%
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                localdex += eff.getDexX();
+                dodgeChance += eff.getER();
+            }
+            bx = SkillFactory.getSkill(24001002); // Swift Phantom
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                speed += eff.getPassiveSpeed();
+                jump += eff.getPassiveJump();
+            }
+            bx = SkillFactory.getSkill(24000003); // Quick Evasion
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                dodgeChance += eff.getX();
+            }
+            bx = SkillFactory.getSkill(24100006); //Luck Monopoly
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                localluk += eff.getLukX();
+            }
+            bx = SkillFactory.getSkill(24110007); // Acute Sense
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                passive_sharpeye_rate += eff.getCr();
+                passive_sharpeye_min_percent += eff.getCriticalMin();
+            }
+            bx = SkillFactory.getSkill(24111002); //Luck of Phantom Thief
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                localluk += eff.getLukX();
+            }
+        } else if (MapleJob.is隱月(job)) {
+            bx = SkillFactory.getSkill(25000105);//乾坤一体
+            bof = chra.getSkillLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                percent_hp += eff.getPercentHP();
+                percent_mp += eff.getPercentMP();
+//                    wdef += eff.getWdefX();
+//                    mdef += eff.getMdefX();
+            }
+            bx = SkillFactory.getSkill(25101205); //后方移动
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                dodgeChance += eff.getER();
+            }
+            bx = SkillFactory.getSkill(25100106); //拳甲修炼
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                trueMastery += eff.getMastery();
+            }
+            bx = SkillFactory.getSkill(25100108);//力量锻炼
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                localstr += eff.getStrX();
+            }
+            bx = SkillFactory.getSkill(25110107);//精灵凝聚第3招
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+//                    percent_damage += eff.getDAMRate();
+                watk += eff.getAttackX();
+            }
+            bx = SkillFactory.getSkill(25110108); //招魂式
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+//                    wdef += eff.getWdefX();
+//                    mdef += eff.getMdefX();
+                ASR += eff.getASRRate();
+                TER += eff.getTERRate();
+            }
+            bx = SkillFactory.getSkill(25120112); //精灵凝聚第4招
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+//                    percent_ignore_mob_def_rate += eff.getIgnoreMob();
+//                    percent_boss_damage_rate += eff.getBossDamage();
+            }
+            bx = SkillFactory.getSkill(25120113); //高级拳甲修炼
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                trueMastery += eff.getMastery();
+                passive_sharpeye_min_percent += eff.getCriticalMin();
+                passive_sharpeye_max_percent += eff.getCriticalMax();
+            }
+        } else if (MapleJob.is夜光(job)) {
+            System.err.println("職業未處理被動技能:" + job);
+        } else if (MapleJob.is惡魔(job)) {
+            if (MapleJob.is惡魔殺手(job)) {
+                mpRecoverProp = 100;
+                bx = SkillFactory.getSkill(30010112);
+                bof = chra.getPassiveLevel(bx);
                 if (bof > 0) {
                     eff = bx.getEffect(bof);
-                    percent_wdef += eff.getX();
-                    percent_mdef += eff.getX();
-                }
-                bx = SkillFactory.getSkill(51000002); // Mihile || Soul Devotion
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    accuracy += eff.getAccX();
-                    speed += eff.getPassiveSpeed();
-                    jump += eff.getPassiveJump();
-                }
-
-                // Mihile 2nd Job Passive Skills
-                bx = SkillFactory.getSkill(51100000); // Mihile || Physical Training
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    damageIncrease.put(5001002, eff.getX());
-                    damageIncrease.put(5001003, eff.getY());
-                    localstr += eff.getStrX();
-                    localdex += eff.getDexX();
-                }
-                bx = SkillFactory.getSkill(51120002); // Mihile || Final Attack && Advanced Final Attack
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    watk += eff.getAttackX();
-                    damageIncrease.put(51100002, eff.getDamage());
-                }
-
-                // Mihile 3rd Job Passive Skills
-                bx = SkillFactory.getSkill(51110000); // Mihile || Self Recovery
-                bof = chra.getTotalSkillLevel(bx);
-                if (bof > 0) {
-                    eff = bx.getEffect(bof);
-                    hpRecoverProp += eff.getProb();
-                    hpRecover += eff.getX();
-                    mpRecoverProp += eff.getProb();
+                    bossdam_r += eff.getBossDamage();
                     mpRecover += eff.getX();
+                    mpRecoverProp += eff.getBossDamage(); //yes
                 }
-                bx = SkillFactory.getSkill(51110001); // Mihile || Intense Focus
-                bof = chra.getTotalSkillLevel(bx);
+                bx = SkillFactory.getSkill(30010185);
+                bof = chra.getPassiveLevel(bx);
+                if (bof > 0) {
+                    eff = bx.getEffect(bof);
+                    chra.getTrait(MapleTraitType.will).addLocalExp(GameConstants.getTraitExpNeededForLevel(eff.getY()));
+                    chra.getTrait(MapleTraitType.charisma).addLocalExp(GameConstants.getTraitExpNeededForLevel(eff.getZ()));
+                }
+                bx = SkillFactory.getSkill(30010111);
+                bof = chra.getPassiveLevel(bx);
+                if (bof > 0) {
+                    eff = bx.getEffect(bof);
+                    hpRecoverPercent += eff.getX();
+                    hpRecoverProp += eff.getProb(); //yes
+                }
+                bx = SkillFactory.getSkill(31000003);
+                bof = chra.getPassiveLevel(bx);
+                if (bof > 0) {
+                    percent_hp += bx.getEffect(bof).getHpR();
+                }
+                bx = SkillFactory.getSkill(31100007);
+                bof = chra.getPassiveLevel(bx);
+                if (bof > 0) {
+                    eff = bx.getEffect(bof);
+                    damageIncrease.put(31000004, eff.getDAMRate());
+                    damageIncrease.put(31001006, eff.getDAMRate());
+                    damageIncrease.put(31001007, eff.getDAMRate());
+                    damageIncrease.put(31001008, eff.getDAMRate());
+                }
+                bx = SkillFactory.getSkill(31100005);
+                bof = chra.getPassiveLevel(bx);
                 if (bof > 0) {
                     eff = bx.getEffect(bof);
                     localstr += eff.getStrX();
-                    // Add Attack Speed here
+                    localdex += eff.getDexX();
                 }
-                bx = SkillFactory.getSkill(51110002); // Mihile || Righteous Indignation
-                bof = chra.getTotalSkillLevel(bx);
+                bx = SkillFactory.getSkill(31100010);
+                bof = chra.getPassiveLevel(bx);
                 if (bof > 0) {
                     eff = bx.getEffect(bof);
-                    ASR += eff.getX();
-                    percent_atk += eff.getX();
-                    passive_sharpeye_min_percent += eff.getCriticalMin();
+                    damageIncrease.put(31000004, eff.getX());
+                    damageIncrease.put(31001006, eff.getX());
+                    damageIncrease.put(31001007, eff.getX());
+                    damageIncrease.put(31001008, eff.getX());
                 }
-
-                // Mihile 4th Job Passive Skills
-                bx = SkillFactory.getSkill(51120000); // Mihile || Combat Mastery
-                bof = chra.getTotalSkillLevel(bx);
+                bx = SkillFactory.getSkill(31111007);
+                bof = chra.getPassiveLevel(bx);
                 if (bof > 0) {
                     eff = bx.getEffect(bof);
-                    ignoreTargetDEF += eff.getIgnoreMob();
+                    dam_r *= (eff.getDAMRate() + 100.0) / 100.0;
+                    bossdam_r *= (eff.getDAMRate() + 100.0) / 100.0;
                 }
-                bx = SkillFactory.getSkill(51120001); // Mihile || Expert Sword Mastery
-                bof = chra.getTotalSkillLevel(bx);
+                bx = SkillFactory.getSkill(31110008);
+                bof = chra.getPassiveLevel(bx);
                 if (bof > 0) {
                     eff = bx.getEffect(bof);
-                    watk += bx.getEffect(bof).getX();
+                    dodgeChance += eff.getX();
+                    // HACK: shouldn't be here
+                    hpRecoverPercent += eff.getY();
+                    hpRecoverProp += eff.getX();
+                    //mpRecover += eff.getY(); // handle in takeDamage
+                    //mpRecoverProp += eff.getX();
+                }
+                bx = SkillFactory.getSkill(31110009);
+                bof = chra.getPassiveLevel(bx);
+                if (bof > 0) {
+                    eff = bx.getEffect(bof);
+                    mpRecover += 1;
+                    mpRecoverProp += eff.getProb();
+                }
+                bx = SkillFactory.getSkill(31111006);
+                bof = chra.getPassiveLevel(bx);
+                if (bof > 0) {
+                    eff = bx.getEffect(bof);
+                    dam_r *= (eff.getX() + 100.0) / 100.0;
+                    bossdam_r *= (eff.getX() + 100.0) / 100.0;
+                    passive_sharpeye_rate += eff.getY();
+                }
+                bx = SkillFactory.getSkill(31121006);
+                bof = chra.getPassiveLevel(bx);
+                if (bof > 0) {
+                    ignoreTargetDEF += bx.getEffect(bof).getIgnoreMob();
+                }
+                bx = SkillFactory.getSkill(31120011);
+                bof = chra.getPassiveLevel(bx);
+                if (bof > 0) {
+                    eff = bx.getEffect(bof);
+                    damageIncrease.put(31000004, eff.getX());
+                    damageIncrease.put(31001006, eff.getX());
+                    damageIncrease.put(31001007, eff.getX());
+                    damageIncrease.put(31001008, eff.getX());
+                }
+                bx = SkillFactory.getSkill(31120008);
+                bof = chra.getPassiveLevel(bx);
+                if (bof > 0) {
+                    eff = bx.getEffect(bof);
+                    watk += eff.getAttackX();
                     trueMastery += eff.getMastery();
                     passive_sharpeye_min_percent += eff.getCriticalMin();
                 }
-                bx = SkillFactory.getSkill(51120003); // Mihile || Soul Asylum
-                bof = chra.getTotalSkillLevel(bx);
+                bx = SkillFactory.getSkill(31120010);
+                bof = chra.getPassiveLevel(bx);
                 if (bof > 0) {
                     percent_wdef += bx.getEffect(bof).getT();
                 }
-                break;
+            } else if (MapleJob.is惡魔復仇者(job)) {
+                bx = SkillFactory.getSkill(32110000);
+                bof = chra.getPassiveLevel(bx);
+                if (bof > 0) {
+                    ASR += bx.getEffect(bof).getASRRate();
+                    TER += bx.getEffect(bof).getTERRate();
+                }
+                bx = SkillFactory.getSkill(32110001);
+                bof = chra.getPassiveLevel(bx);
+                if (bof > 0) {
+                    eff = bx.getEffect(bof);
+                    dam_r *= (eff.getDAMRate() + 100.0) / 100.0;
+                    bossdam_r *= (eff.getDAMRate() + 100.0) / 100.0;
+                    passive_sharpeye_min_percent += eff.getCriticalMin();
+                }
+                bx = SkillFactory.getSkill(32120000);
+                bof = chra.getPassiveLevel(bx);
+                if (bof > 0) {
+                    magic += bx.getEffect(bof).getMagicX();
+                }
+                bx = SkillFactory.getSkill(32120001);
+                bof = chra.getPassiveLevel(bx);
+                if (bof > 0) {
+                    dodgeChance += bx.getEffect(bof).getER();
+                }
+                bx = SkillFactory.getSkill(32120009);
+                bof = chra.getPassiveLevel(bx);
+                if (bof > 0) {
+                    percent_hp += bx.getEffect(bof).getPercentHP();
+                }
             }
-        }
-        if (MapleJob.is末日反抗軍(chra.getJob())) {
-            bx = SkillFactory.getSkill(30000002);
-            bof = chra.getTotalSkillLevel(bx);
+        } else if (MapleJob.is煉獄巫師(job)) {
+            System.err.println("職業未處理被動技能:" + job);
+        } else if (MapleJob.is狂豹獵人(job)) {
+            bx = SkillFactory.getSkill(33120000);
+            bof = chra.getPassiveLevel(bx);
             if (bof > 0) {
-                RecoveryUP += bx.getEffect(bof).getX() - 100;
+                eff = bx.getEffect(bof);
+                watk += eff.getX();
+                trueMastery += eff.getMastery();
+                passive_sharpeye_min_percent += eff.getCriticalMin();
             }
+            bx = SkillFactory.getSkill(33110000);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                dam_r *= (eff.getDamage() + 100.0) / 100.0;
+                bossdam_r *= (eff.getDamage() + 100.0) / 100.0;
+            }
+            bx = SkillFactory.getSkill(33120010);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                ignoreTargetDEF += eff.getIgnoreMob();
+                dodgeChance += eff.getER();
+            }
+            bx = SkillFactory.getSkill(32110001);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                dam_r *= (eff.getDAMRate() + 100.0) / 100.0;
+                bossdam_r *= (eff.getDAMRate() + 100.0) / 100.0;
+            }
+        } else if (MapleJob.is機甲戰神(job)) {
+            bx = SkillFactory.getSkill(35100000);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                watk += bx.getEffect(bof).getAttackX();
+            }
+            bx = SkillFactory.getSkill(35110014);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) { //ME-07 Drillhands, Atomic Hammer
+                eff = bx.getEffect(bof);
+                damageIncrease.put(35001003, eff.getDAMRate());
+                damageIncrease.put(35101003, eff.getDAMRate());
+            }
+            bx = SkillFactory.getSkill(35120000);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                trueMastery += bx.getEffect(bof).getMastery();
+            }
+            bx = SkillFactory.getSkill(35120001);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) { //Satellite
+                eff = bx.getEffect(bof);
+                damageIncrease.put(35111005, eff.getX());
+                damageIncrease.put(35111011, eff.getX());
+                damageIncrease.put(35121009, eff.getX());
+                damageIncrease.put(35121010, eff.getX());
+                damageIncrease.put(35121011, eff.getX());
+                BuffUP_Summon += eff.getY();
+            }
+            bx = SkillFactory.getSkill(35121006);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) { //Satellite
+                eff = bx.getEffect(bof);
+                damageIncrease.put(35111001, eff.getDAMRate());
+                damageIncrease.put(35111009, eff.getDAMRate());
+                damageIncrease.put(35111010, eff.getDAMRate());
+            }
+        } else if (MapleJob.is傑諾(job)) {
+            System.err.println("職業未處理被動技能:" + job);
+        } else if (MapleJob.is劍豪(job)) {
+            System.err.println("職業未處理被動技能:" + job);
+        } else if (MapleJob.is陰陽師(job)) {
+            // 五行的加護
+            bx = SkillFactory.getSkill(40020000);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                percent_hp += eff.getPercentHP();
+            }
+        } else if (MapleJob.is米哈逸(job)) {
+            // Mihile 1st Job Passive Skills
+            bx = SkillFactory.getSkill(51000000); // Mihile || HP Boost
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                percent_hp += bx.getEffect(bof).getPercentHP();
+            }
+            bx = SkillFactory.getSkill(51000001); // Mihile || Soul Shield
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                percent_wdef += eff.getX();
+                percent_mdef += eff.getX();
+            }
+            bx = SkillFactory.getSkill(51000002); // Mihile || Soul Devotion
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                accuracy += eff.getAccX();
+                speed += eff.getPassiveSpeed();
+                jump += eff.getPassiveJump();
+            }
+
+            // Mihile 2nd Job Passive Skills
+            bx = SkillFactory.getSkill(51100000); // Mihile || Physical Training
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                damageIncrease.put(5001002, eff.getX());
+                damageIncrease.put(5001003, eff.getY());
+                localstr += eff.getStrX();
+                localdex += eff.getDexX();
+            }
+            bx = SkillFactory.getSkill(51120002); // Mihile || Final Attack && Advanced Final Attack
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                watk += eff.getAttackX();
+                damageIncrease.put(51100002, eff.getDamage());
+            }
+
+            // Mihile 3rd Job Passive Skills
+            bx = SkillFactory.getSkill(51110000); // Mihile || Self Recovery
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                hpRecoverProp += eff.getProb();
+                hpRecover += eff.getX();
+                mpRecoverProp += eff.getProb();
+                mpRecover += eff.getX();
+            }
+            bx = SkillFactory.getSkill(51110001); // Mihile || Intense Focus
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                localstr += eff.getStrX();
+                // Add Attack Speed here
+            }
+            bx = SkillFactory.getSkill(51110002); // Mihile || Righteous Indignation
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                ASR += eff.getX();
+                percent_atk += eff.getX();
+                passive_sharpeye_min_percent += eff.getCriticalMin();
+            }
+
+            // Mihile 4th Job Passive Skills
+            bx = SkillFactory.getSkill(51120000); // Mihile || Combat Mastery
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                ignoreTargetDEF += eff.getIgnoreMob();
+            }
+            bx = SkillFactory.getSkill(51120001); // Mihile || Expert Sword Mastery
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                watk += bx.getEffect(bof).getX();
+                trueMastery += eff.getMastery();
+                passive_sharpeye_min_percent += eff.getCriticalMin();
+            }
+            bx = SkillFactory.getSkill(51120003); // Mihile || Soul Asylum
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                percent_wdef += bx.getEffect(bof).getT();
+            }
+        } else if (MapleJob.is凱撒(job)) {
+            System.err.println("職業未處理被動技能:" + job);
+        } else if (MapleJob.is天使破壞者(job)) {
+            System.err.println("職業未處理被動技能:" + job);
+        } else if (MapleJob.is神之子(job)) {
+            System.err.println("職業未處理被動技能:" + job);
+        } else if (MapleJob.is幻獸師(job)) {
+            bx = SkillFactory.getSkill(112000011); // Well Fed
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                localint_ += eff.getIntX();
+                percent_hp += bx.getEffect(bof).getPercentHP();
+            }
+            bx = SkillFactory.getSkill(112000010); // Dumb Luck
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                percent_wdef += eff.getWDEFRate();
+                dam_r *= (eff.getDAMRate() + 100.0) / 100.0;
+            }
+            bx = SkillFactory.getSkill(112000015); // Fort Follow-Up
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                dam_r *= (eff.getDAMRate() + 100.0) / 100.0;
+            }
+            bx = SkillFactory.getSkill(112000014); // Bear Strength
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                passive_sharpeye_rate += eff.getCr();
+                passive_sharpeye_min_percent += eff.getCriticalMin();
+                passive_sharpeye_max_percent += eff.getCriticalMax();
+                magic += eff.getMagicX();
+            }
+            bx = SkillFactory.getSkill(112000013); // Fort the Brave
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                magic += eff.getMagicX();
+            }
+            bx = SkillFactory.getSkill(112000020); // Billowing Trumpet
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                magic += eff.getMagicX();
+            }
+        } else if (MapleJob.is皮卡啾(job)) {
+            // 皮卡啾之力
+            bx = SkillFactory.getSkill(131000014);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                passive_sharpeye_rate += eff.getY();
+                passive_sharpeye_rate += Math.ceil((double) chra.getLevel() / eff.getZ());
+                dam_r += chra.getLevel() * eff.getW();
+                watk += Math.ceil(chra.getLevel() / 2.0D/*getS*/) * eff.getV();
+            }
+            // 皮卡啾的品格
+            bx = SkillFactory.getSkill(131000016);
+            bof = chra.getPassiveLevel(bx);
+            if (bof > 0) {
+                eff = bx.getEffect(bof);
+                speed += eff.getPassiveSpeed();
+                jump += eff.getPassiveJump();
+                percent_hp += eff.getPercentHP();
+                percent_mp += eff.getPercentMP();
+                ignoreTargetDEF += eff.getIgnoreMob();
+            }
+        } else if (MapleJob.is凱內西斯(job)) {
+            System.err.println("職業未處理被動技能:" + job);
+        } else {
+            System.err.println("職業未處理被動技能:" + job);
         }
     }
 
@@ -2302,7 +2301,7 @@ public class PlayerStats implements Serializable {
             passive_sharpeye_rate += GameConstants.getDiceStat(buff, 4);
             dam_r *= (GameConstants.getDiceStat(buff, 5) + 100.0) / 100.0;
             bossdam_r *= (GameConstants.getDiceStat(buff, 5) + 100.0) / 100.0;
-            expBuff *= (GameConstants.getDiceStat(buff, 6) + 100.0) / 100.0;
+            expBuff *= GameConstants.getDiceStat(buff, 6) / 100.0;
         }
         buff = chra.getBuffedValue(MapleBuffStat.INDIE_MHP_R);
         if (buff != null) {
@@ -2435,6 +2434,10 @@ public class PlayerStats implements Serializable {
         buff = chra.getBuffedValue(MapleBuffStat.EXPRATE);
         if (buff != null) {
             expBuff *= buff.doubleValue() / 100.0;
+        }
+        buff = chra.getBuffedValue(MapleBuffStat.INDIE_EXP);
+        if (buff != null) {
+            indieExp *= (buff.doubleValue() + 100.0) / 100.0;
         }
         buff = chra.getBuffedValue(MapleBuffStat.DROP_RATE);
         if (buff != null) {
@@ -2726,7 +2729,7 @@ public class PlayerStats implements Serializable {
         if (changed) {
             chr.equipChanged();
             chr.getClient().getSession().write(EffectPacket.showItemLevelupEffect());
-            chr.getMap().broadcastMessage(chr, EffectPacket.showItemLevelupEffect(chr.getId()), false);
+            chr.getMap().broadcastMessage(chr, EffectPacket.showItemLevelupEffect(chr), false);
         }
         return changed;
     }
@@ -2826,7 +2829,7 @@ public class PlayerStats implements Serializable {
             case 3110:
             case 3111:
             case 3112: {
-                critSkill = SkillFactory.getSkill(31100006); //TODO LEGEND, not final
+                critSkill = SkillFactory.getSkill(31100006);
                 critlevel = player.getTotalSkillLevel(critSkill);
                 if (critlevel > 0) {
                     this.passive_sharpeye_rate += (short) (critSkill.getEffect(critlevel).getCr());
@@ -2984,8 +2987,53 @@ public class PlayerStats implements Serializable {
         }
         final int skil;
         final MapleWeaponType weaponType = ItemConstants.武器類型(player.getInventory(MapleInventoryType.EQUIPPED).getItem((byte) -11).getItemId());
+        trueMastery += weaponType.getBaseMastery();
+
+        if (MapleJob.is皮卡啾(player.getJob())) {
+            if (player.getSkillLevel(131000014) <= 0) {
+                passive_mastery = 0;
+                return;
+            }
+            final MapleStatEffect eff = SkillFactory.getSkill(131000014).getEffect(player.getTotalSkillLevel(131000014));
+            switch (weaponType) {
+                case 單手劍:
+                case 單手斧:
+                case 單手棍:
+                case 雙手斧:
+                case 雙手劍:
+                case 雙手棍:
+                case 槍:
+                case 矛:
+                    passive_mastery = (byte) eff.getU();
+                    break;
+            }
+            trueMastery = passive_mastery;
+            return;
+        }
+
         boolean acc = true;
         switch (weaponType) {
+            case 閃亮克魯:
+                if (player.getSkillLevel(27120007) > 0) {
+                    skil = 27120007;
+                } else {
+                    skil = 27100005;
+                }
+                break;
+            case 靈魂射手:
+                if (player.getSkillLevel(65120005) > 0) {
+                    skil = 65120005;
+                } else {
+                    skil = 65100003;
+                }
+                break;
+            case 魔劍:
+                if (player.getSkillLevel(31220006) > 0) {
+                    skil = 31220006;
+                } else {
+                    skil = 31200005;
+                }
+                break;
             case 弓:
                 skil = MapleJob.is皇家騎士團(player.getJob()) ? 13100000 : 3100000;
                 break;
@@ -3042,7 +3090,7 @@ public class PlayerStats implements Serializable {
         if (player.getSkillLevel(skil) <= 0) {
             passive_mastery = 0;
             return;
-        }// TODO: add job id check above skill, etc
+        }
         final MapleStatEffect eff = SkillFactory.getSkill(skil).getEffect(player.getTotalSkillLevel(skil));
         if (acc) {
             accuracy += eff.getX();
@@ -3054,7 +3102,7 @@ public class PlayerStats implements Serializable {
         }
         passive_sharpeye_rate += eff.getCr();
         passive_mastery = (byte) eff.getMastery();
-        trueMastery += eff.getMastery() + weaponType.getBaseMastery();
+        trueMastery += passive_mastery;
         if (player.getJob() == 412) {
             final Skill bx = SkillFactory.getSkill(4120012); // Claw Expert
             final int bof = player.getTotalSkillLevel(bx);
@@ -3078,11 +3126,11 @@ public class PlayerStats implements Serializable {
     }
 
     public final short passive_sharpeye_min_percent() {
-        return passive_sharpeye_min_percent;
+        return (short) Math.min(passive_sharpeye_min_percent, passive_sharpeye_max_percent);
     }
 
     public final short passive_sharpeye_percent() {
-        return passive_sharpeye_max_percent;
+        return (short) Math.max(passive_sharpeye_min_percent, passive_sharpeye_max_percent);
     }
 
     public final short passive_sharpeye_rate() {
@@ -3099,54 +3147,56 @@ public class PlayerStats implements Serializable {
             localmaxbasepvpdamage = 1;
         } else {
             final Item weapon_item = chra.getInventory(MapleInventoryType.EQUIPPED).getItem((byte) -11);
-            final Item weapon_item2 = chra.getInventory(MapleInventoryType.EQUIPPED).getItem((byte) -10);
             final int job = chra.getJob();
             final MapleWeaponType weapon = weapon_item == null ? MapleWeaponType.沒有武器 : ItemConstants.武器類型(weapon_item.getItemId());
-            final MapleWeaponType weapon2 = weapon_item2 == null ? MapleWeaponType.沒有武器 : ItemConstants.武器類型(weapon_item2.getItemId());
-            int mainstat, secondarystat, mainstatpvp, secondarystatpvp;
-            final boolean mage = (job >= 200 && job <= 232) || (job >= 1200 && job <= 1212) || (job >= 2200 && job <= 2218) || (job >= 3200 && job <= 3212);
+            int stat, statpvp;
+            final boolean mage = MapleJob.is法師(job);
             switch (weapon) {
+                case 能量劍:
+                    stat = 4 * (localstr + localdex + localluk);
+                    statpvp = 4 * (str + dex + luk);
+                    break;
+                case 靈魂射手:
                 case 弓:
                 case 弩:
                 case 火槍:
-                    mainstat = localdex;
-                    secondarystat = localstr;
-                    mainstatpvp = dex;
-                    secondarystatpvp = str;
+                case 雙弩槍:
+                    stat = 4 * localdex + localstr;
+                    statpvp = 4 * + dex + str;
                     break;
                 case 短劍:
-                case 雙刀:
+                    stat = 4 * localluk + localdex;
+                    statpvp = 4 * + luk + dex;
+                    if (MapleJob.is盜賊(job)) {
+                        stat = localstr;
+                        statpvp = str;
+                    }
+                    break;
                 case 拳套:
                 case 手杖:
-                    mainstat = localluk;
-                    secondarystat = localdex + localstr;
-                    mainstatpvp = luk;
-                    secondarystatpvp = dex + str;
+                    stat = 4 * localluk + localdex;
+                    statpvp = 4 * + luk + dex;
+                    break;
+                case 魔劍:
+                    stat = localmaxhp / 7 + localstr;
+                    statpvp = maxhp / 7 + str;
                     break;
                 default:
                     if (mage) {
-                        mainstat = localint_;
-                        secondarystat = localluk;
-                        mainstatpvp = int_;
-                        secondarystatpvp = luk;
+                        stat = 4 * localint_ + localluk;
+                        statpvp = 4 * + int_ + luk;
                     } else {
-                        mainstat = localstr;
-                        secondarystat = localdex;
-                        mainstatpvp = str;
-                        secondarystatpvp = dex;
+                        stat = 4 * localstr + localdex;
+                        statpvp = 4 * + str + dex;
                     }
                     break;
             }
-            localmaxbasepvpdamage = weapon.getMaxDamageMultiplier(job) * (4 * mainstatpvp + secondarystatpvp) * (100.0f + (pvpDamage / 100.0f));
-            localmaxbasepvpdamageL = weapon.getMaxDamageMultiplier(job) * (4 * mainstat + secondarystat) * (100.0f + (pvpDamage / 100.0f));
-            if (weapon2 != MapleWeaponType.沒有武器 && weapon_item != null && weapon_item2 != null) {
-                Equip we1 = (Equip) weapon_item;
-                Equip we2 = (Equip) weapon_item2;
-                localmaxbasedamage = weapon.getMaxDamageMultiplier(job) * (4 * mainstat + secondarystat) * ((watk - (mage ? we2.getMatk() : we2.getWatk())) / 100.0f);
-                localmaxbasedamage += weapon2.getMaxDamageMultiplier(job) * (4 * mainstat + secondarystat) * ((watk - (mage ? we1.getMatk() : we1.getWatk())) / 100.0f);
-            } else {
-                localmaxbasedamage = weapon.getMaxDamageMultiplier(job) * (4 * mainstat + secondarystat) * (watk / 100.0f);
-            }
+            localmaxbasedamage = weapon.getMaxDamageMultiplier(job) * stat * watk / 100.0f;
+            localmaxbasepvpdamage = weapon.getMaxDamageMultiplier(job) * statpvp * (100.0f + (pvpDamage / 100.0f));
+            localmaxbasepvpdamageL = weapon.getMaxDamageMultiplier(job) * stat * (100.0f + (pvpDamage / 100.0f));
+            localmaxbasedamage *= dam_r / 100.0D;
+            localmaxbasepvpdamage *= dam_r / 100.0D;
+            localmaxbasepvpdamageL *= dam_r / 100.0D;
         }
     }
 
@@ -3284,13 +3334,13 @@ public class PlayerStats implements Serializable {
 
     public void heal_noUpdate(MapleCharacter chra) {
         setHp(getCurrentMaxHp(), chra);
-        setMp(getCurrentMaxMp(chra.getJob()), chra);
+        setMp(getCurrentMaxMp(), chra);
     }
 
     public void heal(MapleCharacter chra) {
         heal_noUpdate(chra);
         chra.updateSingleStat(MapleStat.HP, getCurrentMaxHp());
-        chra.updateSingleStat(MapleStat.MP, getCurrentMaxMp(chra.getJob()));
+        chra.updateSingleStat(MapleStat.MP, getCurrentMaxMp());
     }
 
     public Pair<Integer, Integer> handleEquipAdditions(MapleItemInformationProvider ii, MapleCharacter chra, boolean first_login, Map<Skill, SkillEntry> sData, final int itemId) {
@@ -3558,7 +3608,6 @@ public class PlayerStats implements Serializable {
         }
         bossdam_r *= (soc.get("bdR") + 100.0) / 100.0;
         ignoreTargetDEF *= (soc.get("imdR") + 100.0) / 100.0;
-        // TODO: Auto Steal potentials (modify handleSteal), potentials with invincible stuffs, abnormal status duration decrease,
         // poison, stun, etc (uses level field -> cast disease to mob/player), face?
     }
 
@@ -3665,11 +3714,8 @@ public class PlayerStats implements Serializable {
         this.hp = thp;
 
         if (chra != null) {
-            if (!silent) {
-                chra.checkBerserk();
-                chra.updatePartyMemberHP();
-            }
-            if ((oldHp > this.hp) && (!chra.isAlive())) {
+            if (oldHp > hp && !chra.isAlive()) {
+                // 技能免死在這
                 if (chra.getBuffedValue(MapleBuffStat.FINAL_FEINT) != null) {
                     int percentage = chra.getBuffedValue(MapleBuffStat.FINAL_FEINT);
                     this.hp = ((int) (this.localmaxhp * (percentage / 100.0D)));
@@ -3682,11 +3728,14 @@ public class PlayerStats implements Serializable {
                     chra.dropMessage(6, "以消耗掉幸運幻影的效果替代死亡，並回復最大值" + percentage + "%的HP。");
                     chra.cancelEffectFromBuffStat(MapleBuffStat.FINAL_FEINT, -1);
                 } else {
+                    // 戰鬥機器人效果添加的地方
+                    chra.getClient().getSession().write(CField.getDeathTip(1));
                     chra.playerDead();
                 }
             }
-            if (oldHp > hp && !chra.isAlive()) {
-                chra.playerDead();
+            if (!silent) {
+                chra.checkBerserk();
+                chra.updatePartyMemberHP();
             }
         }
         if (MapleJob.is惡魔復仇者(chra.getJob())) {
@@ -3753,12 +3802,7 @@ public class PlayerStats implements Serializable {
         return localmaxhp;
     }
 
-    public final int getCurrentMaxMp(final int job) {
-        if (MapleJob.is惡魔殺手(job)) {
-            return GameConstants.getMPByJob(job);
-        } else if (MapleJob.is神之子(job)) {
-            localmaxmp = 100;
-        }
+    public final int getCurrentMaxMp() {
         return localmaxmp;
     }
 
@@ -3780,5 +3824,196 @@ public class PlayerStats implements Serializable {
 
     public final boolean isRangedJob(final int job) {
         return MapleJob.is蒼龍俠客(job) || MapleJob.is精靈遊俠(job) || MapleJob.is重砲指揮官(job) || job == 400 || (job / 10 == 52) || (job / 100 == 3) || (job / 100 == 13) || (job / 100 == 14) || (job / 100 == 33) || (job / 100 == 35) || (job / 10 == 41);
+    }
+
+    public int getCoolTimeR() {
+        if (this.coolTimeR > 5) {
+            return 5;
+        }
+        return this.coolTimeR;
+    }
+
+    public int getReduceCooltime() {
+        if (this.reduceCooltime > 5) {
+            return 5;
+        }
+        return this.reduceCooltime;
+    }
+
+    public int getLimitBreak(MapleCharacter chra) {
+        MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
+
+        int limitBreak = 999999;
+        Equip weapon = (Equip) chra.getInventory(MapleInventoryType.EQUIPPED).getItem((short) -11);
+        if (weapon != null) {
+            limitBreak = ii.getLimitBreak(weapon.getItemId()) + weapon.getLimitBreak();
+
+            Equip subweapon = (Equip) chra.getInventory(MapleInventoryType.EQUIPPED).getItem((short) -10);
+            if ((subweapon != null) && (ItemConstants.類型.武器(subweapon.getItemId()))) {
+                int subWeaponLB = ii.getLimitBreak(subweapon.getItemId()) + subweapon.getLimitBreak();
+                if (subWeaponLB > limitBreak) {
+                    limitBreak = subWeaponLB;
+                }
+            }
+        }
+        return limitBreak;
+    }
+
+    public int getAttackCount(int skillId) {
+        if (add_skill_attackCount.containsKey(skillId)) {
+            return (add_skill_attackCount.get(skillId));
+        }
+        return 0;
+    }
+
+    public int getMobCount(int skillId) {
+        if (add_skill_targetPlus.containsKey(skillId)) {
+            return (add_skill_targetPlus.get(skillId));
+        }
+        return 0;
+    }
+
+    public int getReduceCooltimeRate(int skillId) {
+        if (this.add_skill_coolTimeR.containsKey(skillId)) {
+            return (this.add_skill_coolTimeR.get(skillId));
+        }
+        return 0;
+    }
+
+    public int getIgnoreMobpdpR(int skillId) {
+        if (add_skill_ignoreMobpdpR.containsKey(skillId)) {
+            return (add_skill_ignoreMobpdpR.get(skillId)) + ignoreTargetDEF;
+        }
+        return this.ignoreTargetDEF;
+    }
+
+    public double getDamageRate() {
+        return dam_r;
+    }
+
+    public double getBossDamageRate() {
+        return bossdam_r;
+    }
+
+    public double getBossDamageRate(int skillId) {
+        if (add_skill_bossDamageRate.containsKey(skillId)) {
+            return (add_skill_bossDamageRate.get(skillId)) + bossdam_r;
+        }
+        return bossdam_r;
+    }
+
+    public int getDuration(int skillId) {
+        if (add_skill_duration.containsKey(skillId)) {
+            return (add_skill_duration.get(skillId));
+        }
+        return 0;
+    }
+
+    public void addDamageIncrease(int skillId, int val) { //增加伤害 
+        if ((skillId < 0) || (val <= 0)) {
+            return;
+        }
+        if (damageIncrease.containsKey(skillId)) {
+            int oldval = (damageIncrease.get(Integer.valueOf(skillId)));
+            damageIncrease.put(skillId, oldval + val);
+        } else {
+            damageIncrease.put(skillId, val);
+        }
+    }
+
+    public void addTargetPlus(int skillId, int val) { //增加攻击目标数
+        if ((skillId < 0) || (val <= 0)) {
+            return;
+        }
+        if (add_skill_targetPlus.containsKey(skillId)) {
+            int oldval = (add_skill_targetPlus.get(Integer.valueOf(skillId)));
+            add_skill_targetPlus.put(skillId, oldval + val);
+        } else {
+            add_skill_targetPlus.put(skillId, val);
+        }
+    }
+
+    public void addAttackCount(int skillId, int val) { //增加攻击次数
+        if ((skillId < 0) || (val <= 0)) {
+            return;
+        }
+        if (add_skill_attackCount.containsKey(skillId)) {
+            int oldval = (add_skill_attackCount.get(Integer.valueOf(skillId)));
+            add_skill_attackCount.put(skillId, oldval + val);
+        } else {
+            add_skill_attackCount.put(skillId, val);
+        }
+    }
+
+    public void addBossDamageRate(int skillId, int val) { //增加BOSS伤害
+        if ((skillId < 0) || (val <= 0)) {
+            return;
+        }
+        if (add_skill_bossDamageRate.containsKey(skillId)) {
+            int oldval = (add_skill_bossDamageRate.get(Integer.valueOf(skillId)));
+            add_skill_bossDamageRate.put(skillId, oldval + val);
+        } else {
+            add_skill_bossDamageRate.put(skillId, val);
+        }
+    }
+
+    public void addIgnoreMobpdpRate(int skillId, int val) {//增加无视怪物防御
+        if ((skillId < 0) || (val <= 0)) {
+            return;
+        }
+        if (add_skill_ignoreMobpdpR.containsKey(skillId)) {
+            int oldval = (add_skill_ignoreMobpdpR.get(Integer.valueOf(skillId)));
+            add_skill_ignoreMobpdpR.put(skillId, oldval + val);
+        } else {
+            add_skill_ignoreMobpdpR.put(skillId, val);
+        }
+    }
+
+    public void addBuffDuration(int skillId, int val) { //增加BUFF时间
+        if ((skillId < 0) || (val <= 0)) {
+            return;
+        }
+        if (add_skill_duration.containsKey(skillId)) {
+            int oldval = (add_skill_duration.get(Integer.valueOf(skillId)));
+            add_skill_duration.put(skillId, oldval + val);
+        } else {
+            add_skill_duration.put(skillId, val);
+        }
+    }
+
+    public void addDotTime(int skillId, int val) { //增加持续掉血时间
+        if ((skillId < 0) || (val <= 0)) {
+            return;
+        }
+        if (add_skill_dotTime.containsKey(skillId)) {
+            int oldval = (add_skill_dotTime.get(Integer.valueOf(skillId)));
+            add_skill_dotTime.put(skillId, oldval + val);
+        } else {
+            add_skill_dotTime.put(skillId, val);
+        }
+    }
+
+    public void addCoolTimeReduce(int skillId, int val) { //增加减少冷却时间
+        if ((skillId < 0) || (val <= 0)) {
+            return;
+        }
+        if (add_skill_coolTimeR.containsKey(skillId)) {
+            int oldval = (add_skill_coolTimeR.get(Integer.valueOf(skillId)));
+            add_skill_coolTimeR.put(skillId, oldval + val);
+        } else {
+            add_skill_coolTimeR.put(skillId, val);
+        }
+    }
+
+    public void addSkillProp(int skillId, int val) { //增加技能概率
+        if ((skillId < 0) || (val <= 0)) {
+            return;
+        }
+        if (add_skill_prop.containsKey(skillId)) {
+            int oldval = (add_skill_prop.get(Integer.valueOf(skillId)));
+            add_skill_prop.put(skillId, oldval + val);
+        } else {
+            add_skill_prop.put(skillId, val);
+        }
     }
 }

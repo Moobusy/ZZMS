@@ -62,9 +62,9 @@ public class StaticLifeMovement extends AbstractLifeMovement {
             case 15:
             case 16:
             case 18:
-            case 64:
             case 65:
             case 66:
+            case 67:
                 lew.writePos(getPosition());
                 lew.writePos(pixelsPerSecond);
                 lew.writeShort(unk);
@@ -74,8 +74,8 @@ public class StaticLifeMovement extends AbstractLifeMovement {
                 lew.writePos(offset);
                 break;
             case 54:
-            case 63:
-            case 68:
+            case 64:
+            case 79:
                 lew.writePos(getPosition());
                 lew.writePos(pixelsPerSecond);
                 lew.writeShort(unk);
@@ -86,10 +86,10 @@ public class StaticLifeMovement extends AbstractLifeMovement {
             case 20:
             case 21:
             case 23:
-            case 59:
             case 60:
             case 61:
             case 62:
+            case 63:
                 lew.writePos(pixelsPerSecond);
                 if (getType() == 20 || getType() == 21) {
                     lew.writeShort(fh);
@@ -120,7 +120,12 @@ public class StaticLifeMovement extends AbstractLifeMovement {
             case 55:
             case 56:
             case 58:
+            case 59:
+            case 68:
+            case 69:
             case 70:
+            case 72:
+            case 77:
                 break;
             case 3:
             case 4:
@@ -137,6 +142,9 @@ public class StaticLifeMovement extends AbstractLifeMovement {
             case 51:
             case 52:
             case 57:
+            case 74:
+            case 75:
+            case 76:
                 lew.writePos(getPosition());
                 lew.writeShort(unk);
                 break;

@@ -34,7 +34,7 @@ import java.nio.charset.Charset;
 public class GenericLittleEndianWriter implements LittleEndianWriter {
 
     // See http://java.sun.com/j2se/1.4.2/docs/api/java/nio/charset/Charset.html
-    private static final Charset ASCII = Charset.forName(ServerConstants.MAPLE_TYPE.getAscii()); // ISO-8859-1, UTF-8
+    private static final Charset ASCII = Charset.forName(ServerConstants.MAPLE_TYPE.getANSI()); // ISO-8859-1, UTF-8
     private ByteOutputStream bos;
 
     /**

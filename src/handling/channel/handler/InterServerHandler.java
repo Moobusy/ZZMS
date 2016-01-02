@@ -20,7 +20,6 @@ import handling.world.exped.MapleExpedition;
 import handling.world.guild.*;
 import java.util.ArrayList;
 import java.util.List;
-import server.*;
 import server.maps.FieldLimitType;
 import server.maps.MapleMap;
 import server.quest.MapleQuest;
@@ -54,8 +53,9 @@ public class InterServerHandler {
             if (c.getChannel() <= MapleServerHandler.LOGIN_SERVER) {
                 return;
             }
+            String code = World.Redirector.addRedirector(c);
             c.disconnect(true, false);
-            c.getSession().write(CField.autoLogin(World.Redirector.addRedirector(c)));
+            c.getSession().write(CField.autoLogin(code));
         }
     }
 
@@ -81,7 +81,6 @@ public class InterServerHandler {
             World.Messenger.leaveMessenger(chr.getMessenger().getId(), messengerplayer);
         }
         PlayerBuffStorage.addBuffsToStorage(chr.getId(), chr.getAllBuffs());
-        PlayerBuffStorage.addStackBuffsToStorage(chr.getId(), chr.getSpecialBuffInfo());
         PlayerBuffStorage.addCooldownsToStorage(chr.getId(), chr.getCooldowns());
         PlayerBuffStorage.addDiseaseToStorage(chr.getId(), chr.getAllDiseases());
         World.ChannelChange_Data(new CharacterTransfer(chr), chr.getId(), -10);
@@ -112,7 +111,6 @@ public class InterServerHandler {
             World.Messenger.leaveMessenger(chr.getMessenger().getId(), messengerplayer);
         }
         PlayerBuffStorage.addBuffsToStorage(chr.getId(), chr.getAllBuffs());
-        PlayerBuffStorage.addStackBuffsToStorage(chr.getId(), chr.getSpecialBuffInfo());
         PlayerBuffStorage.addCooldownsToStorage(chr.getId(), chr.getCooldowns());
         PlayerBuffStorage.addDiseaseToStorage(chr.getId(), chr.getAllDiseases());
         World.ChannelChange_Data(new CharacterTransfer(chr), chr.getId(), -30);
@@ -181,17 +179,8 @@ public class InterServerHandler {
         }
         final int state = c.getLoginState();
         System.out.println("狀態 = " + c.getLoginState());
-        boolean allowLogin = false;
         if (state == MapleClient.LOGIN_SERVER_TRANSITION || state == MapleClient.CHANGE_CHANNEL || state == MapleClient.LOGIN_NOTLOGGEDIN) {
-            allowLogin = !World.isCharacterListConnected(c.loadCharacterNames(c.getWorld()));
-        }
-        if (!allowLogin) {
-            System.err.println("允許登入 = false");
-            c.getSession().close(true);
-            System.err.println("斷線處理!");
-            c.setPlayer(null);
-            System.err.println("清除用戶端的角色記錄");
-            return;
+            World.isCharacterListConnected(c.loadCharacterNames(c.getWorld()));
         }
         c.updateLoginState(MapleClient.LOGIN_LOGGEDIN, c.getSessionIPAddress());
         System.out.println("正在將角色添加到頻道");
@@ -199,7 +188,6 @@ public class InterServerHandler {
 
         player.giveCoolDowns(PlayerBuffStorage.getCooldownsFromStorage(player.getId()));
         player.silentGiveBuffs(PlayerBuffStorage.getBuffsFromStorage(player.getId()));
-        player.silentGiveStackBuffs(PlayerBuffStorage.getStackBuffsFromStorage(player.getId()));
         player.giveSilentDebuff(PlayerBuffStorage.getDiseaseFromStorage(player.getId()));
 
         c.getSession().write(CWvsContext.updateCrowns(new int[]{-1, -1, -1, -1, -1}));
@@ -221,6 +209,7 @@ public class InterServerHandler {
         c.getSession().write(InventoryPacket.updateInventorySlot());
         c.getSession().write(CWvsContext.temporaryStats_Reset());
 
+        c.getSession().write(CWvsContext.broadcastMsg(channelServer.getServerMessage(player.getWorld())));
         if (player.isIntern()) {//GM登入自動隱身並無敵處理
             SkillFactory.getSkill(9001004).getEffect(1).applyTo(player);
             player.setInvincible(true);
@@ -281,15 +270,11 @@ public class InterServerHandler {
                     player.saveGuildStatus();
                 }
             }
-            if (player.getFamilyId() > 0) {
-                World.Family.setFamilyMemberOnline(player.getMFC(), true, c.getChannel());
-            }
             //c.getSession().write(FamilyPacket.getFamilyData());
             //c.getSession().write(FamilyPacket.getFamilyInfo(player));
         } catch (Exception e) {
             FileoutputUtil.outputFileError(FileoutputUtil.Login_Error, e);
         }
-        player.getClient().getSession().write(CWvsContext.broadcastMsg(channelServer.getServerMessage(player.getWorld())));
         player.sendMacros();
         player.showNote();
         player.sendImp();
@@ -330,18 +315,9 @@ public class InterServerHandler {
         }
 
         //清理斷線未處理的方塊任務
-        c.getPlayer().clearInfoQuest(GameConstants.TMS方塊);
+        c.getPlayer().clearInfoQuest(GameConstants.台方塊);
 
         player.updateReward();
-        player.getClient().getSession().write(CWvsContext.broadcastMsg(channelServer.getServerMessage(player.getWorld())));
-//        Thread.sleep(1000);
-//        c.getSession().write(CWvsContext.getTopMsg("Earned Forever Single title!"));
-//        Thread.sleep(3100);
-//        if (c.getPlayer().getLevel() < 11) { 
-//            NPCScriptManager.getInstance().start(c, 9010000, "LoginTot");
-//        }
-//        } catch (InterruptedException e) {
-//      }
     }
 
     public static final void ChangeChannel(final LittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr, final boolean room) {

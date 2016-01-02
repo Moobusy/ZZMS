@@ -23,12 +23,19 @@ package client.inventory;
  */
 public enum SocketFlag {
 
-    DEFAULT(0x01), // You can mount a nebulite item
+    //可以鑲嵌
+    DEFAULT(0x01),
+    //已打孔1
     SOCKET_BOX_1(0x02),
+    //已打孔2
     SOCKET_BOX_2(0x04),
+    //已打孔3
     SOCKET_BOX_3(0x08),
+    //已鑲嵌1
     USED_SOCKET_1(0x10),
+    //已鑲嵌2
     USED_SOCKET_2(0x20),
+    //已鑲嵌3
     USED_SOCKET_3(0x40);
     private final int i;
 

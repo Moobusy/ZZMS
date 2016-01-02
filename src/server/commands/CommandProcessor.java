@@ -105,7 +105,7 @@ public class CommandProcessor {
         sb.append("\r\n@GM 訊息內容：發送訊息給線上的管理員。");
         sb.append("\r\n@怪物：顯示距離最近的怪物訊息。");
         sb.append("\r\n@解卡：如果卡死或者無法開啟NPC可以使用這個指令。");
-        sb.append("\r\n/查看：顯示各種訊息並解卡。");
+        sb.append("\r\n@查看：顯示各種訊息並解卡。");
         sb.append("\r\n@卡圖：只有卡圖無法出來時才能使用。");
         sb.append("\r\n@獲取貓頭鷹：獲得一個可以搜尋怪物掉寶的貓頭鷹。");
         sb.append("\r\n@地圖掉寶：查看當前地圖怪物的掉寶數據。");
@@ -125,7 +125,7 @@ public class CommandProcessor {
                 final StringBuilder comment = new StringBuilder("");
                 char[] gmRank = pGMRank.getCommandPrefix();
                 for (int j = 0; j < gmRank.length; j++) {
-                    if (String.valueOf(gmRank[j]).equals("/") && !c.isGM()) {
+                    if (gmRank[j] == '/' && !c.isGM()) {
                         continue;
                     }
                     comment.append('"').append(gmRank[j]).append('"');
@@ -133,17 +133,17 @@ public class CommandProcessor {
                         comment.append("或");
                     }
                 }
-                c.getPlayer().dropMessage(6, "-----------------------------------------------------------------------------------------");
+                c.getPlayer().dropMessage(-11, "-----------------------------------------------------------------------------------------");
                 if (pGMRank == PlayerGMRank.NORMAL) {
-                    c.getPlayer().dropMessage(6, "玩家指令(前綴:" + comment + ")：");
+                    c.getPlayer().dropMessage(-11, "玩家指令(前綴:" + comment + ")：");
                 } else if (pGMRank == PlayerGMRank.INTERN) {
-                    c.getPlayer().dropMessage(6, "實習管理員指令(前綴:" + comment + ")：");
+                    c.getPlayer().dropMessage(-11, "實習管理員指令(前綴:" + comment + ")：");
                 } else if (pGMRank == PlayerGMRank.GM) {
-                    c.getPlayer().dropMessage(6, "遊戲管理員指令(前綴:" + comment + ")：");
+                    c.getPlayer().dropMessage(-11, "遊戲管理員指令(前綴:" + comment + ")：");
                 } else if (pGMRank == PlayerGMRank.SUPERGM) {
-                    c.getPlayer().dropMessage(6, "高級管理員指令(前綴:" + comment + ")：");
+                    c.getPlayer().dropMessage(-11, "高級管理員指令(前綴:" + comment + ")：");
                 } else if (pGMRank == PlayerGMRank.ADMIN) {
-                    c.getPlayer().dropMessage(6, "伺服器管理指令(前綴:" + comment + ")：");
+                    c.getPlayer().dropMessage(-11, "伺服器管理指令(前綴:" + comment + ")：");
                 }
                 for (String s : commandList.get(i)) {
                     if ((gmRank.length > 1 && s.substring(0, 1).equals(String.valueOf(gmRank[0]))) || gmRank.length == 1) {
@@ -151,7 +151,7 @@ public class CommandProcessor {
                         sb.append("，");
                     }
                 }
-                c.getPlayer().dropMessage(6, sb.toString());
+                c.getPlayer().dropMessage(-11, sb.toString());
             }
         }
     }
@@ -183,20 +183,7 @@ public class CommandProcessor {
                         return true;
                     }
                     dropUnFound = true;
-                    String str = "";
-                    String str2 = "";
-                    for (int i = 0; i < PlayerGMRank.NORMAL.getCommandPrefix().length; i++) {
-                        if (String.valueOf(PlayerGMRank.NORMAL.getCommandPrefix()[i]).equals("/") && !c.isGM()) {
-                            continue;
-                        }
-                        str += "'" + String.valueOf(PlayerGMRank.NORMAL.getCommandPrefix()[i]) + "幫助'";
-                        str2 += "'" + String.valueOf(PlayerGMRank.NORMAL.getCommandPrefix()[i]) + "'";
-                        if (i < PlayerGMRank.NORMAL.getCommandPrefix().length - 1) {
-                            str += "或";
-                            str2 += "或";
-                        }
-                    }
-                    mapleHelp = "[楓之谷幫助]在對話視窗輸入 " + str + "時可以看到使用 " + str2 + " 的指令說明.";
+                    mapleHelp = "[楓之谷幫助]在對話視窗輸入 '" + chr + "幫助' 時可以看到使用 '" + chr + "' 的指令說明.";
                     continue;
                 }
                 try {
@@ -224,7 +211,7 @@ public class CommandProcessor {
                     continue;
                 }
                 for (char chr : pGMRank.getCommandPrefix()) {
-                    if (line.split(" ")[0].equals("cmd") || String.valueOf(line.charAt(0)).equals(String.valueOf(chr))) {
+                    if (String.valueOf(line.charAt(0)).equals(String.valueOf(chr))) {
                         String[] splitted = line.split(" ");
                         splitted[0] = splitted[0].toLowerCase();
 
@@ -236,24 +223,9 @@ public class CommandProcessor {
                                 return true;
                             }
                             dropUnFound = true;
-                            String str = "";
-                            String str2 = "";
-                            String str3 = "";
-                            for (int i = 0; i < pGMRank.getCommandPrefix().length; i++) {
-                                if (String.valueOf(pGMRank.getCommandPrefix()[i]).equals("/") && !c.isGM()) {
-                                    continue;
-                                }
-                                str += "'" + String.valueOf(pGMRank.getCommandPrefix()[i]) + commandStr + "'";
-                                str2 += "'" + String.valueOf(pGMRank.getCommandPrefix()[i]) + "'";
-                                str3 += "'" + String.valueOf(pGMRank.getCommandPrefix()[i]) + "檢索指令 關鍵字詞'";
-                                if (i < pGMRank.getCommandPrefix().length - 1) {
-                                    str += "或";
-                                    str2 += "或";
-                                    str3 += "或";
-                                }
-                            }
-                            mapleHelp = "[楓之谷幫助]在對話視窗輸入 " + str + " 時可以看到使用 " + str2 + " 的指令列表.";
-                            searchHelp = "輸入 " + str3 + " 可以檢索可用的 " + str2 + " 指令.";
+                            chr = c.isGM() ? pGMRank.getCommandPrefix()[0] : chr;
+                            mapleHelp = "[楓之谷幫助]在對話視窗輸入 '" + chr + "幫助' 時可以看到使用 '" + chr + "' 的指令列表.";
+                            searchHelp = "輸入 '" + chr + "檢索指令 關鍵字詞' 可以檢索可用的 '" + chr + "' 指令.";
                             continue;
                         }
                         if (c.getPlayer().getGMLevel() >= co.getReqGMLevel()) {

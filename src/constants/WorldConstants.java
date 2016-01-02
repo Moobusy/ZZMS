@@ -11,7 +11,7 @@ public class WorldConstants {
     public static int MESO_RATE = 1;
     public static int DROP_RATE = 1;
     public static byte FLAG = 3;
-    public static int CHANNEL_COUNT = 5;
+    public static int CHANNEL_COUNT = 2;
     public static String WORLD_TIP = "ZZMS Enjoy it!";
     public static String SCROLL_MESSAGE = "";
     public static final int gmserver = -1; // -1 = no gm server
@@ -231,7 +231,7 @@ public class WorldConstants {
         @Override
         public void setShow(boolean info) {
             if (info == show) {
-                ServerProperties.removeProperty("expWorld" + world);
+                ServerProperties.removeProperty("showWorld" + world);
                 return;
             }
             ServerProperties.setProperty("showWorld" + world, info);
@@ -417,7 +417,7 @@ public class WorldConstants {
         @Override
         public void setShow(boolean info) {
             if (info == show) {
-                ServerProperties.removeProperty("expWorld" + worldName);
+                ServerProperties.removeProperty("showWorld" + worldName);
                 return;
             }
             ServerProperties.setProperty("showWorld" + worldName, info);
@@ -489,7 +489,7 @@ public class WorldConstants {
                 return e;
             }
         }
-        return null;
+        return values()[0];
     }
 
     public static boolean isExists(int id) {

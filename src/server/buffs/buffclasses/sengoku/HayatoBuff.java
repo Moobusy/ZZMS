@@ -93,7 +93,7 @@ public class HayatoBuff extends AbstractBuffClass {
                 eff.statups.put(MapleBuffStat.COUNTERATTACK, 0);
                 break;
             case 41121054: // 無雙十刃之型
-                //TODO - works without
+                //TODO - 剑豪BUFF無雙十刃之型（41121054）works without
                 break;
             case 41121053: // 公主的加護
                 eff.statups.put(MapleBuffStat.INDIE_MAX_DAMAGE_OVER, eff.info.get(MapleStatInfo.indieMaxDamageOver));

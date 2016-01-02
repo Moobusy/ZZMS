@@ -59,7 +59,6 @@ public class ShutdownServer implements ShutdownServerMBean {
          }*/
         World.Guild.save();
         World.Alliance.save();
-        World.Family.save();
         System.out.println("數據存檔完成，僱傭商人儲存個數: " + ret);
         try {
             World.Broadcast.broadcastMessage(CWvsContext.broadcastMsg(0, "伺服器將進行停機維護, 請安全的下線, 以免造成不必要的損失。"));

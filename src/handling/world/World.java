@@ -26,8 +26,6 @@ import handling.world.exped.ExpeditionType;
 import handling.world.exped.MapleExpedition;
 import handling.world.exped.PartySearch;
 import handling.world.exped.PartySearchType;
-import handling.world.family.MapleFamily;
-import handling.world.family.MapleFamilyCharacter;
 import handling.world.guild.MapleBBSThread;
 import handling.world.guild.MapleGuild;
 import handling.world.guild.MapleGuildAlliance;
@@ -135,8 +133,13 @@ public class World {
     public static boolean isCharacterListConnected(List<String> charName) {
         for (ChannelServer cs : ChannelServer.getAllInstances()) {
             for (final String c : charName) {
-                if (cs.getPlayerStorage().getCharacterByName(c) != null) {
-                    return true;
+                MapleCharacter chr = cs.getPlayerStorage().getCharacterByName(c);
+                if (chr != null) {
+                    if (chr.getClient() != null && chr.getClient().getPlayer() != null) {
+                        chr.getClient().unLockDisconnect();
+                    } else {
+                        cs.removePlayer(chr);
+                    }
                 }
             }
         }
@@ -1216,20 +1219,6 @@ public class World {
                 c.getClient().getSession().write(packet);
             }
         }
-
-        public static void sendFamilyPacket(int targetIds, byte[] packet, int exception, int guildid) {
-            if (targetIds == exception) {
-                return;
-            }
-            int ch = Find.findChannel(targetIds);
-            if (ch < 0) {
-                return;
-            }
-            final MapleCharacter c = ChannelServer.getInstance(ch).getPlayerStorage().getCharacterById(targetIds);
-            if (c != null && c.getFamilyId() == guildid) {
-                c.getClient().getSession().write(packet);
-            }
-        }
     }
 
     public static class Client {
@@ -1611,113 +1600,6 @@ public class World {
         }
     }
 
-    public static class Family {
-
-        private static final Map<Integer, MapleFamily> families = new LinkedHashMap<>();
-        private static final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
-
-        public static void addLoadedFamily(MapleFamily f) {
-            if (f.isProper()) {
-                families.put(f.getId(), f);
-            }
-        }
-
-        public static MapleFamily getFamily(int id) {
-            MapleFamily ret = null;
-            lock.readLock().lock();
-            try {
-                ret = families.get(id);
-            } finally {
-                lock.readLock().unlock();
-            }
-            if (ret == null) {
-                lock.writeLock().lock();
-                try {
-                    ret = new MapleFamily(id);
-                    if (ret == null || ret.getId() <= 0 || !ret.isProper()) { //failed to load
-                        return null;
-                    }
-                    families.put(id, ret);
-                } finally {
-                    lock.writeLock().unlock();
-                }
-            }
-            return ret;
-        }
-
-        public static void memberFamilyUpdate(MapleFamilyCharacter mfc, MapleCharacter mc) {
-            MapleFamily f = getFamily(mfc.getFamilyId());
-            if (f != null) {
-                f.memberLevelJobUpdate(mc);
-            }
-        }
-
-        public static void setFamilyMemberOnline(MapleFamilyCharacter mfc, boolean bOnline, int channel) {
-            MapleFamily f = getFamily(mfc.getFamilyId());
-            if (f != null) {
-                f.setOnline(mfc.getId(), bOnline, channel);
-            }
-        }
-
-        public static int setRep(int fid, int cid, int addrep, int oldLevel, String oldName) {
-            MapleFamily f = getFamily(fid);
-            if (f != null) {
-                return f.setRep(cid, addrep, oldLevel, oldName);
-            }
-            return 0;
-        }
-
-        public static void save() {
-            System.out.println("存檔家族...");
-            lock.writeLock().lock();
-            try {
-                for (MapleFamily a : families.values()) {
-                    a.writeToDB(false);
-                }
-            } finally {
-                lock.writeLock().unlock();
-            }
-        }
-
-        public static void setFamily(int familyid, int seniorid, int junior1, int junior2, int currentrep, int totalrep, int cid) {
-            int ch = Find.findChannel(cid);
-            if (ch == -1) {
-                // System.out.println("ERROR: cannot find player in given channel");
-                return;
-            }
-            MapleCharacter mc = getStorage(ch).getCharacterById(cid);
-            if (mc == null) {
-                return;
-            }
-            boolean bDifferent = mc.getFamilyId() != familyid || mc.getSeniorId() != seniorid || mc.getJunior1() != junior1 || mc.getJunior2() != junior2;
-            mc.setFamily(familyid, seniorid, junior1, junior2);
-            mc.setCurrentRep(currentrep);
-            mc.setTotalRep(totalrep);
-            if (bDifferent) {
-                mc.saveFamilyStatus();
-            }
-        }
-
-        public static void familyPacket(int gid, byte[] message, int cid) {
-            MapleFamily f = getFamily(gid);
-            if (f != null) {
-                f.broadcast(message, -1, f.getMFC(cid).getPedigree());
-            }
-        }
-
-        public static void disbandFamily(int gid) {
-            MapleFamily g = getFamily(gid);
-            if (g != null) {
-                lock.writeLock().lock();
-                try {
-                    families.remove(gid);
-                } finally {
-                    lock.writeLock().unlock();
-                }
-                g.disbandFamily();
-            }
-        }
-    }
     private final static int CHANNELS_PER_THREAD = 3;
 
     public static void registerRespawn() {
@@ -1762,7 +1644,7 @@ public class World {
                         code += String.valueOf(random.nextInt(10));
                 }
             }
-            redirectors.put(code, new ClientRedirector(c.getAccountName(), c.getWorld(), c.getChannel(), false));
+            redirectors.put(code, new ClientRedirector(c.getAccountName(), c.getPlayer().getWorld(), c.getChannel(), false));
             return code;
         }
 
@@ -1842,7 +1724,6 @@ public class World {
                 if (m.startTime + m.length < now) {
                     final int skil = m.skillId;
                     chr.removeCooldown(skil);
-                    chr.getClient().getSession().write(CField.skillCooldown(skil, 0));
                 }
             }
         }
@@ -1888,14 +1769,14 @@ public class World {
                 if (pet.getPetItemId() == 5000054 && pet.getSecondsLeft() > 0) {
                     pet.setSecondsLeft(pet.getSecondsLeft() - 1);
                     if (pet.getSecondsLeft() <= 0) {
-                        chr.unequipPet(pet, true, true);
+                        chr.unequipPet(pet, true);
                         return;
                     }
                 }
                 int newFullness = pet.getFullness() - PetDataFactory.getHunger(pet.getPetItemId());
                 if (newFullness <= 5) {
                     pet.setFullness(15);
-                    chr.unequipPet(pet, true, true);
+                    chr.unequipPet(pet, true);
                 } else {
                     pet.setFullness(newFullness);
                     chr.getClient().getSession().write(PetPacket.updatePet(pet, chr.getInventory(MapleInventoryType.CASH).getItem(pet.getInventoryPosition()), false));

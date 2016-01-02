@@ -90,7 +90,7 @@ public class HexTool {
             }
         }
         try {
-            return new String(ret, ServerConstants.MAPLE_TYPE.getAscii());
+            return new String(ret, ServerConstants.MAPLE_TYPE.getANSI());
         } catch (UnsupportedEncodingException e) {
             return "";
         }

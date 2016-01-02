@@ -1,3 +1,5 @@
+/* global cm */
+
 //副本開關 開啟、true 關閉、false
 var open = true;
 //副本腳本名
@@ -6,14 +8,21 @@ var name = ["HillaBattle", "DarkHillaBattle"];
 var minLevel = [120, 170];
 var maxLevel = [255, 255];
 //次數限制
-var maxenter = 99999;
+var maxenter = 2;
 //記錄次數名稱
 var PQName = '希拉';
 
 var status = -1;
 
+var out = false;
+
 function start() {
-    if (cm.getParty() == null) {
+    if (cm.getMapId() === 262031300 || cm.getMapId() === 262030300) {
+        cm.sendYesNo("你確定要從這裡出去嗎？");
+        out = true;
+        return;
+    }
+    if (cm.getParty() === null) {
         cm.sendOk("要組1人以上的隊伍,才能入場.");
         cm.dispose();
         return;
@@ -26,17 +35,24 @@ function start() {
 }
 
 function action(mode, type, selection) {
-    if (mode == 1) {
+    if (out) {
+        if (mode === 1) {
+            cm.warp(262000000, 0);
+        }
+        cm.dispose();
+        return;
+    }
+    if (mode === 1) {
         status++;
     } else {
         cm.dispose();
         return;
     }
 
-    if (status == 0) {
+    if (status === 0) {
         cm.sendSimple("#e<Boss: 希拉>#n\r\n請選擇想要的模式.\r\n\r\n#L0# 普通模式 ( 等級 " + minLevel[0] + " 以上 )#l\r\n#L1# 困難模式 ( 等級 " + minLevel[1] + " 以上 )#l\r\n");
-    } else if (status == 1) {
-        if (selection != 0 && selection != 1) {
+    } else if (status === 1) {
+        if (selection !== 0 && selection !== 1) {
             cm.sendOk("出現未知錯誤。");
             cm.dispose();
             return;
@@ -47,11 +63,11 @@ function action(mode, type, selection) {
             cm.sendNext("你的隊員\"" + cm.getNotAllowedPQMember(PQName, maxenter).getName() + "\"次數已經達到上限了。");
         } else {
             var em = cm.getEventManager(name[selection]);
-            if (em == null || !open) {
+            if (em === null || !open) {
                 cm.sendOk("要挑戰的希拉副本還未開放。");
             } else {
                 var prop = em.getProperty("state");
-                if (prop == null || prop.equals("0")) {
+                if (prop === null || prop.equals("0")) {
                     em.startInstance(cm.getParty(), cm.getMap(), 255);
                     cm.gainMembersPQ(PQName, 1);
                 } else {

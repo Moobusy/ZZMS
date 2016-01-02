@@ -14,7 +14,7 @@ import server.buffs.AbstractBuffClass;
  *
  * @author Charmander
  */
-public class EvanBuff extends AbstractBuffClass  {
+public class EvanBuff extends AbstractBuffClass {
 
     public EvanBuff() {
         buffs = new int[]{
@@ -32,7 +32,7 @@ public class EvanBuff extends AbstractBuffClass  {
             22171053, // Heroic Memories
         };
     }
-    
+
     @Override
     public boolean containsJob(int job) {
         return MapleJob.is龍魔導士(job);

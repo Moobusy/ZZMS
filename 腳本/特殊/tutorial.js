@@ -20,7 +20,8 @@ function startChat() {
     if (chat == 0) {
         cm.sendNextPrev("blah blah");
     } else {
-        cm.MovieClipIntroUI(false);
+        cm.lockUI(false);
+        cm.lockKey(false);
         cm.dispose();
     }
 }

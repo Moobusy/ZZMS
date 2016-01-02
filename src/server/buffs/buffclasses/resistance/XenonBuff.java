@@ -18,9 +18,9 @@ public class XenonBuff extends AbstractBuffClass {
 
     public XenonBuff() {
         buffs = new int[]{
-            36101001, // 離子推進器
             30021237, // 自由飛行(Done)
             36001002, // 傾斜功率(Done)
+            36101001, // 離子推進器
             36101002, // 線性透視(Done)
             36101003, // 效率管道
             36101004, // 能量加速器(Done)
@@ -43,13 +43,17 @@ public class XenonBuff extends AbstractBuffClass {
     @Override
     public void handleBuff(MapleStatEffect eff, int skill) {
         switch (skill) {
-            case 30021237: //自由飛行(Done)
+            case 30021237: // 自由飛行(Done)
                 eff.statups.put(MapleBuffStat.XENON_FLY, 1);
                 break;
             case 36001002: // 傾斜功率
                 eff.statups.put(MapleBuffStat.INDIE_PAD, eff.info.get(MapleStatInfo.indiePad));
                 break;
+            case 36101001: // 離子推進器
+                eff.statups.put(MapleBuffStat.USING_SKILL_MOVE, eff.info.get(MapleStatInfo.x));
+                break;
             case 36101002: // 線性透視
+                //eff.info.put(MapleStatInfo.powerCon, Integer.valueOf(6));
                 eff.statups.put(MapleBuffStat.CRITICAL_RATE, eff.info.get(MapleStatInfo.x));
                 break;
             case 36101003: // 效率管道
@@ -57,7 +61,6 @@ public class XenonBuff extends AbstractBuffClass {
                 eff.statups.put(MapleBuffStat.INDIE_MHP_R, eff.info.get(MapleStatInfo.indieMhpR));
                 break;
             case 36101004: // 能量加速器
-                eff.info.put(MapleStatInfo.time, 2100000000);
                 eff.statups.put(MapleBuffStat.BOOSTER, eff.info.get(MapleStatInfo.x));
                 break;
             case 36111006: // 虛擬投影
@@ -80,9 +83,6 @@ public class XenonBuff extends AbstractBuffClass {
                 break;
             case 36121008: // 楓葉祝福
                 eff.statups.put(MapleBuffStat.MAPLE_WARRIOR, eff.info.get(MapleStatInfo.x));
-                break;
-            case 36101001: // 離子推進器
-                eff.statups.put(MapleBuffStat.USING_SKILL_MOVE, eff.info.get(MapleStatInfo.x));
                 break;
             case 36121054://發電機
                 eff.info.put(MapleStatInfo.time, 10000);//AddBugFixTest

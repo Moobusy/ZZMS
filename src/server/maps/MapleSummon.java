@@ -43,6 +43,12 @@ public class MapleSummon extends AnimatedMapleMapObject {
     private byte Summon_tickResetCount;
     private long Server_ClientSummonTickDiff;
     private long lastAttackTime;
+    private boolean isControl = false;
+    private boolean isScream = false;
+    private int SummonTime;
+    private boolean isfaceleft;
+    private long SummonStratTime;
+    private int linkmonid = 0;
 
     public MapleSummon(final MapleCharacter owner, final MapleStatEffect skill, final Point pos, final SummonMovementType movementType) {
         this(owner, skill.getSourceId(), skill.getLevel(), pos, movementType);
@@ -56,7 +62,9 @@ public class MapleSummon extends AnimatedMapleMapObject {
         this.map = owner.getMap();
         this.skillLevel = level;
         this.movementType = movementType;
+        this.SummonStratTime = System.currentTimeMillis();
         setPosition(pos);
+        this.isfaceleft = owner.isFacingLeft();
 
         if (!isPuppet()) { // Safe up 12 bytes of data, since puppet doesn't attack.
             lastSummonTickCount = 0;
@@ -79,12 +87,49 @@ public class MapleSummon extends AnimatedMapleMapObject {
         this.map = map;
     }
 
+    public int getSummonTime() {
+        return SummonTime;
+    }
+
+    public int SummonTime(int bufftime) {
+        SummonTime = bufftime - (int) (System.currentTimeMillis() - SummonStratTime);
+        return SummonTime;
+    }
+
     public final MapleCharacter getOwner() {
         return map.getCharacterById(ownerid);
     }
 
     public final int getOwnerId() {
         return ownerid;
+    }
+
+    public boolean setControl(boolean ss) {//灵魂统治开关
+        return this.isControl = ss;
+    }
+
+    public void setLinkmonid(int ss) {
+        this.linkmonid = ss;
+    }
+
+    public int getLinkmonid() {
+        return this.linkmonid;
+    }
+
+    public boolean getControl() {
+        return isControl;
+    }
+
+    public boolean setScream(boolean ss) {
+        return this.isScream = ss;
+    }
+
+    public boolean getScream() {
+        return isScream;
+    }
+
+    public boolean isfacingleft() {
+        return isfaceleft;
     }
 
     public final int getOwnerLevel() {
@@ -101,6 +146,60 @@ public class MapleSummon extends AnimatedMapleMapObject {
 
     public final void addHP(final short delta) {
         this.hp += delta;
+    }
+
+    public boolean is替身术() {
+        switch (skill) {
+            case 3221014:
+            case 4341006:
+            case 33111003:
+                return true;
+        }
+        return is天使召唤兽();
+    }
+
+    public boolean is天使召唤兽() {
+        return GameConstants.isAngel(skill);
+    }
+
+    public boolean isMultiAttack() {//TODO 召唤兽是否是一次性攻击
+        switch (skill) {
+            case 2111010:
+                return false;
+        }
+        return (skill == 61111002) || (skill == 35111002) || (skill == 35121003) || ((skill != 33101008) && (skill < 35000000)) || (skill == 35111001) || (skill == 35111009) || (skill == 35111010);
+    }
+
+    public boolean is神箭幻影() {
+        return skill == 3221014;
+    }
+
+    public boolean is灵魂助力() {
+        return skill == 1301013;
+    }
+
+    public boolean is分身召唤() {
+        return (skill == 4341006) || (skill == 14111024);
+    }
+
+    public boolean is机械磁场() {
+        return skill == 35111002;
+    }
+
+    public boolean is战法重生() {
+        return skill == 32111006;
+    }
+
+    public boolean is影子蝙蝠() {
+        return skill == 14000027;
+    }
+
+    public boolean isMultiSummon() {
+        return (skill == 5211014) || (skill == 32111006) || (skill == 33101008);
+    }
+
+    public boolean isSummon() {
+        return (is天使召唤兽()) || (SkillFactory.getSkill(skill).isSummonSkill());
     }
 
     public final SummonMovementType getMovementType() {
@@ -125,70 +224,12 @@ public class MapleSummon extends AnimatedMapleMapObject {
         return GameConstants.isAngel(skill);
     }
 
-    public final boolean isMultiAttack() {
-        return skill == 35111002 || skill == 35121003 || (!isGaviota() && skill != 33101008 && skill < 35000000) || skill == 35111009 || skill == 35111010 || skill == 35111001 || skill == 42111003;
-    }
-
     public final boolean isGaviota() {
         return skill == 5211002;
     }
 
     public final boolean isBeholder() {
         return skill == 1321007;
-    }
-
-    public final boolean isMultiSummon() {
-        return skill == 5211002 || skill == 5211001 || skill == 5220002 || skill == 32111006 || skill == 33101008;
-    }
-
-    public final boolean isSummon() {
-        switch (skill) {
-            case 12111004:
-            case 1321007: //beholder
-            case 2321003:
-            case 2121005:
-            case 5711001: // turret
-            case 2221005:
-            case 5211001: // Pirate octopus summon
-            case 5211002:
-            case 5220002: // wrath of the octopi
-            case 13111004:
-            case 11001004:
-            case 12001004:
-            case 13001004:
-            case 14000027:
-            case 14001005:
-            case 15001004:
-            case 33111005:
-            case 35111001:
-            case 35111010:
-            case 35111009:
-            case 35111002: //pre-bb = 35111002, 35111004(amp?), 35111005(accel)
-            case 35111005:
-            case 35111011:
-            case 35121009:
-            case 35121010:
-            case 35121011:
-            case 4111007:
-            case 4211007: //dark flare
-            case 14111010: //dark flare
-            case 32111006:
-            case 33101008:
-            case 35121003:
-            case 3101007:
-            case 3201007:
-            case 3111005:
-            case 3211005:
-            case 5321003:
-            case 5321004:
-            case 23111008:
-            case 23111009:
-            case 23111010:
-            case 42101001: // Shikigami Charm
-            case 42111003: // Kishin Shoukan
-                return true;
-        }
-        return isAngel();
     }
 
     public final int getSkillLevel() {

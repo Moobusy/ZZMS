@@ -46,7 +46,7 @@ public class SkillFactory {
         SummonSkillEntry sse;
 
         for (MapleDataFileEntry topDir : root.getFiles()) { // Loop thru jobs
-            if (topDir.getName().length() <= 9) {
+            if (topDir.getName().replace(".img", "").matches("^\\d+$")) { // 判斷img是否為純數字img
                 for (MapleData data : datasource.getData(topDir.getName())) { // Loop thru each jobs
                     if (data.getName().equals("skill")) {
                         for (MapleData data2 : data) { // Loop thru each jobs

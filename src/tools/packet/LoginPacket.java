@@ -83,7 +83,7 @@ public class LoginPacket {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
         mplew.writeShort(SendPacketOpcode.ACCOUNT_INFO.getValue());
-        getAuthSuccess(mplew, client, false);
+        getAuthSuccess(mplew, client, true);
 
         return mplew.getPacket();
     }
@@ -93,7 +93,13 @@ public class LoginPacket {
         mplew.writeInt(client.getAccID());
         mplew.write(client.getGender());
         mplew.write(client.isGM() ? 1 : 0);
-        mplew.writeInt(client.isGM() ? 0x10 : 0);//gm stuff　0x10 = 8588, 0x20 = 8596, 0x2000 = 8600
+        /*
+        管理員 stuff
+        0x10 = 8640 (stuff >> 4)
+        0x20 = 8630 (stuff >> 5)
+        0x2000 = 8648 (stuff >> 13)
+        */
+        mplew.writeInt(client.isSuperGM()? 0x10 : client.isGM() ? 0x20 : client.isIntern()? 0x2000 : 0);
         mplew.writeInt(0);
         mplew.writeInt(0);
         mplew.writeInt(0x21);
@@ -142,7 +148,7 @@ public class LoginPacket {
      
      */
 
-    public static byte[] getPermBan(byte reason) {//TO DO
+    public static byte[] getPermBan(byte reason) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter(16);
 
         mplew.writeShort(SendPacketOpcode.LOGIN_STATUS.getValue());
@@ -322,13 +328,6 @@ public class LoginPacket {
         return mplew.getPacket();
     }
 
-    /*
-     public static final byte[] getLoginWelcome() {
-     List flags = new LinkedList();
-
-     return CField.spawnFlags(flags);
-     }
-     */
     public static byte[] getServerStatus(int status) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         /* 類型(status)：

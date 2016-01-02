@@ -37,6 +37,7 @@ import client.MonsterStatusEffect;
 import client.anticheat.CheatingOffense;
 import client.MonsterStatus;
 import client.PlayerStats;
+import handling.world.World;
 import java.awt.Rectangle;
 import java.lang.ref.WeakReference;
 import java.util.Map;
@@ -59,12 +60,14 @@ import tools.Pair;
 import tools.packet.CField.EffectPacket;
 import tools.packet.CField;
 import tools.packet.CField.SummonPacket;
+import tools.packet.CWvsContext;
+import tools.packet.provider.SpecialEffectType;
 
 public class SummonHandler {
 
     public static final void MoveDragon(final LittleEndianAccessor slea, final MapleCharacter chr) {
         slea.skip(8); //POS
-        final List<LifeMovementFragment> res = MovementParse.parseMovement(slea, 5);
+        final List<LifeMovementFragment> res = MovementParse.parseMovement(slea, 5, chr);
         if (chr != null && chr.getDragon() != null && res.size() > 0) {
             final Point pos = chr.getDragon().getPosition();
             MovementParse.updatePosition(res, chr.getDragon(), 0);
@@ -112,11 +115,13 @@ public class SummonHandler {
             return;
         }
         final MapleSummon sum = (MapleSummon) obj;
-        if (sum.getOwnerId() != chr.getId() || sum.getSkillLevel() <= 0 || sum.getMovementType() == SummonMovementType.STATIONARY) {
+        if (sum.getOwnerId() != chr.getId() || sum.getSkillLevel() <= 0 || sum.getMovementType() == SummonMovementType.不會移動) {
             return;
         }
-        slea.skip(16); //startPOS
-        final List<LifeMovementFragment> res = MovementParse.parseMovement(slea, 4);
+        slea.skip(4);
+        slea.skip(4);
+        slea.skip(4);
+        final List<LifeMovementFragment> res = MovementParse.parseMovement(slea, 4, chr);
 
         final Point pos = sum.getPosition();
         MovementParse.updatePosition(res, sum, 0);
@@ -158,94 +163,151 @@ public class SummonHandler {
         final MapleMap map = chr.getMap();
         final MapleMapObject obj = map.getMapObject(slea.readInt(), MapleMapObjectType.SUMMON);
         if (obj == null || !(obj instanceof MapleSummon)) {
-            chr.dropMessage(5, "The summon has disappeared.");
+            chr.dropMessage(5, "召喚獸已經消失。");
             return;
         }
         final MapleSummon summon = (MapleSummon) obj;
         if (summon.getOwnerId() != chr.getId() || summon.getSkillLevel() <= 0) {
-            chr.dropMessage(5, "Error.");
+            chr.dropMessage(5, "出現錯誤.");
             return;
         }
         final SummonSkillEntry sse = SkillFactory.getSummonData(summon.getSkill());
         if (summon.getSkill() / 1000000 != 35 && summon.getSkill() != 33101008 && sse == null) {
-            chr.dropMessage(5, "Error in processing attack.");
+            chr.dropMessage(5, "召喚獸攻擊處理出錯。");
             return;
         }
         int tick = slea.readInt();
         if (sse != null && sse.delay > 0) {
             chr.updateTick(tick);
-            //summon.CheckSummonAttackFrequency(chr, tick);
-            //chr.getCheatTracker().checkSummonAttack();
+            summon.CheckSummonAttackFrequency(chr, tick);
+            chr.getCheatTracker().checkSummonAttack();
         }
+        slea.skip(4);
         final byte animation = slea.readByte();
         byte tbyte = (slea.readByte());
         byte numAttacked = (byte) ((tbyte >>> 4) & 0xF);
-        if (sse != null && numAttacked > sse.mobCount) {
-            chr.dropMessage(5, "Warning: Attacking more monster than summon can do");
-            chr.getCheatTracker().registerOffense(CheatingOffense.SUMMON_HACK_MOBS);
-            //AutobanManager.getInstance().autoban(c, "Attacking more monster that summon can do (Skillid : "+summon.getSkill()+" Count : " + numAttacked + ", allowed : " + sse.mobCount + ")");
-            return;
+        byte numDamage = (byte) (tbyte & 0xF);
+        if (summon.getSkill() == 1301013 && summon.getScream()) {
+            //TODO 添加灵魂助力震惊的效果 
+            chr.getMap().broadcastMessage(chr, SummonPacket.summonSkill(chr.getId(), 217592, 141), false);
+            chr.getMap().broadcastMessage(chr, CField.EffectPacket.showBuffEffect(true, chr, 1301013, SpecialEffectType.REMOTE_SKILL, chr.getLevel(), 1), false);
+            c.getSession().write(CWvsContext.BuffPacket.灵魂助力特殊(summon.SummonTime(360000), summon.setScream(false), summon.getControl()));
+        }
+        if (sse != null) {
+            int count = sse.mobCount;
+            if (summon.getSkill() == 1301013) {
+                count = 10;
+            }
+            if (numAttacked > count) {
+                if (chr.isShowErr()) {
+                    chr.dropMessage(-5, "召喚獸攻擊次數錯誤 (Skillid : " + summon.getSkill() + " 怪物數量 : " + numAttacked + " 默認數量: " + count + ")");
+                }
+                chr.dropMessage(5, "[警告] 請不要使用非法程式。召喚獸攻擊怪物數量錯誤.");
+                chr.getCheatTracker().registerOffense(CheatingOffense.SUMMON_HACK_MOBS);
+                return;
+            }
+            int numAttackCount = chr.getStat().getAttackCount(summon.getSkill()) + sse.attackCount;
+            if (numDamage > numAttackCount) {
+                if (chr.isShowErr()) {
+                    chr.dropMessage(-5, "召喚獸攻擊次數錯誤 (Skillid : " + summon.getSkill() + " 打怪次數 : " + numDamage + " 默認次數: " + sse.attackCount + " 超級技能增加次數: " + chr.getStat().getAttackCount(summon.getSkill()) + ")");
+                }
+                chr.dropMessage(5, "[警告] 請不要使用非法程式。召喚獸攻擊怪物次數錯誤.");
+                chr.getCheatTracker().registerOffense(CheatingOffense.SUMMON_HACK_MOBS);
+                return;
+            }
         }
         slea.skip(summon.getSkill() == 35111002 ? 24 : 12); //some pos stuff
-        final List<Pair<Integer, Integer>> allDamage = new ArrayList<>();
+
+        final List<AttackPair> allDamage = new ArrayList<>();
         for (int i = 0; i < numAttacked; i++) {
             int oid = slea.readInt();
             MapleMonster mob = map.getMonsterByOid(oid);
-
             if (mob == null) {
                 continue;
             }
-            slea.skip(24); // who knows
-            final int damge = slea.readInt();
-            allDamage.add(new Pair<>(mob.getObjectId(), damge));
             slea.skip(4);
+            slea.skip(20);
+            List allDamageNumbers = new ArrayList();
+            for (int j = 0; j < numDamage; j++) {
+                int damge = slea.readInt();
+                if (chr.isAdmin()) {
+                    chr.dropMessage(-5, "召喚獸攻擊 打怪數量: " + numAttacked + " 打怪次數: " + numDamage + " 打怪傷害: " + damge + " 怪物OID: " + mob.getObjectId());
+                }
+                if (damge > /*chr.getMaxDamageOver(0)*/ 50000000 && !chr.isGM()) {
+                    World.Broadcast.broadcastGMMessage(CWvsContext.broadcastMsg(5, "[GM 訊息] " + chr.getName() + " ID: " + chr.getId() + " (等級 " + chr.getLevel() + ") 召喚獸攻擊傷害異常。打怪傷害: " + damge + " 地圖ID: " + chr.getMapId()));
+                }
+                allDamageNumbers.add(new Pair(damge, false));
+            }
+            slea.skip(4);
+            allDamage.add(new AttackPair(mob.getObjectId(), allDamageNumbers));
         }
-        slea.skip(4);
-        //if (!summon.isChangedMap()) {
-        map.broadcastMessage(chr, SummonPacket.summonAttack(summon.getOwnerId(), summon.getObjectId(), animation, allDamage, chr.getLevel(), false), summon.getTruePosition());
-        //}
         final Skill summonSkill = SkillFactory.getSkill(summon.getSkill());
         final MapleStatEffect summonEffect = summonSkill.getEffect(summon.getSkillLevel());
         if (summonEffect == null) {
-            chr.dropMessage(5, "Error in attack.");
+            chr.dropMessage(5, "召喚獸攻擊出現錯誤 => 攻擊效果為空.");
             return;
         }
-        for (Pair<Integer, Integer> attackEntry : allDamage) {
-            final int toDamage = attackEntry.right;
-            final MapleMonster mob = map.getMonsterByOid(attackEntry.left);
+
+        if (allDamage.isEmpty()) {
+            return;
+        }
+        map.broadcastMessage(chr, SummonPacket.summonAttack(summon.getOwnerId(), summon.getObjectId(), animation, tbyte, allDamage, chr.getLevel(), false), summon.getTruePosition());
+        for (AttackPair attackEntry : allDamage) {
+            final MapleMonster mob = map.getMonsterByOid(attackEntry.objectid);
             if (mob == null) {
                 continue;
             }
-            if (sse != null && sse.delay > 0 && summon.getMovementType() != SummonMovementType.STATIONARY && summon.getMovementType() != SummonMovementType.CIRCLE_STATIONARY && summon.getMovementType() != SummonMovementType.WALK_STATIONARY && chr.getTruePosition().distanceSq(mob.getTruePosition()) > 400000.0) {
-                //chr.getCheatTracker().registerOffense(CheatingOffense.ATTACK_FARAWAY_MONSTER_SUMMON);
+            int totDamageToOneMonster = 0;
+            for (Pair eachde : attackEntry.attack) {
+                int toDamage = ((Integer) eachde.left);
+                totDamageToOneMonster += toDamage;
+                if (!((chr.isGM()) || (toDamage < chr.getStat().getCurrentMaxBaseDamage() * 5.0D * (summonEffect.getSelfDestruction() + summonEffect.getDamage() + chr.getStat().getDamageIncrease(summonEffect.getSourceId())) / 100.0D))) {
+                    World.Broadcast.broadcastGMMessage(CWvsContext.broadcastMsg(5, "[GM 訊息] " + chr.getName() + " ID: " + chr.getId() + " (等級 " + chr.getLevel() + ") 召喚獸攻擊傷害異常。打怪傷害: " + toDamage + " 地圖ID: " + chr.getMapId()));
+                }
             }
-            if (toDamage > 0 && summonEffect.getMonsterStati().size() > 0) {
-                if (summonEffect.makeChanceResult()) {
+            if (sse != null && sse.delay > 0 && summon.getMovementType() != SummonMovementType.不會移動 && summon.getMovementType() != SummonMovementType.CIRCLE_STATIONARY && summon.getMovementType() != SummonMovementType.自由移動 && chr.getTruePosition().distanceSq(mob.getTruePosition()) > 400000.0
+                    && !chr.getMap().isBossMap()) {
+                chr.getCheatTracker().registerOffense(CheatingOffense.ATTACK_FARAWAY_MONSTER_SUMMON);
+            }
+
+            if (totDamageToOneMonster > 0) {
+                if (summonEffect.getMonsterStati().size() > 0
+                        && summonEffect.makeChanceResult()) {
                     for (Map.Entry<MonsterStatus, Integer> z : summonEffect.getMonsterStati().entrySet()) {
-                        mob.applyStatus(chr, new MonsterStatusEffect(z.getKey(), z.getValue(), summonSkill.getId(), null, false), summonEffect.isPoison(), 4000, true, summonEffect);
+                        mob.applyStatus(chr, new MonsterStatusEffect(z.getKey(), z.getValue(), summonSkill.getId(), null, false), summonEffect.isPoison(), summonEffect.isPoison() ? summonEffect.getDOTTime() * 1000 : 4000, true, summonEffect);
                     }
                 }
-            }
-            if (chr.isGM() || toDamage < (chr.getStat().getCurrentMaxBaseDamage() * 5.0 * (summonEffect.getSelfDestruction() + summonEffect.getDamage() + chr.getStat().getDamageIncrease(summonEffect.getSourceId())) / 100.0)) { //10 x dmg.. eh
-                mob.damage(chr, toDamage, true);
-                chr.checkMonsterAggro(mob);
-                if (!mob.isAlive()) {
-                    chr.getClient().getSession().write(MobPacket.killMonster(mob.getObjectId(), 1, false));
+
+                if (chr.isShowInfo()) {
+                    chr.dropMessage(5, "召喚獸打怪最終傷害 : " + totDamageToOneMonster);
                 }
-            } else {
-                //chr.dropMessage(5, "Warning - high damage.");
-                //AutobanManager.getInstance().autoban(c, "High Summon Damage (" + toDamage + " to " + attackEntry.right + ")");
-                // TODO : Check player's stat for damage checking.
-                break;
+
+                if (totDamageToOneMonster < (chr.getStat().getCurrentMaxBaseDamage() * 5.0 * (summonEffect.getSelfDestruction() + summonEffect.getDamage() + chr.getStat().getDamageIncrease(summonEffect.getSourceId())) / 100.0)) { //10 x dmg.. eh
+                    mob.damage(chr, totDamageToOneMonster, true);
+                    chr.checkMonsterAggro(mob);
+                    if (!mob.isAlive()) {
+                        chr.getClient().getSession().write(MobPacket.killMonster(mob.getObjectId(), 1, false));
+                    }
+                } else {
+                    if (chr.isShowInfo()) {
+                        chr.dropMessage(5, "Warning - high damage.");
+                    }
+                    //AutobanManager.getInstance().autoban(c, "High Summon Damage (" + toDamage + " to " + attackEntry.right + ")");
+                    break;
+                }
             }
         }
+
         if (!summon.isMultiAttack()) {
+            if (summon.getSkill() == 2111010) {
+                chr.removeLinksummon(summon);
+            }
             chr.getMap().broadcastMessage(SummonPacket.removeSummon(summon, true));
             chr.getMap().removeMapObject(summon);
             chr.removeVisibleMapObject(summon);
             chr.removeSummon(summon);
             if (summon.getSkill() != 35121011) {
-                chr.cancelEffectFromBuffStat(MapleBuffStat.SUMMON);
+                chr.dispelSkill(summon.getSkill());
             }
         }
     }
@@ -257,8 +319,11 @@ public class SummonHandler {
         }
         final MapleSummon summon = (MapleSummon) obj;
         if (summon.getOwnerId() != c.getPlayer().getId() || summon.getSkillLevel() <= 0) {
-            c.getPlayer().dropMessage(5, "Error.");
+            c.getPlayer().dropMessage(5, "移除召喚獸出現錯誤。");
             return;
+        }
+        if (c.getPlayer().isShowInfo()) {
+            c.getPlayer().showMessage(10, "收到移除召喚獸信息 - 召喚獸技能ID: " + summon.getSkill() + " 技能名字 " + SkillFactory.getSkillName(summon.getSkill()));
         }
         if (summon.getSkill() == 35111002 || summon.getSkill() == 35121010) { //rock n shock, amp
             return;
@@ -268,8 +333,11 @@ public class SummonHandler {
         c.getPlayer().removeVisibleMapObject(summon);
         c.getPlayer().removeSummon(summon);
         if (summon.getSkill() != 35121011) {
-            c.getPlayer().cancelEffectFromBuffStat(MapleBuffStat.SUMMON);
-            //TODO: Multi Summoning, must do something about hack buffstat
+            c.getPlayer().dispelSkill(summon.getSkill());
+            if (summon.isAngel()) {
+                int buffId = summon.getSkill() % 10000 == 1179 ? 2022823 : summon.getSkill() % 10000 == 1087 ? 2022747 : 2022746;
+                c.getPlayer().dispelBuff(buffId);
+            }
         }
     }
 
@@ -279,7 +347,7 @@ public class SummonHandler {
             return;
         }
         final MapleSummon sum = (MapleSummon) obj;
-        if (sum == null || sum.getOwnerId() != chr.getId() || sum.getSkillLevel() <= 0 || !chr.isAlive()) {
+        if (sum.getOwnerId() != chr.getId() || sum.getSkillLevel() <= 0 || !chr.isAlive()) {
             return;
         }
         switch (sum.getSkill()) {
@@ -294,7 +362,7 @@ public class SummonHandler {
                 slea.skip(1); // 0E?
                 chr.updateTick(slea.readInt());
                 for (int i = 0; i < 3; i++) {
-                    final MapleSummon tosummon = new MapleSummon(chr, SkillFactory.getSkill(35121011).getEffect(sum.getSkillLevel()), new Point(sum.getTruePosition().x, sum.getTruePosition().y - 5), SummonMovementType.WALK_STATIONARY);
+                    final MapleSummon tosummon = new MapleSummon(chr, SkillFactory.getSkill(35121011).getEffect(sum.getSkillLevel()), new Point(sum.getTruePosition().x, sum.getTruePosition().y - 5), SummonMovementType.自由移動);
                     chr.getMap().spawnSummon(tosummon);
                     chr.addSummon(tosummon);
                 }
@@ -304,8 +372,8 @@ public class SummonHandler {
                     return;
                 }
                 chr.addHP((int) (chr.getStat().getCurrentMaxHp() * SkillFactory.getSkill(sum.getSkill()).getEffect(sum.getSkillLevel()).getHp() / 100.0));
-                chr.getClient().getSession().write(EffectPacket.showBuffEffect(sum.getSkill(), 2, chr.getLevel(), sum.getSkillLevel()));
-                chr.getMap().broadcastMessage(chr, EffectPacket.showBuffeffect(chr.getId(), sum.getSkill(), 2, chr.getLevel(), sum.getSkillLevel()), false);
+                chr.getClient().getSession().write(EffectPacket.showBuffEffect(true, chr, sum.getSkill(), SpecialEffectType.REMOTE_SKILL, chr.getLevel(), sum.getSkillLevel()));
+                chr.getMap().broadcastMessage(chr, EffectPacket.showBuffEffect(false, chr, sum.getSkill(), SpecialEffectType.REMOTE_SKILL, chr.getLevel(), sum.getSkillLevel()), false);
                 break;
             case 1321007: //beholder
                 Skill bHealing = SkillFactory.getSkill(slea.readInt());
@@ -322,21 +390,54 @@ public class SummonHandler {
                     }
                     chr.addHP(healEffect.getHp());
                 }
-                chr.getClient().getSession().write(EffectPacket.showBuffEffect(sum.getSkill(), 2, chr.getLevel(), bHealingLvl));
+                chr.getClient().getSession().write(EffectPacket.showBuffEffect(true, chr, sum.getSkill(), SpecialEffectType.REMOTE_SKILL, chr.getLevel(), bHealingLvl));
                 chr.getMap().broadcastMessage(SummonPacket.summonSkill(chr.getId(), sum.getSkill(), bHealing.getId() == 1320008 ? 5 : (Randomizer.nextInt(3) + 6)));
-                chr.getMap().broadcastMessage(chr, EffectPacket.showBuffeffect(chr.getId(), sum.getSkill(), 2, chr.getLevel(), bHealingLvl), false);
+                chr.getMap().broadcastMessage(chr, EffectPacket.showBuffEffect(false, chr, sum.getSkill(), SpecialEffectType.REMOTE_SKILL, chr.getLevel(), bHealingLvl), false);
                 break;
         }
+
         if (GameConstants.isAngel(sum.getSkill())) {
-            if (sum.getSkill() % 10000 == 1087) {
-                MapleItemInformationProvider.getInstance().getItemEffect(2022747).applyTo(chr);
-            } else if (sum.getSkill() % 10000 == 1179) {
-                MapleItemInformationProvider.getInstance().getItemEffect(2022823).applyTo(chr);
-            } else {
-                MapleItemInformationProvider.getInstance().getItemEffect(2022746).applyTo(chr);
+            int itemEffect = 0;
+            switch (sum.getSkill() % 10000) {
+                case 86: // 大天使祝福 [等級上限：1]\n得到大天使的祝福。
+                case 1085: // 大天使 [等級上限：1]\n召喚被大天使祝福封印的大天使。
+                case 1090: // 大天使 [等級上限：1]\n召喚被大天使祝福封印的大天使。
+                    itemEffect = 2022746; // 天使祝福
+                    break;
+                case 1087: // 黑天使 [等級上限：1]\n召喚被黑天使祝福封印的大天使。
+                    itemEffect = 2022747; // 黑天使祝福
+                    break;
+                case 1179: // 白色天使 [最高等級： 1]\n召喚出被封印的聖潔天使。
+                    itemEffect = 2022823; // 白色精靈祝福
+                    break;
+                default:
+                    switch (sum.getSkill()) {
+                        case 80001154: // 白色天使 [最高等級：1]\n召喚被白天使的祝福封印的白天使。
+                            itemEffect = 2022823; // 白色精靈祝福
+                            break;
+                        case 80000086: // 戰神祝福 [等級上限：1]\n得到戰神的祝福。
+                        case 80001262: // 戰神祝福 [等級上限：1]\n召喚戰神
+                            itemEffect = 2023189; // 戰神的祝福
+                            break;
+                        case 80000054: // 恶魔契约 获得恶魔的力量，攻击力和魔法攻击力增加15，HP、MP增加20%，可以和其他增益叠加。
+                            itemEffect = 2023150;
+                            break;
+                        case 80000052: // 恶魔之息 获得恶魔的力量，攻击力和魔法攻击力增加6，HP、MP增加5%，可以和其他增益叠加。
+                            itemEffect = 2023148;
+                            break;
+                        case 80000053: // 恶魔召唤 获得恶魔的力量，攻击力和魔法攻击力增加13，HP、MP增加10%，可以和其他增益叠加。
+                            itemEffect = 2023159; // 豚骨蛇湯
+                            break;
+                        default:
+                            itemEffect = 2022746; // 天使祝福
+                            if (chr.isShowErr()) {
+                                chr.showInfo("天使戒指", true, "itemEffect未設定");
+                            }
+                    }
             }
-            chr.getClient().getSession().write(EffectPacket.showBuffEffect(sum.getSkill(), 2, 2, 1));
-            chr.getMap().broadcastMessage(chr, EffectPacket.showBuffeffect(chr.getId(), sum.getSkill(), 2, 2, 1), false);
+            MapleItemInformationProvider.getInstance().getItemEffect(itemEffect).applyTo(chr);
+            chr.getClient().getSession().write(EffectPacket.showBuffEffect(true, chr, sum.getSkill(), SpecialEffectType.ZERO, 2, 1));
+            chr.getMap().broadcastMessage(chr, EffectPacket.showBuffEffect(false, chr, sum.getSkill(), SpecialEffectType.ZERO, 2, 1), false);
         }
     }
 
@@ -400,7 +501,6 @@ public class SummonHandler {
         final Rectangle box = MapleStatEffect.calculateBoundingBox(chr.getTruePosition(), chr.isFacingLeft(), lt, rb, 0);
         List<AttackPair> ourAttacks = new ArrayList<>();
         List<Pair<Integer, Boolean>> attacks;
-        maxdamage *= chr.getStat().dam_r / 100.0;
         for (MapleMapObject mo : chr.getMap().getCharactersIntersect(box)) {
             final MapleCharacter attacked = (MapleCharacter) mo;
             if (attacked.getId() != chr.getId() && attacked.isAlive() && !attacked.isHidden() && (type == 0 || attacked.getTeam() != chr.getTeam())) {

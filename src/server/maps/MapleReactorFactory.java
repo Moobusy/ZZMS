@@ -50,33 +50,33 @@ public class MapleReactorFactory {
                 if (reactorData == null) {
                     return stats;
                 }
-                /*int i = 0;
-                 switch(rid) {
-                 case 2002011:
-                 case 2002012:
-                 case 2002013:
-                 case 2618003:
-                 case 2618004:
-                 case 2618005:
-                 case 2618006:
-                 case 2618007:
-                 case 2002018:
-                 case 9101000:
-                 case 2512001:
-                 case 6109016:
-                 case 6109017:
-                 case 6109018:
-                 case 6109019:
-                 case 6109020:
-                 i = 1;
-                 break;
-                 case 2006000:
-                 i = 20;
-                 break;
-                 }
-                 for (int x = 0; x < i; x++) {
-                 stats.addState((byte) x, 0, null, (byte) (x+1), 0); //test
-                 }*/
+//                int i = 0;
+//                switch (rid) {
+//                    case 2002011:
+//                    case 2002012:
+//                    case 2002013:
+//                    case 2618003:
+//                    case 2618004:
+//                    case 2618005:
+//                    case 2618006:
+//                    case 2618007:
+//                    case 2002018:
+//                    case 9101000:
+//                    case 2512001:
+//                    case 6109016:
+//                    case 6109017:
+//                    case 6109018:
+//                    case 6109019:
+//                    case 6109020:
+//                        i = 1;
+//                        break;
+//                    case 2006000:
+//                        i = 20;
+//                        break;
+//                }
+//                for (int x = 0; x < i; x++) {
+//                    stats.addState((byte) x, 0, null, (byte) (x + 1), 0); //test
+//                }
                 boolean canTouch = MapleDataTool.getInt("info/activateByTouch", reactorData, 0) > 0;
                 boolean areaSet = false;
                 boolean foundState = false;
@@ -99,6 +99,7 @@ public class MapleReactorFactory {
                             }
                         }
                         foundState = true;
+                        // 寒霜天地 | 2015/07/26 | 傳說寶箱 state: 0
                         stats.addState(i, type, reactItem, (byte) MapleDataTool.getIntConvert("state", reactorInfoData, 0), MapleDataTool.getIntConvert("timeOut", reactorInfoData_, -1), (byte) (canTouch ? 2 : (MapleDataTool.getIntConvert("2", reactorInfoData, 0) > 0 || reactorInfoData.getChildByPath("clickArea") != null || type == 9 ? 1 : 0)));
                     } else {
                         stats.addState(i, 999, null, (byte) (foundState ? -1 : (i + 1)), 0, (byte) 0);

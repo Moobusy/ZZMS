@@ -134,10 +134,10 @@ public class MapleReactor extends MapleMapObject {
         ReactorScriptManager.getInstance().act(c, this);
     }
 
-    public void forceHitReactor(final MapleCharacter c, final byte newState) {
+    public void forceHitReactor(final MapleCharacter chr, final byte newState) {
         setState(newState);
         setTimerActive(false);
-        map.broadcastMessage(CField.triggerReactor(c, this, (short) 0));
+        map.broadcastMessage(CField.triggerReactor(chr, this, (short) 0));
     }
 
     //hitReactor command for item-triggered reactors
@@ -225,12 +225,12 @@ public class MapleReactor extends MapleMapObject {
         }, delay);
     }
 
-    public void scheduleSetState(final MapleCharacter c, final byte oldState, final byte newState, long delay) {
+    public void scheduleSetState(final MapleCharacter chr, final byte oldState, final byte newState, long delay) {
         MapTimer.getInstance().schedule(new Runnable() {
             @Override
             public void run() {
                 if (MapleReactor.this.state == oldState) {
-                    forceHitReactor(c, newState);
+                    forceHitReactor(chr, newState);
                 }
             }
         }, delay);

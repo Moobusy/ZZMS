@@ -10,8 +10,8 @@ function action(mode, type, selection) {
 	if (status == 0) {
 		cm.sendNextNoESC("Ook! Ook!");
 	} else if (status == 1) {
-		cm.EnableUI(0);
-		cm.DisableUI(false);
+		cm.lockUI(false);
+		cm.disableOthers(false);
 		cm.dispose();
 	}
 }

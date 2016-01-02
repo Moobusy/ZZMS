@@ -139,7 +139,7 @@ public class HiredMerchantHandler {
                         c.getPlayer().setConversation(0);
                         break;
                     }
-                    MapleInventoryManipulator.addFromDrop(c, item, true);
+                    MapleInventoryManipulator.addFromDrop(c, item, true, false);
                     deletePackage(c.getPlayer().getAccountID(), pack.getPackageid(), c.getPlayer().getId());
                     //c.getPlayer().fakeRelog();
                     c.getSession().write(NPCPacket.getNPCTalk(9030000, (byte) 0, "Your items have been claimed.", "00 00", (byte) 0));
@@ -207,7 +207,7 @@ public class HiredMerchantHandler {
             }
             c.getPlayer().gainMeso(pack.getMesos(), false);
             for (Item item : pack.getItems()) {
-                MapleInventoryManipulator.addFromDrop(c, item, false);
+                MapleInventoryManipulator.addFromDrop(c, item);
             }
             c.getSession().write(PlayerShopPacket.merchItem_Message(32));
         } else {

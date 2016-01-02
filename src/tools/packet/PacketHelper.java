@@ -11,6 +11,7 @@ import java.util.*;
 import java.util.Map.Entry;
 import server.CashItem;
 import server.MapleItemInformationProvider;
+import server.Randomizer;
 import server.movement.LifeMovementFragment;
 import server.quest.MapleQuest;
 import server.shops.MapleShop;
@@ -197,9 +198,6 @@ public class PacketHelper {
                 addExpirationTime(mplew, ((SkillEntry) skill.getValue()).expiration);
                 if (((Skill) skill.getKey()).isFourthJob()) {
                     mplew.writeInt(((SkillEntry) skill.getValue()).masterlevel);
-                }
-                if (((Skill) skill.getKey()).getId() == 40020002 || ((Skill) skill.getKey()).getId() == 80000004) {
-                    mplew.writeInt(0);
                 }
             }
             int v87 = 0;
@@ -551,7 +549,7 @@ public class PacketHelper {
         mplew.write(chr.getStat().pvpRank);
         mplew.writeInt(chr.getBattlePoints());
         mplew.write(6); // idk
-        mplew.write(7); // TODO JUMP
+        mplew.write(7);
         mplew.writeInt(0);
         mplew.writeInt(0);
         addPartTimeJob(mplew, MapleCharacter.getPartTime(chr.getId()));
@@ -619,13 +617,13 @@ public class PacketHelper {
         mplew.write(chr.getStat().pvpRank);
         mplew.writeInt(chr.getBattlePoints());
         mplew.write(6);//idk
-        mplew.write(7);//TODO JUMP
+        mplew.write(7);
         mplew.writeInt(0);
         mplew.writeInt(0);
         addPartTimeJob(mplew, MapleCharacter.getPartTime(chr.getId()));
         chr.getCharacterCard().connectData(mplew);
         mplew.writeReversedLong(getTime(System.currentTimeMillis()));
-        mplew.write(1); // 178+
+        mplew.write(0); // 178+
         mplew.writeZeroBytes(25);
         mplew.write(0);
         mplew.write(0);
@@ -759,10 +757,10 @@ public class PacketHelper {
             addExpirationTime(mplew, item.getExpiration());
             mplew.writeInt(chr == null ? -1 : chr.getExtendedSlots().indexOf(item.getItemId()));
             if (item.getType() == 1) {
-                mplew.write(0); //181+應該是白金鎚子次數
+                mplew.write(0);
                 final Equip equip = Equip.calculateEquipStats((Equip) item);
                 addEquipStats(mplew, equip);
-                addEquipBonusStats(mplew, equip, hasUniqueId);
+                addEquipBonusStats(mplew, equip);
             } else {
                 mplew.writeShort(item.getQuantity());
                 mplew.writeMapleAsciiString(item.getOwner());
@@ -852,7 +850,8 @@ public class PacketHelper {
                 mplew.writeInt(equip.getDurability());
             }
             if (equip.getStats().contains(EquipStat.VICIOUS_HAMMER)) {
-                mplew.writeInt(equip.getViciousHammer());
+                mplew.writeShort(equip.getViciousHammer());
+                mplew.writeShort(equip.getPlatinumHammer());
             }
             if (equip.getStats().contains(EquipStat.PVP_DAMAGE)) {
                 mplew.writeShort(equip.getPVPDamage());
@@ -930,24 +929,32 @@ public class PacketHelper {
         }
     }
 
-    public static void addEquipBonusStats(MaplePacketLittleEndianWriter mplew, Equip equip, boolean hasUniqueId) {
-        mplew.writeMapleAsciiString(equip.getOwner());//擁有者名字
-        mplew.write(equip.getState(true) > 0 && equip.getState(true) < 17 ? equip.getState(false) | 0x20 : equip.getState(false)); //潛能等級 17 = 特殊rare, 18 = 稀有epic, 19 = 罕見unique, 20 = 傳說legendary, potential flags. special grade is 14 but it crashes
-        mplew.write(equip.getEnhance());//裝備星級
-        for (int i = 1; i <= 3; i++) {//潛能
+    public static void addEquipBonusStats(MaplePacketLittleEndianWriter mplew, Equip equip) {
+        //擁有者名字
+        mplew.writeMapleAsciiString(equip.getOwner());
+        //潛能等級 17 = 特殊rare, 18 = 稀有epic, 19 = 罕見unique, 20 = 傳說legendary, potential flags. special grade is 14 but it crashes
+        mplew.write(equip.getState(true) > 0 && equip.getState(true) < 17 ? equip.getState(false) | 0x20 : equip.getState(false));
+        //裝備星級
+        mplew.write(equip.getEnhance());
+        //潛在能力
+        for (int i = 1; i <= 3; i++) {
             mplew.writeShort(equip.getState(false) > 0 && equip.getState(false) < 17 ? 0 : equip.getPotential(i, false));
         }
-        for (int i = 1; i <= 3; i++) {//附加潛能
-            mplew.writeShort(equip.getState(true) > 0 && equip.getState(true) < 17 ? i == 1 ?  equip.getState(true) : 0 : equip.getPotential(i, true));
+        //附加潛能
+        for (int i = 1; i <= 3; i++) {
+            mplew.writeShort(equip.getState(true) > 0 && equip.getState(true) < 17 ? i == 1 ? equip.getState(true) : 0 : equip.getPotential(i, true));
         }
+        //鐵砧
         mplew.writeShort(equip.getFusionAnvil() % 10000);
+        //Alien Stone FLAG
         mplew.writeShort(equip.getSocketState());
-        mplew.writeShort(equip.getSocket1() % 10000); // > 0 = mounted, 0 = empty, -1 = none.
-        mplew.writeShort(equip.getSocket2() % 10000);
-        mplew.writeShort(equip.getSocket3() % 10000);
-        if (!hasUniqueId) {
-            mplew.writeLong(equip.getInventoryId()); //some tracking ID
+        //Alien Stone能力(Item.wz/Install/0306.img) > 0 = 安裝, 0 = 空, -1 = 無.
+        for (int i = 1; i <= 3; i++) {
+            mplew.writeShort(equip.getSocket(i) % 10000);
         }
+
+        //Ver182手記……這裡為0或沒有這個那麼將無法使用楓方塊
+        mplew.writeLong(/*equip.getInventoryId()*/1); //some tracking ID
         mplew.writeLong(getTime(-2));
         mplew.writeInt(-1);
         mplew.writeLong(0);
@@ -959,12 +966,14 @@ public class PacketHelper {
         mplew.writeShort(0);//魂武器 : 0
         mplew.writeShort(0);//魂武器 / 100 : 0
         mplew.writeShort(0);//魂武器 / 100 : 0
-
-        mplew.writeShort(equip.getSoulName());//魂武器類型 : 0
-        mplew.writeShort(equip.getSoulEnchanter());//魂武器 : 0
-        mplew.writeShort(equip.getSoulPotential());//item.getItemId()) ? equip.getPotential7() : equip.getPotential7() <= 0 ? 0 : 0
-
-        mplew.writeInt(0);//equip.getMaxDamage() : 0//突破傷害上限
+        //靈魂寶珠
+        mplew.writeShort(equip.getSoulName());
+        //靈魂捲軸
+        mplew.writeShort(equip.getSoulEnchanter());
+        //靈魂潛能
+        mplew.writeShort(equip.getSoulPotential());
+        //突破傷害上限
+        mplew.writeInt(equip.getMaxDamage());
         mplew.writeLong(getTime(-2));
     }
 
@@ -987,15 +996,11 @@ public class PacketHelper {
         mplew.write(shop.getGameType());
         mplew.writeInt(((AbstractPlayerStore) shop).getObjectId());
         mplew.writeMapleAsciiString(shop.getDescription());
-//        if (shop.getShopType() != 1) {
         mplew.write(shop.getPassword().length() > 0 ? 1 : 0);
-//        }
         mplew.write(shop.getItemId() % 10);
         mplew.write(shop.getSize());
         mplew.write(shop.getMaxSize());
-//        if (shop.getShopType() != 1) {
         mplew.write(shop.isOpen() ? 0 : 1);
-//        }
     }
 
     public static void addCharacterInfo(MaplePacketLittleEndianWriter mplew, MapleCharacter chr) {
@@ -1003,7 +1008,7 @@ public class PacketHelper {
         mplew.writeLong(mask);
         mplew.write(0);
         for (int i = 0; i < 3; i++) {
-            mplew.writeInt(-2);
+            mplew.writeInt(-1);
         }
 
         int v7 = 0;
@@ -1035,7 +1040,7 @@ public class PacketHelper {
                 mplew.writeLong(0);
             }
         }
-
+        
         if ((mask & 1) != 0) {
             addCharStats(mplew, chr); // 角色狀態訊息
             mplew.write(chr.getBuddylist().getCapacity()); // 好友上限
@@ -1425,7 +1430,7 @@ public class PacketHelper {
             mplew.writeMapleAsciiString("");
         }
     }
-    
+
     public static void UnkFunctin6(final MaplePacketLittleEndianWriter mplew) {
         int v7 = 2;
         do {
@@ -1433,9 +1438,10 @@ public class PacketHelper {
             while (true) {
                 int res = 255;
                 mplew.write(res);
-                if (res == 255)
+                if (res == 255) {
                     break;
-                mplew.writeInt(0);                
+                }
+                mplew.writeInt(0);
             }
             v7 += 36;
         } while (v7 < 74);
@@ -1507,7 +1513,7 @@ public class PacketHelper {
         int count = 0;
         if (chr.getStolenSkills() != null) {
             for (Pair<Integer, Boolean> sk : chr.getStolenSkills()) {
-                if (MapleJob.getNumber(sk.left / 10000) == jobNum) {
+                if (MapleJob.getJobGrade(sk.left / 10000) == jobNum) {
                     mplew.writeInt(sk.left);
                     count++;
                     if (count >= GameConstants.getNumSteal(jobNum)) {
@@ -1527,7 +1533,7 @@ public class PacketHelper {
             boolean found = false;
             if (chr.getStolenSkills() != null) {
                 for (Pair<Integer, Boolean> sk : chr.getStolenSkills()) {
-                    if (MapleJob.getNumber(sk.left / 10000) == i && sk.right) {
+                    if (MapleJob.getJobGrade(sk.left / 10000) == i && sk.right) {
                         mplew.writeInt(sk.left);
                         found = true;
                         break;
@@ -1578,9 +1584,10 @@ public class PacketHelper {
         mplew.writeInt((pet.getPetItemId() == 5000054) && (pet.getSecondsLeft() > 0) ? pet.getSecondsLeft() : 0);
         mplew.writeShort(pet.isCanPickup() ? 0 : 2);
         mplew.write(active ? 0 : pet.getSummoned() ? pet.getSummonedValue() : 0);
-        mplew.writeInt(0);
-        mplew.writeInt(0);
-        mplew.writeInt(0);
+        mplew.writeInt(active ? pet.getBuffSkill() : 0);
+        mplew.writeInt(0); // 顏色
+        mplew.writeShort(0);
+        mplew.writeShort(0); // 訓練箱子技能
         mplew.writeInt(0);
         mplew.writeInt(-1);
         mplew.writeShort(100);
@@ -1602,8 +1609,11 @@ public class PacketHelper {
         for (MapleShopItem item : shop.getItems()) {
             addShopItemInfo(mplew, item, shop, ii, null, c.getPlayer());
         }
+        //short buyable, short quantity, int itemId, int price, short slot, int reqItem, int reqItemQ, byte rank, int category, int minLevel, int expiration, boolean potential
+        byte rank = 0;
         for (Item i : c.getPlayer().getRebuy()) {
-            addShopItemInfo(mplew, new MapleShopItem(i.getItemId(), (int) ii.getPrice(i.getItemId()), i.getQuantity(), i.getPosition()), shop, ii, i, c.getPlayer());
+            addShopItemInfo(mplew, new MapleShopItem(i, rank), shop, ii, i, c.getPlayer());
+            rank++;
         }
     }
 
@@ -1652,21 +1662,17 @@ public class PacketHelper {
         mplew.writeInt(item.getCategory());
         mplew.writeMapleAsciiString("1900010100");
         mplew.writeMapleAsciiString("2079010100");
-        if (ItemConstants.類型.裝備(item.getItemId())) {
-            mplew.writeInt(item.hasPotential() ? 1 : 0);
-        } else {
-            mplew.writeInt(0);
-        }
+        mplew.writeInt(ItemConstants.類型.裝備(item.getItemId()) && item.hasPotential() ? 1 : 0);
         mplew.writeInt(0);//允許購買次數
         mplew.write(0);
         if (!ItemConstants.類型.可充值道具(item.getItemId())) {
-            int slotMax = MapleItemInformationProvider.getInstance().getSlotMax(item.getItemId());
+            int slotMax = ii.getSlotMax(item.getItemId());
             int quantity = item.getQuantity() == 0 ? slotMax : item.getQuantity();
             mplew.writeShort(quantity); //購買數量
             mplew.writeShort(quantity > 1 ? 1 : item.getBuyable() == 0 ? slotMax : item.getBuyable()); //可購買數量
         } else {
             mplew.writeAsciiString("333333");
-            mplew.writeShort(BitTools.doubleToShortBits(ii.getPrice(item.getItemId())));
+            mplew.writeShort(BitTools.doubleToShortBits(Math.max(ii.getPrice(item.getItemId()), 0)));
             mplew.writeShort(ii.getSlotMax(item.getItemId()));
         }
         mplew.write(i == null ? 0 : 1);
@@ -1796,6 +1802,165 @@ public class PacketHelper {
         mplew.write(parttime.getReward() > 0);
     }
 
+    public static void addSpawnPlayerBuffStat(MaplePacketLittleEndianWriter mplew, MapleCharacter chr) {
+        Map<MapleBuffStat, Object[]> statups = new LinkedHashMap();
+
+        // 鬥氣集中
+        if (chr.getBuffedValue(MapleBuffStat.COMBO) != null) {
+            statups.put(MapleBuffStat.COMBO,
+            new Object[]{
+                chr.getBuffedValue(MapleBuffStat.COMBO).byteValue()
+            });
+        }
+        // 預設Buff
+        statups.put(MapleBuffStat.CHAR_BUFF, new Object[]{-1});
+        // 預設Buff
+        statups.put(MapleBuffStat.MOUNT_MORPH, new Object[]{(byte) 0});
+        // 預設Buff
+        statups.put(MapleBuffStat.DIVINE_FORCE_AURA, new Object[]{(short) 0, 0});
+        // 預設Buff
+        statups.put(MapleBuffStat.DIVINE_SPEED_AURA, new Object[]{(short) 0, 0});
+        // 預設Buff
+        statups.put(MapleBuffStat.NEW_AURA, new Object[]{(short) 0, 0});
+        // 預設Buff
+        statups.put(MapleBuffStat.ENERGY_CHARGE, null);
+        // 預設Buff - 内容猜填
+        statups.put(MapleBuffStat.DEFAULTBUFF3, new Object[]{(short) 0, 0});
+        // 預設Buff - 内容猜填
+        statups.put(MapleBuffStat.DEFAULTBUFF4, new Object[]{(short) 0, 0});
+        // 預設Buff - 内容猜填
+        statups.put(MapleBuffStat.DEFAULTBUFF5, new Object[]{(short) 0, 0});
+        // 預設Buff
+        statups.put(MapleBuffStat.DASH_SPEED, null);
+        // 預設Buff
+        statups.put(MapleBuffStat.DASH_JUMP, null);
+        // 預設Buff
+        statups.put(MapleBuffStat.MONSTER_RIDING, null);
+        // 預設Buff
+        statups.put(MapleBuffStat.SPEED_INFUSION, null);
+        // 預設Buff
+        statups.put(MapleBuffStat.HOMING_BEACON, null);
+        // 預設Buff
+        statups.put(MapleBuffStat.DEFAULTBUFF1, null);
+        // 預設Buff
+        statups.put(MapleBuffStat.DEFAULTBUFF2, null);
+        // 抵禦致命異常狀態(如 元素適應(火、毒), 元素適應(雷、冰), 聖靈守護)
+        if (chr.getBuffedValue(MapleBuffStat.ABNORMAL_BUFF_RESISTANCES) != null) {
+            statups.put(MapleBuffStat.ABNORMAL_BUFF_RESISTANCES,
+            new Object[]{
+                chr.getBuffedValue(MapleBuffStat.ABNORMAL_BUFF_RESISTANCES).shortValue(),
+                chr.getTrueBuffSource(MapleBuffStat.ABNORMAL_BUFF_RESISTANCES)
+            });
+        }
+        // 飛天騎乘
+        if (chr.getBuffedValue(MapleBuffStat.SOARING) != null) {
+            statups.put(MapleBuffStat.SOARING,
+            new Object[]{
+                chr.getBuffedValue(MapleBuffStat.SOARING).shortValue(),
+                chr.getTrueBuffSource(MapleBuffStat.SOARING)
+            });
+        }
+
+        // ---------寫入玩家身上剩餘未處理的的Buff
+//        chr.getAllBuffs().forEach((mbsvh) -> {
+//            for (MapleBuffStat mb : mbsvh.statup.keySet()) {
+//                if (!statups.containsKey(mb)) {
+//                    statups.put(mb, null);
+//                }
+//            }
+//        });
+
+        writeBuffMask(mplew, statups);
+
+        statups.values().stream().filter((value) -> !(value == null || value.length == 0)).forEach((value) -> {
+            for (Object i : value) {
+                if (i instanceof Byte) {
+                    mplew.write((Byte) i);
+                } else if (i instanceof Short) {
+                    mplew.writeShort((Short) i);
+                } else if (i instanceof Integer) {
+                    mplew.writeInt((Integer) i);
+                } else if (i instanceof Long) {
+                    mplew.writeLong((Long) i);
+                }
+            }
+        });
+
+        mplew.write(0); // unk
+        mplew.write(0); // unk
+        mplew.write(0); // unk
+
+        statups.keySet().forEach((stat) -> {
+            switch (stat) {
+                case DIVINE_FORCE_AURA:
+                case DIVINE_SPEED_AURA:
+                case NEW_AURA:
+                case ABNORMAL_BUFF_RESISTANCES:
+                case DEFAULTBUFF3: //猜測
+                case DEFAULTBUFF4: //猜測
+                case DEFAULTBUFF5: //猜測
+                    mplew.write(0);
+            }
+        });
+
+        mplew.writeInt(0);
+        mplew.writeInt(0);
+        mplew.writeInt(0);
+        mplew.writeInt(0); // for
+
+        mplew.writeInt(0);
+
+        int CHAR_MAGIC_SPAWN = Randomizer.nextInt();
+
+//IDA ->  for ( i = 0; i < 8; ++i ) {
+        mplew.writeZeroBytes(8);
+        mplew.write(1);
+        mplew.writeInt(CHAR_MAGIC_SPAWN);//1
+
+        mplew.writeZeroBytes(8);
+        mplew.write(1);
+        mplew.writeInt(CHAR_MAGIC_SPAWN);//2
+
+        mplew.writeZeroBytes(10);
+        mplew.write(1);
+        mplew.writeInt(CHAR_MAGIC_SPAWN);//3
+
+        mplew.writeShort(0);
+        int buffSrc = chr.getBuffSource(MapleBuffStat.MONSTER_RIDING);
+        if (buffSrc > 0) {
+            Item c_mount = chr.getInventory(MapleInventoryType.EQUIPPED).getItem((short) -118);
+            Item mount = chr.getInventory(MapleInventoryType.EQUIPPED).getItem((short) -18);
+            if ((GameConstants.getMountItem(buffSrc, chr) == 0) && (c_mount != null) && (chr.getInventory(MapleInventoryType.EQUIPPED).getItem((short) -119) != null)) {
+                mplew.writeInt(c_mount.getItemId());
+            } else if ((GameConstants.getMountItem(buffSrc, chr) == 0) && (mount != null) && (chr.getInventory(MapleInventoryType.EQUIPPED).getItem((short) -19) != null)) {
+                mplew.writeInt(mount.getItemId());
+            } else {
+                mplew.writeInt(GameConstants.getMountItem(buffSrc, chr));
+            }
+            mplew.writeInt(buffSrc);
+        } else {
+            mplew.writeInt(0);
+            mplew.writeInt(0);
+        }
+        mplew.write(1);
+        mplew.writeInt(CHAR_MAGIC_SPAWN);//4
+        mplew.writeLong(0L);
+        mplew.write(1);
+        mplew.writeInt(CHAR_MAGIC_SPAWN);//5
+        mplew.write(0);
+        mplew.writeInt(Randomizer.nextInt());
+        mplew.writeZeroBytes(10);
+        mplew.write(1);
+        mplew.writeInt(CHAR_MAGIC_SPAWN);//6
+        mplew.writeZeroBytes(16);
+        mplew.write(1);
+        mplew.writeInt(CHAR_MAGIC_SPAWN);//7
+        mplew.writeZeroBytes(10);
+        mplew.write(1);
+        mplew.writeInt(CHAR_MAGIC_SPAWN);//8
+//}
+    }
+
     public static <E extends Buffstat> void writeSingleMask(MaplePacketLittleEndianWriter mplew, E statup) {
         writeSingleMask(mplew, statup, GameConstants.MAX_BUFFSTAT);
     }
@@ -1838,7 +2003,7 @@ public class PacketHelper {
         }
     }
 
-    public static <E extends Buffstat> void writeBuffMask(MaplePacketLittleEndianWriter mplew, Map<E, Integer> statups) {
+    public static <E extends Buffstat, F extends Object> void writeBuffMask(MaplePacketLittleEndianWriter mplew, Map<E, F> statups) {
         int[] mask = new int[GameConstants.MAX_BUFFSTAT];
         for (Buffstat statup : statups.keySet()) {
             mask[(statup.getPosition())] |= statup.getValue();

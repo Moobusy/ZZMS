@@ -1,6 +1,8 @@
 package server.commands;
 
+import client.MapleCharacter;
 import client.MapleClient;
+import client.MapleJob;
 import constants.GameConstants;
 import handling.channel.ChannelServer;
 import java.util.Arrays;
@@ -31,12 +33,12 @@ public class PlayerCommand {
             for (final MapleMapObject monstermo : c.getPlayer().getMap().getMapObjectsInRange(c.getPlayer().getPosition(), 100000, Arrays.asList(MapleMapObjectType.MONSTER))) {
                 mob = (MapleMonster) monstermo;
                 if (mob.isAlive()) {
-                    c.getPlayer().dropMessage(6, "怪物: " + mob.toString());
+                    c.getPlayer().dropMessage(-11, "怪物: " + mob.toString());
                     break; //only one
                 }
             }
             if (mob == null) {
-                c.getPlayer().dropMessage(6, "沒找到任何怪物");
+                c.getPlayer().dropMessage(-11, "沒找到任何怪物");
             }
             return 1;
         }
@@ -49,7 +51,7 @@ public class PlayerCommand {
             c.removeClickedNPC();
             NPCScriptManager.getInstance().dispose(c);
             c.getSession().write(CWvsContext.enableActions());
-            c.getPlayer().dropMessage(6, "解卡成功");
+            c.getPlayer().dropMessage(-11, "解卡成功");
             return 1;
         }
     }
@@ -58,9 +60,9 @@ public class PlayerCommand {
 
         @Override
         public int execute(MapleClient c, String[] splitted) {
-            c.getPlayer().dropMessage(6, "目前剩餘 " + c.getPlayer().getCSPoints(1) + " 樂豆點 " + c.getPlayer().getEPoints() + " 活動點 " + c.getPlayer().getDPoints() + " 捐贈點 " + c.getPlayer().getVPoints() + " voting points and " + c.getPlayer().getIntNoRecord(GameConstants.BOSS_PQ) + " Boss Party Quest points.");
-            c.getPlayer().dropMessage(6, "當前時間是" + FileoutputUtil.CurrentReadable_TimeGMT() + " GMT | 經驗值倍率 " + (Math.round(c.getPlayer().getEXPMod()) * 100) * Math.round(c.getPlayer().getStat().expBuff / 100.0) + "%, 掉寶倍率 " + (Math.round(c.getPlayer().getDropMod()) * 100) * Math.round(c.getPlayer().getStat().dropBuff / 100.0) + "%, 楓幣倍率 " + Math.round(c.getPlayer().getStat().mesoBuff / 100.0) * 100 + "%");
-            c.getPlayer().dropMessage(6, "經驗值: " + c.getPlayer().getExp() + " / " + c.getPlayer().getNeededExp());
+            MapleCharacter player = c.getPlayer();
+            c.getPlayer().showMessage(10, "如下是你在伺服器上的訊息，如不不正確請與管理員聯繫");
+            c.getPlayer().showPlayerStats(false);
             c.removeClickedNPC();
             NPCScriptManager.getInstance().dispose(c);
             c.getSession().write(CWvsContext.enableActions());
@@ -131,18 +133,18 @@ public class PlayerCommand {
      c.getPlayer().setEntryNumber(c.getChannelServer().getCompetitors() + 1);
      c.getChannelServer().setCompetitors(c.getChannelServer().getCompetitors() + 1);
      SkillFactory.getSkill(c.getPlayer().getGender() == 1 ? 80001006 : 80001005).getEffect(1).applyTo(c.getPlayer());
-     c.getPlayer().dropMessage(0, "You have successfully joined the race! Your entry number is " + c.getPlayer().getEntryNumber() + ".");
+     c.getPlayer().dropMessage(-11, "You have successfully joined the race! Your entry number is " + c.getPlayer().getEntryNumber() + ".");
      c.getPlayer().dropMessage(1, "If you cancel the mount buff, you will automatically leave the race.");
      } else {
-     c.getPlayer().dropMessage(0, "There is no event currently taking place.");
+     c.getPlayer().dropMessage(-11, "There is no event currently taking place.");
      return 0;
      }
      } else {
-     c.getPlayer().dropMessage(0, "You are not at Henesys.");
+     c.getPlayer().dropMessage(-11, "You are not at Henesys.");
      return 0;
      }
      } else {
-     c.getPlayer().dropMessage(0, "You have already joined this race.");
+     c.getPlayer().dropMessage(-11, "You have already joined this race.");
      return 0;
      }
      return 1;
@@ -154,15 +156,15 @@ public class PlayerCommand {
      @Override
      public int execute(MapleClient c, String[] splitted) {
      if (c.getChannelServer().getWaiting() || c.getChannelServer().getRace()) {
-     c.getPlayer().dropMessage(0, "The Official Rules and Regulations of the Great Victoria Island Race:");
-     c.getPlayer().dropMessage(0, "-------------------------------------------------------------------------------------------");
-     c.getPlayer().dropMessage(0, "To win you must race from Henesys all the way to Henesys going Eastward.");
-     c.getPlayer().dropMessage(0, "Rule #1: No cheating. You can't use any warping commands, or you'll be disqualified.");
-     c.getPlayer().dropMessage(0, "Rule #2: You may use any form of transportation. This includes Teleport, Flash Jump and Mounts.");
-     c.getPlayer().dropMessage(0, "Rule #3: You are NOT allowed to kill any monsters in your way. They are obstacles.");
-     c.getPlayer().dropMessage(0, "Rule #4: You may start from anywhere in Henesys, but moving on to the next map before the start won't work.");
+     c.getPlayer().dropMessage(-11, "The Official Rules and Regulations of the Great Victoria Island Race:");
+     c.getPlayer().dropMessage(-11, "-------------------------------------------------------------------------------------------");
+     c.getPlayer().dropMessage(-11, "To win you must race from Henesys all the way to Henesys going Eastward.");
+     c.getPlayer().dropMessage(-11, "Rule #1: No cheating. You can't use any warping commands, or you'll be disqualified.");
+     c.getPlayer().dropMessage(-11, "Rule #2: You may use any form of transportation. This includes Teleport, Flash Jump and Mounts.");
+     c.getPlayer().dropMessage(-11, "Rule #3: You are NOT allowed to kill any monsters in your way. They are obstacles.");
+     c.getPlayer().dropMessage(-11, "Rule #4: You may start from anywhere in Henesys, but moving on to the next map before the start won't work.");
      } else {
-     c.getPlayer().dropMessage(0, "There is no event currently taking place.");
+     c.getPlayer().dropMessage(-11, "There is no event currently taking place.");
      return 0;
      }
      return 1;

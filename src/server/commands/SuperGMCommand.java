@@ -61,7 +61,7 @@ public class SuperGMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 4) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <類型> <頻道> <內容>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <類型> <頻道> <內容>");
                 return 0;
             }
             for (MapleCharacter all : c.getChannelServer().getPlayerStorage().getAllCharacters()) {
@@ -98,7 +98,7 @@ public class SuperGMCommand {
         @Override
         public int execute(final MapleClient c, String splitted[]) {
             if (splitted.length < 3) {
-                c.getPlayer().dropMessage(6, splitted[0] + " (初始地圖ID:默認當前地圖) <更變后的地圖ID> <時間:秒>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " (初始地圖ID:默認當前地圖) <更變后的地圖ID> <時間:秒>");
                 return 0;
             }
             final int map;
@@ -136,16 +136,16 @@ public class SuperGMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 3) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <玩家名稱> <玩家新名稱>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <玩家名稱> <玩家新名稱>");
                 return 0;
             }
             MapleCharacter victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
             if (victim == null) {
-                c.getPlayer().dropMessage(0, "找不到玩家");
+                c.getPlayer().dropMessage(-11, "找不到玩家");
                 return 0;
             }
             if (c.getPlayer().getGMLevel() < 6 && !victim.isGM()) {
-                c.getPlayer().dropMessage(6, "沒有權限更改比自己高等級的管理員的名稱");
+                c.getPlayer().dropMessage(-11, "沒有權限更改比自己高等級的管理員的名稱");
                 return 0;
             }
             victim.getClient().getSession().close(true);
@@ -165,7 +165,7 @@ public class SuperGMCommand {
                     sb.append(StringUtil.joinStringFrom(splitted, 1));
                     mch.dropMessage(1, sb.toString());
                 } else {
-                    c.getPlayer().dropMessage(6, splitted[0] + " <內容>");
+                    c.getPlayer().dropMessage(-11, splitted[0] + " <內容>");
                     return 0;
                 }
             }
@@ -180,7 +180,7 @@ public class SuperGMCommand {
             for (MapleCharacter mch : c.getChannelServer().getPlayerStorage().getAllCharacters()) {
                 mch.saveToDB(false, false);
             }
-            c.getPlayer().dropMessage(0, "存檔成功");
+            c.getPlayer().dropMessage(-11, "存檔成功");
             return 1;
         }
     }
@@ -226,7 +226,7 @@ public class SuperGMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 2) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <玩家名稱>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <玩家名稱>");
                 return 0;
             }
             byte ret;
@@ -236,26 +236,26 @@ public class SuperGMCommand {
                 ret = MapleClient.unban(splitted[1]);
             }
             if (ret == -2) {
-                c.getPlayer().dropMessage(6, "[" + getCommand() + "] 數據庫出錯");
+                c.getPlayer().dropMessage(-11, "[" + getCommand() + "] 數據庫出錯");
                 return 0;
             } else if (ret == -1) {
-                c.getPlayer().dropMessage(6, "[" + getCommand() + "] 玩家不存在");
+                c.getPlayer().dropMessage(-11, "[" + getCommand() + "] 玩家不存在");
                 return 0;
             } else {
-                c.getPlayer().dropMessage(6, "[" + getCommand() + "] 解封成功");
+                c.getPlayer().dropMessage(-11, "[" + getCommand() + "] 解封成功");
 
             }
             byte ret_ = MapleClient.unbanIPMacs(splitted[1]);
             if (ret_ == -2) {
-                c.getPlayer().dropMessage(6, "[取消封IP] 數據庫出錯");
+                c.getPlayer().dropMessage(-11, "[取消封IP] 數據庫出錯");
             } else if (ret_ == -1) {
-                c.getPlayer().dropMessage(6, "[取消封IP] 玩家不存在");
+                c.getPlayer().dropMessage(-11, "[取消封IP] 玩家不存在");
             } else if (ret_ == 0) {
-                c.getPlayer().dropMessage(6, "[取消封IP] 此玩家IP或Mac不存在");
+                c.getPlayer().dropMessage(-11, "[取消封IP] 此玩家IP或Mac不存在");
             } else if (ret_ == 1) {
-                c.getPlayer().dropMessage(6, "[取消封IP] IP或Mac已解封");
+                c.getPlayer().dropMessage(-11, "[取消封IP] IP或Mac已解封");
             } else if (ret_ == 2) {
-                c.getPlayer().dropMessage(6, "[取消封IP] IP和Macs已解封");
+                c.getPlayer().dropMessage(-11, "[取消封IP] IP和Macs已解封");
             }
             return ret_ > 0 ? 1 : 0;
         }
@@ -266,20 +266,20 @@ public class SuperGMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 2) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <玩家名稱>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <玩家名稱>");
                 return 0;
             }
             byte ret = MapleClient.unbanIPMacs(splitted[1]);
             if (ret == -2) {
-                c.getPlayer().dropMessage(6, "[取消封IP] 數據庫出錯");
+                c.getPlayer().dropMessage(-11, "[取消封IP] 數據庫出錯");
             } else if (ret == -1) {
-                c.getPlayer().dropMessage(6, "[取消封IP] 玩家不存在");
+                c.getPlayer().dropMessage(-11, "[取消封IP] 玩家不存在");
             } else if (ret == 0) {
-                c.getPlayer().dropMessage(6, "[取消封IP] 此玩家IP或Mac不存在");
+                c.getPlayer().dropMessage(-11, "[取消封IP] 此玩家IP或Mac不存在");
             } else if (ret == 1) {
-                c.getPlayer().dropMessage(6, "[取消封IP] IP或Mac已解封");
+                c.getPlayer().dropMessage(-11, "[取消封IP] IP或Mac已解封");
             } else if (ret == 2) {
-                c.getPlayer().dropMessage(6, "[取消封IP] IP和Macs已解封");
+                c.getPlayer().dropMessage(-11, "[取消封IP] IP和Macs已解封");
             }
             if (ret > 0) {
                 return 1;
@@ -293,7 +293,7 @@ public class SuperGMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 3) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <角色名稱> <技能ID> (技能等級:默認1) (技能最高等級:默認1)");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <角色名稱> <技能ID> (技能等級:默認1) (技能最高等級:默認1)");
                 return 0;
             }
             MapleCharacter victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
@@ -440,7 +440,7 @@ public class SuperGMCommand {
                     add = false;
                 }
             } else {
-                c.getPlayer().dropMessage(6, splitted[0] + " (道具類型:全部(空)/身上裝備/裝備/消耗/其他/裝飾/特殊)");
+                c.getPlayer().dropMessage(-11, splitted[0] + " (道具類型:全部(空)/身上裝備/裝備/消耗/其他/裝飾/特殊)");
             }
 
             for (Entry<Item, MapleInventoryType> eq : eqs.entrySet()) {
@@ -455,7 +455,7 @@ public class SuperGMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 2) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <道具ID> (數量:默認)");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <道具ID> (數量:默認)");
                 return 0;
             }
             final int itemId = Integer.parseInt(splitted[1]);
@@ -485,7 +485,7 @@ public class SuperGMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 2) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <數量> <道具名稱>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <數量> <道具名稱>");
                 return 0;
             }
             final String itemName = StringUtil.joinStringFrom(splitted, 2);
@@ -528,16 +528,16 @@ public class SuperGMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 3) {
-                c.getPlayer().dropMessage(6, "Need <name> <itemid>");
+                c.getPlayer().dropMessage(-11, "Need <name> <itemid>");
                 return 0;
             }
             int itemId = Integer.parseInt(splitted[2]);
             if (!ItemConstants.類型.特效戒指(itemId)) {
-                c.getPlayer().dropMessage(6, "Invalid itemID.");
+                c.getPlayer().dropMessage(-11, "Invalid itemID.");
             } else {
                 MapleCharacter fff = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
                 if (fff == null) {
-                    c.getPlayer().dropMessage(6, "Player must be online");
+                    c.getPlayer().dropMessage(-11, "Player must be online");
                 } else {
                     int[] ringID = {MapleInventoryIdentifier.getInstance(), MapleInventoryIdentifier.getInstance()};
                     try {
@@ -545,7 +545,7 @@ public class SuperGMCommand {
                         for (int i = 0; i < chrz.length; i++) {
                             Equip eq = (Equip) MapleItemInformationProvider.getInstance().getEquipById(itemId, ringID[i]);
                             if (eq == null) {
-                                c.getPlayer().dropMessage(6, "Invalid itemID.");
+                                c.getPlayer().dropMessage(-11, "Invalid itemID.");
                                 return 0;
                             }
                             MapleInventoryManipulator.addbyItem(chrz[i].getClient(), eq.copy());
@@ -568,44 +568,6 @@ public class SuperGMCommand {
                 final MapleMonster monster = (MapleMonster) mmo;
                 c.getPlayer().getMap().broadcastMessage(MobPacket.moveMonster(false, -1, 0, monster.getObjectId(), monster.getTruePosition(), c.getPlayer().getLastRes()));
                 monster.setPosition(c.getPlayer().getPosition());
-            }
-            return 1;
-        }
-    }
-
-    public static class GiveEP extends CommandExecute {
-
-        @Override
-        public int execute(MapleClient c, String[] splitted) {
-            if (splitted.length < 3) {
-                c.getPlayer().dropMessage(6, "Please enter the players name + amount you want to give.");
-                return 0;
-            }
-            MapleCharacter chrs = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
-            if (chrs == null) {
-                c.getPlayer().dropMessage(6, "Make sure the player is in the correct channel.");
-            } else {
-                chrs.setEPoints(chrs.getEPoints() + Integer.parseInt(splitted[2]));
-                c.getPlayer().dropMessage(6, splitted[1] + " has " + chrs.getEPoints() + " epoints, after giving " + splitted[2] + ".");
-            }
-            return 1;
-        }
-    }
-
-    public static class GiveVP extends CommandExecute {
-
-        @Override
-        public int execute(MapleClient c, String[] splitted) {
-            if (splitted.length < 3) {
-                c.getPlayer().dropMessage(6, "Need playername and amount.");
-                return 0;
-            }
-            MapleCharacter chrs = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
-            if (chrs == null) {
-                c.getPlayer().dropMessage(6, "Make sure they are in the correct channel");
-            } else {
-                chrs.setVPoints(chrs.getVPoints() + Integer.parseInt(splitted[2]));
-                c.getPlayer().dropMessage(6, splitted[1] + " has " + chrs.getVPoints() + " VotePoints, after giving " + splitted[2] + ".");
             }
             return 1;
         }
@@ -657,7 +619,7 @@ public class SuperGMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 2) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <玩家名稱>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <玩家名稱>");
                 return 0;
             }
             MapleCharacter target = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
@@ -682,7 +644,7 @@ public class SuperGMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 3) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <玩家名稱> <任務ID>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <玩家名稱> <任務ID>");
                 return 0;
             }
             MapleQuest.getInstance(Integer.parseInt(splitted[2])).forfeit(c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]));
@@ -695,7 +657,7 @@ public class SuperGMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 4) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <玩家名稱> <任務ID> <NPCID> (customData:默認空)");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <玩家名稱> <任務ID> <NPCID> (customData:默認空)");
                 return 0;
             }
             MapleQuest.getInstance(Integer.parseInt(splitted[2])).forceStart(c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]), Integer.parseInt(splitted[3]), splitted.length > 4 ? splitted[4] : null);
@@ -708,7 +670,7 @@ public class SuperGMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 4) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <玩家名稱> <任務ID> <NPCID>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <玩家名稱> <任務ID> <NPCID>");
                 return 0;
             }
             MapleQuest.getInstance(Integer.parseInt(splitted[2])).forceComplete(c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]), Integer.parseInt(splitted[3]));
@@ -729,7 +691,7 @@ public class SuperGMCommand {
             for (int i = 0; i < threads.length; i++) {
                 String tstring = threads[i].toString();
                 if (tstring.toLowerCase().contains(filter.toLowerCase())) {
-                    c.getPlayer().dropMessage(6, i + ": " + tstring);
+                    c.getPlayer().dropMessage(-11, i + ": " + tstring);
                 }
             }
             return 1;
@@ -746,9 +708,9 @@ public class SuperGMCommand {
             Thread[] threads = new Thread[Thread.activeCount()];
             Thread.enumerate(threads);
             Thread t = threads[Integer.parseInt(splitted[1])];
-            c.getPlayer().dropMessage(6, t.toString() + ":");
+            c.getPlayer().dropMessage(-11, t.toString() + ":");
             for (StackTraceElement elem : t.getStackTrace()) {
-                c.getPlayer().dropMessage(6, elem.toString());
+                c.getPlayer().dropMessage(-11, elem.toString());
             }
             return 1;
         }
@@ -763,15 +725,15 @@ public class SuperGMCommand {
                 for (CheatingOffense co : CheatingOffense.values()) {
                     sb.append(co.name()).append("/");
                 }
-                c.getPlayer().dropMessage(6, splitted[0] + " <行為>");
-                c.getPlayer().dropMessage(6, "行為: " + sb.toString());
+                c.getPlayer().dropMessage(-11, splitted[0] + " <行為>");
+                c.getPlayer().dropMessage(-11, "行為: " + sb.toString());
                 return 0;
             }
             try {
                 CheatingOffense co = CheatingOffense.valueOf(splitted[1]);
                 co.setEnabled(!co.isEnabled());
             } catch (IllegalArgumentException iae) {
-                c.getPlayer().dropMessage(6, "作弊行為 " + splitted[1] + " 沒找到");
+                c.getPlayer().dropMessage(-11, "作弊行為 " + splitted[1] + " 沒找到");
             }
             return 1;
         }
@@ -782,7 +744,7 @@ public class SuperGMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             World.toggleMegaphoneMuteState();
-            c.getPlayer().dropMessage(6, "喇叭狀態 : " + (c.getChannelServer().getMegaphoneMuteState() ? "可用" : "不可用"));
+            c.getPlayer().dropMessage(-11, "喇叭狀態 : " + (c.getChannelServer().getMegaphoneMuteState() ? "可用" : "不可用"));
             return 1;
         }
     }
@@ -792,7 +754,7 @@ public class SuperGMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 2) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <反應堆ID>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <反應堆ID>");
                 return 0;
             }
             MapleReactor reactor = new MapleReactor(MapleReactorFactory.getReactor(Integer.parseInt(splitted[1])), Integer.parseInt(splitted[1]));
@@ -818,7 +780,7 @@ public class SuperGMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 3) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <怪物OID> <傷害值>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <怪物OID> <傷害值>");
                 return 0;
             }
             MapleMap map = c.getPlayer().getMap();
@@ -854,11 +816,11 @@ public class SuperGMCommand {
             } else if (splitted.length == 2) {
                 damage = Integer.parseInt(splitted[1]);
             } else {
-                c.getPlayer().dropMessage(6, splitted[0] + " (<範圍:默認0全圖> (地圖ID:默認當前地圖)) <傷害值>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " (<範圍:默認0全圖> (地圖ID:默認當前地圖)) <傷害值>");
                 return 0;
             }
             if (map == null) {
-                c.getPlayer().dropMessage(6, "地圖不存在");
+                c.getPlayer().dropMessage(-11, "地圖不存在");
                 return 0;
             }
             MapleMonster mob;
@@ -876,7 +838,7 @@ public class SuperGMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 3) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <傷害> <怪物ID>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <傷害> <怪物ID>");
                 return 0;
             }
             MapleMap map = c.getPlayer().getMap();
@@ -899,7 +861,7 @@ public class SuperGMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 2) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <怪物ID>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <怪物ID>");
                 return 0;
             }
             MapleMap map = c.getPlayer().getMap();
@@ -911,6 +873,7 @@ public class SuperGMCommand {
                     mob.damage(c.getPlayer(), (int) mob.getHp(), false);
                 }
             }
+            c.getPlayer().monsterMultiKill();
             return 1;
         }
     }
@@ -920,7 +883,7 @@ public class SuperGMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 2) {
-                c.getPlayer().dropMessage(6, splitted[0] + " (<範圍:默認0全圖> (地圖:默認當前地圖))");
+                c.getPlayer().dropMessage(-11, splitted[0] + " (<範圍:默認0全圖> (地圖:默認當前地圖))");
             }
             MapleMap map = c.getPlayer().getMap();
             double range = Double.POSITIVE_INFINITY;
@@ -935,7 +898,7 @@ public class SuperGMCommand {
                 }
             }
             if (map == null) {
-                c.getPlayer().dropMessage(6, "地圖不存在");
+                c.getPlayer().dropMessage(-11, "地圖不存在");
                 return 0;
             }
             MapleMonster mob;
@@ -943,6 +906,7 @@ public class SuperGMCommand {
                 mob = (MapleMonster) monstermo;
                 mob.damage(c.getPlayer(), (int) mob.getHp(), false);
             }
+            c.getPlayer().monsterMultiKill();
             return 1;
         }
     }
@@ -952,7 +916,7 @@ public class SuperGMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 2) {
-                c.getPlayer().dropMessage(6, splitted[0] + " (<範圍:默認0全圖> (地圖:默認當前地圖))");
+                c.getPlayer().dropMessage(-11, splitted[0] + " (<範圍:默認0全圖> (地圖:默認當前地圖))");
             }
             MapleMap map = c.getPlayer().getMap();
             double range = Double.POSITIVE_INFINITY;
@@ -966,7 +930,7 @@ public class SuperGMCommand {
                 }
             }
             if (map == null) {
-                c.getPlayer().dropMessage(6, "地圖不存在");
+                c.getPlayer().dropMessage(-11, "地圖不存在");
                 return 0;
             }
             MapleMonster mob;
@@ -976,6 +940,7 @@ public class SuperGMCommand {
                     map.killMonster(mob, c.getPlayer(), true, false, (byte) 1);
                 }
             }
+            c.getPlayer().monsterMultiKill();
             return 1;
         }
     }
@@ -985,7 +950,7 @@ public class SuperGMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 2) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <NPCID>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <NPCID>");
                 return 0;
             }
             int npcId = Integer.parseInt(splitted[1]);
@@ -995,12 +960,12 @@ public class SuperGMCommand {
                 npc.setCy(c.getPlayer().getPosition().y);
                 npc.setRx0(c.getPlayer().getPosition().x + 50);
                 npc.setRx1(c.getPlayer().getPosition().x - 50);
-                npc.setFh(c.getPlayer().getMap().getFootholds().findBelow(c.getPlayer().getPosition()).getId());
+                npc.setFh(c.getPlayer().getMap().getFootholds().findBelow(c.getPlayer().getPosition(), false).getId());
                 npc.setCustom(true);
                 c.getPlayer().getMap().addMapObject(npc);
                 c.getPlayer().getMap().broadcastMessage(NPCPacket.spawnNPC(npc, true));
             } else {
-                c.getPlayer().dropMessage(6, "NPCID無效");
+                c.getPlayer().dropMessage(-11, "NPCID無效");
                 return 0;
             }
             return 1;
@@ -1012,7 +977,7 @@ public class SuperGMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 1) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <NPCID>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <NPCID>");
                 return 0;
             }
             int npcId = Integer.parseInt(splitted[1]);
@@ -1020,7 +985,7 @@ public class SuperGMCommand {
             if (npc != null && !npc.getName().equals("MISSINGNO")) {
                 final int xpos = c.getPlayer().getPosition().x;
                 final int ypos = c.getPlayer().getPosition().y;
-                final int fh = c.getPlayer().getMap().getFootholds().findBelow(c.getPlayer().getPosition()).getId();
+                final int fh = c.getPlayer().getMap().getFootholds().findBelow(c.getPlayer().getPosition(), false).getId();
                 npc.setPosition(c.getPlayer().getPosition());
                 npc.setCy(ypos);
                 npc.setRx0(xpos);
@@ -1044,13 +1009,13 @@ public class SuperGMCommand {
                         ps.executeUpdate();
                     }
                 } catch (SQLException e) {
-                    c.getPlayer().dropMessage(6, "將NPC添加到數據庫失敗");
+                    c.getPlayer().dropMessage(-11, "將NPC添加到數據庫失敗");
                 }
                 c.getPlayer().getMap().addMapObject(npc);
                 c.getPlayer().getMap().broadcastMessage(NPCPacket.spawnNPC(npc, true));
-                c.getPlayer().dropMessage(6, "請不要重載此地圖, 否則伺服器重啟後NPC會消失");
+                c.getPlayer().dropMessage(-11, "請不要重載此地圖, 否則伺服器重啟後NPC會消失");
             } else {
-                c.getPlayer().dropMessage(6, "NPCID無效");
+                c.getPlayer().dropMessage(-11, "NPCID無效");
                 return 0;
             }
             return 1;
@@ -1062,7 +1027,7 @@ public class SuperGMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 3) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <怪物ID> <數量>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <怪物ID> <數量>");
                 return 0;
             }
             int mobid = Integer.parseInt(splitted[1]);
@@ -1077,7 +1042,7 @@ public class SuperGMCommand {
             if (npc != null) {
                 final int xpos = c.getPlayer().getPosition().x;
                 final int ypos = c.getPlayer().getPosition().y;
-                final int fh = c.getPlayer().getMap().getFootholds().findBelow(c.getPlayer().getPosition()).getId();
+                final int fh = c.getPlayer().getMap().getFootholds().findBelow(c.getPlayer().getPosition(), false).getId();
                 npc.setPosition(c.getPlayer().getPosition());
                 npc.setCy(ypos);
                 npc.setRx0(xpos);
@@ -1101,12 +1066,12 @@ public class SuperGMCommand {
                         ps.executeUpdate();
                     }
                 } catch (SQLException e) {
-                    c.getPlayer().dropMessage(6, "將怪物添加到數據庫失敗");
+                    c.getPlayer().dropMessage(-11, "將怪物添加到數據庫失敗");
                 }
                 c.getPlayer().getMap().addMonsterSpawn(npc, mobTime, (byte) -1, null);
-                c.getPlayer().dropMessage(6, "請不要重載此地圖, 否則伺服器重啟後怪物會消失");
+                c.getPlayer().dropMessage(-11, "請不要重載此地圖, 否則伺服器重啟後怪物會消失");
             } else {
-                c.getPlayer().dropMessage(6, "怪物ID無效");
+                c.getPlayer().dropMessage(-11, "怪物ID無效");
                 return 0;
             }
             return 1;
@@ -1118,22 +1083,22 @@ public class SuperGMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 3) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <玩家名稱> <NPCID>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <玩家名稱> <NPCID>");
                 return 0;
             }
             try {
-                c.getPlayer().dropMessage(6, "正在製作玩家NPC...");
+                c.getPlayer().dropMessage(-11, "正在製作玩家NPC...");
                 MapleClient cs = new MapleClient(null, null, new MockIOSession());
                 MapleCharacter chhr = MapleCharacter.loadCharFromDB(MapleCharacterUtil.getIdByName(splitted[1]), cs, false);
                 if (chhr == null) {
-                    c.getPlayer().dropMessage(6, "玩家不存在");
+                    c.getPlayer().dropMessage(-11, "玩家不存在");
                     return 0;
                 }
                 PlayerNPC npc = new PlayerNPC(chhr, Integer.parseInt(splitted[2]), c.getPlayer().getMap(), c.getPlayer());
                 npc.addToServer();
-                c.getPlayer().dropMessage(6, "完成");
+                c.getPlayer().dropMessage(-11, "完成");
             } catch (NumberFormatException e) {
-                c.getPlayer().dropMessage(6, "製作NPC失敗... : " + e.getMessage());
+                c.getPlayer().dropMessage(-11, "製作NPC失敗... : " + e.getMessage());
             }
             return 1;
         }
@@ -1144,20 +1109,20 @@ public class SuperGMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 2) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <NPCoid>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <NPCoid>");
                 return 0;
             }
             try {
-                c.getPlayer().dropMessage(6, "正在移除玩家NPC...");
+                c.getPlayer().dropMessage(-11, "正在移除玩家NPC...");
                 final MapleNPC npc = c.getPlayer().getMap().getNPCByOid(Integer.parseInt(splitted[1]));
                 if (npc instanceof PlayerNPC) {
                     ((PlayerNPC) npc).destroy(true);
-                    c.getPlayer().dropMessage(6, "完成");
+                    c.getPlayer().dropMessage(-11, "完成");
                 } else {
-                    c.getPlayer().dropMessage(6, splitted[0] + " <NPCoid>");
+                    c.getPlayer().dropMessage(-11, splitted[0] + " <NPCoid>");
                 }
             } catch (NumberFormatException e) {
-                c.getPlayer().dropMessage(6, "移除NPC失敗... : " + e.getMessage());
+                c.getPlayer().dropMessage(-11, "移除NPC失敗... : " + e.getMessage());
             }
             return 1;
         }
@@ -1185,7 +1150,7 @@ public class SuperGMCommand {
                 c.getSession().write(CField.getPacketFromHexString(builder.toString()));
                 builder = new StringBuilder();
             } else {
-                c.getPlayer().dropMessage(6, "請輸入數據包數據");
+                c.getPlayer().dropMessage(-11, "請輸入數據包數據");
             }
             return 1;
         }
@@ -1197,9 +1162,9 @@ public class SuperGMCommand {
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length > 1) {
                 builder.append(StringUtil.joinStringFrom(splitted, 1));
-                c.getPlayer().dropMessage(6, "當前數據包數據: " + builder.toString());
+                c.getPlayer().dropMessage(-11, "當前數據包數據: " + builder.toString());
             } else {
-                c.getPlayer().dropMessage(6, "請輸入數據包數據");
+                c.getPlayer().dropMessage(-11, "請輸入數據包數據");
             }
             return 1;
         }
@@ -1221,7 +1186,7 @@ public class SuperGMCommand {
             if (splitted.length > 1) {
                 c.getSession().write(CField.getPacketFromHexString(StringUtil.joinStringFrom(splitted, 1)));
             } else {
-                c.getPlayer().dropMessage(6, "請輸入數據包數據");
+                c.getPlayer().dropMessage(-11, "請輸入數據包數據");
             }
             return 1;
         }
@@ -1238,10 +1203,10 @@ public class SuperGMCommand {
                 try {
                     c.getSession().getHandler().messageReceived(c.getSession(), CField.getPacketFromHexString(StringUtil.joinStringFrom(splitted, 1)));
                 } catch (Exception e) {
-                    c.getPlayer().dropMessage(6, "錯誤: " + e);
+                    c.getPlayer().dropMessage(-11, "錯誤: " + e);
                 }
             } else {
-                c.getPlayer().dropMessage(6, "請輸入數據包數據");
+                c.getPlayer().dropMessage(-11, "請輸入數據包數據");
             }
             return 1;
         }
@@ -1255,7 +1220,7 @@ public class SuperGMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 2) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <地圖ID>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <地圖ID>");
                 return 0;
             }
             final int mapId = Integer.parseInt(splitted[1]);
@@ -1290,7 +1255,7 @@ public class SuperGMCommand {
         @Override
         public int execute(final MapleClient c, String[] splitted) {
             if (splitted.length < 2) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <時間:秒>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <時間:秒>");
                 return 0;
             }
             final int sec = Integer.parseInt(splitted[1]);
@@ -1359,7 +1324,7 @@ public class SuperGMCommand {
                 victim.getClient().getSession().write(HexTool.getByteArrayFromHexString("1A 00")); //give_buff with no data :D
                 return 1;
             } else {
-                c.getPlayer().dropMessage(6, "受害者不存在");
+                c.getPlayer().dropMessage(-11, "受害者不存在");
                 return 0;
             }
         }
@@ -1403,7 +1368,7 @@ public class SuperGMCommand {
             Collections.sort(mbList, new BookComparator());
             final int page = Integer.parseInt(splitted[1]);
             for (int e = (page * 8); e < Math.min(mbList.size(), (page + 1) * 8); e++) {
-                c.getPlayer().dropMessage(6, e + ": " + mbList.get(e).getKey() + " - " + mbList.get(e).getValue());
+                c.getPlayer().dropMessage(-11, e + ": " + mbList.get(e).getKey() + " - " + mbList.get(e).getValue());
             }
 
             return 0;
@@ -1438,7 +1403,7 @@ public class SuperGMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 2) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <玩家名稱>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <玩家名稱>");
                 return 0;
             }
             MapleCharacter victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
@@ -1452,7 +1417,7 @@ public class SuperGMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 3) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <玩家名稱> <金額>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <玩家名稱> <金額>");
                 return 0;
             }
             MapleCharacter victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
@@ -1466,37 +1431,11 @@ public class SuperGMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 3) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <玩家名稱> <點數>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <玩家名稱> <點數>");
                 return 0;
             }
             MapleCharacter victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
             victim.modifyCSPoints(1, Integer.parseInt(splitted[2]), true);
-            return 1;
-        }
-    }
-
-    public static class GainP extends CommandExecute {
-
-        @Override
-        public int execute(MapleClient c, String[] splitted) {
-            if (splitted.length < 2) {
-                c.getPlayer().dropMessage(5, "Need amount.");
-                return 0;
-            }
-            c.getPlayer().setPoints(c.getPlayer().getPoints() + Integer.parseInt(splitted[1]));
-            return 1;
-        }
-    }
-
-    public static class GainVP extends CommandExecute {
-
-        @Override
-        public int execute(MapleClient c, String[] splitted) {
-            if (splitted.length < 2) {
-                c.getPlayer().dropMessage(5, "Need amount.");
-                return 0;
-            }
-            c.getPlayer().setVPoints(c.getPlayer().getVPoints() + Integer.parseInt(splitted[1]));
             return 1;
         }
     }
@@ -1506,7 +1445,7 @@ public class SuperGMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 3) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <包名> <包頭值>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <包名> <包頭值>");
                 return 0;
             }
             SendPacketOpcode.valueOf(splitted[1]).setValue(Short.parseShort(splitted[2]));
@@ -1519,7 +1458,7 @@ public class SuperGMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 3) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <包名> <包頭值>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <包名> <包頭值>");
                 return 0;
             }
             RecvPacketOpcode.valueOf(splitted[1]).setValue(Short.parseShort(splitted[2]));
@@ -1580,7 +1519,7 @@ public class SuperGMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 2) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <任務ID>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <任務ID>");
                 return 0;
             }
             MapleQuest.getInstance(Integer.parseInt(splitted[1])).forfeit(c.getPlayer());
@@ -1593,7 +1532,7 @@ public class SuperGMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 3) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <任務ID> <NPCID>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <任務ID> <NPCID>");
                 return 0;
             }
             MapleQuest.getInstance(Integer.parseInt(splitted[1])).start(c.getPlayer(), Integer.parseInt(splitted[2]));
@@ -1606,7 +1545,7 @@ public class SuperGMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 4) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <任務ID> <NPCID> <selection>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <任務ID> <NPCID> <selection>");
                 return 0;
             }
             MapleQuest.getInstance(Integer.parseInt(splitted[1])).complete(c.getPlayer(), Integer.parseInt(splitted[2]), Integer.parseInt(splitted[3]));
@@ -1619,7 +1558,7 @@ public class SuperGMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 3) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <任務ID> <NPCID> (customData:默認空)");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <任務ID> <NPCID> (customData:默認空)");
                 return 0;
             }
             MapleQuest.getInstance(Integer.parseInt(splitted[1])).forceStart(c.getPlayer(), Integer.parseInt(splitted[2]), splitted.length >= 4 ? splitted[3] : null);
@@ -1632,7 +1571,7 @@ public class SuperGMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 3) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <任務ID> <NPCID>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <任務ID> <NPCID>");
                 return 0;
             }
             MapleQuest.getInstance(Integer.parseInt(splitted[1])).start(c.getPlayer(), Integer.parseInt(splitted[2]));
@@ -1645,7 +1584,7 @@ public class SuperGMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 2) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <反應堆OID>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <反應堆OID>");
                 return 0;
             }
             c.getPlayer().getMap().getReactorByOid(Integer.parseInt(splitted[1])).hitReactor(c);
@@ -1658,7 +1597,7 @@ public class SuperGMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 2) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <反應堆OID>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <反應堆OID>");
                 return 0;
             }
             c.getPlayer().getMap().getReactorByOid(Integer.parseInt(splitted[1])).forceHitReactor(c.getPlayer(), Byte.parseByte(splitted[2]));
@@ -1671,7 +1610,7 @@ public class SuperGMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 2) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <全部/反應堆名稱>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <全部/反應堆名稱>");
                 return 0;
             }
             MapleMap map = c.getPlayer().getMap();
@@ -1693,7 +1632,7 @@ public class SuperGMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 2) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <ReactorID>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <ReactorID>");
                 return 0;
             }
             c.getPlayer().getMap().setReactorState(Byte.parseByte(splitted[1]));
@@ -1719,7 +1658,7 @@ public class SuperGMCommand {
                 String text = StringUtil.joinStringFrom(splitted, 1);
                 c.getPlayer().sendNote(victim.getName(), text);
             } else {
-                c.getPlayer().dropMessage(6, splitted[0] + " <玩家名稱> <內容>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <玩家名稱> <內容>");
                 return 0;
             }
             return 1;
@@ -1737,7 +1676,7 @@ public class SuperGMCommand {
                     c.getPlayer().sendNote(mch.getName(), text);
                 }
             } else {
-                c.getPlayer().dropMessage(6, splitted[0] + " <內容>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <內容>");
                 return 0;
             }
             return 1;
@@ -1749,7 +1688,7 @@ public class SuperGMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 3) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <技能ID> <技能等級>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <技能ID> <技能等級>");
                 return 0;
             }
             SkillFactory.getSkill(Integer.parseInt(splitted[1])).getEffect(Integer.parseInt(splitted[2])).applyTo(c.getPlayer());
@@ -1762,7 +1701,7 @@ public class SuperGMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 2) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <道具ID>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <道具ID>");
                 return 0;
             }
             MapleItemInformationProvider.getInstance().getItemEffect(Integer.parseInt(splitted[1])).applyTo(c.getPlayer());
@@ -1775,7 +1714,7 @@ public class SuperGMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 2) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <道具ID>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <道具ID>");
                 return 0;
             }
             MapleItemInformationProvider.getInstance().getItemEffectEX(Integer.parseInt(splitted[1])).applyTo(c.getPlayer());
@@ -1797,7 +1736,7 @@ public class SuperGMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 3) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <技能ID> <技能等級>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <技能ID> <技能等級>");
                 return 0;
             }
             for (MapleCharacter mch : c.getPlayer().getMap().getCharacters()) {
@@ -1812,7 +1751,7 @@ public class SuperGMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 2) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <道具ID>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <道具ID>");
                 return 0;
             }
             for (MapleCharacter mch : c.getPlayer().getMap().getCharacters()) {
@@ -1827,7 +1766,7 @@ public class SuperGMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 2) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <道具ID>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <道具ID>");
                 return 0;
             }
             for (MapleCharacter mch : c.getPlayer().getMap().getCharacters()) {
@@ -1841,7 +1780,7 @@ public class SuperGMCommand {
 
         @Override
         public int execute(MapleClient c, String[] splitted) {
-            c.getPlayer().dropMessage(6, "Number of items: " + MapleItemInformationProvider.getInstance().getAllItems().size());
+            c.getPlayer().dropMessage(-11, "Number of items: " + MapleItemInformationProvider.getInstance().getAllItems().size());
             return 0;
         }
     }

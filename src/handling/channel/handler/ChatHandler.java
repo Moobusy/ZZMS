@@ -24,6 +24,7 @@ import client.MapleCharacter;
 import client.MapleCharacterUtil;
 import client.MapleClient;
 import handling.channel.ChannelServer;
+import handling.login.LoginInformationProvider;
 import handling.world.MapleMessenger;
 import handling.world.MapleMessengerCharacter;
 import handling.world.World;
@@ -43,8 +44,11 @@ public class ChatHandler {
             }
             if (chr.getCanTalk() || chr.isStaff()) {
                 //Note: This patch is needed to prevent chat packet from being broadcast to people who might be packet sniffing.
-                byte[] colorChatPacket;
-                colorChatPacket = ColourChat(chr, text, unk, chr.getChatType(), chr.isHidden());
+                byte[] colorChatPacket = ColourChat(chr, text, unk, chr.getChatType(), chr.isHidden());
+
+                // 過濾髒字
+                String curseText = LoginInformationProvider.getInstance().getCurseMsg(text);
+                byte[] colorCurseChatPacket = ColourChat(chr, curseText, unk, chr.getChatType(), chr.isHidden());
                 if (chr.isHidden()) {
                     if (colorChatPacket == null || !chr.isIntern()) {
                         chr.getMap().broadcastGMMessage(chr, CField.getChatText(chr.getId(), text, c.getPlayer().isSuperGM(), unk), true);
@@ -61,12 +65,15 @@ public class ChatHandler {
                 } else {
                     chr.getCheatTracker().checkMsg();
                     if (colorChatPacket == null) {
-                        chr.getMap().broadcastMessage(CField.getChatText(chr.getId(), text, c.getPlayer().isSuperGM(), unk));
+                        c.getSession().write(CField.getChatText(chr.getId(), chr.isIntern() ? text : curseText, c.getPlayer().isSuperGM(), unk));
+                        chr.getMap().broadcastMessage(chr, CField.getChatText(chr.getId(), chr.isIntern() ? text : curseText, c.getPlayer().isSuperGM(), unk), false);
                     } else {
                         if (unk == 0) {
-                            chr.getMap().broadcastMessage(colorChatPacket);
+                            c.getSession().write(colorChatPacket);
+                            chr.getMap().broadcastMessage(chr, chr.isIntern() ? colorChatPacket : colorCurseChatPacket, false);
                         }
-                        chr.getMap().broadcastMessage(CField.getChatText(chr.getId(), text, c.getPlayer().isSuperGM(), 1));
+                        c.getSession().write(CField.getChatText(chr.getId(), chr.isIntern() ? text : curseText, c.getPlayer().isSuperGM(), 1));
+                        chr.getMap().broadcastMessage(chr, CField.getChatText(chr.getId(), chr.isIntern() ? text : curseText, c.getPlayer().isSuperGM(), 1), false);
                     }
                 }
             } else {
@@ -96,11 +103,11 @@ public class ChatHandler {
         }
     }
 
-    public static byte[] ColourChat(final MapleCharacter chr, String text, final byte unk, short colour) {
+    public static byte[] ColourChat(final MapleCharacter chr, String text, final byte unk, int colour) {
         return ColourChat(chr, text, unk, colour, false);
     }
 
-    public static byte[] ColourChat(final MapleCharacter chr, String text, final byte unk, short colour, boolean hidden) {
+    public static byte[] ColourChat(final MapleCharacter chr, String text, final byte unk, int colour, boolean hidden) {
         String rank = "";
         if (chr.isAdmin()) {
             if ((hidden && chr.isHiddenChatCanSee()) || !hidden) {
@@ -137,7 +144,7 @@ public class ChatHandler {
         if (rank.isEmpty() && colour == 0) {
             return null;
         } else {
-            return CField.getGameMessage(rank + chr.getName() + " : " + text, colour);
+            return CField.getGameMessage(colour, rank + chr.getName() + " : " + text);
         }
     }
 
@@ -319,7 +326,6 @@ public class ChatHandler {
             case 0x09: //like
                 if (messenger != null) {
                     String charname = slea.readMapleAsciiString();
-                    //todo send like packet here
                 }
                 break;
             case 0x0A: //guidance
@@ -327,7 +333,6 @@ public class ChatHandler {
                     slea.readByte();
                     String charname = slea.readMapleAsciiString();
                     String targetname = slea.readMapleAsciiString();
-                    //todo send guide packet here
                 }
                 break;
             case 0x0B: //char info
@@ -340,7 +345,6 @@ public class ChatHandler {
             case 0x0E: //whisper
                 if (messenger != null) {
                     String charname = slea.readMapleAsciiString();
-                    //todo send whisper packet here
                 }
                 break;
         }

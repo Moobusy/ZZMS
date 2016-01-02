@@ -20,11 +20,12 @@ public class BeastTamerBuff extends AbstractBuffClass {
     
     public BeastTamerBuff() {
         buffs = new int[]{  
-            110001501, // Bear Mode
-            110001502, // Snow Leopard Mode
-            110001503, // Hawk Mode
-            110001504, // Cat Mode
-            112001009  // Bear Assault
+            110001501, // 召喚熊熊Bear Mode
+            110001502, // 召喚雪豹Snow Leopard Mode
+            110001503, // 召喚雀鷹Hawk Mode
+            110001504, // 召喚貓咪Cat Mode
+            112001009,  // 集中打擊Bear Assault
+            112111000, // 艾卡飛行
         };
     }
     

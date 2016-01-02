@@ -51,7 +51,7 @@ public class MapleSurvival extends MapleEvent {
     }
 
     @Override
-    public void startEvent() { // TODO: Messages
+    public void startEvent() {
         unreset();
         super.reset(); //isRunning = true
         broadcast(CField.getClock((int) (time / 1000)));

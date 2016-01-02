@@ -32,9 +32,7 @@ import handling.world.World;
 import handling.world.exped.MapleExpedition;
 import handling.world.guild.MapleGuild;
 import java.awt.Point;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import server.MapleInventoryManipulator;
 import server.MapleItemInformationProvider;
 import server.Randomizer;
@@ -43,7 +41,6 @@ import server.events.MapleEvent;
 import server.events.MapleEventType;
 import server.life.MapleLifeFactory;
 import server.life.MapleMonster;
-import server.life.MapleNPC;
 import server.maps.*;
 import server.quest.MapleQuest;
 import tools.FileoutputUtil;
@@ -63,7 +60,6 @@ public abstract class AbstractPlayerInteraction {
     protected static int id;
     protected static int id2;
     protected static String script;
-    private static final Map<Pair<Integer, MapleClient>, MapleNPC> npcRequestController = new HashMap<>();
 
     public AbstractPlayerInteraction(MapleClient c) {
         this.c = c;
@@ -220,7 +216,7 @@ public abstract class AbstractPlayerInteraction {
     }
 
     public final void playPortalSE() {
-        c.getSession().write(EffectPacket.showBuffEffect(0, 0x47, 1, 0));
+        c.getSession().write(EffectPacket.showBuffEffect(true, null, 0, SpecialEffectType.UNK_47, 1, 0));
     }
 
     private MapleMap getWarpMap(final int map) {
@@ -385,6 +381,10 @@ public abstract class AbstractPlayerInteraction {
         c.getSession().write(CWvsContext.showQuestMsg(msg));
     }
 
+    public void startQuest(int questId, int npcid) {
+        MapleQuest.getInstance(questId).start(getPlayer(), npcid);
+    }
+
     public final void forceStartQuest(final int id, final String data) {
         MapleQuest.getInstance(id).forceStart(c.getPlayer(), 0, data);
     }
@@ -477,7 +477,7 @@ public abstract class AbstractPlayerInteraction {
     }
 
     public final void gainNX(final int amount) {
-        c.getPlayer().modifyCSPoints(4, amount, true); //theremk you can change it to prepaid yae since cspoiint is xncredit so make it prepaid
+        c.getPlayer().modifyCSPoints(1, amount, true);
     }
 
     public final void gainItemPeriod(final int id, final short quantity, final int period) { //period is in days
@@ -581,10 +581,6 @@ public abstract class AbstractPlayerInteraction {
             return true;
         }
         return false;
-    }
-
-    public final void changeMusic(final String songName) {
-        getPlayer().getMap().broadcastMessage(CField.musicChange(songName));
     }
 
     public final void worldMessage(final int type, final String message) {
@@ -963,7 +959,7 @@ public abstract class AbstractPlayerInteraction {
     }
 
     public final void gainCloseness(final int closeness, final int index) {
-        final MaplePet pet = getPlayer().getPet(index);
+        final MaplePet pet = getPlayer().getSummonedPet(index);
         if (pet != null) {
             pet.setCloseness(pet.getCloseness() + (closeness * getChannelServer().getTraitRate()));
             getClient().getSession().write(PetPacket.updatePet(pet, getPlayer().getInventory(MapleInventoryType.CASH).getItem((byte) pet.getInventoryPosition()), true));
@@ -971,11 +967,9 @@ public abstract class AbstractPlayerInteraction {
     }
 
     public final void gainClosenessAll(final int closeness) {
-        for (final MaplePet pet : getPlayer().getPets()) {
-            if (pet != null && pet.getSummoned()) {
-                pet.setCloseness(pet.getCloseness() + closeness);
-                getClient().getSession().write(PetPacket.updatePet(pet, getPlayer().getInventory(MapleInventoryType.CASH).getItem((byte) pet.getInventoryPosition()), false));
-            }
+        for (final MaplePet pet : getPlayer().getSummonedPets()) {
+            pet.setCloseness(pet.getCloseness() + closeness);
+            getClient().getSession().write(PetPacket.updatePet(pet, getPlayer().getInventory(MapleInventoryType.CASH).getItem((byte) pet.getInventoryPosition()), false));
         }
     }
 
@@ -1081,9 +1075,9 @@ public abstract class AbstractPlayerInteraction {
         c.getPlayer().updateInfoQuest(7216, "3");
         c.getPlayer().updateInfoQuest(7214, "5");
         c.getPlayer().updateInfoQuest(7215, "0");
-        //c.getSession().write(InfoPacket.updateInfoQuest(1207, "min=1;tuto=1")); //old - 1207, "pt=1;min=4;belt=1;tuto=1")); //todo
+        //c.getSession().write(InfoPacket.updateInfoQuest(1207, "min=1;tuto=1")); //old - 1207, "pt=1;min=4;belt=1;tuto=1"));
         //c.getSession().write(InfoPacket.updateInfoQuest(7281, "item=0;chk=0;cNum=0;sec=" + sec + ";stage=0;lBonus=0"));
-        c.getSession().write(EffectPacket.showEffect(null, SpecialEffectType.MULUNG_DOJO_UP));
+        c.getSession().write(EffectPacket.Mulung_DojoUp());
         c.getSession().write(CField.instantMapWarp((byte) 6));
     }
 
@@ -1192,21 +1186,28 @@ public abstract class AbstractPlayerInteraction {
         c.getSession().write(EffectPacket.showWZEffectNew(data));
     }
 
+    public void playSoundEffect(final String data) {
+        c.getSession().write(EffectPacket.playSoundEffect(data));
+    }
+
+    public void showBlackBGEffect(int value, int value2, int value3, byte value4) {
+        c.getSession().write(EffectPacket.showBlackBGEffect(value, value2, value3, value4));
+    }
+
+    public void showDarkEffect(final boolean dark) {
+        c.getSession().write(EffectPacket.showDarkEffect(dark));
+    }
+
+    public void showWZEffect3(final String data, int[] value) {
+        c.getSession().write(EffectPacket.showWZEffect3(data, value));
+    }
+
+    public void startMapEffect(String msg, int itemid, boolean active) {
+        c.getSession().write(CField.startMapEffect(msg, itemid, active));
+    }
+
     public final void EarnTitleMsg(final String data) {
         c.getSession().write(CWvsContext.getTopMsg(data));
-    }
-
-    public final void EnableUI(final short i) {
-        introEnableUI(i);
-    }
-
-    public final void EnableUI(final short i, final short i2) {
-        introEnableUI(i, i2);
-    }
-
-    public final void MovieClipIntroUI(final boolean enabled) {
-        c.getSession().write(UIPacket.IntroEnableUI(1));
-        c.getSession().write(UIPacket.IntroLock(enabled));
     }
 
     public MapleInventoryType getInvType(int i) {
@@ -1397,95 +1398,6 @@ public abstract class AbstractPlayerInteraction {
         return Randomizer.nextInt(arg0);
     }
 
-    public void sendDirectionStatus(int key, int value) {
-        c.getSession().write(UIPacket.getDirectionInfo(key, value));
-        c.getSession().write(UIPacket.getDirectionStatus(true));
-    }
-
-    public void sendDirectionStatus(int key, int value, boolean direction) {
-        c.getSession().write(UIPacket.getDirectionInfo(key, value));
-        c.getSession().write(UIPacket.getDirectionStatus(direction));
-    }
-
-    public void sendDirectionInfo(String data) {
-        c.getSession().write(UIPacket.getDirectionInfo(data, 2000, 0, -100, 0, 0));
-        c.getSession().write(UIPacket.getDirectionInfo(1, 2000));
-    }
-
-    public void getDirectionEffect(String data, int value, int x, int y) {
-        c.getSession().write(UIPacket.getDirectionEffect(data, value, x, y));
-    }
-
-    public void spawnNPCRequestController(int npcid, int x, int y) {
-        spawnNPCRequestController(npcid, x, y, 0);
-    }
-
-    public void spawnNPCRequestController(int npcid, int x, int y, int f) {
-        if (npcRequestController.containsKey(new Pair(npcid, c))) {
-            npcRequestController.remove(new Pair(npcid, c));
-        }
-        MapleNPC npc;
-        npc = c.getPlayer().getMap().getNPCById(npcid);
-        if (npc == null) {
-            npc = MapleLifeFactory.getNPC(npcid);
-            if (npc == null) {
-                return;
-            }
-            npc.setPosition(new Point(x, y));
-            npc.setCy(y);
-            npc.setRx0(x - 50);
-            npc.setRx1(x + 50);
-            npc.setF(f);
-            npc.setFh(c.getPlayer().getMap().getFootholds().findBelow(new Point(x, y)).getId());
-            npc.setCustom(true);
-            npc.setObjectId(npcid);
-        }
-        npcRequestController.put(new Pair(npcid, c), npc);
-        c.getSession().write(NPCPacket.spawnNPCRequestController(npc, true));//isMiniMap
-    }
-
-    public void setNPCSpecialAction(int npcid, String action) {
-        final MapleNPC npc;
-        if (npcRequestController.containsKey(new Pair(npcid, c))) {
-            npc = npcRequestController.get(new Pair(npcid, c));
-        } else {
-            return;
-        }
-        c.getSession().write(NPCPacket.setNPCSpecialAction(npc.getObjectId(), action));
-    }
-
-    public void updateNPCSpecialAction(int npcid, int value, int x, int y) {
-        final MapleNPC npc;
-        if (npcRequestController.containsKey(new Pair(npcid, c))) {
-            npc = npcRequestController.get(new Pair(npcid, c));
-        } else {
-            return;
-        }
-        c.getSession().write(NPCPacket.NPCSpecialAction(npc.getObjectId(), value, x, y));
-    }
-
-    public void getNPCDirectionEffect(int npcid, String data, int value, int x, int y) {
-        final MapleNPC npc;
-        if (npcRequestController.containsKey(new Pair(npcid, c))) {
-            npc = npcRequestController.get(new Pair(npcid, c));
-        } else {
-            return;
-        }
-        c.getSession().write(CField.UIPacket.getDirectionEffect(data, value, x, y, npc.getObjectId()));
-    }
-
-    public void removeNPCRequestController(int npcid) {
-        final MapleNPC npc;
-        if (npcRequestController.containsKey(new Pair(npcid, c))) {
-            npc = npcRequestController.get(new Pair(npcid, c));
-        } else {
-            return;
-        }
-        c.getSession().write(NPCPacket.spawnNPCRequestController(npc.getObjectId()));
-        c.getSession().write(NPCPacket.removeNPC(npc.getObjectId()));
-        npcRequestController.remove(new Pair(npcid, c));
-    }
-
     public void sendRemoveNPC(int oid) {
         c.getSession().write(NPCPacket.removeNPC(oid));
     }
@@ -1494,12 +1406,28 @@ public abstract class AbstractPlayerInteraction {
         c.getSession().write(UIPacket.getDirectionFacialExpression(expression, duration));
     }
 
-    public void introEnableUI(int wtf) {
-        c.getSession().write(CField.UIPacket.IntroEnableUI(wtf));
+    public final void lockKey(final boolean enabled) {
+        c.getSession().write(UIPacket.lockKey(enabled));
     }
 
-    public void introEnableUI(int wtf, int enable) {
-        c.getSession().write(CField.UIPacket.IntroEnableUI(wtf, enable));
+    public void lockUI(boolean enable) {
+        c.getSession().write(CField.UIPacket.lockUI(enable));
+    }
+
+    public void lockUI(boolean enable, int enable2) {
+        lockUI(enable ? 1 : 0, enable2);
+    }
+
+    public void lockUI(int enable, int enable2) {
+        c.getSession().write(CField.UIPacket.lockUI(enable, enable2));
+    }
+
+    public final void disableOthers(final boolean enabled) {
+        c.getSession().write(UIPacket.disableOthers(enabled));
+    }
+
+    public final void disableOthers(final boolean enabled, final int enable2) {
+        c.getSession().write(UIPacket.disableOthers(enabled, enable2));
     }
 
     public void getDirectionStatus(boolean enable) {
@@ -1585,6 +1513,33 @@ public abstract class AbstractPlayerInteraction {
         getPlayer().setPQLog(pqid);
     }
 
+    public void changeDamageSkinByItem(int itemId) {
+        if (!ItemConstants.傷害字型.isDamageSkin(itemId)) {
+            return;
+        }
+        changeDamageSkin(ItemConstants.傷害字型.getDamageSkinNumberByItem(itemId), true);
+    }
+
+    public void changeDamageSkin(int skinid) {
+        changeDamageSkin(skinid, false);
+    }
+
+    public void changeDamageSkin(int skinid, boolean show) {
+        if (MapleJob.is神之子(c.getPlayer().getJob())) {
+            c.getPlayer().dropMessage(-9, "神之子無法套用傷害字型。");
+            return;
+        }
+        if (skinid == -1) {
+            c.getPlayer().dropMessage(-9, "出現未知錯誤");
+            return;
+        }
+        c.getPlayer().setDamageSkin(skinid);
+        if (show) {
+            c.getPlayer().dropMessage(-9, "傷害字型已更變。");
+        }
+        c.getPlayer().getMap().broadcastMessage(c.getPlayer(), CField.showForeignDamageSkin(c.getPlayer(), skinid), false);
+    }
+
     public void environmentChange(String env) {
         environmentChange(env, 2);
     }
@@ -1602,6 +1557,26 @@ public abstract class AbstractPlayerInteraction {
             c.getPlayer().getMap().broadcastMessage(CField.environmentChange(env, info));
         } else {
             c.getSession().write(CField.environmentChange(env, info));
+        }
+    }
+
+    public void showEnvironment(int mode, String env, int[] info) {
+        showEnvironment(false, mode, env, info);
+    }
+
+    public void darkEnv(boolean on, int brightness, int unk) {
+        showEnvironment(false, 15, null, new int[]{on ? 1 : 0, brightness, 0, 0, 0, unk});
+    }
+
+    public final void changeMusic(final String songName) {
+        getPlayer().getMap().broadcastMessage(CField.musicChange(songName));
+    }
+
+    public void showEnvironment(boolean broadcast, int mode, String env, int[] info) {
+        if (broadcast) {
+            c.getPlayer().getMap().broadcastMessage(CField.showEnvironment(mode, env, info));
+        } else {
+            c.getSession().write(CField.showEnvironment(mode, env, info));
         }
     }
 }

@@ -50,7 +50,7 @@ public class AdminCommand {
 
         @Override
         public int execute(MapleClient c, String[] splitted) {
-            MaplePet pet = c.getPlayer().getPet(0);
+            MaplePet pet = c.getPlayer().getSummonedPet(0);
             if (pet == null) {
                 return 0;
             }
@@ -141,7 +141,7 @@ public class AdminCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             MaplePortal portal = c.getPlayer().getMap().findClosestPortal(c.getPlayer().getTruePosition());
-            c.getPlayer().dropMessage(6, portal.getName() + " id: " + portal.getId() + " script: " + portal.getScriptName());
+            c.getPlayer().dropMessage(-11, portal.getName() + " id: " + portal.getId() + " script: " + portal.getScriptName());
 
             return 1;
         }
@@ -151,7 +151,7 @@ public class AdminCommand {
 
         @Override
         public int execute(MapleClient c, String[] splitted) {
-            c.getPlayer().dropMessage(6, "Server has been up for " + StringUtil.getReadableMillis(ChannelServer.serverStartTime, System.currentTimeMillis()));
+            c.getPlayer().dropMessage(-11, "Server has been up for " + StringUtil.getReadableMillis(ChannelServer.serverStartTime, System.currentTimeMillis()));
             return 1;
         }
     }
@@ -174,15 +174,15 @@ public class AdminCommand {
             String type = splitted[1];
             String text = splitted[2];
             if (type == null) {
-                c.getPlayer().dropMessage(6, "Syntax error: !dropmessage type text");
+                c.getPlayer().dropMessage(-11, "Syntax error: !dropmessage type text");
                 return 0;
             }
             if (type.length() > 1) {
-                c.getPlayer().dropMessage(6, "Type must be just with one word");
+                c.getPlayer().dropMessage(-11, "Type must be just with one word");
                 return 0;
             }
             if (text == null && text.length() < 1) {
-                c.getPlayer().dropMessage(6, "Text must be 1 letter or more!!");
+                c.getPlayer().dropMessage(-11, "Text must be 1 letter or more!!");
                 return 0;
             }
             c.getPlayer().dropMessage(Integer.parseInt(type), text);
@@ -197,15 +197,15 @@ public class AdminCommand {
             String type = splitted[1];
             String text = splitted[2];
             if (type == null) {
-                c.getPlayer().dropMessage(6, "Syntax error: !dropmessage type text");
+                c.getPlayer().dropMessage(-11, "Syntax error: !dropmessage type text");
                 return 0;
             }
             if (type.length() > 1) {
-                c.getPlayer().dropMessage(6, "Type must be just with one word");
+                c.getPlayer().dropMessage(-11, "Type must be just with one word");
                 return 0;
             }
             if (text == null && text.length() < 1) {
-                c.getPlayer().dropMessage(6, "Text must be 1 letter or more!!");
+                c.getPlayer().dropMessage(-11, "Text must be 1 letter or more!!");
                 return 0;
             }
             //c.getPlayer().dropMsg(Integer.parseInt(type), text);
@@ -227,7 +227,7 @@ public class AdminCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 2) {
-                c.getPlayer().dropMessage(0, splitted[0] + " <玩家名稱>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <玩家名稱>");
                 return 0;
             }
             MapleCharacter chr = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
@@ -241,7 +241,6 @@ public class AdminCommand {
                 World.Messenger.leaveMessenger(chr.getMessenger().getId(), messengerplayer);
             }
             PlayerBuffStorage.addBuffsToStorage(chr.getId(), chr.getAllBuffs());            
-            PlayerBuffStorage.addStackBuffsToStorage(chr.getId(), chr.getSpecialBuffInfo());
             PlayerBuffStorage.addCooldownsToStorage(chr.getId(), chr.getCooldowns());
             PlayerBuffStorage.addDiseaseToStorage(chr.getId(), chr.getAllDiseases());
             World.ChannelChange_Data(new CharacterTransfer(chr), chr.getId(), -10);
@@ -256,21 +255,12 @@ public class AdminCommand {
         }
     }
 
-    public static class TestDirection extends CommandExecute {
-
-        @Override
-        public int execute(MapleClient c, String[] splitted) {
-            c.getSession().write(CField.UIPacket.getDirectionInfo(StringUtil.joinStringFrom(splitted, 5), Integer.parseInt(splitted[1]), Integer.parseInt(splitted[2]), Integer.parseInt(splitted[3]), Integer.parseInt(splitted[4]), Integer.parseInt(splitted[5])));
-            return 1;
-        }
-    }
-
     public static class 自動註冊 extends CommandExecute {
 
         @Override
         public int execute(MapleClient c, String[] splitted) {
             ServerConfig.AUTO_REGISTER = !ServerConfig.AUTO_REGISTER;
-            c.getPlayer().dropMessage(0, "自動註冊狀態: " + (ServerConfig.AUTO_REGISTER ? "開啟" : "關閉"));
+            c.getPlayer().dropMessage(-11, "自動註冊狀態: " + (ServerConfig.AUTO_REGISTER ? "開啟" : "關閉"));
             System.out.println("自動註冊狀態: " + (ServerConfig.AUTO_REGISTER ? "開啟" : "關閉"));
             return 1;
         }
@@ -304,7 +294,7 @@ public class AdminCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 2) {
-                c.getPlayer().dropMessage(0, splitted[0] + " <玩家名稱> (空 - 不發送公告/其他 - 發送世界公告:默認空)");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <玩家名稱> (空 - 不發送公告/其他 - 發送世界公告:默認空)");
                 return 0;
             }
             MapleCharacter victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
@@ -348,12 +338,12 @@ public class AdminCommand {
         @Override
         public int execute(final MapleClient c, String[] splitted) {
             if (splitted.length < 1) {
-                c.getPlayer().dropMessage(0, splitted[0] + "<時間:分鐘>");
+                c.getPlayer().dropMessage(-11, splitted[0] + "<時間:分鐘>");
                 return 0;
             }
             if (ts != null) {
                 ts.cancel(false);
-                c.getPlayer().dropMessage(0, "原定的關鍵時刻已取消。");
+                c.getPlayer().dropMessage(-11, "原定的關鍵時刻已取消。");
             }
             int minutesLeft = Integer.parseInt(splitted[1]);
             ts = EventTimer.getInstance().schedule(new Runnable() {
@@ -426,13 +416,13 @@ public class AdminCommand {
 
         @Override
         public int execute(MapleClient c, String[] splitted) {
-            c.getPlayer().dropMessage(6, "正在關閉伺服器...");
+            c.getPlayer().dropMessage(-11, "正在關閉伺服器...");
             if (t == null || !t.isAlive()) {
                 t = new Thread(ShutdownServer.getInstance());
                 ShutdownServer.getInstance().shutdown();
                 t.start();
             } else {
-                c.getPlayer().dropMessage(6, "關閉進程正在進行或者關閉已完成，請稍候。");
+                c.getPlayer().dropMessage(-11, "關閉進程正在進行或者關閉已完成，請稍候。");
             }
             return 1;
         }
@@ -446,11 +436,11 @@ public class AdminCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 2) {
-                c.getPlayer().dropMessage(0, splitted[0] + " <時間:分鐘>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <時間:分鐘>");
                 return 0;
             }
             minutesLeft = Integer.parseInt(splitted[1]);
-            c.getPlayer().dropMessage(6, "伺服器將在" + minutesLeft + " 分鐘后關閉");
+            c.getPlayer().dropMessage(-11, "伺服器將在" + minutesLeft + " 分鐘后關閉");
             if (ts == null && (t == null || !t.isAlive())) {
                 t = new Thread(ShutdownServer.getInstance());
                 ts = EventTimer.getInstance().register(new Runnable() {
@@ -467,7 +457,7 @@ public class AdminCommand {
                     }
                 }, 60000);
             } else {
-                c.getPlayer().dropMessage(6, "關閉進程正在進行或者關閉已完成，請稍候。");
+                c.getPlayer().dropMessage(-11, "關閉進程正在進行或者關閉已完成，請稍候。");
             }
             return 1;
         }
@@ -478,7 +468,7 @@ public class AdminCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 2) {
-                c.getPlayer().dropMessage(0, splitted[0] + " <SQL命令>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <SQL命令>");
                 return 0;
             }
             try {
@@ -486,7 +476,7 @@ public class AdminCommand {
                 PreparedStatement ps = (PreparedStatement) con.prepareStatement(StringUtil.joinStringFrom(splitted, 1));
                 ps.executeUpdate();
             } catch (SQLException e) {
-                c.getPlayer().dropMessage(0, "執行SQL命令失敗");
+                c.getPlayer().dropMessage(-11, "執行SQL命令失敗");
                 return 0;
             }
             return 1;

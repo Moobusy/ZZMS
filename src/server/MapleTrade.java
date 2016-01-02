@@ -45,7 +45,7 @@ public class MapleTrade {
                 } else if (ItemFlag.KARMA_USE.check(flag)) {
                     item.setFlag((short) (flag - ItemFlag.KARMA_USE.getValue()));
                 }
-                MapleInventoryManipulator.addFromDrop(this.chr.get().getClient(), item, false);
+                MapleInventoryManipulator.addFromDrop(this.chr.get().getClient(), item);
             }
             this.exchangeItems.clear();
         }
@@ -65,7 +65,7 @@ public class MapleTrade {
         if (this.items != null) {
             List<Item> itemz = new LinkedList(this.items);
             for (Item item : itemz) {
-                MapleInventoryManipulator.addFromDrop(c, item, false);
+                MapleInventoryManipulator.addFromDrop(c, item);
             }
             this.items.clear();
         }

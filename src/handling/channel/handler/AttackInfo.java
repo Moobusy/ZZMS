@@ -34,17 +34,23 @@ import tools.HexTool;
 
 public class AttackInfo {
 
-    public int skill, charge, lastAttackTickCount;
+    public int skill, charge, lastAttackTickCount, display, direction, stance;
     public List<AttackPair> allDamage;
-    public Point position;
-    public int display;
-    public byte hits, targets, tbyte, speed, csstar, AOE, slot, animation,unk;
+    public Point position, skillposition;
+    public byte hits, targets, tbyte, speed, cashSlot, AOE, starSlot, animation, unk, zeroUnk;
     public boolean real = true;
+    public boolean move = false;
+    public boolean isCloseRangeAttack = false;
+    public boolean isRangedAttack = false;
+    public boolean isMagicAttack = false;
 
-    public final MapleStatEffect getAttackEffect(final MapleCharacter chr, int skillLevel, final Skill skill_) {
+    public final MapleStatEffect getAttackEffect(final MapleCharacter chr, int skillLevel, final Skill theSkill) {
         if (GameConstants.isMulungSkill(skill) || GameConstants.isPyramidSkill(skill) || GameConstants.isInflationSkill(skill)) {
             skillLevel = 1;
         } else if (skillLevel <= 0) {
+            if (chr.isShowErr()) {
+                chr.showInfo("AttackEffect", true, "技能等級<=0");
+            }
             return null;
         }
         int dd = ((display & 0x8000) != 0 ? (display - 0x8000) : display);
@@ -62,32 +68,20 @@ public class AttackInfo {
                     } else {
                         //AutobanManager.getInstance().autoban(chr.getClient(), "No delay hack, SkillID : " + skillLink.getId() + ", animation: " + dd + ", expected: " + skillLink.getAnimation());
                     }
-                    if (skill_.getId() == 24121003) {
+                    if (theSkill.getId() == 24121003) {
                         return skillLink.getEffect(skillLevel);
                     }
-                    if (MapleJob.is神之子(skill_.getId() / 10000)) {
+                    if (MapleJob.is神之子(theSkill.getId() / 10000)) {
                         return skillLink.getEffect(skillLevel); //idk wat 2 do w/ dis
                     }
-                    if(MapleJob.is幻獸師(skill_.getId() / 11000)) {
+                    if(MapleJob.is幻獸師(theSkill.getId() / 11000)) {
                         return skillLink.getEffect(skillLevel);
                     }
                     return null;
                 }
             }
             return skillLink.getEffect(skillLevel);
-        } // i'm too lazy to calculate the new skill types =.=
-        /*
-         * if (dd > SkillFactory.Delay.magic6.i && dd !=
-         * SkillFactory.Delay.shot.i && dd != SkillFactory.Delay.fist.i) { if
-         * (skill_.getAnimation() == -1 || Math.abs(skill_.getAnimation() - dd)
-         * > 0x10) { if (skill_.getAnimation() == -1) { chr.dropMessage(5,
-         * "Please report this: animation for skill " + skill_.getId() + "
-         * doesn't exist"); } else {
-         * AutobanManager.getInstance().autoban(chr.getClient(), "No delay hack,
-         * SkillID : " + skill_.getId() + ", animation: " + dd + ", expected: "
-         * + skill_.getAnimation()); } return null; }
-         }
-         */
-        return skill_.getEffect(skillLevel);
+        }
+        return theSkill.getEffect(skillLevel);
     }
 }

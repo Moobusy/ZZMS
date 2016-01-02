@@ -19,11 +19,20 @@ public class Skill implements Comparator<Skill> {
     private List<Integer> animation = null;
     private final List<Pair<String, Integer>> requiredSkill = new ArrayList<>();
     private Element element = Element.NEUTRAL;
-    private int id, animationTime = 0, masterLevel = 0, maxLevel = 0, delay = 0, trueMax = 0, eventTamingMob = 0, skillTamingMob = 0, skillType = 0; //4 is alert
+    private final int id;
+    private int animationTime = 0, masterLevel = 0, maxLevel = 0, delay = 0, trueMax = 0, eventTamingMob = 0, skillTamingMob = 0, skillType = 0; //4 is alert
     private boolean invisible = false, chargeskill = false, timeLimited = false, combatOrders = false, pvpDisabled = false, magic = false, casterMove = false, pushTarget = false, pullTarget = false;
+    private boolean isBuffSkill = false;
+    private boolean isSummonSkill = false;
+    private boolean notRemoved = false;
     private int hyper = 0;
     private int reqLev = 0;
+    private int maxDamageOver = 2147483647;
     private int fixLevel;
+    private int vehicleID;
+    private boolean petPassive = false;
+    private int setItemReason;
+    private int setItemPartsCount;
 
     public Skill(final int id) {
         super();
@@ -45,7 +54,6 @@ public class Skill implements Comparator<Skill> {
     public static Skill loadFromData(final int id, final MapleData data, final MapleData delayData) {
         Skill ret = new Skill(id);
 
-        boolean isBuff;
         final int skillType = MapleDataTool.getInt("skillType", data, -1);
         final String elem = MapleDataTool.getString("elemAttr", data, null);
         if (elem != null) {
@@ -53,17 +61,20 @@ public class Skill implements Comparator<Skill> {
         }
         ret.skillType = skillType;
         ret.invisible = MapleDataTool.getInt("invisible", data, 0) > 0;
+        ret.notRemoved = (MapleDataTool.getInt("notRemoved", data, 0) > 0);
         ret.timeLimited = MapleDataTool.getInt("timeLimited", data, 0) > 0;
         ret.combatOrders = MapleDataTool.getInt("combatOrders", data, 0) > 0;
-        ret.hyper = MapleDataTool.getInt("hyper", data, 0);
-        ret.reqLev = MapleDataTool.getInt("reqLev", data, 0);
         ret.fixLevel = MapleDataTool.getInt("fixLevel", data, 0);
         ret.masterLevel = MapleDataTool.getInt("masterLevel", data, 0);
-        if ((id == 22111001 || id == 22140000 || id == 22141002)) {
-            ret.masterLevel = 5; //hack
-        }
         ret.eventTamingMob = MapleDataTool.getInt("eventTamingMob", data, 0);
         ret.skillTamingMob = MapleDataTool.getInt("skillTamingMob", data, 0);
+        ret.vehicleID = MapleDataTool.getInt("vehicleID", data, 0);
+        ret.hyper = MapleDataTool.getInt("hyper", data, 0);
+        ret.reqLev = MapleDataTool.getInt("reqLev", data, 0);
+
+        ret.petPassive = (MapleDataTool.getInt("petPassive", data, 0) > 0);
+        ret.setItemReason = MapleDataTool.getInt("setItemReason", data, 0);
+        ret.setItemPartsCount = MapleDataTool.getInt("setItemPartsCount", data, 0);
         final MapleData inf = data.getChildByPath("info");
         if (inf != null) {
             ret.pvpDisabled = MapleDataTool.getInt("pvp", inf, 1) <= 0;
@@ -73,12 +84,21 @@ public class Skill implements Comparator<Skill> {
             ret.pullTarget = MapleDataTool.getInt("pullTarget", inf, 0) > 0;
         }
         final MapleData effect = data.getChildByPath("effect");
+        boolean isBuff;
         if (skillType == 2) {
             isBuff = true;
         } else if (skillType == 3) { //final attack
             ret.animation = new ArrayList<>();
             ret.animation.add(0);
             isBuff = effect != null;
+            switch (id) {
+                case 20040216:
+                case 20040217:
+                case 20040219:
+                case 20040220:
+                case 20041239:
+                    isBuff = true;
+            }
         } else {
             MapleData action_ = data.getChildByPath("action");
             final MapleData hit = data.getChildByPath("hit");
@@ -127,33 +147,37 @@ public class Skill implements Comparator<Skill> {
                     }
                 }
             }
-            switch (id) {
-                case 1076:
-                case 11076:
-                case 2111002:
-                case 2111003:
-                case 2121001:
-                case 2221001:
-                case 2301002:
-                case 2321001:
-                case 4211001:
-                case 12111005:
-                case 22161003:
+            switch (id) { //TODO 添加新的BUFF技能
+                case 1076: // 奧茲的火牢術屏障
+                case 2111002: // 末日烈焰
+                case 2111003: // 致命毒霧
+                case 2301002: // 群體治癒
+                case 2321001: // 核爆術
+                case 4301004: // 雙刃旋
+                case 12111005: // 火牢術屏障
+                case 14111006: // 毒炸彈
+                case 22161003: // 聖療之光
+                case 32121006: // 魔法屏障
+                case 36121007: // 時空膠囊
+                case 100001266:
                     isBuff = false;
                     break;
-                case 32121006:
-                case 93:
-                case 1004:
-                case 1026:
-                case 1101013: //鬥氣集中
+                case 93: // 潛在開放(冒險家)
+                case 1004: // 怪物騎乘
+                case 1026: // 飛翔
+                case 1101013: // 鬥氣集中
+                case 1121016: // 魔防消除
+                case 1210016: // 祝福護甲
                 case 1111002:
                 case 1111007:
                 case 1211009:
                 case 1220013:
                 case 1311007:
                 case 1320009:
+                case 2101010: // 燎原之火
                 case 2120010:
                 case 2121009:
+                case 2201009: // 寒冰迅移
                 case 2220010:
                 case 2221009:
                 case 2311006:
@@ -370,6 +394,79 @@ public class Skill implements Comparator<Skill> {
                 case 80001430:
                 case 80001432:
                 case 5111010:
+                case 1221014:
+                case 1310016:
+                case 1321014:
+                case 2120012:
+                case 2220013:
+                case 2320012:
+                case 3101004:
+                case 3111011:
+                case 3201004:
+                case 3211012:
+                case 4341052:
+                case 5100015:
+                case 5220019:
+                case 5221015:
+                case 5720012:
+                case 5721003:
+                case 1121053://传说冒险家
+                case 1221053:
+                case 1321053:
+                case 2121053:
+                case 2221053:
+                case 2321053:
+                case 3121053:
+                case 3221053:
+                case 3321053:
+                case 4121053:
+                case 4221053:
+                case 5121053:
+                case 5221053://传说冒险家
+                case 31201003://恶魔复仇者技能
+                case 31211003:
+                case 31211004:
+                case 31221004:
+                case 31221054://恶魔复仇者技能
+                case 31221053://自由之墙
+                case 32121053:
+                case 33121053:
+                case 31121053:
+                case 35121053://自由之墙
+                case 24121053://英雄奥斯
+                case 23121053:
+                case 27121053:
+                case 25121132:
+                case 21121053:
+                case 22171053://英雄奥斯
+                case 80001140:
+                case 20050286:
+                case 25111209:
+                case 25111211:
+                case 25121209:
+                case 14110030:
+                case 1221009:
+                case 5121052:
+                case 51121052:
+                case 14121004:
+                case 14121052:
+                case 35121054://金属机甲:悬浮
+                case 100001005:
+                case 110001005:
+                case 35121055:
+                case 33001007:
+                case 131001015: // 迷你啾出動
+                case 2321052://天堂之門
+                case 131001001://皮卡啾攻擊
+                case 131001002://皮卡啾攻擊
+                case 131001003://皮卡啾攻擊
+                case 131001101://皮卡啾攻擊
+                case 131001102://皮卡啾攻擊
+                case 131001103://皮卡啾攻擊
+                case 131002000://皮卡啾攻擊
+                case 131001000://皮卡啾攻擊
+                case 131001010: // 超烈焰溜溜球
+                case 131001113://電吉他
                     isBuff = true;
             }
             if (GameConstants.isAngel(id)/* || GameConstants.isSummon(id)*/) {
@@ -383,12 +480,12 @@ public class Skill implements Comparator<Skill> {
             ret.maxLevel = MapleDataTool.getInt("maxLevel", level, 1); //10 just a failsafe, shouldn't actually happens
             ret.trueMax = ret.maxLevel + (ret.combatOrders ? 2 : 0);
             for (int i = 1; i <= ret.trueMax; i++) {
-                ret.effects.add(MapleStatEffect.loadSkillEffectFromData(level, id, isBuff, i, "x"));
+                ret.effects.add(MapleStatEffect.loadSkillEffectFromData(level, id, isBuff, i, "x", ret.notRemoved));
             }
-
+            ret.maxDamageOver = MapleDataTool.getInt("MDamageOver", level, 999999);
         } else {
             for (final MapleData leve : data.getChildByPath("level")) {
-                ret.effects.add(MapleStatEffect.loadSkillEffectFromData(leve, id, isBuff, Byte.parseByte(leve.getName()), null));
+                ret.effects.add(MapleStatEffect.loadSkillEffectFromData(leve, id, isBuff, Byte.parseByte(leve.getName()), null, ret.notRemoved));
             }
             ret.maxLevel = ret.effects.size();
             ret.trueMax = ret.effects.size();
@@ -397,7 +494,7 @@ public class Skill implements Comparator<Skill> {
         if (level2 != null) {
             ret.pvpEffects = new ArrayList<>();
             for (int i = 1; i <= ret.trueMax; i++) {
-                ret.pvpEffects.add(MapleStatEffect.loadSkillEffectFromData(level2, id, isBuff, i, "x"));
+                ret.pvpEffects.add(MapleStatEffect.loadSkillEffectFromData(level2, id, isBuff, i, "x", ret.notRemoved));
             }
         }
         final MapleData reqDataRoot = data.getChildByPath("req");
@@ -412,6 +509,15 @@ public class Skill implements Comparator<Skill> {
                 ret.animationTime += MapleDataTool.getIntConvert("delay", effectEntry, 0);
             }
         }
+        ret.isBuffSkill = isBuff;
+        switch (id) {
+            case 27000207:
+            case 27001100:
+            case 27001201:
+                ret.masterLevel = ret.maxLevel;
+        }
+
+        ret.isSummonSkill = (data.getChildByPath("summon") != null);
         return ret;
     }
 
@@ -489,153 +595,14 @@ public class Skill implements Comparator<Skill> {
         return combatOrders;
     }
 
-    public boolean canBeLearnedBy(int job) { //test
-//        if (GameConstants.getBeginnerJob((short) (id / 10000)) == GameConstants.getBeginnerJob((short) job))
-//            return true;
-        int jid = job;
+    public boolean canBeLearnedBy(int job) {
         int skillForJob = id / 10000;
-        if (skillForJob == 2001) {
-            return MapleJob.is龍魔導士(job); //special exception for beginner -.-
-        } else if (skillForJob == 0) {
-            return MapleJob.is冒險家(job); //special exception for beginner
-        } else if (skillForJob == 1000) {
-            return MapleJob.is皇家騎士團(job); //special exception for beginner
-        } else if (skillForJob == 2000) {
-            return MapleJob.is狂狼勇士(job); //special exception for beginner
-        } else if (skillForJob == 3000) {
-            return MapleJob.is末日反抗軍(job); //special exception for beginner
-        } else if (skillForJob == 1) {
-            return MapleJob.is重砲指揮官(job); //special exception for beginner
-        } else if (skillForJob == 3001) {
-            return MapleJob.is惡魔(job); //special exception for beginner
-        } else if (skillForJob == 2002) {
-            return MapleJob.is精靈遊俠(job); //special exception for beginner
-        } else if (skillForJob == 508) {
-            return MapleJob.is蒼龍俠客(job); //special exception for beginner
-        } else if (skillForJob == 2003) {
-            return MapleJob.is幻影俠盜(job); //special exception for beginner
-        } else if (skillForJob == 5000) {
-            return MapleJob.is米哈逸(job); //special exception for beginner
-        } else if (skillForJob == 2004) {
-            return MapleJob.is夜光(job); //special exception for beginner
-        } else if (skillForJob == 6000) {
-            return MapleJob.is凱撒(job); //special exception for beginner
-        } else if (skillForJob == 6001) {
-            return MapleJob.is天使破壞者(job); //special exception for beginner
-        } else if (skillForJob == 3002) {
-            return MapleJob.is傑諾(job); //special exception for beginner
-        } else if (skillForJob == 10000) {
-            return MapleJob.is神之子(job); //special exception for beginner
-        } else if (jid / 100 != skillForJob / 100) { // wrong job
-            return false;
-        } else if (jid / 1000 != skillForJob / 1000) { // wrong job
-            return false;
-        } else if (MapleJob.is惡魔復仇者(skillForJob) && !MapleJob.is惡魔復仇者(job)) {
-            return false;
-        } else if (MapleJob.is傑諾(skillForJob) && !MapleJob.is傑諾(job)) {
-            return false;
-        } else if (MapleJob.is神之子(skillForJob) && !MapleJob.is神之子(job)) {
-            return false;
-        } else if (MapleJob.is幻獸師(skillForJob) && !MapleJob.is幻獸師(job)) {
-            return false;
-        } else if (MapleJob.is天使破壞者(skillForJob) && !MapleJob.is天使破壞者(job)) {
-            return false;
-        } else if (MapleJob.is凱撒(skillForJob) && !MapleJob.is凱撒(job)) {
-            return false;
-        } else if (MapleJob.is米哈逸(skillForJob) && !MapleJob.is米哈逸(job)) {
-            return false;
-        } else if (MapleJob.is夜光(skillForJob) && !MapleJob.is夜光(job)) {
-            return false;
-        } else if (MapleJob.is幻影俠盜(skillForJob) && !MapleJob.is幻影俠盜(job)) {
-            return false;
-        } else if (MapleJob.is蒼龍俠客(skillForJob) && !MapleJob.is蒼龍俠客(job)) {
-            return false;
-        } else if (MapleJob.is重砲指揮官(skillForJob) && !MapleJob.is重砲指揮官(job)) {
-            return false;
-        } else if (MapleJob.is惡魔殺手(skillForJob) && !MapleJob.is惡魔殺手(job)) {
-            return false;
-        } else if (MapleJob.is冒險家(skillForJob) && !MapleJob.is冒險家(job)) {
-            return false;
-        } else if (MapleJob.is皇家騎士團(skillForJob) && !MapleJob.is皇家騎士團(job)) {
-            return false;
-        } else if (MapleJob.is狂狼勇士(skillForJob) && !MapleJob.is狂狼勇士(job)) {
-            return false;
-        } else if (MapleJob.is龍魔導士(skillForJob) && !MapleJob.is龍魔導士(job)) {
-            return false;
-        } else if (MapleJob.is精靈遊俠(skillForJob) && !MapleJob.is精靈遊俠(job)) {
-            return false;
-        } else if (MapleJob.is末日反抗軍(skillForJob) && !MapleJob.is末日反抗軍(job)) {
-            return false;
-        } else if ((job / 10) % 10 == 0 && (skillForJob / 10) % 10 > (job / 10) % 10) { // wrong 2nd job
-            return false;
-        } else if ((skillForJob / 10) % 10 != 0 && (skillForJob / 10) % 10 != (job / 10) % 10) { //wrong 2nd job
-            return false;
-        } else if (skillForJob % 10 > job % 10) { // wrong 3rd/4th job
-            return false;
-        }
-        return true;
+        return MapleJob.getJobGrade(skillForJob) <= MapleJob.getJobGrade(job) && MapleJob.isSameJob(job, skillForJob);
     }
 
     public boolean isTimeLimited() {
         return timeLimited;
     }
-/*
-    public boolean isFourthJobSkill(int skillid) {
-        switch (skillid / 10000) {
-            case 112:
-            case 122:
-            case 132:
-            case 212:
-            case 222:
-            case 232:
-            case 312:
-            case 322:
-            case 412:
-            case 422:
-            case 512:
-            case 522:
-                return true;
-        }
-        return false;
-    }
-
-    public boolean isThirdJobSkill(int skillid) {
-        switch (skillid / 10000) {
-            case 111:
-            case 121:
-            case 131:
-            case 211:
-            case 221:
-            case 231:
-            case 311:
-            case 321:
-            case 411:
-            case 421:
-            case 511:
-            case 521:
-                return true;
-        }
-        return false;
-    }
-
-    public boolean isSecondJobSkill(int skillid) {
-        switch (skillid / 10000) {
-            case 110:
-            case 120:
-            case 130:
-            case 210:
-            case 220:
-            case 230:
-            case 310:
-            case 320:
-            case 410:
-            case 420:
-            case 510:
-            case 520:
-                return true;
-        }
-        return false;
-    }*/
 
     public boolean isFourthJob() {
         if (isHyper()) {
@@ -712,6 +679,10 @@ public class Skill implements Comparator<Skill> {
         return element;
     }
 
+    public int getvehicleID() {
+        return vehicleID;
+    }
+
     public int getAnimationTime() {
         return animationTime;
     }
@@ -751,7 +722,11 @@ public class Skill implements Comparator<Skill> {
     }
 
     public int getReqLevel() {
-        return this.reqLev;
+        return reqLev;
+    }
+
+    public int getMaxDamageOver() {
+        return maxDamageOver;
     }
 
     public boolean isMovement() {
@@ -762,36 +737,63 @@ public class Skill implements Comparator<Skill> {
         return pushTarget;
     }
 
+    public boolean isBuffSkill() {
+        return this.isBuffSkill;
+    }
+
+    public boolean isSummonSkill() {
+        return this.isSummonSkill;
+    }
+
     public boolean isPull() {
         return pullTarget;
     }
 
+    public boolean isAdminSkill() {
+        int jobId = id / 10000;
+        return MapleJob.is管理員(jobId);
+    }
+
+    public boolean isInnerSkill() {
+        int jobId = id / 10000;
+        return jobId == 7000;
+    }
+
     public boolean isSpecialSkill() {
         int jobId = id / 10000;
-        return jobId == 900 || jobId == 800 || jobId == 9000 || jobId == 9200 || jobId == 9201 || jobId == 9202 || jobId == 9203 || jobId == 9204;
+        switch(jobId) {
+            case 7000:
+            case 7100:
+            case 8000:
+            case 9000:
+            case 9100:
+            case 9200:
+            case 9201:
+            case 9202:
+            case 9203:
+            case 9204:
+            case 9500:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    public boolean isPetPassive() {
+        return this.petPassive;
+    }
+
+    public int getSetItemReason() {
+        return this.setItemReason;
+    }
+
+    public int geSetItemPartsCount() {
+        return this.setItemPartsCount;
     }
 
     @Override
     public int compare(Skill o1, Skill o2) {
         return (Integer.valueOf(o1.getId()).compareTo(o2.getId()));
-    }
-
-    public boolean isLinkSkills() {
-        switch (this.id) {
-            case 80000000:
-            case 80000001:
-            case 80000002:
-            case 80000005:
-            case 80000006:
-            case 80000047:
-            case 80000050:
-            case 80001040:
-            case 80001140:
-            case 80001151:
-            case 80001155:
-                return true;
-        }
-        return false;
     }
 
     public boolean isTeachSkills() {
@@ -807,9 +809,47 @@ public class Skill implements Comparator<Skill> {
             case 50001214:
             case 60000222:
             case 60011219:
+            case 110000800:
+            case 10000255:
+            case 10000256:
+            case 10000257:
+            case 10000258:
+            case 10000259:
+            case 100000271:
                 return true;
         }
         return false;
+    }
+
+    //TODO 連結技能
+    public boolean isLinkSkills() {
+        switch (this.id) {
+            case 80000000:
+            case 80000001:
+            case 80000002:
+            case 80000005:
+            case 80000006:
+            case 80000047:
+            case 80000050:
+            case 80001040:
+            case 80001140:
+            case 80001151:
+            case 80001155:
+            case 80000169://九死一生
+            case 80010006:
+            case 80000070:
+            case 80000066:
+            case 80000067:
+            case 80000068:
+            case 80000069:
+            case 80000055:
+                return true;
+        }
+        return false;
+    }
+
+    public boolean isLinkedAttackSkill() {
+        return GameConstants.isLinkedAttackSkill(id);
     }
 
     public int getFixLevel() {

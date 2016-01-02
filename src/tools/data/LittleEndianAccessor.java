@@ -145,7 +145,7 @@ public class LittleEndianAccessor {
             for (int x = 0; x < n; x++) {
                 ret[x] = readByte();
             }
-            return new String(ret, ServerConstants.MAPLE_TYPE.getAscii());
+            return new String(ret, ServerConstants.MAPLE_TYPE.getANSI());
         } catch (UnsupportedEncodingException ex) {
             System.err.println(ex);
         }
@@ -288,7 +288,7 @@ public class LittleEndianAccessor {
             for (int x = 0; x < n; x++) {
                 ret[x] = (byte) readByte();
             }
-            return new String(ret, ServerConstants.MAPLE_TYPE.getAscii());
+            return new String(ret, ServerConstants.MAPLE_TYPE.getANSI());
         } catch (UnsupportedEncodingException ex) {
             System.err.println(ex);
         }

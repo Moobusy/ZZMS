@@ -59,13 +59,13 @@ public class AngelicBusterBuff extends AbstractBuffClass {
             case 65121009: //Nova Warrior
                 eff.statups.put(MapleBuffStat.MAPLE_WARRIOR, eff.info.get(MapleStatInfo.x));
                 break;
-            case 65121053: // Final Contract - TODO
+            case 65121053: // Final Contract - TODO 天使破壞者
 //                eff.statups.put(MapleBuffStat.CRITICAL_RATE, eff.info.get(MapleStatInfo.x));
 //                eff.statups.put(MapleBuffStat.STANCE, eff.info.get(MapleStatInfo.y));
 //                eff.statups.put(MapleBuffStat.ABNORMAL_STATUS_R, eff.info.get(MapleStatInfo.asrR));
 //                eff.statups.put(MapleBuffStat.ELEMENTAL_STATUS_R, eff.info.get(MapleStatInfo.terR));
                     break;
-            case 65121054: // Pretty Exaltation - TODO
+            case 65121054: // Pretty Exaltation - TODO 天使破壞者
                 //eff.statups.put(MapleBuffStat.RECHARGE, eff.info.get(MapleStatInfo.x));
                 break;
             default:

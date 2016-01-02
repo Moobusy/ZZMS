@@ -59,45 +59,72 @@ public class CSPacket {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
         mplew.writeShort(SendPacketOpcode.CS_INFO.getValue());
-        mplew.write(HexTool.getByteArrayFromHexString(c.getChannelServer().getShopPack()));
+
+        CashItemFactory cif = CashItemFactory.getInstance();
+
+        mplew.writeInt(0);
+
+        short unk_itemSize = 0;
+        mplew.writeShort(unk_itemSize);
+        for (int i = 0 ; i < unk_itemSize ; i++) { // 是控制商城商品用的
+            addCommodityInfo(mplew);
+        }
+
+        mplew.writeShort(0);
+
+        int boxSize = 0;
+        mplew.writeInt(boxSize);
+        for (int i = 0 ; i < boxSize ; i++) { // 是可使用的箱子還是時尚隨機箱子還是什麼的, 反正跟顯示商品無關
+            mplew.writeInt(0); // 隨機箱子道具ID
+            int size = 0;
+            mplew.writeInt(size); // 隨機箱子可開出的道具的個數
+            for (int j = 0 ; j < size ; j++) {
+                mplew.writeInt(0); // 隨機箱子可開出的道具的SN?反正不是道具ID
+            }
+        }
+
+        int unkSize1 = 0;
+        mplew.writeInt(unkSize1);
+        for (int i = 0 ; i < unkSize1 ; i++) { // 估計是設定選中對應券預覽時設定的顯示券
+            mplew.writeInt(i);
+            mplew.writeInt(0); // 道具SN[F7 A4 98 00] [F8 A4 98 00]
+            mplew.writeInt(0); // 道具ID[96 95 4E 00閃亮髮型卷] [C8 9D 4E 00閃亮整型卷]
+            mplew.writeLong(0); // [00 A0 C1 29 E5 82 CE 01]
+            mplew.writeLong(0); // [00 80 39 0F 01 93 CE 01]
+            mplew.writeInt(0); // [00 00 00 00]
+            mplew.writeInt(0); // [05 00 00 00]
+            mplew.writeInt(0); // [00 00 00 00]
+            mplew.writeInt(0); // [14 00 00 00]
+            mplew.writeInt(0); // [1E 00 00 00]
+            mplew.writeInt(0); // [28 00 00 00]
+            mplew.writeInt(0); // [32 00 00 00]
+        }
+
+        List<CashItem> menuItems = cif.getMenuItems();
+        mplew.writeInt(menuItems.size());
+        for (CashItem menuitem : menuItems) { // 主頁推薦商品
+            mplew.write(menuitem.getFlag());
+            mplew.writeInt(menuitem.getSN()); // 道具SN[A8 72 F8 08] [04 A3 BD 0A] [2E 0E 27 07]
+        }
+
+        mplew.writeInt(0);
+        mplew.writeInt(3);
+        mplew.write(HexTool.getByteArrayFromHexString("02 00 3F 3F 29 00 3F 3F 3F 20 3F 3F 3F 20 3F 3F 20 3F 3F 3F 3F 20 3F 3F 3F 3F 20 3F 20 3F 3F 3F 20 3F 3F 3F 3F 20 2D 2D 2D 2D 2D 3E 20 3F 3F 05 00 3F 3F 3F 20 3F 13 00 3F 3F 3F 3F 3F 21 20 3F 3F 3F 20 3F 3F 3F 20 3F 3F 3F 21 03 00 3F 3F 3F 20 00 3F 3F 3F 20 3F 3F 3F 3F 20 3F 3F 3F 3F 20 3F 3F 3F 21 20 3F 3F 20 3F 3F 20 3F 3F 3F 3F 3F 3F 7E"));
+        mplew.writeZeroBytes(1093);
 
         return mplew.getPacket();
     }
 
-    public static byte[] CS_Picture_Item() {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-
-        mplew.writeShort(SendPacketOpcode.CASH_SHOP.getValue());
-        mplew.write(HexTool.getByteArrayFromHexString("04 01 05 00 09 3D 00 30 7E 3D 00 38 B8 0F 00 55 00 68 74 74 70 3A 2F 2F 6E 78 63 61 63 68 65 2E 6E 65 78 6F 6E 2E 6E 65 74 2F 73 70 6F 74 6C 69 67 68 74 2F 32 38 36 2F 30 30 45 53 33 2D 64 32 37 66 66 64 31 39 2D 64 36 33 33 2D 34 65 32 34 2D 38 35 65 39 2D 66 65 65 34 33 62 35 39 36 37 61 35 2E 6A 70 67 87 2C 9A 00 AC AE 4F 00 01 00 00 00 00 00 00 00 00 00 00 00 22 00 00 00 48 0D 00 00 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 48 0D 00 00 00 00 00 00 01 00 00 00 5A 00 00 00 3C 00 3C 00 01 00 00 00 3C 00 02 00 00 00 EF 07 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 09 3D 00 30 7E 3D 00 15 54 10 00 55 00 68 74 74 70 3A 2F 2F 6E 78 63 61 63 68 65 2E 6E 65 78 6F 6E 2E 6E 65 74 2F 73 70 6F 74 6C 69 67 68 74 2F 32 38 36 2F 30 30 45 53 33 2D 64 32 37 66 66 64 31 39 2D 64 36 33 33 2D 34 65 32 34 2D 38 35 65 39 2D 66 65 65 34 33 62 35 39 36 37 61 35 2E 6A 70 67 8E A3 98 00 5E 95 4E 00 01 00 00 00 00 00 00 00 00 00 00 00 13 00 00 00 B8 0B 00 00 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 B8 0B 00 00 00 00 00 00 01 00 00 00 5A 00 00 00 01 00 01 00 01 00 00 00 01 00 02 00 00 00 4D 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 09 3D 00 30 7E 3D 00 7C 6A 0F 00 55 00 68 74 74 70 3A 2F 2F 6E 78 63 61 63 68 65 2E 6E 65 78 6F 6E 2E 6E 65 74 2F 73 70 6F 74 6C 69 67 68 74 2F 32 38 36 2F 30 30 45 53 33 2D 64 32 37 66 66 64 31 39 2D 64 36 33 33 2D 34 65 32 34 2D 38 35 65 39 2D 66 65 65 34 33 62 35 39 36 37 61 35 2E 6A 70 67 4C E5 F5 05 E6 E7 8A 00 01 00 00 00 03 00 00 00 01 00 00 00 00 00 00 00 D4 62 00 00 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 00 C0 A5 54 86 48 CF 01 00 40 6E A6 86 53 CF 01 E4 48 00 00 00 00 00 00 01 00 00 00 5A 00 00 00 01 00 01 00 01 00 00 00 01 00 02 00 00 00 0B 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 08 00 00 00 E0 E6 F5 05 01 4C 4C 00 01 00 00 00 AC 26 00 00 01 1D 00 00 00 00 00 00 01 00 00 00 00 00 00 00 02 00 00 00 00 E5 F5 05 DA 80 1B 00 01 00 00 00 C4 09 00 00 53 07 00 00 00 00 00 00 01 00 00 00 5A 00 00 00 02 00 00 00 B6 E3 F5 05 17 F5 4F 00 01 00 00 00 70 17 00 00 94 11 00 00 00 00 00 00 06 00 00 00 5A 00 00 00 02 00 00 00 A0 0D 95 03 20 A6 1B 00 01 00 00 00 60 09 00 00 08 07 00 00 00 00 00 00 01 00 00 00 5A 00 00 00 02 00 00 00 A4 0D 95 03 21 A6 1B 00 01 00 00 00 60 09 00 00 08 07 00 00 00 00 00 00 01 00 00 00 5A 00 00 00 02 00 00 00 40 94 96 03 50 E3 4E 00 01 00 00 00 34 08 00 00 EC 04 00 00 00 00 00 00 01 00 00 00 5A 00 00 00 02 00 00 00 17 E1 F5 05 C4 61 54 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01 00 00 00 5A 00 00 00 02 00 00 00 18 E1 F5 05 C5 61 54 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01 00 00 00 5A 00 00 00 02 00 00 00 00 09 3D 00 30 7E 3D 00 7C 32 10 00 55 00 68 74 74 70 3A 2F 2F 6E 78 63 61 63 68 65 2E 6E 65 78 6F 6E 2E 6E 65 74 2F 73 70 6F 74 6C 69 67 68 74 2F 32 38 36 2F 30 30 45 53 33 2D 64 32 37 66 66 64 31 39 2D 64 36 33 33 2D 34 65 32 34 2D 38 35 65 39 2D 66 65 65 34 33 62 35 39 36 37 61 35 2E 6A 70 67 05 E5 F5 05 93 E8 8A 00 01 00 00 00 03 00 00 00 01 00 00 00 00 00 00 00 78 69 00 00 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 00 C0 A5 54 86 48 CF 01 00 00 8A 7D 06 4E CF 01 4E 4D 00 00 00 00 00 00 01 00 00 00 5A 00 00 00 01 00 01 00 01 00 00 00 01 00 02 00 00 00 12 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 07 00 00 00 01 E5 F5 05 9C 83 10 00 00 00 00 00 F8 11 00 00 AE 0B 00 00 00 00 00 00 01 00 00 00 00 00 00 00 02 00 00 00 02 E5 F5 05 39 5D 10 00 00 00 00 00 10 0E 00 00 8C 0A 00 00 00 00 00 00 01 00 00 00 00 00 00 00 02 00 00 00 03 E5 F5 05 58 0E 10 00 00 00 00 00 E8 1C 00 00 AE 15 00 00 00 00 00 00 01 00 00 00 00 00 00 00 02 00 00 00 75 B4 32 01 E0 71 0F 00 00 00 00 00 30 11 00 00 E4 0C 00 00 00 00 00 00 01 00 00 00 00 00 00 00 02 00 00 00 04 E5 F5 05 9F D1 10 00 00 00 00 00 58 1B 00 00 82 14 00 00 00 00 00 00 01 00 00 00 00 00 00 00 02 00 00 00 29 5A 62 02 A9 61 54 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01 00 00 00 5A 00 00 00 02 00 00 00 2A 5A 62 02 AA 61 54 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01 00 00 00 5A 00 00 00 02 00 00 00 00 09 3D 00 30 7E 3D 00 7C 6A 0F 00 55 00 68 74 74 70 3A 2F 2F 6E 78 63 61 63 68 65 2E 6E 65 78 6F 6E 2E 6E 65 74 2F 73 70 6F 74 6C 69 67 68 74 2F 32 38 36 2F 30 30 45 53 33 2D 64 32 37 66 66 64 31 39 2D 64 36 33 33 2D 34 65 32 34 2D 38 35 65 39 2D 66 65 65 34 33 62 35 39 36 37 61 35 2E 6A 70 67 4F E5 F5 05 04 6A 54 00 01 00 00 00 05 00 00 00 00 00 00 00 00 00 00 00 AC 0D 00 00 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 AC 0D 00 00 00 00 00 00 01 00 00 00 5A 00 00 00 01 00 01 00 01 00 00 00 01 00 02 00 00 00 08 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00"));
-
-        return mplew.getPacket();
-    }
-
-    public static byte[] CS_Top_Items() {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-
-        mplew.writeShort(SendPacketOpcode.CASH_SHOP.getValue());
-        mplew.write(HexTool.getByteArrayFromHexString("05 01 02 C0 C6 2D 00 D0 ED 2D 00 D4 B7 0F 00 00 00 DA FE FD 02 A0 A6 4F 00 01 00 00 00 00 00 00 00 00 00 00 00 32 00 00 00 10 27 00 00 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 10 27 00 00 00 00 00 00 0B 00 00 00 5A 00 00 00 3C 00 3C 00 01 00 00 00 3C 00 02 00 00 00 1E 02 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 C0 C6 2D 00 D0 ED 2D 00 38 B8 0F 00 00 00 87 2C 9A 00 AC AE 4F 00 01 00 00 00 00 00 00 00 00 00 00 00 22 00 00 00 48 0D 00 00 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 48 0D 00 00 00 00 00 00 01 00 00 00 5A 00 00 00 3C 00 3C 00 01 00 00 00 3C 00 02 00 00 00 EF 07 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00"));
-
-        return mplew.getPacket();
-    }
-
-    public static byte[] CS_Special_Item() {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-
-        mplew.writeShort(SendPacketOpcode.CASH_SHOP.getValue());
-        mplew.write(HexTool.getByteArrayFromHexString("06 01 03 C0 C6 2D 00 E0 14 2E 00 C4 90 0F 00 00 00 BF C3 C9 01 84 E7 4C 00 01 00 00 00 00 00 00 00 00 00 00 00 0F 00 00 00 AC 26 00 00 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 AC 26 00 00 00 00 00 00 01 00 00 00 1E 00 00 00 01 00 01 00 01 00 00 00 01 00 02 00 00 00 1E 03 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 C0 C6 2D 00 E0 14 2E 00 38 B8 0F 00 00 00 87 2C 9A 00 AC AE 4F 00 01 00 00 00 00 00 00 00 00 00 00 00 22 00 00 00 48 0D 00 00 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 48 0D 00 00 00 00 00 00 01 00 00 00 5A 00 00 00 3C 00 3C 00 01 00 00 00 3C 00 02 00 00 00 EF 07 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 C0 C6 2D 00 E0 14 2E 00 D4 B7 0F 00 00 00 D9 FE FD 02 A0 A6 4F 00 01 00 00 00 00 00 00 00 00 00 00 00 32 00 00 00 30 75 00 00 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 30 75 00 00 00 00 00 00 23 00 00 00 5A 00 00 00 3C 00 3C 00 01 00 00 00 3C 00 02 00 00 00 D4 02 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00"));
-
-        return mplew.getPacket();
-    }
-
-    public static byte[] CS_Featured_Item() {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-
-        mplew.writeShort(SendPacketOpcode.CASH_SHOP.getValue());
-        mplew.write(HexTool.getByteArrayFromHexString("08 01 05 C0 C6 2D 00 F0 3B 2E 00 C4 90 0F 00 00 00 BF C3 C9 01 84 E7 4C 00 01 00 00 00 04 00 00 00 00 00 00 00 0F 00 00 00 AC 26 00 00 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 AC 26 00 00 00 00 00 00 01 00 00 00 1E 00 00 00 01 00 01 00 01 00 00 00 01 00 02 00 00 00 1E 03 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 C0 C6 2D 00 F0 3B 2E 00 74 E0 0F 00 00 00 7C FE FD 02 81 3A 54 00 01 00 00 00 04 00 00 00 00 00 00 00 02 00 00 00 A0 0F 00 00 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 A0 0F 00 00 00 00 00 00 01 00 00 00 5A 00 00 00 3C 00 3C 00 01 00 00 00 3C 00 02 00 00 00 B3 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 C0 C6 2D 00 F0 3B 2E 00 E8 07 10 00 00 00 40 FE FD 02 70 13 54 00 01 00 00 00 04 00 00 00 00 00 00 00 01 00 00 00 F4 01 00 00 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 F4 01 00 00 00 00 00 00 01 00 00 00 5A 00 00 00 01 00 01 00 01 00 00 00 01 00 02 00 00 00 8D 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 C0 C6 2D 00 F0 3B 2E 00 10 E0 0F 00 00 00 3D FE FD 02 D0 FD 54 00 01 00 00 00 04 00 00 00 00 00 00 00 04 00 00 00 24 13 00 00 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 24 13 00 00 00 00 00 00 01 00 00 00 5A 00 00 00 3C 00 3C 00 01 00 00 00 3C 00 02 00 00 00 77 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 C0 C6 2D 00 F0 3B 2E 00 74 E0 0F 00 00 00 35 FE FD 02 80 3A 54 00 01 00 00 00 04 00 00 00 00 00 00 00 03 00 00 00 B8 0B 00 00 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 B8 0B 00 00 00 00 00 00 01 00 00 00 5A 00 00 00 3C 00 3C 00 01 00 00 00 3C 00 02 00 00 00 EF 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00"));
-
-        return mplew.getPacket();
+    public static void addCommodityInfo(MaplePacketLittleEndianWriter mplew) {
+        mplew.writeInt(0); // [D4 84 91 06] 商品SN
+        //0x400 顯示商品開關
+        //0x800 商品FLAG 0-NEW,1-SALE,2-HOT,3-EVENT,其他-無
+        mplew.writeInt(0); // [00 04 00 00] 不知道是什麼的基址
+        mplew.writeInt(0); // unk
+        int 基址值個數 = 0;
+        for (int j = 0 ; j < 基址值個數 ; j++) {
+            mplew.write(0); // 有-1, 0, 1, 2 當基址為0x20時 short?
+        }
     }
 
     public static byte[] changeCategory(int subcategory) {
@@ -152,7 +179,7 @@ public class CSPacket {
 
         mplew.writeShort(SendPacketOpcode.CASH_SHOP_UPDATE.getValue());
         mplew.write(15);
-        mplew.write(1);//todo add db row
+        mplew.write(1);
 
         return mplew.getPacket();
     }
@@ -169,7 +196,7 @@ public class CSPacket {
         mplew.write(chr.getWishlistSize());
         for (int i : chr.getWishlist()) {
             CashItem ci = cif.getAllItem(i);
-//        for (CashItem i : cif.getMenuItems(301)) {//TODO create and load form favorites?
+//        for (CashItem i : cif.getMenuItems(301)) {
             addCSItemInfo(mplew, ci);
         }
         return mplew.getPacket();
@@ -232,157 +259,13 @@ public class CSPacket {
         }
     }
 
-//    public static void addCSItemInfo(MaplePacketLittleEndianWriter mplew, CashItemInfo item) {
-//        mplew.writeInt(item.getCategory());
-//        mplew.writeInt(item.getSubCategory()); //4000000 + 10000 + page * 10000
-//        mplew.writeInt(item.getParent()); //1000000 + 70000 + page * 100 + item on page
-//        mplew.writeMapleAsciiString(item.getImage()); //jpeg img url
-//        mplew.writeInt(item.getSN());
-//        mplew.writeInt(item.getId());
-//        mplew.writeInt(1);
-//        mplew.writeInt(0);
-//        mplew.writeInt(0);
-//        mplew.writeInt(0);//changes
-//        mplew.writeInt(item.getPrice());
-//        mplew.write(HexTool.getByteArrayFromHexString("00 80 22 D6 94 EF C4 01")); // 1/1/2005
-//        mplew.writeLong(PacketHelper.MAX_TIME);
-//        mplew.write(HexTool.getByteArrayFromHexString("00 80 22 D6 94 EF C4 01")); // 1/1/2005
-//        mplew.writeLong(PacketHelper.MAX_TIME);
-//        mplew.writeInt(item.getPrice()); //after discount
-//        mplew.writeInt(0);
-//        mplew.writeInt(item.getQuantity());
-//        mplew.writeInt(item.getExpire());
-//        mplew.write(1); //buy
-//        mplew.write(1); //gift
-//        mplew.write(1); //cart
-//        mplew.write(0);
-//        mplew.write(1); //favorite
-//        mplew.writeInt(2);
-//        mplew.writeInt(item.getLikes()); //likes
-//        mplew.writeInt(0);
-//        mplew.writeInt(0);
-//        mplew.writeInt(0);
-//        mplew.writeInt(0);
-//        List pack = CashItemFactory.getInstance().getPackageItems(item.getSN());
-//        if (pack == null) {
-//            mplew.writeInt(0);
-//        } else {
-//            mplew.writeInt(pack.size());
-//            for (int i = 0; i < pack.size(); i++) {
-//                mplew.writeInt(item.getSN()); //should be pack item sn
-//                mplew.writeInt(((Integer) pack.get(i)).intValue());
-//                mplew.writeInt(0);
-//                mplew.writeInt(0); //pack item usual price
-//                mplew.writeInt(0); //pack item discounted price
-//                mplew.writeInt(0);
-//                mplew.writeInt(1);
-//                mplew.writeInt(0);
-//                mplew.writeInt(2);
-//            }
-//        }
-//    }
-//    public static void addModCashItemInfo(MaplePacketLittleEndianWriter mplew, CashModInfo item) {
-//        int flags = item.flags;
-//        mplew.writeInt(item.sn);
-//        mplew.writeInt(flags);
-//        if ((flags & 0x1) != 0) {
-//            mplew.writeInt(item.itemid);
-//        }
-//        if ((flags & 0x2) != 0) {
-//            mplew.writeShort(item.count);
-//        }
-//        if ((flags & 0x10) != 0) {
-//            mplew.write(item.priority);
-//        }
-//        if ((flags & 0x4) != 0) {
-//            mplew.writeInt(item.discountPrice);
-//        }
-//        if ((flags & 0x8) != 0) {
-//            mplew.write(item.unk_1 - 1);
-//        }
-//        if ((flags & 0x20) != 0) {
-//            mplew.writeShort(item.period);
-//        }
-//        if ((flags & 0x20000) != 0) {
-//            mplew.writeShort(0);
-//        }
-//        if ((flags & 0x40000) != 0) {
-//            mplew.writeShort(0);
-//        }
-//        if ((flags & 0x40) != 0) {
-//            mplew.writeInt(0);
-//        }
-//        if ((flags & 0x80) != 0) {
-//            mplew.writeInt(item.meso);
-//        }
-//        if ((flags & 0x100) != 0) {
-//            mplew.write(item.unk_2 - 1);
-//        }
-//        if ((flags & 0x200) != 0) {
-//            mplew.write(item.gender);
-//        }
-//        if ((flags & 0x400) != 0) {
-//            mplew.write(item.showUp ? 1 : 0);
-//        }
-//        if ((flags & 0x800) != 0) {
-//            mplew.write(item.mark);
-//        }
-//        if ((flags & 0x1000) != 0) {
-//            mplew.write(item.unk_3 - 1);
-//        }
-//        if ((flags & 0x2000) != 0) {
-//            mplew.writeShort(0);
-//        }
-//        if ((flags & 0x4000) != 0) {
-//            mplew.writeShort(0);
-//        }
-//        if ((flags & 0x8000) != 0) {
-//            mplew.writeShort(0);
-//        }
-//        if ((flags & 0x10000) != 0) {
-//            List pack = CashItemFactory.getInstance().getPackageItems(item.sn);
-//            if (pack == null) {
-//                mplew.write(0);
-//            } else {
-//                mplew.write(pack.size());
-//                for (int i = 0; i < pack.size(); i++) {
-//                    mplew.writeInt(((Integer) pack.get(i)));
-//                }
-//            }
-//        }
-//        if (((flags & 0x80000) == 0) || (((flags & 0x100000) == 0)
-//                || ((flags & 0x200000) != 0))) {
-//            mplew.write(0);
-//        }
-//    }
-    public static byte[] loadCategories(MapleClient c) {
-        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-
-        mplew.writeShort(SendPacketOpcode.CASH_SHOP.getValue());
-        mplew.write(3);
-        mplew.write(1);
-        CashItemFactory cif = CashItemFactory.getInstance();
-        mplew.write(cif.getCategories().size()); //categories size
-        for (CashCategory cat : cif.getCategories()) {
-            //id: base = 1000000; favorite = +1000000; category = +10000; subcategory = +100 subsubcategory = +1
-            mplew.writeInt(cat.getId());
-            mplew.writeMapleAsciiString(cat.getName());
-            mplew.writeInt(cat.getParentDirectory());
-            mplew.writeInt(cat.getFlag());
-            mplew.writeInt(cat.getSold()); //1 = sold out
-        }
-        mplew.writeInt(0);
-
-        return mplew.getPacket();
-    }
-
     public static byte[] showNXMapleTokens(MapleCharacter chr) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
         mplew.writeShort(SendPacketOpcode.CS_UPDATE.getValue());
         mplew.writeInt(chr.getCSPoints(1)); // 樂豆點數
         mplew.writeInt(chr.getCSPoints(2)); // 楓葉點數
-        mplew.writeInt(chr.getCSPoints(4)); // 里程點數
+        mplew.writeInt(chr.getCSPoints(3)); // 里程點數
 
         return mplew.getPacket();
     }
@@ -997,14 +880,13 @@ public class CSPacket {
          */
         return mplew.getPacket();
     }
-    
-    public static byte[] PlatinumHammer(byte mode, int success) {
+
+    public static byte[] PlatinumHammer(int op) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
         mplew.writeShort(SendPacketOpcode.PLATINUM_HAMMER.getValue());
-        mplew.write(mode);
-        mplew.writeInt(success);
-        mplew.writeZeroBytes(50);
+        mplew.write(op);
+        mplew.write(0);
 
         return mplew.getPacket();
     }

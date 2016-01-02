@@ -205,7 +205,7 @@ public class ReactorActionManager extends AbstractPlayerInteraction {
         getPlayer().getMap().broadcastMessage(CField.harvestResult(getPlayer().getId(), succ));
     }
 
-    public void doHarvest() { //TODO LEGEND
+    public void doHarvest() {
         if (getPlayer().getFatigue() >= 200 || getPlayer().getStat().harvestingTool <= 0 || getReactor().getTruePosition().distanceSq(getPlayer().getTruePosition()) > 10000) {
             return;
         }

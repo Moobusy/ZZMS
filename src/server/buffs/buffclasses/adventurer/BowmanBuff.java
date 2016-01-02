@@ -18,28 +18,50 @@ public class BowmanBuff extends AbstractBuffClass {
 
     public BowmanBuff() {
         buffs = new int[]{
-            3101002, //Bow Booster
-            3101004, //SoulArrow
-            3201002, //Bow Booster
-            3201004, //Soul Arrow xBow
-            3121000, //MapleWarrior
-            3211011, //PainKiller
-            3121002, //SharpEyes
-            3121007, //Illusion Step
-            3221000, //Maple Warrior
-            3221002, //Sharp Eye
-            3221006, //Illusion Step
-            3121053, //Epic Adventure
-            3221053, //Epic Adventure
-            3121054, //Constentration
-            3221053, //Epic Adventure
-            3221054, //Bullseye Shot
+            //二轉
+            //獵人
+            3101002, //快速之弓Bow Booster
+            3101004, //無形之箭SoulArrow
+//TODO            3101009, //魔幻箭筒
+            //弩弓手
+            3201002, //快速之弩Bow Booster
+            3201004, //無形之箭Soul Arrow xBow
+
+            //三轉
+            //遊俠
+//TODO            3110007, //躲避
+//TODO            3110012, //集中專注
+//TODO            3111011, //終極射擊：箭
+            //狙擊手
+//TODO            3210007, //躲避
+            3211011, //痛苦殺手PainKiller
+//TODO            3211012, //終極射擊：弩
+//TODO            3210013, //反向傷害
+
+            //四轉
+            //箭神
+            3121000, //楓葉祝福MapleWarrior
+            3121002, //會心之眼SharpEyes
+            3121007, //爆發Illusion Step
+//TODO            3121016, //無限箭筒
+            //神射手
+            3221000, //楓葉祝福Maple Warrior
+            3221002, //會心之眼Sharp Eye
+            3221006, //爆發Illusion Step
+
+            //超技
+            //箭神
+            3121053, //傳說冒險Epic Adventure
+            3121054, //戰鬥準備Constentration
+            //神射手
+            3221053, //傳說冒險Epic Adventure
+            3221054, //專注弱點Bullseye Shot
         };
     }
     
     @Override
     public boolean containsJob(int job) {
-        return MapleJob.is冒險家(job) && job / 100 == 3;
+        return MapleJob.is冒險家(job) && MapleJob.is弓箭手(job);
     }
 
     @Override
@@ -83,7 +105,7 @@ public class BowmanBuff extends AbstractBuffClass {
             case 3221054: //BullsEye Shot
                 break;
             default:
-                //System.out.println("Bowman skill not coded: " + skill);
+                System.out.println("弓箭手技能未處理,技能代碼: " + skill);
                 break;
         }
     }

@@ -20,10 +20,15 @@
  */
 package handling.world;
 
+import client.MapleCharacter;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import server.MapleStatEffect;
 
 public class MapleParty implements Serializable {
 
@@ -34,6 +39,7 @@ public class MapleParty implements Serializable {
     private boolean disbanded = false;
     private boolean privateParty;
     private String name;
+    private Map<Integer, Map<Integer, List<Integer>>> partyBuffs = new HashMap();
 
     public MapleParty(int id, MaplePartyCharacter chrfor, boolean privateParty, String name) {
         this.leader = chrfor;
@@ -153,5 +159,99 @@ public class MapleParty implements Serializable {
 
     public void setPrivate(boolean privateParty) {
         this.privateParty = privateParty;
+    }
+
+    public void givePartyBuff(int buffId, int applyfrom, int applyto) {
+        if (partyBuffs.containsKey(buffId)) {
+            if (partyBuffs.get(buffId).containsKey(applyfrom)) {
+                if (!partyBuffs.get(buffId).keySet().isEmpty()) {
+                    for (Integer from : partyBuffs.get(buffId).keySet()) {
+                        if (partyBuffs.get(buffId).get(from).contains(applyto)) {
+                            partyBuffs.get(buffId).get(from).remove(partyBuffs.get(buffId).get(from).indexOf(applyto));
+                        }
+                        if (partyBuffs.get(buffId).get(from).isEmpty()) {
+                            partyBuffs.get(buffId).remove(from);
+                        }
+                    }
+                }
+                if (partyBuffs != null && !partyBuffs.get(buffId).isEmpty() && !partyBuffs.get(buffId).get(applyfrom).isEmpty() && !partyBuffs.get(buffId).get(applyfrom).contains(applyto)) {
+                    partyBuffs.get(buffId).get(applyfrom).add(applyto);
+                }
+            } else {
+                ArrayList applytos = new ArrayList();
+                applytos.add(applyto);
+                partyBuffs.get(buffId).put(applyfrom, applytos);
+            }
+        } else {
+            Map<Integer, List<Integer>> hMap = new HashMap();
+            ArrayList applytos = new ArrayList();
+            applytos.add(applyto);
+            hMap.put(applyfrom, applytos);
+            partyBuffs.put(buffId, hMap);
+        }
+    }
+
+    public int getPartyBuffs(int applyfrom) {
+        ArrayList chrs = new ArrayList();
+        for (Map<Integer, List<Integer>> buffs : partyBuffs.values()) {
+            if (buffs.containsKey(applyfrom)) {
+                for (List<Integer> applytos : buffs.values()) {
+                    for (int i : applytos) {
+                        if (!chrs.contains(i)) {
+                            chrs.add(i);
+                        }
+                    }
+                }
+            }
+        }
+        return chrs.size();
+    }
+
+    public int cancelPartyBuff(int buffId, int cancelby) {
+        if (partyBuffs.containsKey(buffId)) {
+            if (partyBuffs.get(buffId).isEmpty()) {
+                partyBuffs.remove(buffId);
+            } else {
+                for (Integer applyfrom : partyBuffs.get(buffId).keySet()) {
+                    if (partyBuffs.get(buffId).get(applyfrom).isEmpty()) {
+                        partyBuffs.get(buffId).remove(applyfrom);
+                    } else if (partyBuffs.get(buffId).get(applyfrom).contains(cancelby)) {
+                        partyBuffs.get(buffId).get(applyfrom).remove(partyBuffs.get(buffId).get(applyfrom).indexOf(cancelby));
+                        return applyfrom;
+                    }
+                }
+            }
+        }
+        return -1;
+    }
+
+    public void cancelAllPartyBuffsByChr(int cancelby) {
+        if (partyBuffs.isEmpty()) {
+            return;
+        }
+        try {
+            for (Integer buffId : partyBuffs.keySet()) {
+                if (partyBuffs.get(buffId).isEmpty()) {
+                    partyBuffs.remove(buffId);
+                } else {
+                    for (Integer applyfrom : partyBuffs.get(buffId).keySet()) {
+                        if (partyBuffs.get(buffId).get(applyfrom).isEmpty() || applyfrom == cancelby) {
+                            partyBuffs.get(buffId).remove(applyfrom);
+                            MapleCharacter chr = MapleCharacter.getOnlineCharacterById(applyfrom);
+                            if (applyfrom == cancelby && chr != null) {
+                                MapleStatEffect.applyPassiveBless(chr);
+                            }
+                        } else if (partyBuffs.get(buffId).get(applyfrom).contains(cancelby)) {
+                            partyBuffs.get(buffId).get(applyfrom).remove(partyBuffs.get(buffId).get(applyfrom).indexOf(cancelby));
+                            MapleCharacter chr = MapleCharacter.getOnlineCharacterById(applyfrom);
+                            if (chr != null) {
+                                MapleStatEffect.applyPassiveBless(chr);
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+        }
     }
 }

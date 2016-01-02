@@ -33,7 +33,6 @@ import handling.world.exped.ExpeditionType;
 import handling.world.guild.MapleGuild;
 import handling.world.guild.MapleGuildAlliance;
 import java.awt.Point;
-import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -47,10 +46,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import javax.script.Invocable;
-import provider.MapleDataDirectoryEntry;
-import provider.MapleDataFileEntry;
-import provider.MapleDataProvider;
-import provider.MapleDataProviderFactory;
 import server.MapleCarnivalChallenge;
 import server.MapleCarnivalParty;
 import server.MapleInventoryManipulator;
@@ -65,6 +60,7 @@ import server.Timer.CloneTimer;
 import server.life.*;
 import server.maps.Event_DojoAgent;
 import server.maps.Event_PyramidSubway;
+import server.maps.MapleFoothold;
 import server.maps.MapleMap;
 import server.quest.MapleQuest;
 import server.shops.MapleShopFactory;
@@ -79,6 +75,7 @@ import tools.packet.CField.UIPacket;
 import tools.packet.CWvsContext;
 import tools.packet.CWvsContext.GuildPacket;
 import tools.packet.CWvsContext.InfoPacket;
+import tools.packet.provider.SpecialEffectType;
 
 public class NPCConversationManager extends AbstractPlayerInteraction {
 
@@ -87,6 +84,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     private byte lastMsg = -1;
     public boolean pendingDisposal = false;
     private final Invocable iv;
+    private static final Map<Pair<Integer, MapleClient>, MapleNPC> npcRequestController = new HashMap<>();
 
     public NPCConversationManager(MapleClient c, int npc, int questid, String npcscript, ScriptType type, Invocable iv) {
         super(c, npc, questid, npcscript);
@@ -216,6 +214,35 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
         lastMsg = 0;
     }
 
+    public void sendOthersTalk(String text, int npcid, boolean[] bottom) {
+        sendOthersTalk(text, npcid, bottom, (byte) 1);
+    }
+
+    public void sendOthersTalk(String text, int npcid, boolean[] bottom, byte type) {
+        String str = "";
+        if (bottom.length >= 2) {
+            for (int i = 0 ; i < 2 ; i++) {
+                if (bottom[i]) {
+                    str += "01";
+                } else {
+                    str += "00";
+                }
+                if (i < bottom.length - 1) {
+                    str += " ";
+                }
+            }
+        } else {
+            str = "00 01";
+        }
+        if (text.contains("#L")) {
+            lastMsg = 5;
+            c.getSession().write(NPCPacket.getOthersTalk(id, (byte) 5, npcid, text, "", type));
+        } else {
+            lastMsg = 0;
+            c.getSession().write(NPCPacket.getOthersTalk(id, (byte) 0, npcid, text, str, type));
+        }
+    }
+
     public void sendNextSNew(String text, byte type, byte type2) {
         sendNextSNew(text, type, type2, id);
     }
@@ -240,6 +267,11 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
         }
         c.getSession().write(NPCPacket.getNPCTalk(id, (byte) 0, text, "01 00", (byte) 0));
         lastMsg = 0;
+    }
+
+    public void getAdviceTalk(String[] wzinfo) {
+        c.getSession().write(NPCPacket.getAdviceTalk(wzinfo));
+        lastMsg = 1;
     }
 
     public void sendZeroTalk(String talk) {
@@ -299,10 +331,6 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     public void sendDreamWorldNPCTalk(boolean read, byte msgType, byte type, byte result, String talk) {
         c.getSession().write(NPCPacket.getDreamWorldNPCTalk(0, false, (byte) msgType, (byte) type, (byte) result, id, talk));
         lastMsg = (byte) msgType;
-    }
-
-    public final void DisableUI(final boolean enabled) {
-        c.getSession().write(UIPacket.IntroDisableUI(enabled));
     }
 
     public void sendPrevS(String text, byte type) {
@@ -425,9 +453,6 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
         lastMsg = 0;
     }
 
-//    public void sendSelfTalk(String text, byte type) {
-//        c.getSession().write(NPCPacket.getSelfTalkText(text));
-//    }
     public void sendSelfTalk(String text) {
         if (text.contains("#L")) { // will dc otherwise!
             sendSimpleS(text, type.getValue());
@@ -622,11 +647,11 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     }
 
     public static boolean hairExists(int hair) {
-        return MapleItemInformationProvider.getInstance().hairExists(hair);
+        return MapleItemInformationProvider.getInstance().itemExists(hair);
     }
 
     public static boolean faceExists(int face) {
-        return MapleItemInformationProvider.getInstance().faceExists(face);
+        return MapleItemInformationProvider.getInstance().itemExists(face);
     }
 
     public int[] getCanHair(int[] hairs) {
@@ -831,7 +856,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     }
 
     public void startQuest(int idd) {
-        MapleQuest.getInstance(idd).start(getPlayer(), id);
+        startQuest(idd, id);
     }
 
     public void completeQuest(int idd) {
@@ -980,6 +1005,132 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
         }
     }
 
+    public void spawnNPCRequestController(int npcid, int x, int y) {
+        spawnNPCRequestController(npcid, x, y, 0);
+    }
+
+    public void spawnNPCRequestController(int npcid, int x, int y, int f) {
+        spawnNPCRequestController(npcid, x, y, f, npcid);
+    }
+
+    public void spawnNPCRequestController(int npcid, int x, int y, int f, int oid) {
+        if (npcRequestController.containsKey(new Pair(npcid, c))) {
+            npcRequestController.remove(new Pair(npcid, c));
+        }
+        MapleNPC npc;
+        npc = c.getPlayer().getMap().getNPCById(npcid);
+        if (npc == null) {
+            npc = MapleLifeFactory.getNPC(npcid);
+            if (npc == null) {
+                return;
+            }
+            npc.setPosition(new Point(x, y));
+            npc.setCy(y);
+            npc.setRx0(x - 50);
+            npc.setRx1(x + 50);
+            npc.setF(f);
+            MapleFoothold fh = c.getPlayer().getMap().getFootholds().findBelow(new Point(x, y), false);
+            npc.setFh(fh == null ? 0 : fh.getId());
+            npc.setCustom(true);
+            npc.setObjectId(oid);
+        }
+        npcRequestController.put(new Pair(npcid, c), npc);
+        c.getSession().write(NPCPacket.spawnNPCRequestController(npc, true));//isMiniMap
+        c.getSession().write(NPCPacket.setNPCSpecialAction(npc.getObjectId(), "summon", 0, false));
+    }
+
+    public void getNPCBubble(int npcid, String data, int exclamation, int bubbleType, int time, int directionTime) {
+        c.getSession().write(CField.EffectPacket.showEffect(true, c.getPlayer(), SpecialEffectType.NPC_BUBBLE, new int[]{exclamation, bubbleType, 0, time, 1, 0, 0, 0, 4, npcid}, new String[]{data}, null, null));
+        if (directionTime > -1) {
+            wait(directionTime > 0 ? directionTime : time);
+        }
+    }
+
+    public void setNPCSpecialAction(int npcid, String action) {
+        setNPCSpecialAction(npcid, action, 0, false);
+    }
+
+    public void setNPCSpecialAction(int npcid, String action, int time, boolean unk) {
+        setNPCSpecialAction(npcid, action, time, unk, -1);
+    }
+
+    public void setNPCSpecialAction(int npcid, String action, int time, boolean unk, int directionTime) {
+        final MapleNPC npc;
+        if (npcRequestController.containsKey(new Pair(npcid, c))) {
+            npc = npcRequestController.get(new Pair(npcid, c));
+        } else {
+            return;
+        }
+        c.getSession().write(NPCPacket.setNPCSpecialAction(npc.getObjectId(), action, time, unk));
+        if (directionTime > -1) {
+            wait(directionTime > 0 ? directionTime : time);
+        }
+    }
+
+    public void updateNPCSpecialAction(int npcid, int value, int x, int y) {
+        final MapleNPC npc;
+        if (npcRequestController.containsKey(new Pair(npcid, c))) {
+            npc = npcRequestController.get(new Pair(npcid, c));
+        } else {
+            return;
+        }
+        c.getSession().write(NPCPacket.NPCSpecialAction(npc.getObjectId(), value, x, y));
+    }
+
+    public void getNPCDirectionEffect(int npcid, String data, int value, int x, int y) {
+        final MapleNPC npc;
+        if (npcRequestController.containsKey(new Pair(npcid, c))) {
+            npc = npcRequestController.get(new Pair(npcid, c));
+        } else {
+            return;
+        }
+        c.getSession().write(CField.UIPacket.getDirectionEffect(2, data, new int[]{value, x, y, 1, 1, 0, 0, npc.getObjectId()}));
+    }
+
+    public void removeNPCRequestController(int npcid) {
+        final MapleNPC npc;
+        if (npcRequestController.containsKey(new Pair(npcid, c))) {
+            npc = npcRequestController.get(new Pair(npcid, c));
+        } else {
+            return;
+        }
+        c.getSession().write(NPCPacket.spawnNPCRequestController(npc.getObjectId()));
+        c.getSession().write(NPCPacket.removeNPC(npc.getObjectId()));
+        npcRequestController.remove(new Pair(npcid, c));
+    }
+
+    public final void resetNPCController(final int npcId) {
+        final MapleNPC npc;
+        if (npcRequestController.containsKey(new Pair(npcId, c))) {
+            npc = npcRequestController.get(new Pair(npcId, c));
+        } else {
+            return;
+        }
+        c.getSession().write(NPCPacket.resetNPC(npc.getObjectId()));
+    }
+
+    public void showEffect(int eff, int[] value, String[] str) {
+        showEffect(false, eff, value, str);
+    }
+
+    public void showEffect(boolean broadcast, int eff, int[] value, String[] str) {
+        SpecialEffectType effect = SpecialEffectType.LEVEL_UP;
+        for (SpecialEffectType i : SpecialEffectType.values()) {
+            if (i.getValue() == eff) {
+                effect = i;
+            }
+        }
+        if (broadcast) {
+            c.getPlayer().getMap().broadcastMessage(CField.EffectPacket.showEffect(false, c.getPlayer(), effect, value, str, null, null));
+        } else {
+            c.getSession().write(CField.EffectPacket.showEffect(true, c.getPlayer(), effect, value, str, null, null));
+        }
+    }
+
+    public void playSound(String sound) {
+        playSound(false, sound);
+    }
+
     public void playSound(boolean broadcast, String sound) {
         if (broadcast) {
             c.getPlayer().getMap().broadcastMessage(CField.playSound(sound));
@@ -988,29 +1139,40 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
         }
     }
 
-    public void getDirectionInfo(byte type, int value) {
-        getDirectionInfo(type, value, 0);
+    public final void hidePlayer(boolean hide) {
+        getDirectionEffect(9, null, new int[]{hide ? 1 : 0});
     }
 
-    public void getDirectionInfo(byte type, int value, int value2) {
-        getDirectionEffect(type, "", value, value2, 0, 0, 0, 0, 0, 0);
+    public void wait(int time) {
+        getDirectionEffect(1, null, new int[]{time});
     }
 
-    public void getDirectionInfo(String data, int value, int x, int y, int a, int b) {
-        getDirectionEffect(2, data, value, x, y, a, b, 0, 0, 0);
+    public void sendTellStory(String data, boolean canNext) {
+        getDirectionEffect(11, data, new int[]{canNext ? 1 : 0});
     }
 
-    public void getDirectionInfoNew(byte type, int value) {
-        getDirectionInfoNew(type, value, 0, 0);
+    public void getDirectionEffect(int mod, String data, int[] values) {
+        c.getSession().write(UIPacket.getDirectionEffect(mod, data, values));
+        if (lastMsg != -1) {
+            return;
+        }
+        switch (mod) {
+            case 1:
+            case 3:
+            case 4:
+            case 5:
+                lastMsg = 0x12;
+                break;
+            case 0xB:
+                if (values[0] == 1) {
+                    lastMsg = 0x22;
+                }
+                break;
+        }
     }
 
-    public void getDirectionInfoNew(byte type, int value, int a, int b) {
-        getDirectionEffect(5, "", type, value, a, b, 0, 0, 0, 0);
-    }
-
-    public void getDirectionEffect(int mod, String data, int value, int value2, int value3, int a1, int a2, int a3, int a4, int npc) {
-        c.getSession().write(UIPacket.getDirectionEffect(mod, data, value, value2, value3, a1, a2, a3, a4, npc));
-        lastMsg = 0x12;
+    public void getDirectionFacialExpression(int expression, int duration) {
+        c.getSession().write(UIPacket.getDirectionFacialExpression(expression, duration));
     }
 
     public void playMovie(String data) {
@@ -1551,31 +1713,6 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
         return new MapleCarnivalChallenge(chr);
     }
 
-    public void maxStats() {
-        Map<MapleStat, Integer> statup = new EnumMap<>(MapleStat.class);
-        c.getPlayer().getStat().str = (short) 999;
-        c.getPlayer().getStat().dex = (short) 999;
-        c.getPlayer().getStat().int_ = (short) 999;
-        c.getPlayer().getStat().luk = (short) 999;
-
-        int overrDemon = MapleJob.is惡魔殺手(c.getPlayer().getJob()) ? GameConstants.getMPByJob(c.getPlayer().getJob()) : 500000;
-        c.getPlayer().getStat().maxhp = 500000;
-        c.getPlayer().getStat().maxmp = overrDemon;
-        c.getPlayer().getStat().setHp(500000, c.getPlayer());
-        c.getPlayer().getStat().setMp(overrDemon, c.getPlayer());
-
-        statup.put(MapleStat.STR, 999);
-        statup.put(MapleStat.DEX, 999);
-        statup.put(MapleStat.LUK, 999);
-        statup.put(MapleStat.INT, 999);
-        statup.put(MapleStat.HP, 500000);
-        statup.put(MapleStat.MAXHP, 500000);
-        statup.put(MapleStat.MP, overrDemon);
-        statup.put(MapleStat.MAXMP, overrDemon);
-        c.getPlayer().getStat().recalcLocalStats(c.getPlayer());
-        //c.getSession().write(CWvsContext.updatePlayerStats(statup, c.getPlayer().getJob()));
-    }
-
     public int setAndroid(int args) {
         if (args < 30000) {
             c.getPlayer().getAndroid().setFace(args);
@@ -1708,10 +1845,6 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
         return (edited);
     }
 
-    public int getReborns() { // tjat
-        return getPlayer().getReborns();
-    }
-
     public Triple<String, Map<Integer, String>, Long> getSpeedRun(String typ) {
         final ExpeditionType expedtype = ExpeditionType.valueOf(typ);
         if (SpeedRunner.getSpeedRunData(expedtype) != null) {
@@ -1753,33 +1886,9 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     public boolean addFromDrop(Object statsSel) {
         if (statsSel instanceof Item) {
             final Item it = (Item) statsSel;
-            return MapleInventoryManipulator.checkSpace(getClient(), it.getItemId(), it.getQuantity(), it.getOwner()) && MapleInventoryManipulator.addFromDrop(getClient(), it, false);
+            return MapleInventoryManipulator.checkSpace(getClient(), it.getItemId(), it.getQuantity(), it.getOwner()) && MapleInventoryManipulator.addFromDrop(getClient(), it);
         }
         return false;
-    }
-
-    public int getVPoints() {
-        return getPlayer().getVPoints();
-    }
-
-    public void setVPoints(int vpoints) {
-        getPlayer().setVPoints(getPlayer().getVPoints() + vpoints);
-    }
-
-    public int getDPoints() {
-        return getPlayer().getVPoints();
-    }
-
-    public void setDPoints(int dpoints) {
-        getPlayer().setDPoints(getPlayer().getDPoints() + dpoints);
-    }
-
-    public int getEPoints() {
-        return getPlayer().getEPoints();
-    }
-
-    public void setEPoints(int epoints) {
-        getPlayer().setEPoints(getPlayer().getEPoints() + epoints);
     }
 
     public boolean replaceItem(int slot, int invType, Object statsSel, int offset, String type) {
@@ -1859,7 +1968,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
             item = eq.copy();
         }
         MapleInventoryManipulator.removeFromSlot(getClient(), inv, (short) slot, item.getQuantity(), false);
-        return MapleInventoryManipulator.addFromDrop(getClient(), item, false);
+        return MapleInventoryManipulator.addFromDrop(getClient(), item);
     }
 
     public boolean replaceItem(int slot, int invType, Object statsSel, int upgradeSlots) {
@@ -1876,18 +1985,6 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
 
     public int getReqLevel(final int itemId) {
         return MapleItemInformationProvider.getInstance().getReqLevel(itemId);
-    }
-
-    public void directionEffect(String data, int value, int x, int y, int npc) {
-        c.getSession().write(UIPacket.getDirectionEffect(data, value, x, y, npc));
-    }
-
-    public void introEnableUI(boolean enable) {
-        introEnableUI(enable ? 1 : 0);
-    }
-
-    public void introEnableUI(boolean enable, boolean enable2) {
-        introEnableUI(enable ? 1 : 0, enable2 ? 1 : 0);
     }
 
     public MapleStatEffect getEffect(int buff) {
@@ -2125,14 +2222,8 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
                     if (chr.getGuildId() > 0) {
                         World.Guild.guildPacket(chr.getGuildId(), CWvsContext.sendMarriage(false, chr.getName()));
                     }
-                    if (chr.getFamilyId() > 0) {
-                        World.Family.familyPacket(chr.getFamilyId(), CWvsContext.sendMarriage(true, chr.getName()), chr.getId());
-                    }
                     if (player.getGuildId() > 0) {
                         World.Guild.guildPacket(player.getGuildId(), CWvsContext.sendMarriage(false, player.getName()));
-                    }
-                    if (player.getFamilyId() > 0) {
-                        World.Family.familyPacket(player.getFamilyId(), CWvsContext.sendMarriage(true, chr.getName()), player.getId());
                     }
                 }
             }
@@ -2289,48 +2380,6 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     public void sendPendant(boolean b) {
         c.getSession().write(CWvsContext.pendantSlot(b));
     }
-
-    public Triple<Integer, Integer, Integer> getCompensation() {
-        Triple<Integer, Integer, Integer> ret = null;
-        try {
-            try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement("SELECT * FROM compensationlog_confirmed WHERE chrname LIKE ?")) {
-                ps.setString(1, getPlayer().getName());
-                try (ResultSet rs = ps.executeQuery()) {
-                    if (rs.next()) {
-                        ret = new Triple<>(rs.getInt("value"), rs.getInt("taken"), rs.getInt("donor"));
-                    }
-                }
-            }
-            return ret;
-        } catch (SQLException e) {
-            FileoutputUtil.outputFileError(FileoutputUtil.ScriptEx_Log, e);
-            return ret;
-        }
-    }
-
-    public boolean deleteCompensation(int taken) {
-        try {
-            try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement("UPDATE compensationlog_confirmed SET taken = ? WHERE chrname LIKE ?")) {
-                ps.setInt(1, taken);
-                ps.setString(2, getPlayer().getName());
-                ps.executeUpdate();
-            }
-            return true;
-        } catch (SQLException e) {
-            FileoutputUtil.outputFileError(FileoutputUtil.ScriptEx_Log, e);
-            return false;
-        }
-    }
-
-    /*
-     * Start of Custom Features
-     */
-    public void gainAPS(int gain) {
-        getPlayer().gainAPS(gain);
-    }
-    /*
-     * End of Custom Features
-     */
 
     public void changeJobById(short job) {
         c.getPlayer().changeJob(job);
@@ -2503,93 +2552,11 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
         c.getSession().write(CField.UIPacket.openUIOption(type, 1));
     }
 
-    public void showHilla() {
-        try {
-            c.getSession().write(CField.MapEff("phantom/hillah"));
-            MapleNPC hilla = new MapleNPC(1402400, "Hilla");
-            hilla.setPosition(new Point(-131, -2));
-            hilla.setCy(-7);
-            hilla.setF(1);
-            hilla.setFh(12);
-            hilla.setRx0(-181);
-            hilla.setRx1(-81);
-            MapleNPC guard1 = new MapleNPC(1402401, "Hilla's Guard");
-            guard1.setPosition(new Point(-209, -2));
-            guard1.setCy(-7);
-            guard1.setF(1);
-            guard1.setFh(12);
-            guard1.setRx0(-259);
-            guard1.setRx1(-159);
-            MapleNPC guard2 = new MapleNPC(1402401, "Hilla's Guard");
-            guard2.setPosition(new Point(-282, -2));
-            guard2.setCy(-7);
-            guard2.setF(1);
-            guard2.setFh(12);
-            guard2.setRx0(-332);
-            guard2.setRx1(-232);
-            MapleNPC guard3 = new MapleNPC(1402401, "Hilla's Guard");
-            guard3.setPosition(new Point(-59, -2));
-            guard3.setCy(-7);
-            guard3.setF(1);
-            guard3.setFh(12);
-            guard3.setRx0(-109);
-            guard3.setRx1(-9);
-            c.getSession().write(NPCPacket.spawnNPC(hilla, true));
-            c.getSession().write(NPCPacket.spawnNPC(guard1, true));
-            c.getSession().write(NPCPacket.spawnNPC(guard2, true));
-            c.getSession().write(NPCPacket.spawnNPC(guard3, true));
-            Thread.sleep(6000);
-        } catch (InterruptedException e) {
-        }
-        NPCScriptManager.getInstance().start(c.getPlayer().getClient(), 1104201, "PTtutor500_2");
-    }
-
-    public void showSkaia() {
-        try {
-            c.getSession().write(CField.MapEff("phantom/skaia"));
-            Thread.sleep(8000);
-        } catch (InterruptedException e) {
-        }
-        NPCScriptManager.getInstance().start(c.getPlayer().getClient(), 1104201, "PTtutor500_3");
-    }
-
-    public void showPhantomWait() {
-        try {
-            c.getSession().write(CField.MapEff("phantom/phantom"));
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-        }
-        NPCScriptManager.getInstance().start(c.getPlayer().getClient(), 1104201, "PTtutor500_4");
-    }
-
-    public void movePhantom() {
-        try {
-            c.getSession().write(CField.UIPacket.getDirectionInfo((byte) 3, 2));
-            c.getSession().write(CField.UIPacket.getDirectionInfo((byte) 1, 2000));
-            Thread.sleep(2000);
-            c.getSession().write(CField.UIPacket.getDirectionInfo((byte) 3, 0));
-        } catch (InterruptedException e) {
-        }
-        NPCScriptManager.getInstance().start(c.getPlayer().getClient(), 1104201, "PTtutor500_1");
-    }
-
-    public void showPhantomMovie() {
-        warp(150000000);
-        try {
-            c.getSession().write(UIPacket.playMovie("phantom.avi", true));
-            Thread.sleep(4 * 60 * 1000); //4 minutes
-        } catch (InterruptedException e) {
-        }
-        MapleQuest.getInstance(25000).forceComplete(c.getPlayer(), 1402000);
-        c.getSession().write(CField.UIPacket.getDirectionStatus(false));
-        c.getSession().write(CField.UIPacket.IntroEnableUI(0));
-    }
-
     public void mihileNeinheartDisappear() {
         try {
-            c.getSession().write(UIPacket.getDirectionInfo("Effect/Direction7.img/effect/tuto/step0/4", 2000, 0, -100, 1, 0));
+            c.getSession().write(UIPacket.getDirectionEffect(2, "Effect/Direction7.img/effect/tuto/step0/4", new int[]{2000, 0, -100, 1, 0, 0}));
             c.getSession().write(UIPacket.getDirectionFacialExpression(6, 2000));
-            c.getPlayer().getClient().getSession().write(CField.UIPacket.getDirectionInfo((byte) 1, 2000));
+            c.getPlayer().getClient().getSession().write(CField.UIPacket.getDirectionEffect(1, null, new int[]{2000}));
             Thread.sleep(2000);
             NPCScriptManager.getInstance().start(c, 1106000, "tuto002");
         } catch (InterruptedException e) {
@@ -2598,12 +2565,12 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
 
     public void mihileMove913070001() {
         try {
-            c.getPlayer().getClient().getSession().write(CField.UIPacket.getDirectionInfo((byte) 3, 2));
-            c.getPlayer().getClient().getSession().write(CField.UIPacket.getDirectionInfo((byte) 1, 800));
+            c.getPlayer().getClient().getSession().write(CField.UIPacket.getDirectionEffect(3, null, new int[]{2}));
+            c.getPlayer().getClient().getSession().write(CField.UIPacket.getDirectionEffect(1, null, new int[]{800}));
             Thread.sleep(800);
         } catch (InterruptedException e) {
         }
-        c.getSession().write(CField.UIPacket.IntroEnableUI(0));
+        c.getSession().write(CField.UIPacket.lockUI(false));
         while (c.getPlayer().getLevel() < 2) {
             c.getPlayer().levelUp();
         }
@@ -2614,7 +2581,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
 
     public void mihileSoul() {
         try {
-            c.getSession().write(UIPacket.getDirectionInfo("Effect/Direction7.img/effect/tuto/soul/0", 4000, 0, -100, 1, 0));
+            c.getSession().write(UIPacket.getDirectionEffect(2, "Effect/Direction7.img/effect/tuto/soul/0", new int[]{4000, 0, -100, 1, 0, 0}));
             Thread.sleep(4000);
         } catch (InterruptedException e) {
         }
@@ -2623,10 +2590,10 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
 
     public void mihileMove913070050() {
         try {
-            c.getPlayer().getClient().getSession().write(CField.UIPacket.getDirectionInfo((byte) 3, 2));
-            c.getPlayer().getClient().getSession().write(CField.UIPacket.getDirectionInfo((byte) 1, 6000));
+            c.getPlayer().getClient().getSession().write(CField.UIPacket.getDirectionEffect(3, null, new int[]{2}));
+            c.getPlayer().getClient().getSession().write(CField.UIPacket.getDirectionEffect(1, null, new int[]{6000}));
             Thread.sleep(5000);
-            c.getPlayer().getClient().getSession().write(CField.UIPacket.getDirectionInfo((byte) 3, 0));
+            c.getPlayer().getClient().getSession().write(CField.UIPacket.getDirectionEffect(3, null, new int[]{0}));
             NPCScriptManager.getInstance().start(c, 1106001, "tuto005");
         } catch (InterruptedException e) {
         }
@@ -2706,7 +2673,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
                     item.setPotential(40086, 1, false); //9% All Stat
                     item.setPotential(40086, 2, false); //9% All Stat
                     item.setPotential(40086, 3, false); //9% All Stat
-                    item.setSocket1(ii.getSocketInfo(3063280).opID); //3% All Stat
+                    item.setSocket(ii.getSocketInfo(3063280).opID, 1); //3% All Stat
                     item.updateState(false);
                     break;
             }
@@ -2819,28 +2786,28 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
 
     public void enter_931060110() {
         try {
-            c.getSession().write(UIPacket.getDirectionInfo("Effect/CharacterEff.img/farmEnterTuto/menuUI", 6000, 285, 186, 1, 0));
-            c.getSession().write(CField.UIPacket.getDirectionInfo((byte) 1, 900));
+            c.getSession().write(UIPacket.getDirectionEffect(2, "Effect/CharacterEff.img/farmEnterTuto/menuUI", new int[]{6000, 285, 186, 1, 0, 0, 0, 0}));
+            c.getSession().write(CField.UIPacket.getDirectionEffect(1, null, new int[]{900}));
             Thread.sleep(900);
             c.getSession().write(CWvsContext.getTopMsg("First, click MENU at the bottom of the screen."));
-            c.getSession().write(UIPacket.getDirectionInfo("Effect/CharacterEff.img/farmEnterTuto/mouseMoveToMenu", 1740, -114, -14, 1, 3));
-            c.getSession().write(CField.UIPacket.getDirectionInfo((byte) 1, 1680));
+            c.getSession().write(UIPacket.getDirectionEffect(2, "Effect/CharacterEff.img/farmEnterTuto/mouseMoveToMenu", new int[]{1740, -114, -14, 1, 3, 0, 0, 0}));
+            c.getSession().write(CField.UIPacket.getDirectionEffect(1, null, new int[]{1680}));
             Thread.sleep(1680);
-            c.getSession().write(UIPacket.getDirectionInfo("Effect/CharacterEff.img/farmEnterTuto/mouseClick", 1440, 246, 196, 1, 3));
-            c.getSession().write(CField.UIPacket.getDirectionInfo((byte) 1, 1440));
+            c.getSession().write(UIPacket.getDirectionEffect(2, "Effect/CharacterEff.img/farmEnterTuto/mouseClick", new int[]{1440, 246, 196, 1, 3, 0, 0, 0}));
+            c.getSession().write(CField.UIPacket.getDirectionEffect(1, null, new int[]{1440}));
             Thread.sleep(1440);
             c.getSession().write(CWvsContext.getTopMsg("Now, select Go to Farm."));
-            c.getSession().write(CField.UIPacket.getDirectionInfo((byte) 1, 600));
+            c.getSession().write(CField.UIPacket.getDirectionEffect(1, null, new int[]{600}));
             Thread.sleep(600);
-            c.getSession().write(UIPacket.getDirectionInfo("Effect/CharacterEff.img/farmEnterTuto/menuOpen", 50000, 285, 186, 1, 2));
-            c.getSession().write(CField.UIPacket.getDirectionInfo((byte) 1, 600));
+            c.getSession().write(UIPacket.getDirectionEffect(2, "Effect/CharacterEff.img/farmEnterTuto/menuOpen", new int[]{50000, 285, 186, 1, 2, 0, 0, 0}));
+            c.getSession().write(CField.UIPacket.getDirectionEffect(1, null, new int[]{600}));
             Thread.sleep(600);
-            c.getSession().write(UIPacket.getDirectionInfo("Effect/CharacterEff.img/farmEnterTuto/mouseMoveToMyfarm", 750, 246, 196, 1, 2));
-            c.getSession().write(CField.UIPacket.getDirectionInfo((byte) 1, 720));
+            c.getSession().write(UIPacket.getDirectionEffect(2, "Effect/CharacterEff.img/farmEnterTuto/mouseMoveToMyfarm", new int[]{750, 246, 196, 1, 2, 0, 0, 0}));
+            c.getSession().write(CField.UIPacket.getDirectionEffect(1, null, new int[]{720}));
             Thread.sleep(720);
-            c.getSession().write(UIPacket.getDirectionInfo("Effect/CharacterEff.img/farmEnterTuto/menuMouseOver", 50000, 285, 186, 1, 2));
-            c.getSession().write(UIPacket.getDirectionInfo("Effect/CharacterEff.img/farmEnterTuto/mouseClick", 50000, 246, 166, 1, 3));
-            c.getSession().write(CField.UIPacket.getDirectionInfo((byte) 1, 1440));
+            c.getSession().write(UIPacket.getDirectionEffect(2, "Effect/CharacterEff.img/farmEnterTuto/menuMouseOver", new int[]{50000, 285, 186, 1, 2, 0, 0, 0}));
+            c.getSession().write(UIPacket.getDirectionEffect(2, "Effect/CharacterEff.img/farmEnterTuto/mouseClick", new int[]{50000, 246, 166, 1, 3, 0, 0, 0}));
+            c.getSession().write(CField.UIPacket.getDirectionEffect(1, null, new int[]{1440}));
             Thread.sleep(1440);
         } catch (InterruptedException ex) {
         }
@@ -2848,84 +2815,33 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
 
     public void enter_931060120() {
         try {
-            c.getSession().write(UIPacket.getDirectionInfo("Effect/CharacterEff.img/farmEnterTuto/character", 120000, -200, 0, 1, 1));
-            c.getSession().write(CField.UIPacket.getDirectionInfo((byte) 1, 1200));
+            c.getSession().write(UIPacket.getDirectionEffect(2, "Effect/CharacterEff.img/farmEnterTuto/character", new int[]{120000, -200, 0, 1, 1, 0, 0, 0}));
+            c.getSession().write(CField.UIPacket.getDirectionEffect(1, null, new int[]{1200}));
             Thread.sleep(1200);
             c.getSession().write(CWvsContext.getTopMsg("Hover over any other character..."));
-            c.getSession().write(UIPacket.getDirectionInfo("Effect/CharacterEff.img/farmEnterTuto/mouseMoveToChar", 1680, -400, -210, 1, 3));
-            c.getSession().write(CField.UIPacket.getDirectionInfo((byte) 1, 1650));
+            c.getSession().write(UIPacket.getDirectionEffect(2, "Effect/CharacterEff.img/farmEnterTuto/mouseMoveToChar", new int[]{1680, -400, -210, 1, 3, 0, 0, 0}));
+            c.getSession().write(CField.UIPacket.getDirectionEffect(1, null, new int[]{1650}));
             Thread.sleep(1650);
-            c.getSession().write(UIPacket.getDirectionInfo("Effect/CharacterEff.img/farmEnterTuto/mouseUp", 600, -190, -30, 1, 3));
+            c.getSession().write(UIPacket.getDirectionEffect(2, "Effect/CharacterEff.img/farmEnterTuto/mouseUp", new int[]{600, -190, -30, 1, 3, 0, 0, 0}));
             c.getSession().write(CWvsContext.getTopMsg("Then right-click."));
-            c.getSession().write(CField.UIPacket.getDirectionInfo((byte) 1, 540));
+            c.getSession().write(CField.UIPacket.getDirectionEffect(1, null, new int[]{540}));
             Thread.sleep(540);
-            c.getSession().write(UIPacket.getDirectionInfo("Effect/CharacterEff.img/farmEnterTuto/mouseClick", 1200, -190, -30, 1, 3));
-            c.getSession().write(CField.UIPacket.getDirectionInfo((byte) 1, 1200));
+            c.getSession().write(UIPacket.getDirectionEffect(2, "Effect/CharacterEff.img/farmEnterTuto/mouseClick", new int[]{1200, -190, -30, 1, 3, 0, 0, 0}));
+            c.getSession().write(CField.UIPacket.getDirectionEffect(1, null, new int[]{1200}));
             Thread.sleep(1200);
-            c.getSession().write(UIPacket.getDirectionInfo("Effect/CharacterEff.img/farmEnterTuto/characterMenu", 50000, -200, 0, 1, 2));
-            c.getSession().write(CField.UIPacket.getDirectionInfo((byte) 1, 900));
+            c.getSession().write(UIPacket.getDirectionEffect(2, "Effect/CharacterEff.img/farmEnterTuto/characterMenu", new int[]{50000, -200, 0, 1, 2, 0, 0, 0}));
+            c.getSession().write(CField.UIPacket.getDirectionEffect(1, null, new int[]{900}));
             Thread.sleep(900);
             c.getSession().write(CWvsContext.getTopMsg("When the Character Menu appears, click Go to Farm."));
-            c.getSession().write(UIPacket.getDirectionInfo("Effect/CharacterEff.img/farmEnterTuto/mouseMoveToOtherfarm", 1440, -190, -30, 1, 5));
-            c.getSession().write(CField.UIPacket.getDirectionInfo((byte) 1, 1380));
+            c.getSession().write(UIPacket.getDirectionEffect(2, "Effect/CharacterEff.img/farmEnterTuto/mouseMoveToOtherfarm", new int[]{1440, -190, -30, 1, 5, 0, 0, 0}));
+            c.getSession().write(CField.UIPacket.getDirectionEffect(1, null, new int[]{1380}));
             Thread.sleep(1380);
-            c.getSession().write(UIPacket.getDirectionInfo("Effect/CharacterEff.img/farmEnterTuto/menuMouseOver", 50000, -200, 0, 1, 4));
-            c.getSession().write(UIPacket.getDirectionInfo("Effect/CharacterEff.img/farmEnterTuto/mouseClick", 60000, -130, 150, 1, 6));
-            c.getSession().write(CField.UIPacket.getDirectionInfo((byte) 1, 1200));
+            c.getSession().write(UIPacket.getDirectionEffect(2, "Effect/CharacterEff.img/farmEnterTuto/menuMouseOver", new int[]{50000, -200, 0, 1, 4, 0, 0, 0}));
+            c.getSession().write(UIPacket.getDirectionEffect(2, "Effect/CharacterEff.img/farmEnterTuto/mouseClick", new int[]{60000, -130, 150, 1, 6, 0, 0, 0}));
+            c.getSession().write(CField.UIPacket.getDirectionEffect(1, null, new int[]{1200}));
             Thread.sleep(1200);
         } catch (InterruptedException ex) {
         }
-    }
-
-    public void showJettWanted() {
-        try {
-            c.getSession().write(CField.UIPacket.getDirectionInfo(1, 1000));
-            Thread.sleep(1000);
-            c.getSession().write(CField.environmentChange("newPirate/pendant_w", 13));
-            c.getSession().write(UIPacket.getDirectionFacialExpression(5, 3000));
-            c.getSession().write(UIPacket.getDirectionInfo("Effect/DirectionNewPirate.img/newPirate/balloonMsg1/1", 2000, 0, -80, 0, 0));
-            c.getSession().write(CField.UIPacket.getDirectionInfo(1, 3000));
-            Thread.sleep(3000);
-            c.getSession().write(CField.UIPacket.getDirectionInfo(3, 1));
-        } catch (InterruptedException ex) {
-        }
-        NPCScriptManager.getInstance().dispose(c);
-        c.removeClickedNPC();
-        NPCScriptManager.getInstance().start(c, 9270083, "np_tuto_0_2");
-    }
-
-    public void np_tuto_0_2() {
-        try {
-            c.getSession().write(CField.UIPacket.getDirectionInfo(3, 2));
-            c.getSession().write(CField.UIPacket.getDirectionInfo(1, 10));
-            Thread.sleep(10);
-            c.getSession().write(UIPacket.getDirectionFacialExpression(5, 3000));
-            c.getSession().write(UIPacket.getDirectionInfo("Effect/DirectionNewPirate.img/newPirate/balloonMsg1/1", 2000, 0, -80, 0, 0));
-            c.getSession().write(CField.UIPacket.getDirectionInfo(1, 1000));
-            Thread.sleep(1000);
-        } catch (InterruptedException ex) {
-        }
-        NPCScriptManager.getInstance().dispose(c);
-        c.removeClickedNPC();
-        NPCScriptManager.getInstance().start(c, 9270083, "np_tuto_0_3");
-    }
-
-    public void spawnJettGuards() {
-        try {
-            c.getSession().write(CField.UIPacket.getDirectionInfo(3, 2));
-            c.getSession().write(CField.UIPacket.getDirectionInfo(1, 300));
-            Thread.sleep(300);
-            c.getSession().write(CField.UIPacket.getDirectionInfo(3, 0));
-            c.getSession().write(UIPacket.getDirectionInfo("Effect/DirectionNewPirate.img/newPirate/balloonMsg1/3", 2000, 0, -80, 0, 0));
-            c.getSession().write(CField.UIPacket.getDirectionInfo(1, 500));
-            Thread.sleep(500);
-            c.getSession().write(UIPacket.getDirectionInfo("Effect/DirectionNewPirate.img/newPirate/attack_tuto", 2000, 0, -80, 0, 0));
-        } catch (InterruptedException ex) {
-        }
-        c.getSession().write(CField.UIPacket.IntroEnableUI(0));
-        c.getSession().write(CWvsContext.getTopMsg("Eliminate all Guards."));
-        forceStartQuest(53245);
-        spawnMob(9420564, 3, 600, -120);
     }
 
     public static String getMobImg(int mob) {
@@ -2941,33 +2857,8 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
         return "#fMob/" + mobStr + ".img/stand/0#";
     }
 
-    public void showKannaMovie() {
-        try {
-            c.getSession().write(UIPacket.playMovie("JPKanna.avi", true));
-            Thread.sleep(1 * 60 * 1000);
-        } catch (InterruptedException e) {
-        }
-        c.getSession().write(CField.UIPacket.getDirectionStatus(false));
-        c.getSession().write(CField.UIPacket.IntroEnableUI(0));
-    }
-
-    public void showMapleLeafScene() {
-        try {
-            c.getSession().write(UIPacket.getDirectionStatus(true));
-            c.getSession().write(CField.UIPacket.IntroEnableUI(1));
-            c.getSession().write(CField.environmentChange("adventureStory/mapleLeaf/0", 13));
-            c.getSession().write(CField.UIPacket.getDirectionInfo(1, 1800));
-            Thread.sleep(1800);
-        } catch (InterruptedException ex) {
-        }
-        c.getSession().write(CField.UIPacket.IntroEnableUI(0));
-        NPCScriptManager.getInstance().dispose(c);
-        c.removeClickedNPC();
-        NPCScriptManager.getInstance().start(c, 10306, "ExplorerTut08");
-    }
-
     public void showBeastTamerTutScene() {
-        c.getSession().write(CField.UIPacket.IntroEnableUI(0));
+        c.getSession().write(CField.UIPacket.lockUI(false));
         NPCScriptManager.getInstance().dispose(c);
         c.removeClickedNPC();
         NPCScriptManager.getInstance().start(c, 9390305, "BeastTamerTut01");
@@ -2976,21 +2867,21 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     public void showBeastTamerTutScene1() {
         try {
             c.getSession().write(UIPacket.getDirectionStatus(true));
-            c.getSession().write(CField.UIPacket.getDirectionInfo(1, 1000));
-            c.getSession().write(CField.UIPacket.getDirectionInfo(1, 1000));
+            c.getSession().write(CField.UIPacket.getDirectionEffect(1, null, new int[]{1000}));
+            c.getSession().write(CField.UIPacket.getDirectionEffect(1, null, new int[]{1000}));
             Thread.sleep(2000);
-            c.getSession().write(UIPacket.getDirectionInfo("Effect/Direction14.img/effect/ShamanBT/balloonMsg/10", 2000, 0, -120, 1, 0));
-            c.getSession().write(CField.UIPacket.getDirectionInfo(1, 800));
+            c.getSession().write(UIPacket.getDirectionEffect(2, "Effect/Direction14.img/effect/ShamanBT/balloonMsg/10", new int[]{2000, 0, -120, 1, 0, 0, 0, 0}));
+            c.getSession().write(CField.UIPacket.getDirectionEffect(1, null, new int[]{800}));
             Thread.sleep(800);
-            c.getSession().write(CField.UIPacket.getDirectionInfoNew((byte) 0, 1000, 700, 0));
-            c.getSession().write(CField.UIPacket.getDirectionInfo(1, 1200));
+            c.getSession().write(CField.UIPacket.getDirectionEffect(5, null, new int[]{0, 1000, 700, 0}));
+            c.getSession().write(CField.UIPacket.getDirectionEffect(1, null, new int[]{1200}));
             Thread.sleep(1200);
-            c.getSession().write(UIPacket.getDirectionInfo("Effect/Direction14.img/effect/ShamanBT/BalloonMsg1/7", 2000, 571, -120, 1, 0));
+            c.getSession().write(UIPacket.getDirectionEffect(2, "Effect/Direction14.img/effect/ShamanBT/BalloonMsg1/7", new int[]{2000, 571, -120, 1, 0, 0, 0, 0}));
             c.getSession().write(CField.environmentChange("ShamanBTTuto/sound0", 5));
-            c.getSession().write(UIPacket.getDirectionInfo(1, 3000));
+            c.getSession().write(UIPacket.getDirectionEffect(1, null, new int[]{3000}));
             Thread.sleep(3000);
-            c.getSession().write(UIPacket.getDirectionInfo(1, 1000));
-            c.getSession().write(UIPacket.getDirectionInfo(1, 500));
+            c.getSession().write(UIPacket.getDirectionEffect(1, null, new int[]{1000}));
+            c.getSession().write(UIPacket.getDirectionEffect(1, null, new int[]{500}));
             Thread.sleep(1500);
             c.getSession().write(UIPacket.getDirectionFacialExpression(4, 5000));
             Thread.sleep(3000);

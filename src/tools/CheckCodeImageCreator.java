@@ -75,7 +75,7 @@ public class CheckCodeImageCreator {
                 case 한국:
                 case 日本:
                 case 中国:
-                case 台港澳:
+                case 台灣:
                     while (firstWord.isEmpty()) {
                         String name = mobNameList.get(random.nextInt(mobNameList.size()));
                         name = name.replaceAll("[a-zA-Z]", "");
@@ -181,7 +181,7 @@ public class CheckCodeImageCreator {
             case 中国:
                 fontStr = "KaiTi";
                 break;
-            case 台港澳:
+            case 台灣:
                 fontStr = "DFKai-SB";
                 break;
             default:

@@ -13,7 +13,6 @@ import handling.world.MapleParty;
 import handling.world.MaplePartyCharacter;
 import handling.world.PartyOperation;
 import handling.world.World;
-import handling.world.family.MapleFamilyCharacter;
 import handling.world.guild.MapleGuildCharacter;
 import java.io.Serializable;
 import static java.lang.Thread.sleep;
@@ -148,7 +147,7 @@ public class MapleClient implements Serializable {
         return allowedChar.contains(id);
     }
 
-    public final List<MapleCharacter> loadCharacters(final int serverId) { // TODO make this less costly zZz
+    public final List<MapleCharacter> loadCharacters(final int serverId) {
         final List<MapleCharacter> chars = new LinkedList<>();
 
         final Map<Integer, CardData> cardss = CharacterCardFactory.getInstance().loadCharacterCards(accId, serverId);
@@ -695,6 +694,9 @@ public class MapleClient implements Serializable {
                         } else {//卡號解卡处理
                             boolean unLocked = false;
                             for (final MapleClient c : World.Client.getClients()) {
+                                if (c == this) {
+                                    continue;
+                                }
                                 if (c.getAccID() == accId) {
                                     if (!c.getSession().isConnected()) {
                                         c.disconnect();
@@ -844,7 +846,7 @@ public class MapleClient implements Serializable {
         return this.accId;
     }
 
-    public final void updateLoginState(final int newstate, final String SessionID) { // TODO hide?
+    public final void updateLoginState(final int newstate, final String SessionID) {
         try {
             final Connection con = DatabaseConnection.getConnection();
             try (PreparedStatement ps = con.prepareStatement("UPDATE accounts SET loggedin = ?, SessionIP = ?, lastlogin = CURRENT_TIMESTAMP() WHERE id = ?")) {
@@ -901,7 +903,7 @@ public class MapleClient implements Serializable {
         }
     }
 
-    public final byte getLoginState() { // TODO hide?
+    public final byte getLoginState() {
         Connection con = DatabaseConnection.getConnection();
         try {
             PreparedStatement ps;
@@ -1078,23 +1080,17 @@ public class MapleClient implements Serializable {
     }
 
     public final void disconnect(final boolean removeInChannelServer, final boolean fromCS, final boolean shutdown) {
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(MapleClient.class.getName()).log(Level.SEVERE, null, ex);
-        }
         if (player != null) {
             System.out.println(getSessionIPAddress() + "下線處理(已上角色)");
             MapleMap map = player.getMap();
             final MapleParty party = player.getParty();
             final boolean clone = player.isClone();
             final String namez = player.getName();
-            final int idz = player.getId(), messengerid = player.getMessenger() == null ? 0 : player.getMessenger().getId(), gid = player.getGuildId(), fid = player.getFamilyId();
+            final int idz = player.getId(), messengerid = player.getMessenger() == null ? 0 : player.getMessenger().getId(), gid = player.getGuildId();
             final BuddyList bl = player.getBuddylist();
             final MaplePartyCharacter chrp = new MaplePartyCharacter(player);
             final MapleMessengerCharacter chrm = new MapleMessengerCharacter(player);
             final MapleGuildCharacter chrg = player.getMGC();
-            final MapleFamilyCharacter chrf = player.getMFC();
 
             removalTask(shutdown);
             LoginServer.getLoginAuth(player.getId());
@@ -1147,9 +1143,6 @@ public class MapleClient implements Serializable {
                     if (gid > 0 && chrg != null) {
                         World.Guild.setGuildMemberOnline(chrg, false, -1);
                     }
-                    if (fid > 0 && chrf != null) {
-                        World.Family.setFamilyMemberOnline(chrf, false, -1);
-                    }
                 } catch (final Exception e) {
                     e.printStackTrace();
                     FileoutputUtil.outputFileError(FileoutputUtil.Acc_Stuck, e);
@@ -1178,9 +1171,6 @@ public class MapleClient implements Serializable {
                     }
                     if (gid > 0 && chrg != null) {
                         World.Guild.setGuildMemberOnline(chrg, false, -1);
-                    }
-                    if (fid > 0 && chrf != null) {
-                        World.Family.setFamilyMemberOnline(chrf, false, -1);
                     }
                     if (player != null) {
                         player.setMessenger(null);
@@ -1241,17 +1231,17 @@ public class MapleClient implements Serializable {
     }
 
     public final void DebugMessage(final StringBuilder sb) {
-        sb.append("IP: ");
+        sb.append("IP:");
         sb.append(getSession().getRemoteAddress());
-        sb.append(" || 連接狀態: ");
+        sb.append(" 連接狀態:");
         sb.append(getSession().isConnected());
-        sb.append(" || 正在關閉: ");
+        sb.append(" 正在關閉:");
         sb.append(getSession().isClosing());
-        sb.append(" || ClientKeySet: ");
+        sb.append(" ClientKeySet:");
         sb.append(getSession().getAttribute(MapleClient.CLIENT_KEY) != null);
-        sb.append(" || 是否已登入: ");
+        sb.append(" 是否已登入:");
         sb.append(isLoggedIn());
-        sb.append(" || 角色上線: ");
+        sb.append(" 角色上線:");
         sb.append(getPlayer() != null);
     }
 
@@ -1266,7 +1256,7 @@ public class MapleClient implements Serializable {
     public final int deleteCharacter(final int cid) {
         try {
             final Connection con = DatabaseConnection.getConnection();
-            try (PreparedStatement ps = con.prepareStatement("SELECT guildid, guildrank, familyid, name FROM characters WHERE id = ? AND accountid = ?")) {
+            try (PreparedStatement ps = con.prepareStatement("SELECT guildid, guildrank, name FROM characters WHERE id = ? AND accountid = ?")) {
                 ps.setInt(1, cid);
                 ps.setInt(2, accId);
                 try (ResultSet rs = ps.executeQuery()) {
@@ -1282,9 +1272,6 @@ public class MapleClient implements Serializable {
                             return 22;
                         }
                         World.Guild.deleteGuildCharacter(rs.getInt("guildid"), cid);
-                    }
-                    if (rs.getInt("familyid") > 0 && World.Family.getFamily(rs.getInt("familyid")) != null) {
-                        World.Family.getFamily(rs.getInt("familyid")).leaveFamily(cid);
                     }
                 }
             }
@@ -1410,16 +1397,15 @@ public class MapleClient implements Serializable {
         final StringBuilder builder = new StringBuilder();
         if (cfor != null) {
             if (cfor.getPlayer() != null) {
-                builder.append("<");
                 builder.append(MapleCharacterUtil.makeMapleReadable(cfor.getPlayer().getName()));
-                builder.append(" (cid: ");
+                builder.append("(ID:");
                 builder.append(cfor.getPlayer().getId());
-                builder.append(")> ");
+                builder.append(")");
             }
             if (cfor.getAccountName() != null) {
-                builder.append("(Account: ");
+                builder.append("[賬號:");
                 builder.append(cfor.getAccountName());
-                builder.append(") ");
+                builder.append("]");
             }
         }
         builder.append(message);
@@ -1685,7 +1671,7 @@ public class MapleClient implements Serializable {
         lastNpcClick = 0;
     }
 
-    public final Timestamp getCreated() { // TODO hide?
+    public final Timestamp getCreated() {
         Connection con = DatabaseConnection.getConnection();
         try {
             PreparedStatement ps;

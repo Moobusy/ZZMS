@@ -18,70 +18,99 @@ public class PirateBuff extends AbstractBuffClass {
 
     public PirateBuff() {
         buffs = new int[]{
-            5101011, //Dark Clarity
-            5701006, //Dark Clarity
-            5101006, //Knuckle Booster
-            5111007, //Roll Of The Dice
-            5211007, //Roll Of The Dice
+            //一轉
+            5001005, //衝鋒Dash
+
+            //二轉
+            //打手
+            5101006, //致命快打Knuckle Booster
+            5101011, //全神貫注Dark Clarity
+            //槍手
+            5201003, //迅雷再起Gun Booster
+            5201008, //無形彈藥Infinity Blast
+//            5201012, //召喚船員Scurvy Summons
+//            5201013, //召喚船員Scurvy Summons
+//            5201014, //召喚船員Scurvy Summons
+            //重砲兵
+            5301002, //加農砲推進器Cannon Booster
+            5301003, //猴子的魔法Monkey Magic
+
+            //三轉
+            //格鬥家
+            5111007, //幸運骰子Roll Of The Dice
             5111010, //雲體風身
-            5121015, //Crossbones
-            5121010, //Time Leap
-            5121009, //Speed Infusion
-            5121000, //Maple Warrior
-            5221000, //Maple Warrior
-            5321005, //Maple Warrior
-            5121054, //Stimulating Conversation
-            5121053, //Epic Adventure
-            5221053, //Epic Adventure
-            5321053, //Epic Adventure
-            5721053, //Epic Adventure
-            5201012, //Scurvy Summons
-            5201003, //Gun Booster
-            5201008, //Infinity Blast
-            5211009, //Cross Cut Blast
-            5221018, //Jolly Roger
-            5221021, //Quickdraw
+            //神槍手
+//            5210015, //召喚船員
+//            5210016, //召喚船員
+//            5210017, //召喚船員
+            5211007, //幸運骰子Roll Of The Dice
+            5211009, //魔法彈丸Cross Cut Blast
+            //重砲兵隊長
+//            5311002, //猴子的衝擊波
+            5311004, //幸運木桶Barrel Roulette
+            5311005, //幸運骰子Luck of the Die
+
+            //四轉
+            //拳霸
+            5121000, //楓葉祝福Maple Warrior
+            5121009, //最終極速Speed Infusion
+//            5120011, //反擊姿態
+//            5120012, //雙倍幸運骰子
+            5121015, //拳霸大師Crossbones
+            //槍神
+//            5220012, //反擊
+//            5220014, //雙倍幸運骰子
+            5221000, //楓葉祝福Maple Warrior
             5221004, //瞬‧迅雷
-            5221054, //Whaler's Potion
-            5301002, //Cannon Booster
-            5301003, //Monkey Magic
-            5311004, //Barrel Roulette
-            5311005, //Luck of the Die
-            5321010, //Pirate's Spirit
-            5321054, //Buckshot
-            5701005, //Gun Booster
-            5711011, //Roll of the Dice
-            5721009, //Relentless
-            5721054, //Bionic Maximizer
+            5221018, //海盜風采Jolly Roger
+//            5221021, //極速之指Quickdraw
+            //重砲指揮官
+//            5320007, //雙倍幸運骰子
+//            5320008, //神聖猴子的咒語
+            5321005, //楓葉祝福Maple Warrior
+            5321010, //百烈精神Pirate's Spirit
+
+            //超技
+            //拳霸
+//            5121052, //家族之力
+            5121053, //傳說冒險Epic Adventure
+            5121054, //暴能續發Stimulating Conversation
+            //槍神
+            5221053, //傳說冒險Epic Adventure
+            5221054, //撫慰甘露Whaler's Potion
+            //重砲指揮官
+            5321053, //傳說冒險Epic Adventure
+            5321054, //壓制砲擊Buckshot
         };
     }
 
     @Override
     public boolean containsJob(int job) {
-        return MapleJob.is冒險家(job) && job / 100 == 5;
+        return MapleJob.is冒險家(job) && MapleJob.is海盜(job) && !MapleJob.is蒼龍俠客(job);
     }
 
     @Override
     public void handleBuff(MapleStatEffect eff, int skill) {
         switch (skill) {
+            case 5001005: //衝鋒Dash
+                eff.statups.put(MapleBuffStat.DASH_SPEED, eff.info.get(MapleStatInfo.x));
+                eff.statups.put(MapleBuffStat.DASH_JUMP, eff.info.get(MapleStatInfo.y));
+                break;
             case 5221004: //瞬‧迅雷
                 eff.statups.put(MapleBuffStat.USING_SKILL_MOVE, eff.info.get(MapleStatInfo.x));
                 break;
             case 5101011: //Dark Clarity
-            case 5701006: //Dark Clarity
                 eff.statups.put(MapleBuffStat.INDIE_PAD, eff.info.get(MapleStatInfo.indiePad));
                 eff.statups.put(MapleBuffStat.INDIE_ACC, eff.info.get(MapleStatInfo.indieAcc));
                 break;
             case 5101006: //Knuckle Booster
             case 5201003: //Gun Booster
             case 5301002: //Cannon Booster
-            case 5701005: //Gun Booster
                 eff.statups.put(MapleBuffStat.BOOSTER, eff.info.get(MapleStatInfo.x));
                 break;
             case 5111007: //Roll Of The Dice
             case 5211007: //Roll Of The Dice
             case 5311005: //Luck of the Die
-            case 5711011: //Roll of the Dice
                 eff.statups.put(MapleBuffStat.DICE_ROLL, 0);
                 break;
             case 5111010: //雲體風身
@@ -94,7 +123,7 @@ public class PirateBuff extends AbstractBuffClass {
                 eff.statups.put(MapleBuffStat.SPEED_INFUSION, eff.info.get(MapleStatInfo.x));
                 break;
             case 5121054: //Stimulating Conversation
-                //TODO
+                //TODO 拳霸BUFF
                 break;
             case 5221018: //Jolly Roger
                 eff.statups.put(MapleBuffStat.ELEMENTAL_STATUS_R, eff.info.get(MapleStatInfo.x));
@@ -110,7 +139,7 @@ public class PirateBuff extends AbstractBuffClass {
                 eff.statups.put(MapleBuffStat.INDIE_PAD, eff.info.get(MapleStatInfo.indiePad));
                 break;
             case 5221054: //Whaler's Potion
-                //TODO
+                //TODO 槍神BUFF
                 break;
             case 5301003: //Monkey Magic
                 eff.statups.put(MapleBuffStat.INDIE_MAX_HP, eff.info.get(MapleStatInfo.indieMhp));
@@ -128,13 +157,7 @@ public class PirateBuff extends AbstractBuffClass {
                 eff.statups.put(MapleBuffStat.STANCE, eff.info.get(MapleStatInfo.prop));
                 break;
             case 5321054: //Buckshot
-                //TODO
-                break;
-            case 5721009: //Relentless
-                //TODO
-                break;
-            case 5721054: //Bionic Maximizer
-                //TODO
+                //TODO 重砲BUFF
                 break;
             case 5121000: //Maple Warrior
             case 5221000: //Maple Warrior
@@ -144,12 +167,11 @@ public class PirateBuff extends AbstractBuffClass {
             case 5121053: //Epic Adventure
             case 5221053: //Epic Adventure
             case 5321053: //Epic Adventure
-            case 5721053: //Epic Adventure
                 eff.statups.put(MapleBuffStat.INDIE_DAM_R, eff.info.get(MapleStatInfo.indieDamR));
                 eff.statups.put(MapleBuffStat.INDIE_MAX_DAMAGE_OVER, eff.info.get(MapleStatInfo.indieMaxDamageOver));
                 break;
             default:
-                //System.out.println("Pirate skill not coded: " + skill);
+                System.out.println("海盜技能未處理,技能代碼: " + skill);
                 break;
         }
     }

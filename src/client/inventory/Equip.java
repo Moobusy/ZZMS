@@ -4,7 +4,6 @@ import constants.EventConstants;
 import constants.GameConstants;
 import constants.ItemConstants;
 import java.io.Serializable;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -22,9 +21,9 @@ public class Equip extends Item implements Serializable {
     public static final long ARMOR_RATIO = 350000L;
     public static final long WEAPON_RATIO = 700000L;
     //charm: -1 = has not been initialized yet, 0 = already been worn, >0 = has teh charm exp
-    private byte state = 0, bonusState = 0, oldState = 0, upgradeSlots = 0, level = 0, vicioushammer = 0, platinumhammer = 0, enhance = 0, enhanctBuff = 0, reqLevel = 0, yggdrasilWisdom = 0, bossDamage = 0, ignorePDR = 0, totalDamage = 0, allStat = 0, karmaCount = -1, fire = -1, starforce;
-    private short str = 0, dex = 0, _int = 0, luk = 0, hp = 0, mp = 0, watk = 0, matk = 0, wdef = 0, mdef = 0, acc = 0, avoid = 0, hands = 0, speed = 0, jump = 0, charmExp = 0, pvpDamage = 0, soulname, soulenchanter, soulpotential;
-    private int durability = -1, incSkill = -1, potential1 = 0, potential2 = 0, potential3 = 0, bonuspotential1 = 0, bonuspotential2 = 0, bonuspotential3 = 0, fusionAnvil = 0, socket1 = 0, socket2 = 0, socket3 = 0, soulskill;
+    private byte state = 0, bonusState = 0, oldState = 0, upgradeSlots = 0, level = 0, vicioushammer = 0, platinumhammer = 0, enhance = 0, reqLevel = 0, yggdrasilWisdom = 0, bossDamage = 0, ignorePDR = 0, totalDamage = 0, allStat = 0, karmaCount = -1, fire = -1, starforce;
+    private short str = 0, dex = 0, _int = 0, luk = 0, hp = 0, mp = 0, watk = 0, matk = 0, wdef = 0, mdef = 0, acc = 0, avoid = 0, hands = 0, speed = 0, jump = 0, charmExp = 0, pvpDamage = 0, enhanctBuff = 0, soulname, soulenchanter, soulpotential;
+    private int durability = -1, incSkill = -1, potential1 = 0, potential2 = 0, potential3 = 0, bonuspotential1 = 0, bonuspotential2 = 0, bonuspotential3 = 0, fusionAnvil = 0, socket1 = 0, socket2 = 0, socket3 = 0, soulskill, limitBreak = 0;
     private long itemEXP = 0;
     private boolean finalStrike = false;
     private boolean trace = false;
@@ -33,7 +32,6 @@ public class Equip extends Item implements Serializable {
     private MapleAndroid android = null;
     private List<EquipStat> stats = new LinkedList();
     private List<EquipSpecialStat> specialStats = new LinkedList();
-    private Map<EquipStat, Long> statsTest = new LinkedHashMap<>();
 
     public Equip(int id, short position, byte flag) {
         super(id, position, (short) 1, flag);
@@ -45,67 +43,7 @@ public class Equip extends Item implements Serializable {
 
     @Override
     public Item copy() {
-        Equip ret = new Equip(getItemId(), getPosition(), getUniqueId(), getFlag());
-        ret.str = str;
-        ret.dex = dex;
-        ret._int = _int;
-        ret.luk = luk;
-        ret.hp = hp;
-        ret.mp = mp;
-        ret.matk = matk;
-        ret.mdef = mdef;
-        ret.watk = watk;
-        ret.wdef = wdef;
-        ret.acc = acc;
-        ret.avoid = avoid;
-        ret.hands = hands;
-        ret.speed = speed;
-        ret.jump = jump;
-        ret.enhance = enhance;
-        ret.upgradeSlots = upgradeSlots;
-        ret.level = level;
-        ret.itemEXP = itemEXP;
-        ret.durability = durability;
-        ret.vicioushammer = vicioushammer;
-        ret.platinumhammer = platinumhammer;
-        ret.state = state;
-        ret.potential1 = potential1;
-        ret.potential2 = potential2;
-        ret.potential3 = potential3;
-        ret.bonusState = bonusState;
-        ret.bonuspotential1 = bonuspotential1;
-        ret.bonuspotential2 = bonuspotential2;
-        ret.bonuspotential3 = bonuspotential3;
-        ret.fusionAnvil = fusionAnvil;
-        ret.socket1 = socket1;
-        ret.socket2 = socket2;
-        ret.socket3 = socket3;
-        ret.charmExp = charmExp;
-        ret.pvpDamage = pvpDamage;
-        ret.incSkill = incSkill;
-        ret.enhanctBuff = enhanctBuff;
-        ret.reqLevel = reqLevel;
-        ret.yggdrasilWisdom = yggdrasilWisdom;
-        ret.finalStrike = finalStrike;
-        ret.bossDamage = bossDamage;
-        ret.ignorePDR = ignorePDR;
-        ret.totalDamage = totalDamage;
-        ret.allStat = allStat;
-        ret.karmaCount = karmaCount;
-        ret.fire = fire;
-        ret.setGiftFrom(getGiftFrom());
-        ret.setOwner(getOwner());
-        ret.setQuantity(getQuantity());
-        ret.setExpiration(getExpiration());
-        ret.stats = stats;
-        ret.specialStats = specialStats;
-        ret.statsTest = statsTest;
-        ret.soulname = soulname;
-        ret.soulenchanter = soulenchanter;
-        ret.soulpotential = soulpotential;
-        ret.soulskill = soulskill;
-        ret.starforce = starforce;
-        return ret;
+        return copyTo(new Equip(getItemId(), getPosition(), getUniqueId(), getFlag()));
     }
 
     @Override
@@ -309,6 +247,10 @@ public class Equip extends Item implements Serializable {
     public void setPlatinumHammer(byte ham) {
         platinumhammer = ham;
     }
+    
+    public byte getHammer() {
+        return (byte) (vicioushammer + platinumhammer);
+    }
 
     public long getItemEXP() {
         return itemEXP;
@@ -402,11 +344,11 @@ public class Equip extends Item implements Serializable {
         durability = dur;
     }
 
-    public byte getEnhanctBuff() {
+    public short getEnhanctBuff() {
         return enhanctBuff;
     }
 
-    public void setEnhanctBuff(byte enhanctBuff) {
+    public void setEnhanctBuff(short enhanctBuff) {
         this.enhanctBuff = enhanctBuff;
     }
 
@@ -490,6 +432,18 @@ public class Equip extends Item implements Serializable {
         this.karmaCount = karmaCount;
     }
 
+    public int getMaxDamage() {
+        return ItemConstants.類型.武器(getItemId()) ? ItemConstants.getMaxDamageLimitBreak(getItemId()) : 0;
+    }
+
+    public int getLimitBreak() {
+        return limitBreak;
+    }
+
+    public void setLimitBreak(int lb) {
+        limitBreak = lb;
+    }
+
     public byte getEnhance() {
         return enhance;
     }
@@ -530,18 +484,21 @@ public class Equip extends Item implements Serializable {
                 } else {
                     potential1 = en;
                 }
+                break;
             case 2:
                 if (isBonus) {
                     bonuspotential2 = en;
                 } else {
                     potential2 = en;
                 }
+                break;
             case 3:
                 if (isBonus) {
                     bonuspotential3 = en;
                 } else {
                     potential3 = en;
                 }
+                break;
         }
     }
 
@@ -599,6 +556,14 @@ public class Equip extends Item implements Serializable {
             ret = 18;//稀有
         } else if (v1 >= 1 || v2 >= 1 || v3 >= 1) {
             ret = 17;//特殊
+        } else if (v1 == -20 || v2 == -20 || v3 == -20 || v1 == -4 || v2 == -4 || v3 == -4) {
+            ret = 4;//未鑒定傳說
+        } else if (v1 == -19 || v2 == -19 || v3 == -19 || v1 == -3 || v2 == -3 || v3 == -3) {
+            ret = 3;//未鑒定罕見
+        } else if (v1 == -18 || v2 == -18 || v3 == -18 || v1 == -2 || v2 == -2 || v3 == -2) {
+            ret = 2;//未鑒定稀有
+        } else if (v1 == -17 || v2 == -17 || v3 == -17 || v1 == -1 || v2 == -1 || v3 == -1) {
+            ret = 1;//未鑒定特殊
         } else if (v1 < 0 || v2 < 0 || v3 < 0) {
             return;
         }
@@ -696,6 +661,7 @@ public class Equip extends Item implements Serializable {
             default:
                 rank = Randomizer.nextInt(100) < 4 ? (Randomizer.nextInt(100) < 4 ? -19 : -18) : -17;
         }
+        fullLine = getState(bonus) != 0 && getPotential(3, bonus) != 0 ? true : fullLine;
         setPotential(rank, 1, bonus);
         setPotential(Randomizer.nextInt(10) <= 1 || fullLine ? rank : 0, 2, bonus); //1/10 chance of 3 line
         setPotential(0, 3, bonus); //just set it theoretically
@@ -812,17 +778,17 @@ public class Equip extends Item implements Serializable {
         if (socket1 > 0) {
             flag |= SocketFlag.SOCKET_BOX_1.getValue();
         }
-        if (socket1 > 1) {
-            flag |= SocketFlag.USED_SOCKET_1.getValue();
-        }
         if (socket2 > 0) {
             flag |= SocketFlag.SOCKET_BOX_2.getValue();
         }
-        if (socket2 > 1) {
-            flag |= SocketFlag.USED_SOCKET_2.getValue();
-        }
         if (socket3 > 0) {
             flag |= SocketFlag.SOCKET_BOX_3.getValue();
+        }
+        if (socket1 > 1) {
+            flag |= SocketFlag.USED_SOCKET_1.getValue();
+        }
+        if (socket2 > 1) {
+            flag |= SocketFlag.USED_SOCKET_2.getValue();
         }
         if (socket3 > 1) {
             flag |= SocketFlag.USED_SOCKET_3.getValue();
@@ -830,28 +796,30 @@ public class Equip extends Item implements Serializable {
         return (short) flag;
     }
 
-    public int getSocket1() {
-        return socket1;
+    public int getSocket(int num) {
+        switch (num) {
+            case 1:
+                return socket1;
+            case 2:
+                return socket2;
+            case 3:
+                return socket3;
+        }
+        return 0;
     }
 
-    public void setSocket1(int socket1) {
-        this.socket1 = socket1;
-    }
-
-    public int getSocket2() {
-        return socket2;
-    }
-
-    public void setSocket2(int socket2) {
-        this.socket2 = socket2;
-    }
-
-    public int getSocket3() {
-        return socket3;
-    }
-
-    public void setSocket3(int socket3) {
-        this.socket3 = socket3;
+    public void setSocket(int socket, int num) {
+        switch (num) {
+            case 1:
+                socket1 = socket;
+                break;
+            case 2:
+                socket2 = socket;
+                break;
+            case 3:
+                socket3 = socket;
+                break;
+        }
     }
 
     public List<EquipStat> getStats() {
@@ -860,115 +828,6 @@ public class Equip extends Item implements Serializable {
 
     public List<EquipSpecialStat> getSpecialStats() {
         return specialStats;
-    }
-
-    public Map<EquipStat, Long> getStatsTest() {
-        return statsTest;
-    }
-
-    public static Equip calculateEquipStatsTest(Equip eq) {
-        eq.getStatsTest().clear();
-        if (eq.getUpgradeSlots() > 0) {
-            eq.getStatsTest().put(EquipStat.SLOTS, Long.valueOf(eq.getUpgradeSlots()));
-        }
-        if (eq.getLevel() > 0) {
-            eq.getStatsTest().put(EquipStat.LEVEL, Long.valueOf(eq.getLevel()));
-        }
-        if (eq.getStr() > 0) {
-            eq.getStatsTest().put(EquipStat.STR, Long.valueOf(eq.getStr()));
-        }
-        if (eq.getDex() > 0) {
-            eq.getStatsTest().put(EquipStat.DEX, Long.valueOf(eq.getDex()));
-        }
-        if (eq.getInt() > 0) {
-            eq.getStatsTest().put(EquipStat.INT, Long.valueOf(eq.getInt()));
-        }
-        if (eq.getLuk() > 0) {
-            eq.getStatsTest().put(EquipStat.LUK, Long.valueOf(eq.getLuk()));
-        }
-        if (eq.getHp() > 0) {
-            eq.getStatsTest().put(EquipStat.MHP, Long.valueOf(eq.getHp()));
-        }
-        if (eq.getMp() > 0) {
-            eq.getStatsTest().put(EquipStat.MMP, Long.valueOf(eq.getMp()));
-        }
-        if (eq.getWatk() > 0) {
-            eq.getStatsTest().put(EquipStat.WATK, Long.valueOf(eq.getWatk()));
-        }
-        if (eq.getMatk() > 0) {
-            eq.getStatsTest().put(EquipStat.MATK, Long.valueOf(eq.getMatk()));
-        }
-        if (eq.getWdef() > 0) {
-            eq.getStatsTest().put(EquipStat.WDEF, Long.valueOf(eq.getWdef()));
-        }
-        if (eq.getMdef() > 0) {
-            eq.getStatsTest().put(EquipStat.MDEF, Long.valueOf(eq.getMdef()));
-        }
-        if (eq.getAcc() > 0) {
-            eq.getStatsTest().put(EquipStat.ACC, Long.valueOf(eq.getAcc()));
-        }
-        if (eq.getAvoid() > 0) {
-            eq.getStatsTest().put(EquipStat.AVOID, Long.valueOf(eq.getAvoid()));
-        }
-        if (eq.getHands() > 0) {
-            eq.getStatsTest().put(EquipStat.HANDS, Long.valueOf(eq.getHands()));
-        }
-        if (eq.getSpeed() > 0) {
-            eq.getStatsTest().put(EquipStat.SPEED, Long.valueOf(eq.getSpeed()));
-        }
-        if (eq.getJump() > 0) {
-            eq.getStatsTest().put(EquipStat.JUMP, Long.valueOf(eq.getJump()));
-        }
-        if (eq.getFlag() > 0) {
-            eq.getStatsTest().put(EquipStat.FLAG, Long.valueOf(eq.getFlag()));
-        }
-        if (eq.getIncSkill() > 0) {
-            eq.getStatsTest().put(EquipStat.INC_SKILL, Long.valueOf(eq.getIncSkill()));
-        }
-        if (eq.getEquipLevel() > 0) {
-            eq.getStatsTest().put(EquipStat.ITEM_LEVEL, Long.valueOf(eq.getEquipLevel()));
-        }
-        if (eq.getItemEXP() > 0) {
-            eq.getStatsTest().put(EquipStat.ITEM_EXP, eq.getItemEXP());
-        }
-        if (eq.getDurability() > -1) {
-            eq.getStatsTest().put(EquipStat.DURABILITY, Long.valueOf(eq.getDurability()));
-        }
-        if (eq.getViciousHammer() > 0) {
-            eq.getStatsTest().put(EquipStat.VICIOUS_HAMMER, Long.valueOf(eq.getViciousHammer()));
-        }
-        if (eq.getPVPDamage() > 0) {
-            eq.getStatsTest().put(EquipStat.PVP_DAMAGE, Long.valueOf(eq.getPVPDamage()));
-        }
-        if (eq.getEnhanctBuff() > 0) {
-            eq.getStatsTest().put(EquipStat.ENHANCT_BUFF, Long.valueOf(eq.getEnhanctBuff()));
-        }
-        if (eq.getReqLevel() > 0) {
-            eq.getStatsTest().put(EquipStat.REQUIRED_LEVEL, Long.valueOf(eq.getReqLevel()));
-        }
-        if (eq.getYggdrasilWisdom() > 0) {
-            eq.getStatsTest().put(EquipStat.YGGDRASIL_WISDOM, Long.valueOf(eq.getYggdrasilWisdom()));
-        }
-        if (eq.getFinalStrike()) {
-            eq.getStatsTest().put(EquipStat.FINAL_STRIKE, Long.valueOf(eq.getFinalStrike() ? 1 : 0));
-        }
-        if (eq.getBossDamage() > 0) {
-            eq.getStatsTest().put(EquipStat.BOSS_DAMAGE, Long.valueOf(eq.getBossDamage()));
-        }
-        if (eq.getIgnorePDR() > 0) {
-            eq.getStatsTest().put(EquipStat.IGNORE_PDR, Long.valueOf(eq.getIgnorePDR()));
-        }
-        //SPECIAL STATS:
-        if (eq.getTotalDamage() > 0) {
-            eq.getStatsTest().put(EquipStat.TOTAL_DAMAGE, Long.valueOf(eq.getTotalDamage()));
-        }
-        if (eq.getAllStat() > 0) {
-            eq.getStatsTest().put(EquipStat.ALL_STAT, Long.valueOf(eq.getAllStat()));
-        }
-        eq.getStatsTest().put(EquipStat.KARMA_COUNT, Long.valueOf(eq.getKarmaCount())); //no count = -1
-        //eq.getStatsTest().put(EquipStat.UNK8, Long.valueOf(-1)); // test
-        //eq.getStatsTest().put(EquipStat.UNK10, Long.valueOf(0)); // test
-        return (Equip) eq.copy();
     }
 
     public static Equip calculateEquipStats(Equip eq) {
@@ -1040,7 +899,7 @@ public class Equip extends Item implements Serializable {
         if (eq.getDurability() > -1) {
             eq.getStats().add(EquipStat.DURABILITY);
         }
-        if (eq.getViciousHammer() > 0) {
+        if (eq.getViciousHammer() > 0 || eq.getPlatinumHammer() > 0) {
             eq.getStats().add(EquipStat.VICIOUS_HAMMER);
         }
         if (eq.getPVPDamage() > 0) {
@@ -1071,7 +930,7 @@ public class Equip extends Item implements Serializable {
         if (eq.getAllStat() > 0) {
             eq.getSpecialStats().add(EquipSpecialStat.ALL_STAT);
         }
-        eq.getSpecialStats().add(EquipSpecialStat.KARMA_COUNT); //no count = -1
+        eq.getSpecialStats().add(EquipSpecialStat.KARMA_COUNT);
         if (eq.getFire() > 0) {
             eq.getSpecialStats().add(EquipSpecialStat.FIRE);
         }
@@ -1081,50 +940,179 @@ public class Equip extends Item implements Serializable {
         return (Equip) eq.copy();
     }
 
-    public Item reset(Equip newEquip) {
-        //Equip ret = new Equip(getItemId(), getPosition(), getUniqueId(), getFlag());
-        this.str = newEquip.str;
-        this.dex = newEquip.dex;
-        this._int = newEquip._int;
-        this.luk = newEquip.luk;
-        this.hp = newEquip.hp;
-        this.mp = newEquip.mp;
-        this.matk = newEquip.matk;
-        this.mdef = newEquip.mdef;
-        this.watk = newEquip.watk;
-        this.wdef = newEquip.wdef;
-        this.acc = newEquip.acc;
-        this.avoid = newEquip.avoid;
-        this.hands = newEquip.hands;
-        this.speed = newEquip.speed;
-        this.jump = newEquip.jump;
-        this.upgradeSlots = newEquip.upgradeSlots;
-        this.level = newEquip.level;
-        this.itemEXP = newEquip.itemEXP;
-        this.durability = newEquip.durability;
-        this.vicioushammer = newEquip.vicioushammer;
-        this.platinumhammer = newEquip.platinumhammer;
-        this.enhance = newEquip.enhance;
-        this.charmExp = newEquip.charmExp;
-        this.pvpDamage = newEquip.pvpDamage;
-        this.incSkill = newEquip.incSkill;
+    public Equip copyTo(Equip ret) {
+        //力量
+        ret.str = str;
+        //敏捷
+        ret.dex = dex;
+        //智力
+        ret._int = _int;
+        //幸運
+        ret.luk = luk;
+        //HP
+        ret.hp = hp;
+        //MP
+        ret.mp = mp;
+        //魔攻
+        ret.matk = matk;
+        //魔防
+        ret.mdef = mdef;
+        //物攻
+        ret.watk = watk;
+        //物防
+        ret.wdef = wdef;
+        //命中
+        ret.acc = acc;
+        //迴避
+        ret.avoid = avoid;
+        //靈敏度
+        ret.hands = hands;
+        //移動速度
+        ret.speed = speed;
+        //跳躍力
+        ret.jump = jump;
+        //裝備星級
+        ret.enhance = enhance;
+        //可使用捲軸次數
+        ret.upgradeSlots = upgradeSlots;
+        //已使用捲軸次數
+        ret.level = level;
+        //道具經驗
+        ret.itemEXP = itemEXP;
+        //耐久
+        ret.durability = durability;
+        //黃金鐵鎚次數
+        ret.vicioushammer = vicioushammer;
+        //白金鐵鎚次數
+        ret.platinumhammer = platinumhammer;
+        //潛能等級
+        ret.state = state;
+        //潛能1
+        ret.potential1 = potential1;
+        //潛能2
+        ret.potential2 = potential2;
+        //潛能3
+        ret.potential3 = potential3;
+        //附加潛能等級
+        ret.bonusState = bonusState;
+        //附加潛能1
+        ret.bonuspotential1 = bonuspotential1;
+        //附加潛能2
+        ret.bonuspotential2 = bonuspotential2;
+        //附加潛能3
+        ret.bonuspotential3 = bonuspotential3;
+        //鐵砧
+        ret.fusionAnvil = fusionAnvil;
+        //星岩1
+        ret.socket1 = socket1;
+        //星岩2
+        ret.socket2 = socket2;
+        //星岩3
+        ret.socket3 = socket3;
+        // 突破上限(台服已無)
+        ret.limitBreak = limitBreak;
+        //魅力經驗值
+        ret.charmExp = charmExp;
+        //大亂鬥傷害
+        ret.pvpDamage = pvpDamage;
+        //裝備技能
+        ret.incSkill = incSkill;
+        //星力強化狀態
+        ret.enhanctBuff = enhanctBuff;
+        //裝備需求等級減少
+        ret.reqLevel = reqLevel;
+        //世界之樹的祝福 [20485XX]
+        ret.yggdrasilWisdom = yggdrasilWisdom;
+        //最後武力 技能 [2048600]
+        ret.finalStrike = finalStrike;
+        //BOSS傷
+        ret.bossDamage = bossDamage;
+        //無視怪物防禦
+        ret.ignorePDR = ignorePDR;
+        //總傷
+        ret.totalDamage = totalDamage;
+        //全屬性%
+        ret.allStat = allStat;
+        //剪刀次數
+        ret.karmaCount = karmaCount;
+        //星火
+        ret.fire = fire;
+        //靈魂寶珠
+        ret.soulname = soulname;
+        //靈魂捲軸
+        ret.soulenchanter = soulenchanter;
+        //靈魂寶珠潛能
+        ret.soulpotential = soulpotential;
+        //靈魂技能
+        ret.soulskill = soulskill;
+        //星之力
+        ret.starforce = starforce;
 
-        this.enhanctBuff = newEquip.enhanctBuff;
-        this.reqLevel = newEquip.reqLevel;
-        this.yggdrasilWisdom = newEquip.yggdrasilWisdom;
-        this.finalStrike = newEquip.finalStrike;
-        this.bossDamage = newEquip.bossDamage;
-        this.ignorePDR = newEquip.ignorePDR;
-        this.totalDamage = newEquip.totalDamage;
-        this.allStat = newEquip.allStat;
-        this.karmaCount = newEquip.karmaCount;
-        this.soulname = newEquip.soulname;
-        this.soulenchanter = newEquip.soulenchanter;
-        this.soulpotential = newEquip.soulpotential;
-        this.soulskill = newEquip.soulskill;
-        this.starforce = newEquip.starforce;
-        this.fire = newEquip.fire;
-        this.setGiftFrom(getGiftFrom());
-        return this;
+        //從 XX 贈送
+        ret.setGiftFrom(getGiftFrom());
+        //製作者
+        ret.setOwner(getOwner());
+        //數量
+        ret.setQuantity(getQuantity());
+        //剩餘使用時間
+        ret.setExpiration(getExpiration());
+
+        ret.stats = stats;
+        ret.specialStats = specialStats;
+        return ret;
+    }
+
+    public Item inheritance(Equip oldEquip) {
+        if (ItemFlag.UNTRADABLE.check(oldEquip.getFlag())) {
+            addFlag((short) ItemFlag.UNTRADABLE.getValue());
+        }
+        oldEquip.enhanctBuff = (short) ((enhanctBuff | oldEquip.enhanctBuff) - EquipStat.EnhanctBuff.EQUIP_MARK.getValue());
+        oldEquip.charmExp = charmExp;
+        oldEquip.setFlag(getFlag());
+        oldEquip.setOwner(getOwner());
+        return oldEquip.copyTo(this);
+    }
+
+    public Item reset(Equip newEquip, boolean prefectReset) {
+        newEquip.setQuantity(getQuantity());
+        newEquip.setExpiration(getExpiration());
+        newEquip.upgradeSlots += platinumhammer;
+        newEquip.platinumhammer = platinumhammer;
+        newEquip.charmExp = charmExp;
+        newEquip.enhanctBuff = enhanctBuff;
+        newEquip.soulenchanter = soulenchanter;
+
+        newEquip.state = state;
+        newEquip.potential1 = potential1;
+        newEquip.potential2 = potential2;
+        newEquip.potential3 = potential3;
+        newEquip.bonusState = bonusState;
+        newEquip.bonuspotential1 = bonuspotential1;
+        newEquip.bonuspotential2 = bonuspotential2;
+        newEquip.bonuspotential3 = bonuspotential3;
+        newEquip.fusionAnvil = fusionAnvil;
+        newEquip.socket1 = socket1;
+        newEquip.socket2 = socket2;
+        newEquip.socket3 = socket3;
+        newEquip.limitBreak = limitBreak;
+
+        if  (prefectReset) {
+            //去除無法交易狀態
+            if (ItemFlag.UNTRADABLE.check(getFlag())) {
+                newEquip.setFlag((short) (getFlag() - ItemFlag.UNTRADABLE.getValue()));
+            }
+            //去除楓方塊狀態，否則回真後無法交易裝備又不能剪刀，需要穿一次裝才能剪刀(這個是台版BUG)
+            if (ItemFlag.MAPLE_CUBE.check(getFlag())) {
+                newEquip.setFlag((short) (getFlag() - ItemFlag.MAPLE_CUBE.getValue()));
+            }
+        } else {
+            newEquip.soulname = soulname;
+            newEquip.soulpotential = soulpotential;
+            newEquip.soulskill = soulskill;
+            newEquip.karmaCount = karmaCount;
+            newEquip.fire = fire;
+        }
+
+        return newEquip.copyTo(this);
     }
 }

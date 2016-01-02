@@ -156,11 +156,9 @@ public class PetPacket {
         mplew.write(0);
         mplew.writeLong(MapleStat.PET.getValue());
         byte count = 0;
-        for (MaplePet pet : chr.getPets()) {
-            if (pet.getSummoned()) {
-                mplew.writeLong(pet.getUniqueId());
-                count = (byte) (count + 1);
-            }
+        for (MaplePet pet : chr.getSummonedPets()) {
+            mplew.writeLong(pet.getUniqueId());
+            count = (byte) (count + 1);
         }        
         while (count < 3) {
             mplew.writeZeroBytes(8);
@@ -185,7 +183,7 @@ public class PetPacket {
         mplew.write(pet.getStance());
         mplew.writeShort(pet.getFh());
         mplew.writeInt(-1);
-        mplew.writeShort(100);
+        mplew.writeShort(100); // 寵物大小（百分比）
         mplew.write(0);
         mplew.write(0);
     }

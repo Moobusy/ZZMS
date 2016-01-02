@@ -1,4 +1,4 @@
-﻿-- ----------------------------
+-- ----------------------------
 -- Records of drop_data
 -- ----------------------------
 INSERT INTO `drop_data` (`id`,`dropperid`,`itemid`,`minimum_quantity`,`maximum_quantity`,`questid`,`chance`) VALUES 

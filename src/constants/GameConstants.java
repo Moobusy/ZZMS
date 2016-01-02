@@ -80,7 +80,7 @@ public class GameConstants {
     public static final int JAIL = 180000004, MAX_BUFFSTAT = 15, MAX_MOBSTAT = 3;
     public static final int[] blockedSkills = {4341003};
     public static final String[] RESERVED = {"Apocryphal", "MechAviv"};
-    public static final String[] stats = {"tuc", "reqLevel", "reqJob", "reqSTR", "reqDEX", "reqINT", "reqLUK", "reqPOP", "cash", "cursed", "success", "setItemID", "equipTradeBlock", "durability", "randOption", "randStat", "masterLevel", "reqSkillLevel", "elemDefault", "incRMAS", "incRMAF", "incRMAI", "incRMAL", "canLevel", "skill", "charmEXP", "limitedLv", "imdR", "bdR", "superiorEqp", "maxSuperiorEqp", "recover"};
+    public static final String[] stats = {"tuc", "reqLevel", "reqJob", "reqSTR", "reqDEX", "reqINT", "reqLUK", "reqPOP", "cash", "cursed", "success", "setItemID", "equipTradeBlock", "durability", "randOption", "randStat", "masterLevel", "reqSkillLevel", "elemDefault", "incRMAS", "incRMAF", "incRMAI", "incRMAL", "canLevel", "skill", "charmEXP", "limitedLv", "imdR", "bdR", "superiorEqp", "maxSuperiorEqp", "recover", "reset", "perfectReset", "effectItemID"};
     public static final int[] hyperTele = {10000, 20000, 30000, 40000, 50000, 1000000, 1010000, 1020000, 2000000, //Maple Island
         104000000, 104010000, 104010100, 104010200, 104020000, 103010100, 103010000, 103000000, 103050000, 103020000, 103020020, 103020100, 103020200, 103020300, 103020310, 103020320, 103020400, 103020410, 103020420, 103030000, 103030100, 103030200, 103030300, 103030400, 102000000, 102010000, 102010100, 102020000, 102020100, 102020200, 102020300, 102020400, 102020500, 102040000, 102040100, 102040200, 102040300, 102040400, 102040500, 102040600, 102030000, 102030100, 102030200, 102030300, 102030400, 101000000, 101010000, 101010100, 101020000, 101020100, 101020200, 101020300, 101030000, 101030100, 101030200, 101030300, 101030400, 101030500, 101030101, 101030201, 101040000, 101040100, 101040200, 101040300, 101040310, 101040320, 101050000, 101050400, 100000000, 100010000, 100010100, 100020000, 100020100, 100020200, 100020300, 100020400, 100020500, 100020401, 100020301, 100040000, 100040100, 100040200, 100040300, 100040400, 100020101, 106020000, 120010100, 120010000, 120000000, 120020000, 120020100, 120020200, 120020300, 120020400, 120020500, 120020600, 120020700, 120030000, 120030100, 120030200, 120030300, 120030400, 120030500, //Victoria Island
         105000000, 105010000, 105010100, 105020000, 105020100, 105020200, 105020300, 105020400, 105020500, 105030000, 105030100, 105030200, 105030300, 105030400, 105030500, 105100000, 105100100, //Sleepy Wood
@@ -234,20 +234,22 @@ public class GameConstants {
     }
 
     public static int maxViewRangeSq() {
-        return 1366 * 768 * 2;//1000000; // 1024 * 768
+//        return 1366 * 768 * 2;//1000000; // 1024 * 768
+        return Integer.MAX_VALUE;
     }
 
     public static int maxViewRangeSq_Half() {
-        return 1366 * 768;//500000; // 800 * 800
+//        return 1366 * 768;//500000; // 800 * 800
+        return Integer.MAX_VALUE;
     }
 
     public static boolean isExceedAttack(int id) {
         switch (id) {
             case 31011000: // 超越 : 十文字斬
-            case 31010004:
-            case 31010005:
-            case 31010006:
-            case 31010007:
+            case 31011004:
+            case 31011005:
+            case 31011006:
+            case 31011007:
             case 31201000: // 超越：惡魔風暴
             case 31201007:
             case 31201008:
@@ -343,6 +345,7 @@ public class GameConstants {
         return getLinkedAttackSkill(id) != id;
     }
 
+    //TODO 添加連結攻擊技能
     public static int getLinkedAttackSkill(final int id) {
         switch (id) {
             case 11101220: // 皇家衝擊
@@ -361,9 +364,11 @@ public class GameConstants {
                 return 11121203; // 太陽穿刺
             case 21110007:
             case 21110008:
+            case 21110015:
                 return 21110002;
             case 21120009:
             case 21120010:
+            case 21120015:
                 return 21120002;
             case 4321001:
                 return 4321000;
@@ -442,7 +447,7 @@ public class GameConstants {
             case 24121010:
                 return 24121003;
             case 5001008:
-                return 5200010;
+                return 5001003;
             case 5001009:
                 return 5101004;
             case 41001005:
@@ -501,8 +506,309 @@ public class GameConstants {
             case 112120002:
             case 112120003:
                 return 112120000;
+            case 33111212://- 狂野射击
+                return 33111112;
+            case 33101213://连环三箭
+                return 33101113;
+            case 33001205://二连射
+                return 33001105;
+            case 33101215://十字攻
+            case 33100016:
+                return 33101115;
+            case 2321055: //天堂之门
+                return 2321052;
+            case 61111217:
+                return 61101101;
+            case 61111219:
+                return 61111101;
+            case 61111220:
+                return 61111002;
+            case 61111215:
+                return 61001101;
+            case 112000019://巨熊3.5击
+                return 112000015;
+            case 61121221:
+            case 61121223:
+                return 61121104;
+            case 61120018:
+            case 61121222:
+                return 61121105;
+            case 10001253:
+            case 10001254:
+                return 10000252;
+            case 5710023:
+            case 5710024:
+            case 5710025:
+            case 5710026:
+                return 5710020;
+            case 11121055:
+                return 11121052;
+            case 5101014:
+                return 5101012;
+            case 2120013:
+                return 2121007;
+            case 2220014:
+                return 2221007;
+            case 12001028:
+                return 12000023;
+            case 12000026: //轨道烈焰
+                return 12001020;
+            case 12101028:
+            case 12100028:
+                return 12100020;
+            case 12111028:
+            case 12110028:
+                return 12110020;
+            case 12120010: //轨道烈焰
+                return 12120006;
+            case 12121055:
+                return 12121054;
+            case 12120012:
+                return 12121003;
+            case 12120013://火焰化身
+            case 12120014:
+                return 12121004;
+            case 21110003://终极投掷
+                return 21111013;
+            case 21110006: //旋风
+                return 21111014;
+            case 21120005://巨熊咆哮
+                return 21121013;
+            case 5310011:
+                return 5311010;
+            case 12120011: // - 灭绝之焰
+                return 12121001;
+            case 112100001:
+                return 112100000;
+            case 21100002://战神突进
+                return 21101011;
+            case 21121055://比昂德
+            case 21121056:
+                return 21120052;
+            case 24120055: //玫瑰卡片终结
+                return 24121052;
+            case 65111007:
+                return 65111100;
+            case 2121055:
+                return 2121052;
+            case 3120017:
+                return 3121016;
+            case 95001000://箭矢炮盘
+                return 3111013;
+            case 4210014:
+                return 4211006;
+            case 1320019:
+                return 1320016;
+            case 1120017:
+                return 1121008;
+            case 4100012:
+                return 4100011;
+            case 4120019:
+                return 4120018;
+            case 4221016:
+                return 4221014;
+            case 3000008:
+            case 3000009:
+            case 3000010:
+                return 3001007;
+            case 3120019:
+                return 3111009;
+            case 5111013:
+                return 5111002;
+            case 5111015:
+                return 5111012;
+            case 5121019:
+                return 5121001;
+            case 5121020:
+                return 5121007;
+            case 5121017:
+                return 5121016;
+            case 5201005:
+                return 5201011;
+            case 5201013:
+            case 5201014:
+                return 5201012;
+            case 5210016:
+            case 5210017:
+            case 5210018:
+                return 5210015;
+            case 5220023:
+            case 5221022:
+                return 5221004;
+            case 21000006:
+                return 21000002;
+            case 30011159:
+                return 30011109;
+            case 20010022:
+                return 80001000;
+            case 27120211:
+                return 27121201;
+            case 61001004:
+            case 61001005:
+            case 61110212:
+            case 61120219:
+                return 61001000;
+            case 61111111:
+                return 61111100;
+            case 61110009:
+                return 61111003;
+            case 61121116:
+                return 61121104;
+            case 61120008:
+                return 61111008;
+            case 61121203:
+                return 61121102;
+            case 61121201:
+                return 61121100;
+            case 61110211:
+                return 61101002;
+            case 61121217:
+                return 61120007;
+            case 65121007:
+            case 65121008:
+                return 65121101;
+            case 31011004:
+            case 31011005:
+            case 31011006:
+            case 31011007:
+                return 31011000;
+            case 31221014:
+                return 31221001;
+            case 36101008:
+            case 36101009:
+                return 36101000;
+            case 36111009:
+            case 36111010:
+                return 36111000;
+            case 36121013:
+            case 36121014:
+                return 36121002;
+            case 36121011:
+            case 36121012:
+                return 36121001;
+            case 11120010:
+                return 11120009;
+            case 11121011:
+            case 11121012:
+                return 11121005;
+            case 11121013:
+                return 11121004;
+            case 13100027:
+                return 13100022;
+            case 13110027:
+                return 13110022;
+            case 13120010:
+                return 13120003;
+            case 13121009:
+                return 13121002;
+            case 100001269:
+                return 100001266;
+            case 101110104:
+                return 101110102;
+            //林之灵
+            case 112000000:
+                return 110001501;
+            case 112100000:
+                return 110001502;
+            case 112111003:
+                return 110001503;
+            case 112120000:
+                return 110001504;
+            //隐月
+            case 25000003:
+                return 25001002;
+            case 25000001:
+                return 25001000;
+            case 25100001:
+            case 25100002:
+                return 25101000;
+            case 25110001:
+            case 25110002:
+            case 25110003:
+                return 25111000;
+            case 25120001:
+            case 25120002:
+            case 25120003:
+                return 25121000;
+            case 25100010:
+                return 25100009;
+            case 25120115:
+                return 25120110;
+            case 14101021:
+                return 14101020;
+            case 14111021:
+                return 14111020;
+            case 14111023:
+                return 14111022;
+            case 14121002:
+                return 14121001;
+            case 131001001:
+            case 131001002:
+            case 131001003:
+            case 131001101:
+            case 131001102:
+            case 131001103:
+            case 131002000:
+                return 131001000;
+            case 131001013:
+            case 131001113:
+            case 131001213:
+            case 131001313:
+                return 131001013;
+            case 131001104:
+            case 131002004:
+                return 131001004;
+            case 131001106:
+            case 131001206:
+            case 131001306:
+            case 131001406:
+            case 131001506:
+                return 131001006;
+            case 131001107:
+            case 131001207:
+            case 131001307:
+                return 131001007;
+            case 131001108:
+            case 131001208:
+                return 131001008;
+            case 131001011:
+            case 131002010:
+                return 131001010;
+            case 131002012:
+                return 131001012;
+            case 131002014:
+                return 131000014;
+            case 131002015:
+                return 131001015;
+            case 131002016:
+                return 131000016;
         }
         return id;
+    }
+
+    public static boolean is不檢測次數(final int id) {
+        switch (id) {
+            case 1321052:
+            case 65111007:
+            case 36110004:
+            case 4211006:
+            case 3221007:
+            case 23121003:
+            case 24100003:
+            case 24120002:
+            case 4120019:
+            case 4100012:
+            case 1201012:
+            case 1201011:
+            case 1211008:
+            case 1221009:
+            case 1221004:
+            case 27111100:
+            case 3120017:
+            case 4210014:
+                return true;
+        }
+        return false;
     }
 
     public static final int getLinkedBuffSkill(final int id) {
@@ -756,11 +1062,18 @@ public class GameConstants {
     }
 
     public static MapleInventoryType getInventoryType(final int itemId) {
-        final byte type = (byte) (itemId / 1000000);
-        if (type < 1 || type > 5) {
-            return MapleInventoryType.UNDEFINED;
+        MapleInventoryType type = MapleInventoryType.getByType((byte) (itemId / 1000000));
+        if (type == MapleInventoryType.UNDEFINED || type == null) {
+            final byte type2 = (byte) (itemId / 10000);
+            if (type2 == 2) {
+                type = MapleInventoryType.FACE;
+            } else if (type2 == 3) {
+                type = MapleInventoryType.HAIR;
+            } else {
+                type = MapleInventoryType.UNDEFINED;
+            }
         }
-        return MapleInventoryType.getByType(type);
+        return type;
     }
 
     public static boolean isInBag(final int slot, final byte type) {
@@ -924,10 +1237,6 @@ public class GameConstants {
         return false;
     }
 
-    public static boolean isCustomQuest(final int id) {
-        return id > 99999;
-    }
-
     public static int getTaxAmount(final int meso) {
         if (meso >= 100000000) {
             return (int) Math.round(0.06 * meso);
@@ -998,7 +1307,7 @@ public class GameConstants {
             case 112001008: // Fishy Slap
                 System.out.println("Get Attack Delay with skill " + id);
                 return 99; //skip duh chek
-            case 0: // Normal Attack, TODO delay for each weapon type
+            case 0: // Normal Attack
                 return 570;
         }
         if (skill != null && skill.getSkillType() == 3) {
@@ -1007,9 +1316,9 @@ public class GameConstants {
         if (skill != null && skill.getDelay() > 0 && !isNoDelaySkill(id)) {
             return skill.getDelay();
         }
-        // TODO delay for final attack, weapon type, swing,stab etc
         return 330; // Default usually
     }
+
     public final static int[] goldrewards = {
         2049400, 1,
         2049401, 2,
@@ -2448,7 +2757,7 @@ public class GameConstants {
         }
 
         if (isSeparatedSp(job)) {
-            return MapleJob.getNumber(job) - 1;
+            return MapleJob.getJobGrade(job) - 1;
         }
 
         return 0;
@@ -2484,7 +2793,7 @@ public class GameConstants {
     }
 
     public static boolean isSeparatedSp(int job) {
-        return !MapleJob.is管理員(job) && !MapleJob.is幻獸師(job);
+        return !MapleJob.is管理員(job) && !MapleJob.is幻獸師(job) && !MapleJob.is皮卡啾(job);
     }
 
     public static int getLinkedMountItem(final int sourceid) {
@@ -2503,11 +2812,11 @@ public class GameConstants {
             case 6:
             case 7:
             case 8:
-                return (sourceid % 1000) + 1023;
+                return sourceid % 1000 + 1023;
             case 9:
             case 10:
             case 11:
-                return (sourceid % 1000) + 1024;
+                return sourceid % 1000 + 1024;
             case 12:
                 return 1042;
             case 13:
@@ -2517,10 +2826,10 @@ public class GameConstants {
             case 15:
             case 16:
             case 17:
-                return (sourceid % 1000) + 1036;
+                return sourceid % 1000 + 1036;
             case 18:
             case 19:
-                return (sourceid % 1000) + 1045;
+                return sourceid % 1000 + 1045;
             case 20:
                 return 1072;
             case 21:
@@ -2544,7 +2853,7 @@ public class GameConstants {
             case 47:
             case 48:
             case 49:
-                return (sourceid % 1000) + 1009;
+                return sourceid % 1000 + 1009;
             case 52:
                 return 1070;
             case 53:
@@ -2581,38 +2890,95 @@ public class GameConstants {
             case 76:
             case 77:
             case 78:
-                return (sourceid % 1000) + 1080;
+                return sourceid % 1000 + 1080;
+            case 82:
+                return 1932093;
+            case 83:
+                return 1932094;
+            case 84:
+                return 1932095;
             case 85:
             case 86:
             case 87:
-                return (sourceid % 1000) + 928;
+                return sourceid % 1000 + 928;
             case 88:
                 return 1065;
-
+            case 90:
+                return 1932096;
             case 27:
-                return 1932049; //airplane
+                return 1932049;
             case 28:
-                return 1932050; //airplane
+                return 1932050;
+            case 111:
+                return 1932038;
+            case 112:
+                return 1932097;
+            case 113:
+                return 1932098;
             case 114:
-                return 1932099; //bunny buddy
-            //33 = hot air
-            //37 = bjorn
-            //38 = speedy chariot
-            //57 = law officer
-            //they all have in wz so its ok
+                return 1932099;
+            case 115:
+                return 1932065;
+            case 116:
+                return 1932066;
+            case 117:
+                return 1932072;
+            case 118:
+                return 1932078;
+            case 119:
+                return 1932080;
+            case 120:
+                return 1992015;
+            case 121:
+                return 1932092;
+            case 124:
+                return 1932105;
+            case 142:
+                return 1932112;
+            case 181:
+                return 1932091;
+            case 33:
+                return 1932057;
+            case 38:
+                return 1932088;
         }
         return 0;
     }
 
+    public static int getMountSkill(int sourceid, MapleCharacter chr) {
+        switch (sourceid) {
+            case 33001007:
+                switch (chr.getIntNoRecord(111112)) {
+                    case 20:
+                        return 33001007;
+                    case 30:
+                        return 33001008;
+                    case 40:
+                        return 33001009;
+                    case 50:
+                        return 33001010;
+                    case 60:
+                        return 33001011;
+                    case 70:
+                        return 33001012;
+                    case 80:
+                        return 33001013;
+                    case 90:
+                        return 33001014;
+                    case 100:
+                        return 33001015;
+                }
+        }
+        return sourceid;
+    }
+
     public static int getMountItem(final int sourceid, final MapleCharacter chr) {
         switch (sourceid) {
-            case 5221006:
-                return 1932000;
-            case 33001001: //temp.
+            case 33001001:
                 if (chr == null) {
                     return 1932015;
                 }
-                switch (chr.getIntNoRecord(JAGUAR)) {
+                switch (chr.getIntNoRecord(111112)) {
                     case 20:
                         return 1932030;
                     case 30:
@@ -2625,29 +2991,45 @@ public class GameConstants {
                         return 1932036;
                     case 70:
                         return 1932100;
+                    case 80:
+                        return 1932101;
+                    case 90:
+                        return 1932102;
+                    case 100:
+                        return 1932103;
                 }
                 return 1932015;
             case 35001002:
             case 35120000:
                 return 1932016;
-            //case 30011109:
-            //	return 1932085;
+            case 30011109:
+                return 1932051;
+            case 30011159:
+                return 1932085;
+            case 20021160:
+                return 1932086;
+            case 20021161:
+                return 1932087;
+            case 20031160:
+                return 1932106;
+            case 20031161:
+                return 1932107;
         }
         if (!MapleJob.isBeginner(sourceid / 10000)) {
             if (sourceid / 10000 == 8000 && sourceid != 80001000) { //todoo clean up
                 final Skill skil = SkillFactory.getSkill(sourceid);
                 if (skil != null && skil.getTamingMob() > 0) {
                     return skil.getTamingMob();
-                    //} else if (skil != null && skil.getSkillTamingMob() > 0) {
-                    //    return skil.getSkillTamingMob();
-                } else {
-                    final int link = getLinkedMountItem(sourceid);
-                    if (link > 0) {
-                        if (link < 10000) {
-                            return getMountItem(link, chr);
-                        } else {
-                            return link;
-                        }
+                }
+                if ((skil != null) && (skil.getvehicleID() > 0)) {
+                    return skil.getvehicleID();
+                }
+                final int link = getLinkedMountItem(sourceid);
+                if (link > 0) {
+                    if (link < 10000) {
+                        return getMountItem(link, chr);
+                    } else {
+                        return link;
                     }
                 }
             }
@@ -2720,8 +3102,6 @@ public class GameConstants {
                 return 1932022;
             case 1044:
                 return 1932023;
-            //case 1045:
-            //return 1932030; //wth? helicopter? i didnt see one, so we use hog
             case 1049:
                 return 1932025;
             case 1050:
@@ -2757,21 +3137,23 @@ public class GameConstants {
             case 1101:
                 return 1932046;
             case 1102:
-                return 1932061;
+                return 1932047;
             case 1106:
                 return 1932048;
-            case 1118:
-                return 1932060;
             case 1115:
                 return 1932052;
+            case 1118:
+                return 1932060;
             case 1121:
                 return 1932063;
             case 1122:
                 return 1932064;
             case 1123:
                 return 1932065;
-            case 1128:
+            case 1124:
                 return 1932066;
+            case 1129:
+                return 1932071;
             case 1130:
                 return 1932072;
             case 1136:
@@ -2780,7 +3162,6 @@ public class GameConstants {
                 return 1932080;
             case 1139:
                 return 1932081;
-            //FLYING
             case 1143:
             case 1144:
             case 1145:
@@ -2796,7 +3177,83 @@ public class GameConstants {
             case 1155:
             case 1156:
             case 1157:
-                return 1992000 + (sourceid % 10000) - 1143;
+                return 1992000 + sourceid % 10000 - 1143;
+            case 1014:
+            case 1020:
+            case 1021:
+            case 1022:
+            case 1023:
+            case 1024:
+            case 1026:
+            case 1032:
+            case 1041:
+            case 1043:
+            case 1045:
+            case 1047:
+            case 1055:
+            case 1056:
+            case 1057:
+            case 1058:
+            case 1059:
+            case 1060:
+            case 1061:
+            case 1062:
+            case 1066:
+            case 1067:
+            case 1068:
+            case 1073:
+            case 1074:
+            case 1075:
+            case 1076:
+            case 1077:
+            case 1078:
+            case 1079:
+            case 1080:
+            case 1081:
+            case 1082:
+            case 1083:
+            case 1085:
+            case 1086:
+            case 1087:
+            case 1088:
+            case 1090:
+            case 1091:
+            case 1092:
+            case 1093:
+            case 1094:
+            case 1095:
+            case 1097:
+            case 1098:
+            case 1099:
+            case 1100:
+            case 1103:
+            case 1104:
+            case 1105:
+            case 1107:
+            case 1108:
+            case 1109:
+            case 1110:
+            case 1111:
+            case 1112:
+            case 1113:
+            case 1114:
+            case 1116:
+            case 1117:
+            case 1119:
+            case 1120:
+            case 1125:
+            case 1126:
+            case 1127:
+            case 1128:
+            case 1131:
+            case 1132:
+            case 1133:
+            case 1134:
+            case 1135:
+            case 1137:
+            case 1140:
+            case 1141:
+            case 1142:
             default:
                 return 0;
         }
@@ -3411,7 +3868,52 @@ public class GameConstants {
     }
 
     public static boolean isAngel(int sourceid) {
-        return MapleJob.isBeginner(sourceid / 10000) && (sourceid % 10000 == 1085 || sourceid % 10000 == 1087 || sourceid % 10000 == 1090 || sourceid % 10000 == 1179 || sourceid % 10000 == 1154);
+        if (MapleJob.isBeginner(sourceid / 10000) || sourceid / 100000 == 800) {
+            switch (sourceid % 10000) {
+                case 1085: // 大天使 [等級上限：1]\n召喚被大天使祝福封印的大天使。
+                case 1087: // 黑天使 [等級上限：1]\n召喚被黑天使祝福封印的大天使。
+                case 1090: // 大天使 [等級上限：1]\n召喚被大天使祝福封印的大天使。
+                case 1179: // 白色天使 [最高等級： 1]\n召喚出被封印的聖潔天使。
+                case 86: // 大天使祝福 [等級上限：1]\n得到大天使的祝福。
+                    return true;
+            }
+        }
+        switch (sourceid) {
+            case 80000052: // 恶魔之息 获得恶魔的力量，攻击力和魔法攻击力增加6，HP、MP增加5%，可以和其他增益叠加。
+            case 80000053: // 恶魔召唤 获得恶魔的力量，攻击力和魔法攻击力增加13，HP、MP增加10%，可以和其他增益叠加。
+            case 80000054: // 恶魔契约 获得恶魔的力量，攻击力和魔法攻击力增加15，HP、MP增加20%，可以和其他增益叠加。
+            case 80000086: // 戰神祝福 [等級上限：1]\n得到戰神的祝福。
+            case 80001154: // 白色天使 [最高等級：1]\n召喚被白天使的祝福封印的白天使。
+            case 80001262: // 戰神祝福 [等級上限：1]\n召喚戰神
+            case 80001518: // 元素瑪瑙 召喚瑪瑙戒指中的#c元素瑪瑙#.
+            case 80001519: // 火焰瑪瑙 召喚瑪瑙戒指中的#c火焰瑪瑙#.
+            case 80001520: // 閃電瑪瑙 召喚瑪瑙戒指中的#c火焰瑪瑙#.
+            case 80001521: // 冰凍瑪瑙 召喚瑪瑙戒指中的#c冰凍瑪瑙#.
+            case 80001522: // 大地瑪瑙 召喚瑪瑙戒指中的#c大地瑪瑙#.
+            case 80001523: // 黑暗瑪瑙 召喚瑪瑙戒指中的#c黑暗瑪瑙#.
+            case 80001524: // 神聖瑪瑙 召喚瑪瑙戒指中的#c神聖瑪瑙#.
+            case 80001525: // 火精靈瑪瑙 召喚瑪瑙戒指中的#c火精靈瑪瑙#.
+            case 80001526: // 電子瑪瑙 召喚瑪瑙戒指中的#c電子瑪瑙#.
+            case 80001527: // 水精靈瑪瑙 召喚瑪瑙戒指中的#c水精靈瑪瑙#.
+            case 80001528: // 地精靈瑪瑙 召喚瑪瑙戒指中的#c地精靈瑪瑙#.
+            case 80001529: // 惡魔瑪瑙 召喚瑪瑙戒指中的#c惡魔瑪瑙#.
+            case 80001530: // 天使瑪瑙 召喚瑪瑙戒指中的#c天使瑪瑙#.
+            case 80001715: // 元素瑪瑙
+            case 80001716: // 火焰瑪瑙
+            case 80001717: // 閃電瑪瑙
+            case 80001718: // 冰凍瑪瑙
+            case 80001719: // 大地瑪瑙
+            case 80001720: // 黑暗瑪瑙
+            case 80001721: // 神聖瑪瑙
+            case 80001722: // 火精靈瑪瑙
+            case 80001723: // 電子精靈瑪瑙
+            case 80001724: // 水精靈瑪瑙
+            case 80001725: // 地精靈瑪瑙
+            case 80001726: // 惡魔瑪瑙
+            case 80001727: // 天使瑪瑙
+                return true;
+        }
+        return false;
     }
 
     public static boolean isFishingMap(int mapid) {
@@ -3563,7 +4065,7 @@ public class GameConstants {
             case IDA_SPECIAL_BUFF_5:
             case IDA_SPECIAL_BUFF_6:
             case IDA_SPECIAL_BUFF_7:
-            case IDA_SPECIAL_BUFF_8:
+            case QUIVER_KARTRIGE:
             case RAINING_MINES:
             case IDA_SPECIAL_BUFF_9:
             case IGNORE_MOB_DAM_R:
@@ -3605,7 +4107,7 @@ public class GameConstants {
             case IDA_MOVE_BUFF6:
             case IDA_MOVE_BUFF7:
             case XENON_FLY:
-            case IDA_SPECIAL_BUFF_8:
+            case QUIVER_KARTRIGE:
             case IDA_MOVE_BUFF8:
             case RAINING_MINES:
             case IDA_MOVE_BUFF9:
@@ -3690,14 +4192,16 @@ public class GameConstants {
 
     public static boolean isEnergyBuff(int skill) { //body pressure, tele mastery, twister spin. etc
         switch (skill) {
-            case 32121003:
-            case 21101003:
-            case 2311007:
-            case 22161005:
-            case 2211007:
+            case 2201009:
             case 2111007:
-            case 32111010:
+            case 2211007:
+            case 2311007:
+            case 4341052:
             case 12111007:
+            case 21101003:
+            case 24120055:
+            case 22161005:
+            case 32111010:
                 return true;
         }
         return false;
@@ -3714,7 +4218,13 @@ public class GameConstants {
             case 3112: // 惡魔殺手(4轉)
                 return 120;
         }
-        return 30; // 惡魔殺手(0轉)
+        if (MapleJob.is惡魔殺手(job)) {
+            return 0; // 惡魔殺手(0轉)
+        } else if (MapleJob.is凱內西斯(job)) {
+            return 10;
+        } else {
+            return 0;
+        }
     }
 
     public static int getHpApByJob(short job) {
@@ -3925,7 +4435,7 @@ public class GameConstants {
     }
 
     public static boolean canSteal(Skill skil) {
-        return skil != null && !skil.isMovement() && !isLinkedAttackSkill(skil.getId()) && skil.getId() % 10000 >= 1000 && MapleJob.getNumber(skil.getId() / 10000) > 0 && !MapleJob.is影武者(skil.getId() / 10000) && !MapleJob.is重砲指揮官(skil.getId() / 10000) && !MapleJob.is蒼龍俠客(skil.getId() / 10000) && skil.getId() < 8000000 && skil.getEffect(1) != null && skil.getEffect(1).getSummonMovementType() == null && !skil.getEffect(1).isUnstealable();
+        return skil != null && !skil.isMovement() && !isLinkedAttackSkill(skil.getId()) && skil.getId() % 10000 >= 1000 && MapleJob.getJobGrade(skil.getId() / 10000) > 0 && !MapleJob.is影武者(skil.getId() / 10000) && !MapleJob.is重砲指揮官(skil.getId() / 10000) && !MapleJob.is蒼龍俠客(skil.getId() / 10000) && skil.getId() < 8000000 && skil.getEffect(1) != null && skil.getEffect(1).getSummonMovementType() == null && !skil.getEffect(1).isUnstealable();
     }
 
     public static boolean isHyperSkill(Skill skill) {
@@ -3964,6 +4474,8 @@ public class GameConstants {
         } else if (mapid / 100 == 8071001) { //陰陽師
             return true;
         } else if (mapid > 866000000) { //幻獸師Beast Tamer
+            return true;
+        } else if (mapid / 10 == 92703009) { //皮卡啾Pink Bean
             return true;
         }
         return false;
@@ -4047,6 +4559,10 @@ public class GameConstants {
         return false;
     }
 
+    public static boolean isCustomQuest(final int id) {
+        return id > 150000;
+    }
+
     //questID; FAMILY USES 19000x, MARRIAGE USES 16000x, EXPED USES 16010x
     //dojo = 150000, bpq = 150001, master monster portals: 122600
     //compensate evan = 170000, compensate sp = 170001
@@ -4066,11 +4582,12 @@ public class GameConstants {
     //crafting/gathering are designated as skills(short exp then byte 0 then byte level), same with recipes(integer.max_value skill level)
     public static final int 傷害字型 = 7291;
     public static final int 精靈耳朵 = 7784;
+    public static final int EXP_POTION = 7985;
     public static final int 申請公會ID = 26011;
     public static final int 申請公會名 = 26015;
     public static final int 凱撒快速鍵 = 52554;
     public static final int 楓方塊 = 52889;
-    public static final int TMS方塊 = 52998;
+    public static final int 台方塊 = 52998;
     public static final int 幻獸師的修養 = 59340;
     public static int ULT_EXPLORER = 111111;
     public static final int JAGUAR = 111112;
@@ -4081,7 +4598,7 @@ public class GameConstants {
     public static final int 組隊請求 = 122900;
     public static final int 組隊邀請 = 122901;
     public static final int QUICK_SLOT = 123000;
-    public static final int ITEM_TITLE = 124000;//稱號
+    public static final int 稱號 = 124000;
     public static final int BOSS_PQ = 150001;
     public static final int CUSTOM_BANK = 150002;
     public static final int DOJO = 150100;

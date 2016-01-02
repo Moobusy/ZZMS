@@ -44,11 +44,11 @@ public class KannaBuff extends AbstractBuffClass  {
     @Override
     public void handleBuff(MapleStatEffect eff, int skill) {
         switch (skill) {
-            case 42101023: // 幽玄氣息
+            case 42101023: // 幽玄氣息 [184UP]
                 eff.statups.put(MapleBuffStat.IGNORE_DEF, eff.info.get(MapleStatInfo.x));
                 eff.statups.put(MapleBuffStat.STANCE, eff.info.get(MapleStatInfo.prop));
                 break;
-            case 42101021: // 花炎結界
+            case 42101021: // 花炎結界 [184UP]
                 eff.statups.put(MapleBuffStat.FOX_FIRE, eff.info.get(MapleStatInfo.x));
              case 42121021:// Foxfire
              case 42101001:// Shikigami Charm
@@ -60,10 +60,10 @@ public class KannaBuff extends AbstractBuffClass  {
                  eff.statups.put(MapleBuffStat.INDIE_PDD, eff.info.get(MapleStatInfo.indiePdd));
                  eff.statups.put(MapleBuffStat.INDIE_MDD, eff.info.get(MapleStatInfo.indieMdd));
                  break;
-            case 42101002: // 影朋‧花狐
+            case 42101002: // 影朋‧花狐 [184UP]
                 eff.statups.put(MapleBuffStat.HAKU_REBORN, 1);
                 break;
-            case 42101003: // 扇‧孔雀
+            case 42101003: // 扇‧孔雀 [184UP]
                 eff.statups.put(MapleBuffStat.BOOSTER, eff.info.get(MapleStatInfo.x));
                 break;
             
@@ -71,10 +71,10 @@ public class KannaBuff extends AbstractBuffClass  {
                 eff.statups.put(MapleBuffStat.MAPLE_WARRIOR, eff.info.get(MapleStatInfo.x));
                 break;
             case 42121054: // Blackhearted Curse
-                //TODO
+                //TODO 阴阳师BUFF42121054
                 break;
             case 42121053: // Princess's Vow
-                //TODO
+                //TODO 阴阳师BUFF42121053
                 break;
             case 42101004: // 紫扇仰波‧焰
             case 42111006: // Frozen Shikigami Haunting

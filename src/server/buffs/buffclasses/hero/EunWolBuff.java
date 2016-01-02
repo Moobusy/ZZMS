@@ -10,7 +10,7 @@ import server.buffs.AbstractBuffClass;
 public class EunWolBuff extends AbstractBuffClass {
 
     public EunWolBuff() {
-        buffs = new int[] {
+        buffs = new int[]{
             20050286, //死裡逃生
             25111209, //換魂
             25101009, //小狐仙
@@ -18,7 +18,6 @@ public class EunWolBuff extends AbstractBuffClass {
             25121209, //靈魂結界
             25111206, //束縛術
             25121132, //英雄誓約
-            
         };
     }
 

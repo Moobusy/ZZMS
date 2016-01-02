@@ -176,7 +176,7 @@ public class PackageHandler {
                 removeItemFromDB(packageid, c.getPlayer().getId()); // Remove first
                 //System.out.println("Item removed : " + packageid);
                 if (dp.getItem() != null) {
-                    MapleInventoryManipulator.addFromDrop(c, dp.getItem(), false);
+                    MapleInventoryManipulator.addFromDrop(c, dp.getItem());
                 }
                 if (dp.getMesos() != 0) {
                     c.getPlayer().gainMeso(dp.getMesos(), false);

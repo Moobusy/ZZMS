@@ -71,7 +71,7 @@ public class CheatTracker {
             chr.get().setChangeTime();
         }
         final long STime_TC = lastAttackTime - tickcount; // hack = - more
-        if (Server_ClientAtkTickDiff - STime_TC > 1000) { // 250 is the ping, TODO
+        if (Server_ClientAtkTickDiff - STime_TC > 1000) {
             registerOffense(CheatingOffense.FASTATTACK2);
         }
         // if speed hack, client tickcount values will be running at a faster pace
@@ -92,7 +92,7 @@ public class CheatTracker {
     public final void checkPVPAttack(final int skillId) {
         final int AtkDelay = GameConstants.getAttackDelay(skillId, skillId == 0 ? null : SkillFactory.getSkill(skillId));
         final long STime_TC = System.currentTimeMillis() - lastAttackTime; // hack = - more
-        if (STime_TC < AtkDelay) { // 250 is the ping, TODO
+        if (STime_TC < AtkDelay) {
             registerOffense(CheatingOffense.FASTATTACK);
         }
         lastAttackTime = System.currentTimeMillis();

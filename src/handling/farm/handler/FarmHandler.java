@@ -125,7 +125,6 @@ public class FarmHandler {
 
     public static void checkQuestStatus(LittleEndianAccessor slea, MapleClient c) {
         int farmId = slea.readInt();
-        //TODO code farm quests
         if (c.getFarm().getName().equals("Creating...")) {
             //c.getSession().write(FarmPacket.updateQuestInfo(1111, 1, "A1/Z/"));
         }

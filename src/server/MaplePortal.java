@@ -110,7 +110,7 @@ public class MaplePortal {
             }
         }
         final MapleMap currentmap = c.getPlayer().getMap();
-        if (!c.getPlayer().hasBlockedInventory() && (portalState || c.getPlayer().isGM())) {
+        if (!c.getPlayer().hasBlockedInventory() && portalState) {
             if (getScriptName() != null) {
                 c.getPlayer().checkFollow();
                 try {

@@ -81,7 +81,7 @@ public class GMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 7) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <玩家名稱> <寵物道具ID> <寵物名稱> <寵物等級> <寵物親密度> <寵物飢餓感>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <玩家名稱> <寵物道具ID> <寵物名稱> <寵物等級> <寵物親密度> <寵物飢餓感>");
                 return 0;
             }
             MapleCharacter petowner = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
@@ -93,7 +93,7 @@ public class GMCommand {
             long period = 20000;
             short flags = 0;
             if (id >= 5001000 || id < 5000000) {
-                c.getPlayer().dropMessage(0, "寵物道具ID錯誤");
+                c.getPlayer().dropMessage(-11, "寵物道具ID錯誤");
                 return 0;
             }
             if (level > 30) {
@@ -127,7 +127,7 @@ public class GMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 2) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <技能ID> (技能等級:默認1) (技能最高等級:默認1)");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <技能ID> (技能等級:默認1) (技能最高等級:默認1)");
                 return 0;
             }
             Skill skill = SkillFactory.getSkill(Integer.parseInt(splitted[1]));
@@ -151,7 +151,7 @@ public class GMCommand {
         public int execute(MapleClient c, String[] splitted) {
             MapleCharacter player = c.getPlayer();
             if (splitted.length < 3) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <玩家名稱> <數量>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <玩家名稱> <數量>");
                 return 0;
             }
             MapleCharacter victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
@@ -159,7 +159,7 @@ public class GMCommand {
             try {
                 fame = Integer.parseInt(splitted[2]);
             } catch (NumberFormatException nfe) {
-                c.getPlayer().dropMessage(6, "數量無效...");
+                c.getPlayer().dropMessage(-11, "數量無效...");
                 return 0;
             }
             if (victim != null && player.allowedToTarget(victim)) {
@@ -185,7 +185,7 @@ public class GMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 3) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <轉職次數> <技能點數>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <轉職次數> <技能點數>");
                 return 0;
             }
             c.getPlayer().setRemainingSp(CommandProcessorUtil.getOptionalIntArg(splitted, 2, 1), Integer.parseInt(splitted[1]) - 1);
@@ -199,7 +199,7 @@ public class GMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 2) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <職業ID>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <職業ID>");
                 return 0;
             }
             int jobid = Integer.parseInt(splitted[1]);
@@ -218,7 +218,7 @@ public class GMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 3) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <玩家名稱> <職業ID>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <玩家名稱> <職業ID>");
                 return 0;
             }
             MapleCharacter victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
@@ -237,7 +237,7 @@ public class GMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 2) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <商店ID>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <商店ID>");
                 return 0;
             }
             MapleShopFactory shop = MapleShopFactory.getInstance();
@@ -265,7 +265,7 @@ public class GMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 2) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <等級>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <等級>");
                 return 0;
             }
             //for (int i = 0; i < Integer.parseInt(splitted[1]) - c.getPlayer().getLevel(); i++) {
@@ -284,7 +284,7 @@ public class GMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 3) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <玩家名稱> <等级>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <玩家名稱> <等级>");
                 return 0;
             }
             MapleCharacter victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
@@ -304,7 +304,7 @@ public class GMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 8) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <道具ID> <第一潛能> <第二潛能> <第三潛能> <第一附加潛能> <第二附加潛能> <第三附加潛能>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <道具ID> <第一潛能> <第二潛能> <第三潛能> <第一附加潛能> <第二附加潛能> <第三附加潛能>");
                 return 0;
             }
             final int itemId = Integer.parseInt(splitted[1]);
@@ -354,7 +354,7 @@ public class GMCommand {
                 return 0;
             }
             if (splitted.length < 4) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <道具ID> <屬性值> <潛能>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <道具ID> <屬性值> <潛能>");
                 return 0;
             }
             final int itemId = Integer.parseInt(splitted[1]);
@@ -395,7 +395,7 @@ public class GMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 2) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <等級>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <等級>");
                 return 0;
             }
             c.getPlayer().setLevel(Short.parseShort(splitted[1]));
@@ -471,7 +471,7 @@ public class GMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 2) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <腳本名>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <腳本名>");
                 return 0;
             }
             final MapleEventType type = MapleEventType.getByString(splitted[1]);
@@ -497,16 +497,16 @@ public class GMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 3) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <玩家名稱> <道具ID>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <玩家名稱> <道具ID>");
                 return 0;
             }
             MapleCharacter chr = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
             if (chr == null) {
-                c.getPlayer().dropMessage(6, "玩家不存在");
+                c.getPlayer().dropMessage(-11, "玩家不存在");
                 return 0;
             }
             chr.removeAll(Integer.parseInt(splitted[2]), false);
-            c.getPlayer().dropMessage(6, "玩家 " + splitted[1] + " 所有的道具(ID:" + splitted[2] + ")已被清除");
+            c.getPlayer().dropMessage(-11, "玩家 " + splitted[1] + " 所有的道具(ID:" + splitted[2] + ")已被清除");
             return 1;
 
         }
@@ -517,12 +517,12 @@ public class GMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 3) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <玩家名稱> <道具ID>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <玩家名稱> <道具ID>");
                 return 0;
             }
             MapleCharacter chr = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
             if (chr == null) {
-                c.getPlayer().dropMessage(6, "找不到角色");
+                c.getPlayer().dropMessage(-11, "找不到角色");
                 return 0;
             }
             int itemid = Integer.parseInt(splitted[2]);
@@ -538,7 +538,7 @@ public class GMCommand {
                     //chr.getClient().getSession().write(CField.updateSpecialItemUse(item, type.getType()));
                 }
             }
-            c.getPlayer().dropMessage(6, "已將ID為 " + splitted[2] + " 的所有道具鎖定, 被執行角色 " + splitted[1]);
+            c.getPlayer().dropMessage(-11, "已將ID為 " + splitted[2] + " 的所有道具鎖定, 被執行角色 " + splitted[1]);
             return 1;
         }
     }
@@ -549,7 +549,7 @@ public class GMCommand {
         public int execute(MapleClient c, String[] splitted) {
             World.Broadcast.broadcastSmega(CWvsContext.broadcastMsg(3, c.getPlayer() == null ? c.getChannel() : c.getPlayer().getClient().getChannel(), c.getPlayer() == null ? c.getPlayer().getName() : c.getPlayer().getName() + " : " + StringUtil.joinStringFrom(splitted, 1), true));
             /*if (splitted.length < 2) {
-             c.getPlayer().dropMessage(0, "!smega <itemid> <message>");
+             c.getPlayer().dropMessage(-11, "!smega <itemid> <message>");
              return 0;
              }
              final List<String> lines = new LinkedList<>();
@@ -572,13 +572,13 @@ public class GMCommand {
         public int execute(MapleClient c, String[] splitted) {
             MapleCharacter victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
             if (victim == null) {
-                c.getPlayer().dropMessage(0, "The person isn't login, or doesn't exists.");
+                c.getPlayer().dropMessage(-11, "The person isn't login, or doesn't exists.");
                 return 0;
             }
             World.Broadcast.broadcastSmega(CWvsContext.broadcastMsg(3, victim.getClient().getChannel(), victim.getName() + " : " + StringUtil.joinStringFrom(splitted, 2), true));
             /* 
              if (splitted.length < 2) {
-             c.getPlayer().dropMessage(0, "!smega <itemid> <victim> <message>");
+             c.getPlayer().dropMessage(-11, "!smega <itemid> <victim> <message>");
              return 0;
              }
              final List<String> lines = new LinkedList<>();
@@ -616,7 +616,7 @@ public class GMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 3) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <玩家名稱> <內容>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <玩家名稱> <內容>");
                 return 0;
             }
             MapleCharacter victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
@@ -649,7 +649,7 @@ public class GMCommand {
                 for (MapleDisease disease : MapleDisease.values()) {
                     sb.append(disease.name()).append("/");
                 }
-                c.getPlayer().dropMessage(6, splitted[0] + " <類型> (等級:默認1) where 類型 = " + sb.toString());
+                c.getPlayer().dropMessage(-11, splitted[0] + " <類型> (等級:默認1) where 類型 = " + sb.toString());
                 return 0;
             }
             for (MapleCharacter mch : c.getChannelServer().getPlayerStorage().getAllCharacters()) {
@@ -680,7 +680,7 @@ public class GMCommand {
                 for (MapleDisease disease : MapleDisease.values()) {
                     sb.append(disease.name()).append("/");
                 }
-                c.getPlayer().dropMessage(6, splitted[0] + " <玩家名稱> <類型> (等級:默認1) where 類型 = " + sb.toString());
+                c.getPlayer().dropMessage(-11, splitted[0] + " <玩家名稱> <類型> (等級:默認1) where 類型 = " + sb.toString());
                 return 0;
             }
             MapleCharacter victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[2]);
@@ -706,7 +706,7 @@ public class GMCommand {
 
         @Override
         public int execute(MapleClient c, String[] splitted) {
-            c.getPlayer().dropMessage(6, c.getPlayer().getCloneSize() + " 個克隆被清除了");
+            c.getPlayer().dropMessage(-11, c.getPlayer().getCloneSize() + " 個克隆被清除了");
             c.getPlayer().disposeClones();
             return 1;
         }
@@ -720,14 +720,14 @@ public class GMCommand {
             for (MapleCharacter chr : c.getPlayer().getMap().getCharactersThreadsafe()) {
                 if (builder.length() > 150) { // wild guess :o
                     builder.setLength(builder.length() - 2);
-                    c.getPlayer().dropMessage(6, builder.toString());
+                    c.getPlayer().dropMessage(-11, builder.toString());
                     builder = new StringBuilder();
                 }
                 builder.append(MapleCharacterUtil.makeMapleReadable(chr.getName()));
                 builder.append(", ");
             }
             builder.setLength(builder.length() - 2);
-            c.getPlayer().dropMessage(6, builder.toString());
+            c.getPlayer().dropMessage(-11, builder.toString());
             return 1;
         }
     }
@@ -804,7 +804,7 @@ public class GMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 2) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <怪物OID>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <怪物OID>");
                 return 0;
             }
             MapleMap map = c.getPlayer().getMap();
@@ -813,6 +813,7 @@ public class GMCommand {
             if (monster != null) {
                 map.killMonster(monster, c.getPlayer(), false, false, (byte) 1);
             }
+            c.getPlayer().monsterMultiKill();
             return 1;
         }
     }
@@ -885,9 +886,9 @@ public class GMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 2) {
-                c.getPlayer().dropMessage(6, splitted[0] + " (對象:默認w) (類型:默認0) <公告內容>");
-                c.getPlayer().dropMessage(6, splitted[0] + "對象:地圖所有人 - m/頻道所有人 - c/伺服器所有人 - w");
-                c.getPlayer().dropMessage(6, splitted[0] + "類型:1/2/3/4/5/6/7/8/n/彈窗 - p/頻道廣播 - l/紅字[公告事項] - nv/紅字 - v/无[公告事項] - b");
+                c.getPlayer().dropMessage(-11, splitted[0] + " (對象:默認w) (類型:默認0) <公告內容>");
+                c.getPlayer().dropMessage(-11, splitted[0] + "對象:地圖所有人 - m/頻道所有人 - c/伺服器所有人 - w");
+                c.getPlayer().dropMessage(-11, splitted[0] + "類型:1/2/3/4/5/6/7/8/n/彈窗 - p/頻道廣播 - l/紅字[公告事項] - nv/紅字 - v/无[公告事項] - b");
                 return 0;
             }
             int joinmod = 1;
@@ -1005,7 +1006,7 @@ public class GMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 3) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <玩家名稱> <時間(分鐘,0為永久)>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <玩家名稱> <時間(分鐘,0為永久)>");
                 return 0;
             }
             MapleCharacter victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
@@ -1015,7 +1016,7 @@ public class GMCommand {
                 victim.getQuestNAdd(MapleQuest.getInstance(GameConstants.JAIL_QUEST)).setCustomData(String.valueOf(minutes * 60));
                 victim.changeMap(target, target.getPortal(0));
             } else {
-                c.getPlayer().dropMessage(6, "請到此玩家所在的頻道");
+                c.getPlayer().dropMessage(-11, "請到此玩家所在的頻道");
                 return 0;
             }
             return 1;
@@ -1062,7 +1063,7 @@ public class GMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             Point pos = c.getPlayer().getPosition();
-            c.getPlayer().dropMessage(6, "X: " + pos.x + " | Y: " + pos.y + " | RX0: " + (pos.x + 50) + " | RX1: " + (pos.x - 50) + " | FH: " + c.getPlayer().getFH());
+            c.getPlayer().dropMessage(-11, "X: " + pos.x + " | Y: " + pos.y + " | RX0: " + (pos.x + 50) + " | RX1: " + (pos.x - 50) + " | FH: " + c.getPlayer().getFH());
             return 1;
         }
     }
@@ -1072,7 +1073,7 @@ public class GMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 3) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <顏色 (綠/紅)> <單詞>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <顏色 (綠/紅)> <單詞>");
                 return 0;
             }
             int start;
@@ -1084,7 +1085,7 @@ public class GMCommand {
                 start = 3991000;
                 nstart = 3990009;
             } else {
-                c.getPlayer().dropMessage(6, "未知顏色");
+                c.getPlayer().dropMessage(-11, "未知顏色");
                 return 0;
             }
             String splitString = StringUtil.joinStringFrom(splitted, 2);
@@ -1131,16 +1132,11 @@ public class GMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 2) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <怪物ID> (數量:默認1)");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <怪物ID> (數量:默認1)");
                 return 0;
             }
             final int mid = Integer.parseInt(splitted[1]);
             final int num = Math.min(CommandProcessorUtil.getOptionalIntArg(splitted, 2, 1), 500);
-            Integer level = CommandProcessorUtil.getNamedIntArg(splitted, 1, "lvl");
-            Long hp = CommandProcessorUtil.getNamedLongArg(splitted, 1, "hp");
-            Integer exp = CommandProcessorUtil.getNamedIntArg(splitted, 1, "exp");
-            Double php = CommandProcessorUtil.getNamedDoubleArg(splitted, 1, "php");
-            Double pexp = CommandProcessorUtil.getNamedDoubleArg(splitted, 1, "pexp");
 
             MapleMonster onemob;
             try {
@@ -1153,35 +1149,8 @@ public class GMCommand {
                 c.getPlayer().dropMessage(5, "怪物不存在");
                 return 0;
             }
-            int newhp;
-            int newexp;
-            if (hp != null) {
-                newhp = hp.intValue();
-            } else if (php != null) {
-                newhp = (int) (onemob.getMobMaxHp() * (php / 100));
-            } else {
-                newhp = (int) onemob.getMobMaxHp();
-            }
-            if (exp != null) {
-                newexp = exp;
-            } else if (pexp != null) {
-                newexp = (int) (onemob.getMobExp() * (pexp / 100));
-            } else {
-                newexp = onemob.getMobExp();
-            }
-            if (newhp < 1) {
-                newhp = 1;
-            }
-
-            final OverrideMonsterStats overrideStats = new OverrideMonsterStats(newhp, onemob.getMobMaxMp(), newexp, false);
             for (int i = 0; i < num; i++) {
                 MapleMonster mob = MapleLifeFactory.getMonster(mid);
-                mob.setHp(newhp);
-                if (level != null) {
-                    mob.changeLevel(level, false);
-                } else {
-                    mob.setOverrideStats(overrideStats);
-                }
                 c.getPlayer().getMap().spawnMonsterOnGroundBelow(mob, c.getPlayer().getPosition());
             }
             return 1;
@@ -1193,7 +1162,7 @@ public class GMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 2) {
-                c.getPlayer().dropMessage(6, splitted[0] + " (數量:默認1) <怪物名稱>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " (數量:默認1) <怪物名稱>");
                 return 0;
             }
             final String mname;
@@ -1237,7 +1206,7 @@ public class GMCommand {
         @Override
         public int execute(MapleClient c, String splitted[]) {
             if (splitted.length < 2) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <玩家名稱>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <玩家名稱>");
                 return 0;
             }
             MapleCharacter victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
@@ -1251,7 +1220,7 @@ public class GMCommand {
         @Override
         public int execute(MapleClient c, String splitted[]) {
             if (splitted.length < 2) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <玩家名稱>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <玩家名稱>");
                 return 0;
             }
             MapleCharacter victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
@@ -1289,10 +1258,11 @@ public class GMCommand {
             MapleCharacter player = c.getPlayer();
             if (player.isInvincible()) {
                 player.setInvincible(false);
-                player.dropMessage(6, "無敵模式關閉");
+                player.dropMessage(-11, "無敵模式關閉");
             } else {
                 player.setInvincible(true);
-                player.dropMessage(6, "無敵模式開啟");
+                player.clearAllCooldowns();
+                player.dropMessage(-11, "無敵模式開啟");
             }
             return 1;
         }
@@ -1303,10 +1273,10 @@ public class GMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             int total = 0;
-            c.getPlayer().dropMessage(6, "---------------------------------------------------------------------------------------");
+            c.getPlayer().dropMessage(-11, "---------------------------------------------------------------------------------------");
             for (ChannelServer cserv : ChannelServer.getAllInstances()) {
                 int curConnected = cserv.getConnectedClients();
-                c.getPlayer().dropMessage(6, new StringBuilder().append("頻道: ").append(cserv.getChannel()).append(" 線上人數: ").append(curConnected).toString());
+                c.getPlayer().dropMessage(-11, new StringBuilder().append("頻道: ").append(cserv.getChannel()).append(" 線上人數: ").append(curConnected).toString());
                 total += curConnected;
                 for (MapleCharacter chr : cserv.getPlayerStorage().getAllCharacters()) {
                     if (chr != null && c.getPlayer().getGMLevel() >= chr.getGMLevel()) {
@@ -1320,12 +1290,12 @@ public class GMCommand {
                             ret.append(" 地圖: ");
                             ret.append(chr.getMap().toString());
                         }
-                        c.getPlayer().dropMessage(6, ret.toString());
+                        c.getPlayer().dropMessage(-11, ret.toString());
                     }
                 }
             }
-            c.getPlayer().dropMessage(6, new StringBuilder().append("當前伺服器總計線上人數: ").append(total).toString());
-            c.getPlayer().dropMessage(6, "---------------------------------------------------------------------------------------");
+            c.getPlayer().dropMessage(-11, new StringBuilder().append("當前伺服器總計線上人數: ").append(total).toString());
+            c.getPlayer().dropMessage(-11, "---------------------------------------------------------------------------------------");
             return 1;
         }
     }
@@ -1335,7 +1305,7 @@ public class GMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 2) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <搜尋訊息：進程名/MD5>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <搜尋訊息：進程名/MD5>");
                 return 0;
             }
             int i = 0;
@@ -1361,7 +1331,7 @@ public class GMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 2) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <點數>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <點數>");
                 return 0;
             }
             c.getPlayer().modifyCSPoints(2, Integer.parseInt(splitted[1]), true);
@@ -1374,7 +1344,7 @@ public class GMCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 2) {
-                c.getPlayer().dropMessage(6, splitted[0] + " <金額>");
+                c.getPlayer().dropMessage(-11, splitted[0] + " <金額>");
                 return 0;
             }
             c.getPlayer().gainMeso(Long.parseLong(splitted[1]), true);

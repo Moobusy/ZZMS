@@ -16,6 +16,7 @@ import server.buffs.AbstractBuffClass;
  * @author Dismal
  */
 public class BattleMageBuff extends AbstractBuffClass {
+
     public BattleMageBuff() {
         buffs = new int[]{
             32101004, // 紅色吸血術
@@ -29,7 +30,7 @@ public class BattleMageBuff extends AbstractBuffClass {
             32121053, // 自由意志
             32121054, // 聯盟繩索
             32121056, // 戰鬥精通
-            
+
             //------------178
             32121017, // 黑色光環
             32121018, // 減益效果光環
@@ -41,7 +42,7 @@ public class BattleMageBuff extends AbstractBuffClass {
             32120019, // 死神契約III
             32111016, // 黑暗閃電            
         };
-    }  
+    }
     
     @Override
     public boolean containsJob(int job) {

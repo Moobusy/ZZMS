@@ -456,7 +456,21 @@ public class EventInstanceManager {
             return;
         }
         try {
-            int inc = ((Double) em.getIv().invokeFunction("monsterValue", this, mob.getId())).intValue();
+            Object ob = em.getIv().invokeFunction("monsterValue", this, mob.getId());
+            int inc;
+            if (ob instanceof Double) {
+                inc = ((Double) ob).intValue();
+            } else if (ob instanceof Float) {
+                inc = ((Float) ob).intValue();
+            } else if (ob instanceof Long) {
+                inc = ((Long) ob).intValue();
+            } else if (ob instanceof Integer) {
+                inc = (Integer) ob;
+            } else if (ob instanceof Short) {
+                inc = (Short) ob;
+            } else {
+                inc = ((Byte) ob).intValue();
+            }
             if (disposed || chr == null) {
                 return;
             }

@@ -60,7 +60,7 @@ public class CSMenuItem {
         mplew.writeInt(csmi.c);
         mplew.writeInt(csmi.sc);
         mplew.writeInt(csmi.p);
-        mplew.writeMapleAsciiString(csmi.img); // TODO add check if cat != 4 write empty string
+        mplew.writeMapleAsciiString(csmi.img);
         mplew.writeInt(csmi.sn);
         mplew.writeInt(csmi.id);
         mplew.writeInt(1);

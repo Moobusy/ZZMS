@@ -255,7 +255,7 @@ public class MapleShop {
             if (ItemConstants.類型.可充值道具(item.getItemId())) {
                 price = ii.getWholePrice(item.getItemId()) / ii.getSlotMax(item.getItemId());
             } else {
-                price = ii.getPrice(item.getItemId());
+                price = Math.max(ii.getPrice(item.getItemId()), 0.0);
             }
 
             int recvMesos = (int) Math.max(Math.ceil(price * quantity), 0.0D);

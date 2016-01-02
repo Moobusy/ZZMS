@@ -111,7 +111,7 @@ public class MobHandler {
         Point startPos = monster.getPosition();
         List res;
         try {
-            res = MovementParse.parseMovement(slea, 2);
+            res = MovementParse.parseMovement(slea, 2, chr);
         } catch (ArrayIndexOutOfBoundsException e) {
             System.err.println("怪物移動錯誤Move_life :  AIOBE Type2");
             if (chr.isShowErr()) {
@@ -345,7 +345,7 @@ public class MobHandler {
 
     public static final void MoveFamiliar(LittleEndianAccessor slea, MapleClient c, MapleCharacter chr) {
         slea.skip(17);
-        List res = MovementParse.parseMovement(slea, 6);
+        List res = MovementParse.parseMovement(slea, 6, chr);
         if ((chr != null) && (chr.getSummonedFamiliar() != null) && (res.size() > 0)) {
             Point pos = chr.getSummonedFamiliar().getPosition();
             MovementParse.updatePosition(res, chr.getSummonedFamiliar(), 0);

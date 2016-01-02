@@ -92,7 +92,7 @@ public class UserInterfaceHandler {
          if (em != null && em.getProperty("haveBalrog").equals("true")) {
          effect = 1;
          } else {
-         return; // shyt, fixme!
+         return;
          }
          break;
          default:

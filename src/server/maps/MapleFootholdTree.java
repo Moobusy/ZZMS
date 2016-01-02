@@ -189,7 +189,7 @@ public class MapleFootholdTree {
         return false;
     }
 
-    public final MapleFoothold findBelow(final Point p) {
+    public final MapleFoothold findBelow(final Point p, boolean byCharacter) {
         final List<MapleFoothold> relevants = getRelevants(p);
         // find fhs with matching x coordinates
         final List<MapleFoothold> xMatches = new LinkedList<>();
@@ -219,7 +219,7 @@ public class MapleFootholdTree {
                 if (calcY >= p.y) {
                     return fh;
                 }
-            } else if (fh.getY1() >= p.y) {
+            } else if (byCharacter ? fh.getY1() == p.y : fh.getY1() >= p.y) {
                 return fh;
             }
         }

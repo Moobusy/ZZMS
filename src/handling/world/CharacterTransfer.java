@@ -32,9 +32,9 @@ public class CharacterTransfer implements Externalizable {
 
     public int characterid, accountid, fame, pvpExp, pvpPoints, hair, face,
             faceMarking, ears, tail, elf, mapid, honourexp, honourlevel, guildid,
-            partyid, messengerid, ACash, nxCredit, MaplePoints,
-            mount_itemid, mount_exp, points, vpoints, dpoints, epoints, marriageId, maxhp, maxmp, hp, mp,
-            familyid, seniorid, junior1, junior2, currentrep, totalrep, battleshipHP, gachexp, guildContribution, totalWins, totalLosses, weaponPoint;
+            partyid, messengerid, mileage, beanfunGash, MaplePoints,
+            mount_itemid, mount_exp, marriageId, maxhp, maxmp, hp, mp,
+            battleshipHP, gachexp, guildContribution, weaponPoint;
     public byte channel, gender, gmLevel, guildrank, alliancerank, clonez,
             fairyExp, cardStack, buddysize, world, initialSpawnPoint, skinColor, mount_level, mount_Fatigue, subcategory;
     public long lastfametime, TranferTime, exp, meso;
@@ -58,10 +58,7 @@ public class CharacterTransfer implements Externalizable {
     public final Map<Integer, SkillEntry> Skills = new LinkedHashMap<>(); // Skillid instead of Skill.java, as it's huge. Cant be transporting Skill.java and MapleStatEffect.java
     public final Map<Integer, CardData> cardsInfo = new LinkedHashMap<>();
     public MapleMarriage marriage;
-    /*Start of Custom Feature*/
-    /*All custom shit declare here*/
-    public int reborns, apstorage, str, dex, int_, luk, remainingAp;
-    /*End of Custom Feature*/
+    public int str, dex, int_, luk, remainingAp;
 
     public CharacterTransfer() {
         famedcharacters = new ArrayList<>();
@@ -79,11 +76,10 @@ public class CharacterTransfer implements Externalizable {
         this.accountid = chr.getAccountID();
         this.accountname = chr.getClient().getAccountName();
         this.channel = (byte) chr.getClient().getChannel();
-        this.nxCredit = chr.getCSPoints(1);
-        this.ACash = chr.getCSPoints(4);
+        this.beanfunGash = chr.getCSPoints(1);
         this.MaplePoints = chr.getCSPoints(2);
+        this.mileage = chr.getCSPoints(3);
         this.stolenSkills = chr.getStolenSkills();
-        this.vpoints = chr.getVPoints();
         this.name = chr.getName();
         this.fame = chr.getFame();
         this.gender = chr.getGender();
@@ -104,14 +100,6 @@ public class CharacterTransfer implements Externalizable {
         this.meso = chr.getMeso();
         this.pvpExp = chr.getTotalBattleExp();
         this.pvpPoints = chr.getBattlePoints();
-        /*
-         * Start of Custom Feature
-         */
-        this.reborns = chr.getReborns();
-        this.apstorage = chr.getAPS();
-        /*
-         * End of Custom Feature
-         */
         this.skinColor = chr.getSkinColor();
         this.job = chr.getJob();
         this.hair = chr.getHair();
@@ -131,9 +119,6 @@ public class CharacterTransfer implements Externalizable {
         this.guildContribution = chr.getGuildContribution();
         this.alliancerank = chr.getAllianceRank();
         this.gmLevel = (byte) chr.getGMLevel();
-        this.points = chr.getPoints();
-        this.dpoints = chr.getDPoints();
-        this.epoints = chr.getEPoints();
         this.fairyExp = chr.getFairyExp();
         this.cardStack = chr.getCardStack();
         this.clonez = chr.getNumClones();
@@ -141,14 +126,6 @@ public class CharacterTransfer implements Externalizable {
         this.subcategory = chr.getSubcategory();
         this.imps = chr.getImps();
         this.fatigue = chr.getFatigue();
-        this.currentrep = chr.getCurrentRep();
-        this.totalrep = chr.getTotalRep();
-        this.familyid = chr.getFamilyId();
-        this.totalWins = chr.getTotalWins();
-        this.totalLosses = chr.getTotalLosses();
-        this.seniorid = chr.getSeniorId();
-        this.junior1 = chr.getJunior1();
-        this.junior2 = chr.getJunior2();
         this.battleshipHP = chr.currentBattleshipHP();
         this.gachexp = chr.getGachExp();
         this.familiars = chr.getFamiliars();
@@ -158,7 +135,7 @@ public class CharacterTransfer implements Externalizable {
         this.rebuy = chr.getRebuy();
         boolean uneq = false;
         for (int i = 0; i < this.petStore.length; i++) {
-            final MaplePet pet = chr.getPet(i);
+            final MaplePet pet = chr.getSummonedPet(i);
             if (this.petStore[i] == 0) {
                 this.petStore[i] = (byte) -1;
             }
@@ -243,8 +220,8 @@ public class CharacterTransfer implements Externalizable {
         this.accountid = in.readInt();
         this.accountname = in.readUTF();
         this.channel = in.readByte();
-        this.nxCredit = in.readInt();
-        this.ACash = in.readInt();
+        this.beanfunGash = in.readInt();
+        this.mileage = in.readInt();
         this.MaplePoints = in.readInt();
         this.name = in.readUTF();
         this.fame = in.readInt();
@@ -287,10 +264,6 @@ public class CharacterTransfer implements Externalizable {
         this.guildContribution = in.readInt();
         this.alliancerank = in.readByte();
         this.gmLevel = in.readByte();
-        this.points = in.readInt();
-        this.vpoints = in.readInt();
-        this.dpoints = in.readInt();
-        this.epoints = in.readInt();
         if (in.readByte() == 1) {
             this.BlessOfFairy = in.readUTF();
         } else {
@@ -324,16 +297,8 @@ public class CharacterTransfer implements Externalizable {
         this.fatigue = in.readShort();
         this.marriageId = in.readInt();
         this.marriage = new MapleMarriage(in.readInt(), in.readInt(), in.readInt(), in.readInt(), in.readUTF(), in.readUTF());
-        this.familyid = in.readInt();
-        this.seniorid = in.readInt();
-        this.junior1 = in.readInt();
-        this.junior2 = in.readInt();
-        this.currentrep = in.readInt();
-        this.totalrep = in.readInt();
         this.battleshipHP = in.readInt();
         this.gachexp = in.readInt();
-        this.totalWins = in.readInt();
-        this.totalLosses = in.readInt();
         this.anticheat = in.readObject();
         this.tempIP = in.readUTF();
         this.honourexp = in.readInt();
@@ -343,14 +308,6 @@ public class CharacterTransfer implements Externalizable {
         this.pvpExp = in.readInt();
         this.pvpPoints = in.readInt();
         this.soulcount = in.readShort();
-        /*
-         * Start of Custom Feature
-         */
-        this.reborns = in.readInt();
-        this.apstorage = in.readInt();
-        /*
-         * End of Custom Feature
-         */
 
         final int mbooksize = in.readShort();
         for (int i = 0; i < mbooksize; i++) {
@@ -477,8 +434,8 @@ public class CharacterTransfer implements Externalizable {
         out.writeInt(this.accountid);
         out.writeUTF(this.accountname);
         out.writeByte(this.channel);
-        out.writeInt(this.nxCredit);
-        out.writeInt(this.ACash);
+        out.writeInt(this.beanfunGash);
+        out.writeInt(this.mileage);
         out.writeInt(this.MaplePoints);
         out.writeUTF(this.name);
         out.writeInt(this.fame);
@@ -521,10 +478,6 @@ public class CharacterTransfer implements Externalizable {
         out.writeInt(this.guildContribution);
         out.writeByte(this.alliancerank);
         out.writeByte(this.gmLevel);
-        out.writeInt(this.points);
-        out.writeInt(this.vpoints);
-        out.writeInt(this.dpoints);
-        out.writeInt(this.epoints);
         out.writeByte(this.BlessOfFairy == null ? 0 : 1);
         if (this.BlessOfFairy != null) {
             out.writeUTF(this.BlessOfFairy);
@@ -570,16 +523,8 @@ public class CharacterTransfer implements Externalizable {
             out.writeUTF(marriage.getHusbandName());
             out.writeUTF(marriage.getWifeName());
         }
-        out.writeInt(this.familyid);
-        out.writeInt(this.seniorid);
-        out.writeInt(this.junior1);
-        out.writeInt(this.junior2);
-        out.writeInt(this.currentrep);
-        out.writeInt(this.totalrep);
         out.writeInt(this.battleshipHP);
         out.writeInt(this.gachexp);
-        out.writeInt(this.totalWins);
-        out.writeInt(this.totalLosses);
         out.writeObject(this.anticheat);
         out.writeUTF(this.tempIP);
         out.writeInt(this.pvpExp);
@@ -589,10 +534,6 @@ public class CharacterTransfer implements Externalizable {
         out.writeObject(this.innerSkills);
         out.writeObject(this.azwanShopList);
         out.writeShort(this.soulcount);
-        /*Start of Custom Feature*/
-        out.writeInt(this.reborns);
-        out.writeInt(this.apstorage);
-        /*End of Custom Feature*/
 
         out.writeShort(this.mbook.size());
         for (Map.Entry<Integer, Integer> ms : this.mbook.entrySet()) {

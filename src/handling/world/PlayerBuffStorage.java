@@ -31,16 +31,11 @@ import java.util.concurrent.ConcurrentHashMap;
 public class PlayerBuffStorage implements Serializable {
 
     private static final Map<Integer, List<PlayerBuffValueHolder>> buffs = new ConcurrentHashMap<>();
-    private static final Map<Integer, List<SpecialBuffInfo>> stack_buffs = new ConcurrentHashMap<>();
     private static final Map<Integer, List<MapleCoolDownValueHolder>> coolDowns = new ConcurrentHashMap<>();
     private static final Map<Integer, List<MapleDiseaseValueHolder>> diseases = new ConcurrentHashMap<>();
 
     public static final void addBuffsToStorage(final int chrid, final List<PlayerBuffValueHolder> toStore) {
         buffs.put(chrid, toStore);
-    }
-    
-    public static final void addStackBuffsToStorage(final int chrid, final List<SpecialBuffInfo> toStore) {
-        stack_buffs.put(chrid, toStore);
     }
 
     public static final void addCooldownsToStorage(final int chrid, final List<MapleCoolDownValueHolder> toStore) {
@@ -53,10 +48,6 @@ public class PlayerBuffStorage implements Serializable {
 
     public static final List<PlayerBuffValueHolder> getBuffsFromStorage(final int chrid) {
         return buffs.remove(chrid);
-    }
-    
-    public static final List<SpecialBuffInfo> getStackBuffsFromStorage(final int chrid) {
-        return stack_buffs.remove(chrid);
     }
 
     public static final List<MapleCoolDownValueHolder> getCooldownsFromStorage(final int chrid) {

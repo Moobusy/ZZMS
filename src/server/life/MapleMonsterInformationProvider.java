@@ -232,7 +232,7 @@ public class MapleMonsterInformationProvider {
             }
         }
         for (Entry<Integer, ArrayList<MonsterDropEntry>> e : drops.entrySet()) {//怪物書掉寶數據
-            if (e.getKey() != 9400408 && mobStringData.getChildByPath(String.valueOf(e.getKey())) != null) {
+            if (mobStringData.getChildByPath(String.valueOf(e.getKey())) != null) {
                 for (MapleData d : mobStringData.getChildByPath(e.getKey() + "/reward")) {
                     final int toAdd = MapleDataTool.getInt(d, 0);
                     if (toAdd > 0 && !contains(e.getValue(), toAdd) && ii.itemExists(toAdd)) {
@@ -323,7 +323,7 @@ public class MapleMonsterInformationProvider {
 
     public int chanceLogic(int itemId) { //not much logic in here. most of the drops should already be there anyway.
         if (GameConstants.getInventoryType(itemId) == MapleInventoryType.EQUIP) {
-            return 50000; //with *10
+            return 5000; //with *10
         } else if (GameConstants.getInventoryType(itemId) == MapleInventoryType.SETUP || GameConstants.getInventoryType(itemId) == MapleInventoryType.CASH) {
             return 500;
         } else {

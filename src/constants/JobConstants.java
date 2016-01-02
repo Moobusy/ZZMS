@@ -5,7 +5,8 @@ import server.ServerProperties;
 public class JobConstants {
 
     public static final boolean enableJobs = true;
-    public static final int jobOrder = 175;
+    // UI.wz/Login.img/RaceSelect_new/order
+    public static final int jobOrder = 182;
 
     public enum LoginJob {
 
@@ -25,12 +26,13 @@ public class JobConstants {
         重砲指揮官(13),
         傑諾(14),
         神之子(15),
-        隱月(16),        
+        隱月(16),
         皮卡啾(17),
+//        凱內西斯(17),
         蒼龍俠客(18),
         劍豪(19),
         陰陽師(20),
-        幻獸師(21);
+        幻獸師(21),;
         private final int jobType;
         private final boolean enableCreate = true;
 
@@ -49,8 +51,8 @@ public class JobConstants {
         public void setEnableCreate(boolean info) {
             if (info == enableCreate) {
                 ServerProperties.removeProperty("JobEnableCreate" + jobType);
-                 return;
-             }
+                return;
+            }
             ServerProperties.setProperty("JobEnableCreate" + jobType, String.valueOf(info));
         }
     }

@@ -6,23 +6,23 @@ import server.Randomizer;
 
 public enum MapleDisease implements Serializable, Buffstat {
 
-    SEAL(MapleBuffStat.SEAL, 120),
-    DARKNESS(MapleBuffStat.DARKNESS, 121),
-    WEAKEN(MapleBuffStat.WEAKEN, 122),
-    STUN(MapleBuffStat.STUN, 123),
-    CURSE(MapleBuffStat.CURSE, 124),
-    POISON(MapleBuffStat.POISON, 125),
-    SLOW(MapleBuffStat.SLOWNESS, 126),
-    SEDUCE(MapleBuffStat.SEDUCE, 128),
-    REVERSE_DIRECTION(MapleBuffStat.REVERSE_DIRECTION, 132),
-    ZOMBIFY(MapleBuffStat.ZOMBIFY, 133),
-    POTION(MapleBuffStat.POTION_CURSE, 134),
-    SHADOW(MapleBuffStat.SHADOW, 135), //receiving damage/moving
-    BLIND(MapleBuffStat.BLINDNESS, 136),
-    FREEZE(MapleBuffStat.FREEZE, 137),
-    DISABLE_POTENTIAL(MapleBuffStat.DISABLE_POTENTIAL, 138),
-    MORPH(MapleBuffStat.MORPH, 172),
-    TORNADO(MapleBuffStat.TORNADO_CURSE, 173),
+    封印(MapleBuffStat.SEAL, 120),
+    黑暗(MapleBuffStat.DARKNESS, 121),
+    虛弱(MapleBuffStat.WEAKEN, 122),
+    昏迷(MapleBuffStat.STUN, 123),
+    詛咒(MapleBuffStat.CURSE, 124),
+    中毒(MapleBuffStat.POISON, 125),
+    緩慢(MapleBuffStat.SLOWNESS, 126),
+    誘惑(MapleBuffStat.SEDUCE, 128),
+    混亂(MapleBuffStat.REVERSE_DIRECTION, 132),
+    不死化(MapleBuffStat.ZOMBIFY, 133),
+    無法使用藥水(MapleBuffStat.POTION_CURSE, 134),
+    影子(MapleBuffStat.SHADOW, 135), //receiving damage/moving
+    致盲(MapleBuffStat.BLINDNESS, 136),
+    冰凍(MapleBuffStat.FREEZE, 137),
+    裝備潛能無效化(MapleBuffStat.DISABLE_POTENTIAL, 138),
+    變身(MapleBuffStat.MORPH, 172),
+    龍捲風(MapleBuffStat.TORNADO_CURSE, 173),
     FLAG(MapleBuffStat.PVP_FLAG, 799); // PVP - Capture the Flag
     // 127 = 1 snow?
     // 129 = turn?

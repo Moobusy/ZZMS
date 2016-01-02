@@ -117,7 +117,7 @@ public class MapleInventoryManipulator {
             return -1;
         }
         if (itemId >= 4031332 && itemId <= 4031341) {
-            c.getSession().write(CField.getGameMessage("Hint: Use @event to exchange a certificate of straight wins.", (short) 8));
+            c.getSession().write(CField.getGameMessage(8, "Hint: Use @event to exchange a certificate of straight wins."));
         }
 
         if (ItemConstants.類型.寵物(itemId) && pet == null) {
@@ -345,7 +345,11 @@ public class MapleInventoryManipulator {
         return null;
     }
 
-    public static boolean addFromDrop(final MapleClient c, Item item, final boolean show) {
+    public static boolean addFromDrop(final MapleClient c, Item item) {
+        return addFromDrop(c, item, false, false);
+    }
+
+    public static boolean addFromDrop(final MapleClient c, Item item, final boolean show, final boolean isMonsterDrop) {
         final MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
 
         if (c.getPlayer() == null || (ii.isPickupRestricted(item.getItemId()) && c.getPlayer().haveItem(item.getItemId(), 1, true, false)) || (!ii.itemExists(item.getItemId()))) {
@@ -425,6 +429,10 @@ public class MapleInventoryManipulator {
                     c.getSession().write(InventoryPacket.getInventoryFull());
                     c.getSession().write(InventoryPacket.getShowInventoryFull());
                     return false;
+                }
+                Equip eq = (Equip) item;
+                if (isMonsterDrop && (eq.getState(false) > 0 || eq.getState(true) > 0)) {
+                    c.getSession().write(CField.EffectPacket.showItemTopMsgEffect(item));
                 }
                 c.getSession().write(InventoryPacket.addInventorySlot(type, item, true));
                 if (GameConstants.isHarvesting(item.getItemId())) {
@@ -682,14 +690,8 @@ public class MapleInventoryManipulator {
         }
 
         if (ItemConstants.isOverPoweredEquip(c, source.getItemId(), src) && !c.getPlayer().isStaff()) {
-            c.getPlayer().dropMessage(1, "这件装备的能量看起来太过于强大，如果你觉得是系统错误请报告给管理员。");
+            c.getPlayer().dropMessage(1, "這件裝備的能量看起來太過於強大，如果你覺得是系統錯誤請報告給管理員。");
             //c.getPlayer().removeAll(source.getItemId(), false); //System might be wrong
-            c.getSession().write(CWvsContext.enableActions());
-            return;
-        }
-
-        if (source.getItemId() == 1112585 || source.getItemId() == 1112586 || source.getItemId() == 1112594 || source.getItemId() == 1112663 || source.getItemId() == 1112735) {
-            c.getPlayer().dropMessage(1, "White Angelic Blessing, and Dark Angelic Blessing are currently not working.");
             c.getSession().write(CWvsContext.enableActions());
             return;
         }
@@ -723,7 +725,11 @@ public class MapleInventoryManipulator {
             c.getSession().write(CWvsContext.enableActions());
             return;
         }
-        if (ItemConstants.類型.武器(source.getItemId()) && dst != -10 && dst != -11) {
+        if (ItemConstants.類型.副手(source.getItemId()) && dst != -10) {
+            c.getSession().write(CWvsContext.enableActions());
+            return;
+        }
+        if (ItemConstants.類型.武器(source.getItemId()) && dst != -11) {
             c.getSession().write(CWvsContext.enableActions());
             return;
         }
@@ -835,7 +841,7 @@ public class MapleInventoryManipulator {
                         c.getSession().write(InventoryPacket.getShowInventoryFull());
                         return;
                     }
-                } else if (weapon != null && ItemConstants.類型.雙手武器(weapon.getItemId()) && !ItemConstants.類型.副手武器(source.getItemId())) {
+                } else if (weapon != null && ItemConstants.類型.雙手武器(weapon.getItemId()) && !ItemConstants.類型.特殊副手(source.getItemId())) {
                     if (chr.getInventory(MapleInventoryType.EQUIP).isFull(-1)) {
                         c.getSession().write(InventoryPacket.getInventoryFull());
                         c.getSession().write(InventoryPacket.getShowInventoryFull());
@@ -853,7 +859,7 @@ public class MapleInventoryManipulator {
             case -11: { // Weapon
                 Item weapon = chr.getInventory(MapleInventoryType.EQUIPPED).getItem((byte) -11);
                 Item shield = chr.getInventory(MapleInventoryType.EQUIPPED).getItem((byte) -10);
-                if (shield != null && ItemConstants.類型.雙手武器(source.getItemId()) && !ItemConstants.類型.副手武器(shield.getItemId())) {
+                if (shield != null && ItemConstants.類型.雙手武器(source.getItemId()) && !ItemConstants.類型.特殊副手(shield.getItemId())) {
                     if (chr.getInventory(MapleInventoryType.EQUIP).isFull(-1)) {
                         c.getSession().write(InventoryPacket.getInventoryFull());
                         c.getSession().write(InventoryPacket.getShowInventoryFull());
@@ -945,7 +951,7 @@ public class MapleInventoryManipulator {
         }
         if (source.getSocketState() > 15) {
             final Map<Skill, SkillEntry> ss = new HashMap<>();
-            int[] sockets = {source.getSocket1(), source.getSocket2(), source.getSocket3()};
+            int[] sockets = {source.getSocket(1), source.getSocket(2), source.getSocket(3)};
             for (int i : sockets) {
                 if (i > 0) {
                     StructItemOption soc = ii.getSocketInfo(i);
@@ -1027,7 +1033,7 @@ public class MapleInventoryManipulator {
         }
         if (source.getSocketState() > 15) {
             final Map<Skill, SkillEntry> ss = new HashMap<>();
-            int[] sockets = {source.getSocket1(), source.getSocket2(), source.getSocket3()};
+            int[] sockets = {source.getSocket(1), source.getSocket(2), source.getSocket(3)};
             for (int i : sockets) {
                 if (i > 0) {
                     StructItemOption soc = ii.getSocketInfo(i);
@@ -1084,7 +1090,9 @@ public class MapleInventoryManipulator {
             c.getSession().write(InventoryPacket.dropInventoryItemUpdate(type, source));
 
             if (ItemConstants.類型.寵物(source.getItemId()) || ItemFlag.UNTRADABLE.check(flag) || ii.isDropRestricted(target.getItemId()) || ii.isAccountShared(target.getItemId())) {
-                if (ItemFlag.KARMA_EQ.check(flag)) {
+                if (ii.isAccountShared(target.getItemId())) {
+                    c.getPlayer().getMap().disappearingItemDrop(c.getPlayer(), c.getPlayer(), target, dropPos);
+                } else if (ItemFlag.KARMA_EQ.check(flag)) {
                     target.setFlag((byte) (flag - ItemFlag.KARMA_EQ.getValue()));
                     c.getPlayer().getMap().spawnItemDrop(c.getPlayer(), c.getPlayer(), target, dropPos, true, true);
                 } else if (ItemFlag.KARMA_USE.check(flag)) {
@@ -1108,7 +1116,9 @@ public class MapleInventoryManipulator {
                 c.getPlayer().equipChanged();
             }
             if (ItemConstants.類型.寵物(source.getItemId()) || ItemFlag.UNTRADABLE.check(flag) || ii.isDropRestricted(source.getItemId()) || ii.isAccountShared(source.getItemId())) {
-                if (ItemFlag.KARMA_EQ.check(flag)) {
+                if (ii.isAccountShared(source.getItemId())) {
+                    c.getPlayer().getMap().disappearingItemDrop(c.getPlayer(), c.getPlayer(), source, dropPos);
+                } else if (ItemFlag.KARMA_EQ.check(flag)) {
                     source.setFlag((byte) (flag - ItemFlag.KARMA_EQ.getValue()));
                     c.getPlayer().getMap().spawnItemDrop(c.getPlayer(), c.getPlayer(), source, dropPos, true, true);
                 } else if (ItemFlag.KARMA_USE.check(flag)) {

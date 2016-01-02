@@ -273,7 +273,6 @@ public final class MapleMiniGame extends AbstractPlayerStore {
     }
 
     public int getScore(MapleCharacter chr) {
-        //TODO: Fix formula
         int score = 2000;
         int wins = getWins(chr);
         int ties = getTies(chr);
@@ -294,7 +293,6 @@ public final class MapleMiniGame extends AbstractPlayerStore {
     //questids:
     //omok - win = 122200
     //matchcard - win = 122210
-    //TODO: record points
     public int getWins(MapleCharacter chr) {
         return Integer.parseInt(getData(chr).split(",")[2]);
     }

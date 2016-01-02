@@ -122,7 +122,7 @@ public class ItemMakerHandler {
                     MapleInventoryManipulator.addById(c, randGemGiven, (byte) (taken == randGemGiven ? 9 : 1), "Made by Gem " + toCreate + " on " + FileoutputUtil.CurrentReadable_Date()); // Gem is always 1
 
                     c.getSession().write(EffectPacket.ItemMaker_Success());
-                    c.getPlayer().getMap().broadcastMessage(c.getPlayer(), EffectPacket.ItemMaker_Success_3rdParty(c.getPlayer().getId()), false);
+                    c.getPlayer().getMap().broadcastMessage(c.getPlayer(), EffectPacket.ItemMaker_Success(c.getPlayer()), false);
                 } else if (GameConstants.isOtherGem(toCreate)) {
                     //non-gems that are gems
                     //stim and numEnchanter always 0
@@ -151,7 +151,7 @@ public class ItemMakerHandler {
                     }
 
                     c.getSession().write(EffectPacket.ItemMaker_Success());
-                    c.getPlayer().getMap().broadcastMessage(c.getPlayer(), EffectPacket.ItemMaker_Success_3rdParty(c.getPlayer().getId()), false);
+                    c.getPlayer().getMap().broadcastMessage(c.getPlayer(), EffectPacket.ItemMaker_Success(c.getPlayer()), false);
                 } else {
                     final boolean stimulator = slea.readByte() > 0;
                     final int numEnchanter = slea.readInt();
@@ -198,7 +198,7 @@ public class ItemMakerHandler {
                     }
                     if (!stimulator || Randomizer.nextInt(10) != 0) {
                         MapleInventoryManipulator.addbyItem(c, toGive);
-                        c.getPlayer().getMap().broadcastMessage(c.getPlayer(), EffectPacket.ItemMaker_Success_3rdParty(c.getPlayer().getId()), false);
+                        c.getPlayer().getMap().broadcastMessage(c.getPlayer(), EffectPacket.ItemMaker_Success(c.getPlayer()), false);
                     } else {
                         c.getPlayer().dropMessage(5, "The item was overwhelmed by the stimulator.");
                     }
@@ -214,7 +214,7 @@ public class ItemMakerHandler {
                     MapleInventoryManipulator.removeById(c, MapleInventoryType.ETC, etc, 100, false, false);
 
                     c.getSession().write(EffectPacket.ItemMaker_Success());
-                    c.getPlayer().getMap().broadcastMessage(c.getPlayer(), EffectPacket.ItemMaker_Success_3rdParty(c.getPlayer().getId()), false);
+                    c.getPlayer().getMap().broadcastMessage(c.getPlayer(), EffectPacket.ItemMaker_Success(c.getPlayer()), false);
                 }
                 break;
             }
@@ -235,7 +235,7 @@ public class ItemMakerHandler {
                     MapleInventoryManipulator.removeFromSlot(c, MapleInventoryType.EQUIP, slot, (byte) 1, false);
                 }
                 c.getSession().write(EffectPacket.ItemMaker_Success());
-                c.getPlayer().getMap().broadcastMessage(c.getPlayer(), EffectPacket.ItemMaker_Success_3rdParty(c.getPlayer().getId()), false);
+                c.getPlayer().getMap().broadcastMessage(c.getPlayer(), EffectPacket.ItemMaker_Success(c.getPlayer()), false);
                 break;
             }
         }
@@ -293,7 +293,7 @@ public class ItemMakerHandler {
         } else {
             throw new RuntimeException("Invalid Item Maker type" + level);
         }
-        if (ItemConstants.類型.武器(itemid) || ItemConstants.類型.套服(itemid)) {
+        if (ItemConstants.類型.武器(itemid) || ItemConstants.類型.雙刀(itemid) || ItemConstants.類型.套服(itemid)) {
             all[1] = Randomizer.rand(5, 11);
         } else {
             all[1] = Randomizer.rand(3, 7);
@@ -555,7 +555,7 @@ public class ItemMakerHandler {
                 time = 4000;
             }
             c.getSession().write(EffectPacket.showCraftingEffect(effect, (byte) chr.getDirection(), time, effect.endsWith("Extract") ? 1 : 0));
-            chr.getMap().broadcastMessage(chr, EffectPacket.showCraftingEffect(chr.getId(), effect, (byte) chr.getDirection(), time, effect.endsWith("Extract") ? 1 : 0), false);
+            chr.getMap().broadcastMessage(chr, EffectPacket.showCraftingEffect(chr, effect, (byte) chr.getDirection(), time, effect.endsWith("Extract") ? 1 : 0), false);
         }
     }
 
@@ -620,7 +620,7 @@ public class ItemMakerHandler {
                 }
             }
             toGet = 4031016;
-            quantity = (short) Randomizer.rand(3, ItemConstants.類型.武器(itemId) || ItemConstants.類型.套服(itemId) ? 11 : 7);
+            quantity = (short) Randomizer.rand(3, ItemConstants.類型.武器(itemId) || ItemConstants.類型.雙刀(itemId) || ItemConstants.類型.套服(itemId) ? 11 : 7);
             if (reqLevel <= 60) {
                 toGet = 4021013;
             } else if (reqLevel <= 90) {
@@ -737,7 +737,7 @@ public class ItemMakerHandler {
                             }
                             receive.setOwner(chr.getName());
                             receive.setGMLog("Crafted from " + craftID + " 時間:" + FileoutputUtil.CurrentReadable_Date());
-                            MapleInventoryManipulator.addFromDrop(c, receive, true);
+                            MapleInventoryManipulator.addFromDrop(c, receive, true, false);
                             if (ce.needOpenItem) {
                                 byte mLevel = chr.getMasterLevel(craftID);
                                 if (mLevel == 1) {

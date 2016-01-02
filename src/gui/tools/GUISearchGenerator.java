@@ -105,7 +105,7 @@ public class GUISearchGenerator extends javax.swing.JFrame implements GUIWindow 
 
         jLabel1.setText("檢索類型:");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "全部", "道具", "NPC", "地圖", "怪物", "任務", "技能", "職業", "伺服器包頭", "用戶端包頭", "髮型", "臉型" }));
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "全部", "道具", "NPC", "地圖", "怪物", "任務", "技能", "職業" }));
 
         jButton1.setText("檢索");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -156,7 +156,7 @@ public class GUISearchGenerator extends javax.swing.JFrame implements GUIWindow 
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 111, Short.MAX_VALUE)
+                        .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 147, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton1)))
                 .addContainerGap())

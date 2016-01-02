@@ -40,7 +40,7 @@ public class FileoutputUtil {
             ScriptEx_Log = "日誌/腳本_異常.txt",
             PacketEx_Log = "日誌/數據包_異常.txt", // I cba looking for every error, adding this back in.
             UnknownPacket_Log = "日誌/數據包_未知.txt",
-            Packet_Log = "日誌/數據包_收發.txt",
+            Packet_Log = "日誌/數據包收發/Log.txt",
             Packet_Record = "日誌/數據包_編寫.txt",
             Hacker_Log = "日誌/Hacker.rtf",
             Movement_Log = "日誌/移動_錯誤.txt",
@@ -56,6 +56,7 @@ public class FileoutputUtil {
     private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private static final SimpleDateFormat sdfGMT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private static final SimpleDateFormat sdf_ = new SimpleDateFormat("yyyy-MM-dd");
+    private static final SimpleDateFormat sdfT = new SimpleDateFormat("yyyy年MM月dd日HH時mm分ss秒");
     private static final String FILE_PATH = "日誌/";
     private static final String ERROR = "錯誤/";
 
@@ -108,6 +109,10 @@ public class FileoutputUtil {
         FileOutputStream out = null;
         try {
             File outputFile = new File(file);
+            if(outputFile.exists() && outputFile.isFile() && outputFile.length() >= 512000) {
+                outputFile.renameTo(new File(file.substring(0, file.length() - 4) + "_" + sdfT.format(Calendar.getInstance().getTime()) + file.substring(file.length() - 4, file.length())));
+                outputFile = new File(file);
+            }
             if (outputFile.getParentFile() != null) {
                 outputFile.getParentFile().mkdirs();
             }

@@ -1,8 +1,10 @@
 package server;
 
 import client.MapleCharacter;
+import client.MapleJob;
 import client.MapleTrait.MapleTraitType;
 import client.inventory.Equip;
+import client.inventory.EquipStat;
 import client.inventory.Item;
 import client.inventory.ItemFlag;
 import client.inventory.MapleInventoryType;
@@ -35,7 +37,6 @@ import provider.wz.MapleDataType;
 import server.StructSetItem.SetItem;
 import server.farm.inventory.FarmItemInformation;
 import tools.Pair;
-import tools.StringUtil;
 import tools.Triple;
 import tools.packet.CWvsContext;
 
@@ -64,14 +65,16 @@ public class MapleItemInformationProvider {
     protected final Map<Integer, Triple<Integer, List<Integer>, List<Integer>>> monsterBookSets = new TreeMap<>((v1, v2) -> v1.compareTo(v2));
     protected final Map<Integer, StructSetItem> setItems = new HashMap<>();
     protected final Map<Integer, Boolean> noCursedScroll = new HashMap();
+    protected final Map<Integer, int[]> expPotionLev = new HashMap();
+    protected final Map<Integer, List<Integer>> canAccountSharable = new HashMap();
+    protected final Map<Integer, List<Integer>> cantAccountSharable = new HashMap();
     protected final Map<Integer, Boolean> noNegativeScroll = new HashMap();
     protected final Map<Integer, Integer> forceUpgrade = new HashMap();
+    protected Map<Integer, Pair<Integer, Integer>> chairRecovery = new HashMap();
     protected Map<Integer, Map<String, String>> expCardTimes = new HashMap();
     protected final Map<Integer, Pair<Integer, Integer>> socketReqLevel = new TreeMap<>((v1, v2) -> v1.compareTo(v2));
     protected final Map<Integer, Integer> soulSkill = new TreeMap<>((v1, v2) -> v1.compareTo(v2));
     protected final Map<Integer, ArrayList<Integer>> tempOption = new TreeMap<>((v1, v2) -> v1.compareTo(v2));
-    protected final Map<Integer, String> faceList = new TreeMap<>((v1, v2) -> v1.compareTo(v2));
-    protected final Map<Integer, String> hairList = new TreeMap<>((v1, v2) -> v1.compareTo(v2));
 
     public void runEtc(boolean reload) {
         if (reload) {
@@ -421,50 +424,6 @@ public class MapleItemInformationProvider {
         //System.out.println(dataCache.size() + " items loaded.");
     }
 
-    public final void loadStyles(boolean reload) {
-        if (reload) {
-            hairList.clear();
-            faceList.clear();
-        }
-        if (!hairList.isEmpty() || !faceList.isEmpty()) {
-            return;
-        }
-        String[] types = {"Hair", "Face"};
-        for (String type : types) {
-            for (MapleData c : stringData.getData("Eqp.img").getChildByPath("Eqp/" + type)) {
-                if (chrData.getData(type + "/" + StringUtil.getLeftPaddedStr(c.getName() + ".img", '0', 12)) != null) {
-                    int dataid = Integer.parseInt(c.getName());
-                    String name = MapleDataTool.getString("name", c, "無名稱");
-                    if (type.equals("Hair")) {
-                        hairList.put(dataid, name);
-                    } else {
-                        faceList.put(dataid, name);
-                    }
-                }
-            }
-        }
-    }
-
-    public boolean hairExists(int hair) {
-        return hairList.containsKey(hair);
-    }
-
-    public boolean faceExists(int face) {
-        return faceList.containsKey(face);
-    }
-
-    public final Map<Integer, String> getHairList() {
-        Map<Integer, String> list = new TreeMap<>((v1, v2) -> v1.compareTo(v2));
-        list.putAll(hairList);
-        return list;
-    }
-
-    public final Map<Integer, String> getFaceList() {
-        Map<Integer, String> list = new TreeMap<>((v1, v2) -> v1.compareTo(v2));
-        list.putAll(faceList);
-        return list;
-    }
-
     public final List<StructItemOption> getPotentialInfo(final int potId) {
         return potentialCache.get(potId);
     }
@@ -769,7 +728,7 @@ public class MapleItemInformationProvider {
             final Integer fameReq = stats.get("reqPOP");
             return fameReq == null || fame >= fameReq;
         }
-        return false;
+        return MapleJob.is管理員(job);
     }
 
     public final int getReqLevel(final int itemId) {
@@ -822,6 +781,7 @@ public class MapleItemInformationProvider {
             int success;
             int curse;
             boolean noCursed = isNoCursedScroll(scroll.getItemId());
+            boolean equipScrollSuccess = EquipStat.EnhanctBuff.SCROLL_SUCCESS.check(nEquip.getEnhanctBuff());
 
             String scrollType;
             int craft = chr.getTrait(MapleTraitType.craft).getLevel() / 10;
@@ -907,17 +867,17 @@ public class MapleItemInformationProvider {
                 scrollType = "附加潛在能力附加捲軸";
                 success = ItemConstants.卷軸.getBonusPotentialScrollSucc(scroll.getItemId());
                 curse = ItemConstants.卷軸.getBonusPotentialScrollCurse(scroll.getItemId());
-            } else if (ItemConstants.類型.裝備強化卷軸(scroll.getItemId()) || ItemConstants.類型.回真卷軸(scroll.getItemId())) {
+            } else if (ItemConstants.類型.裝備強化卷軸(scroll.getItemId())) {
                 success = stats == null || !stats.containsKey("success") ? 0 : stats.get("success");
                 curse = noCursed ? 0 : stats == null || !stats.containsKey("cursed") ? 100 : stats.get("cursed");
-                if (ItemConstants.類型.裝備強化卷軸(scroll.getItemId())) {
-                    scrollType = "強化捲軸";
-                    if (getForceUpgrade(scroll.getItemId()) == 1 && success == 0) {
-                        success = Math.max((scroll.getItemId() == 2049301 || scroll.getItemId() == 2049307 ? 80 : 100) - nEquip.getEnhance() * 10, 5);
-                    }
-                } else {
-                    scrollType = "回真捲軸";
+                scrollType = "強化捲軸";
+                if (getForceUpgrade(scroll.getItemId()) == 1 && success == 0) {
+                    success = Math.max((scroll.getItemId() == 2049301 || scroll.getItemId() == 2049307 ? 80 : 100) - nEquip.getEnhance() * 10, 5);
                 }
+            } else if (ItemConstants.類型.回真卷軸(scroll.getItemId())) {
+                success = stats == null || !stats.containsKey("success") ? 0 : stats.get("success");
+                curse = noCursed || stats == null || !stats.containsKey("cursed") ? 0 : stats.get("cursed");
+                scrollType = "回真捲軸";
             } else {
                 if (ItemConstants.類型.幸運日卷軸(scroll.getItemId())) {
                     if (ItemConstants.類型.保護卷軸(scroll.getItemId())) {
@@ -944,13 +904,17 @@ public class MapleItemInformationProvider {
             }
 
             if (chr.isShowInfo()) {
-                chr.showMessage(30, scrollType + " - 默認幾率：" + success + "% 性向加成：" + craft + "% 幸運日加成：" + lucksKey + "% 最終概率：" + success + "% 失敗消失概率：" + curse + "%");
+                chr.showMessage(30, scrollType + " - 默認幾率：" + success + "% 性向加成：" + craft + "% 幸運日加成：" + lucksKey + "% 裝備自帶卷軸100%成功率：" + equipScrollSuccess + " 最終概率：" + (equipScrollSuccess ? 100 : success) + "% 失敗消失概率：" + curse + "%");
             }
 
             if (success <= 0) {
                 chr.dropMessage(1, "捲軸：" + scroll + " 成功幾率為：" + success + " 這個捲軸可能還未修復。");
                 chr.getClient().getSession().write(CWvsContext.enableActions());
                 return nEquip;
+            }
+
+            if (equipScrollSuccess) {
+                success = 100;
             }
 
             if (ItemConstants.類型.潛能卷軸(scroll.getItemId()) || ItemConstants.類型.附加潛能卷軸(scroll.getItemId()) || ItemConstants.類型.裝備強化卷軸(scroll.getItemId()) || ItemConstants.類型.特殊卷軸(scroll.getItemId()) || ItemConstants.類型.回真卷軸(scroll.getItemId()) || Randomizer.nextInt(100) <= success) {
@@ -989,15 +953,15 @@ public class MapleItemInformationProvider {
                         return Randomizer.nextInt(99) < curse ? null : nEquip;
                     }
                     if (scroll.getItemId() >= 2049700 && scroll.getItemId() < 2049750) {//稀有潛能捲軸
-                        nEquip.resetPotential(2, nEquip.getPotential(3, false) != 0);
+                        nEquip.resetPotential(2, false);
                     } else if (scroll.getItemId() >= 2049750 && scroll.getItemId() < 2049759) {//罕見潛能捲軸
-                        nEquip.resetPotential(3, nEquip.getPotential(3, false) != 0);
+                        nEquip.resetPotential(3, false);
                     } else if (scroll.getItemId() == 2049780 || scroll.getItemId() == 2049782) {//傳說潛能捲軸
-                        nEquip.resetPotential(4, nEquip.getPotential(3, false) != 0);
+                        nEquip.resetPotential(4, false);
                     } else if (scroll.getItemId() == 2049419) {//附加3條潛能
-                        nEquip.resetPotential(true);
+                        nEquip.resetPotential(true, false);
                     } else {
-                        nEquip.resetPotential(false);
+                        nEquip.resetPotential(false, false);
                     }
                 } else if (ItemConstants.類型.附加潛能卷軸(scroll.getItemId())) {//附加潛能捲軸
                     if (Randomizer.nextInt(100) > success) {
@@ -1015,7 +979,7 @@ public class MapleItemInformationProvider {
                     if (Randomizer.nextInt(100) > success) {
                         return Randomizer.nextInt(99) < curse ? null : nEquip;
                     }
-                    return resetEquipStats(nEquip);
+                    return resetEquipStats(nEquip, stats != null && stats.containsKey("perfectReset") && stats.get("perfectReset") == 1);
                 } else if (scroll.getItemId() == 2040727) { // Spikes on shoe, prevents slip鞋子防滑卷軸10%
                     short flag = nEquip.getFlag();
                     flag |= ItemFlag.SPIKES.getValue();
@@ -1029,47 +993,47 @@ public class MapleItemInformationProvider {
                 } else if (ItemConstants.類型.混沌卷軸(scroll.getItemId())) {//混沌捲軸
                     final int z = ItemConstants.卷軸.getChaosNumber(scroll.getItemId());
                     int increase = Randomizer.nextBoolean() ? 1 : (ItemConstants.類型.樂觀混沌卷軸(scroll.getItemId())) || (isNegativeScroll(scroll.getItemId())) ? 1 : -1;
-                    if (nEquip.getStr() > 0) {
+                    if (nEquip.getStr() > 0 && Randomizer.nextInt(10) > 5) {
                         nEquip.setStr((short) (nEquip.getStr() + Randomizer.nextInt(z) * (Randomizer.nextBoolean() ? 1 : increase)));
                     }
-                    if (nEquip.getDex() > 0) {
+                    if (nEquip.getDex() > 0 && Randomizer.nextInt(10) > 5) {
                         nEquip.setDex((short) (nEquip.getDex() + Randomizer.nextInt(z) * (Randomizer.nextBoolean() ? 1 : increase)));
                     }
-                    if (nEquip.getInt() > 0) {
+                    if (nEquip.getInt() > 0 && Randomizer.nextInt(10) > 5) {
                         nEquip.setInt((short) (nEquip.getInt() + Randomizer.nextInt(z) * (Randomizer.nextBoolean() ? 1 : increase)));
                     }
-                    if (nEquip.getLuk() > 0) {
+                    if (nEquip.getLuk() > 0 && Randomizer.nextInt(10) > 5) {
                         nEquip.setLuk((short) (nEquip.getLuk() + Randomizer.nextInt(z) * (Randomizer.nextBoolean() ? 1 : increase)));
                     }
-                    if (nEquip.getWatk() > 0) {
+                    if (nEquip.getWatk() > 0 && Randomizer.nextInt(10) > 5) {
                         nEquip.setWatk((short) (nEquip.getWatk() + Randomizer.nextInt(z) * (Randomizer.nextBoolean() ? 1 : increase)));
                     }
-                    if (nEquip.getWdef() > 0) {
+                    if (nEquip.getWdef() > 0 && Randomizer.nextInt(10) > 5) {
                         nEquip.setWdef((short) (nEquip.getWdef() + Randomizer.nextInt(z) * (Randomizer.nextBoolean() ? 1 : increase)));
                     }
-                    if (nEquip.getMatk() > 0) {
+                    if (nEquip.getMatk() > 0 && Randomizer.nextInt(10) > 5) {
                         nEquip.setMatk((short) (nEquip.getMatk() + Randomizer.nextInt(z) * (Randomizer.nextBoolean() ? 1 : increase)));
                     }
-                    if (nEquip.getMdef() > 0) {
+                    if (nEquip.getMdef() > 0 && Randomizer.nextInt(10) > 5) {
                         nEquip.setMdef((short) (nEquip.getMdef() + Randomizer.nextInt(z) * (Randomizer.nextBoolean() ? 1 : increase)));
                     }
-                    if (nEquip.getAcc() > 0) {
+                    if (nEquip.getAcc() > 0 && Randomizer.nextInt(10) > 5) {
                         nEquip.setAcc((short) (nEquip.getAcc() + Randomizer.nextInt(z) * (Randomizer.nextBoolean() ? 1 : increase)));
                     }
-                    if (nEquip.getAvoid() > 0) {
+                    if (nEquip.getAvoid() > 0 && Randomizer.nextInt(10) > 5) {
                         nEquip.setAvoid((short) (nEquip.getAvoid() + Randomizer.nextInt(z) * (Randomizer.nextBoolean() ? 1 : increase)));
                     }
-                    if (nEquip.getSpeed() > 0) {
+                    if (nEquip.getSpeed() > 0 && Randomizer.nextInt(10) > 5) {
                         nEquip.setSpeed((short) (nEquip.getSpeed() + Randomizer.nextInt(z) * (Randomizer.nextBoolean() ? 1 : increase)));
                     }
-                    if (nEquip.getJump() > 0) {
+                    if (nEquip.getJump() > 0 && Randomizer.nextInt(10) > 5) {
                         nEquip.setJump((short) (nEquip.getJump() + Randomizer.nextInt(z) * (Randomizer.nextBoolean() ? 1 : increase)));
                     }
-                    if (nEquip.getHp() > 0) {
-                        nEquip.setHp((short) (nEquip.getHp() + Randomizer.nextInt(z) * (Randomizer.nextBoolean() ? 1 : increase)));
+                    if (nEquip.getHp() > 0 && Randomizer.nextInt(10) > 5) {
+                        nEquip.setHp((short) (nEquip.getHp() + Randomizer.nextInt(z * 10) * (Randomizer.nextBoolean() ? 1 : increase)));
                     }
-                    if (nEquip.getMp() > 0) {
-                        nEquip.setMp((short) (nEquip.getMp() + Randomizer.nextInt(z) * (Randomizer.nextBoolean() ? 1 : increase)));
+                    if (nEquip.getMp() > 0 && Randomizer.nextInt(10) > 5) {
+                        nEquip.setMp((short) (nEquip.getMp() + Randomizer.nextInt(z * 10) * (Randomizer.nextBoolean() ? 1 : increase)));
                     }
                 } else {
                     for (Entry<String, Integer> stat : stats.entrySet()) {
@@ -1939,15 +1903,60 @@ public class MapleItemInformationProvider {
         return equipStats.containsKey("superiorEqp") && equipStats.get("superiorEqp") == 1;
     }
 
+    public int[] getExpPotionLev(int itemId) {
+        if (expPotionLev.containsKey(itemId)) {
+            return expPotionLev.get(itemId);
+        }
+        MapleData data = getItemData(itemId);
+        int[] lev = new int[]{
+            MapleDataTool.getIntConvert("info/exp/minLev", data, 1),
+            MapleDataTool.getIntConvert("info/exp/maxLev", data, 1)
+        };
+        expPotionLev.put(itemId, lev);
+        return lev;
+    }
+
+    public List<Integer> getCanAccountSharable(int itemId) {
+        if (canAccountSharable.containsKey(itemId)) {
+            return canAccountSharable.get(itemId);
+        }
+        MapleData data = getItemData(itemId);
+        List<Integer> jobs = new ArrayList();
+        data = data.getChildByPath("info/canAccountSharable/job");
+        if (data != null) {
+            for (MapleData d : data.getChildren()) {
+                jobs.add(Integer.parseInt(d.getName()));
+            }
+        }
+        canAccountSharable.put(itemId, jobs);
+        return canAccountSharable.get(itemId);
+    }
+
+    public List<Integer> getCantAccountSharable(int itemId) {
+        if (cantAccountSharable.containsKey(itemId)) {
+            return cantAccountSharable.get(itemId);
+        }
+        MapleData data = getItemData(itemId);
+        List<Integer> jobs = new ArrayList();
+        data = data.getChildByPath("info/cantAccountSharable/job");
+        if (data != null) {
+            for (MapleData d : data.getChildren()) {
+                jobs.add(Integer.parseInt(d.getName()));
+            }
+        }
+        cantAccountSharable.put(itemId, jobs);
+        return cantAccountSharable.get(itemId);
+    }
+
     public boolean isNoCursedScroll(int itemId) {
-        if (this.noCursedScroll.containsKey(itemId)) {
-            return (this.noCursedScroll.get(itemId));
+        if (noCursedScroll.containsKey(itemId)) {
+            return noCursedScroll.get(itemId);
         }
         if (itemId / 10000 != 204) {
             return false;
         }
         boolean noCursed = MapleDataTool.getIntConvert("info/noCursed", getItemData(itemId), 0) > 0;
-        this.noCursedScroll.put(itemId, noCursed);
+        noCursedScroll.put(itemId, noCursed);
         return noCursed;
     }
 
@@ -1976,9 +1985,30 @@ public class MapleItemInformationProvider {
         return upgrade;
     }
 
-    public Equip resetEquipStats(Equip oldEquip) {
+    public Pair<Integer, Integer> getChairRecovery(int itemId) {
+        if (itemId / 10000 != 301) {
+            return null;
+        }
+        if (chairRecovery.containsKey(itemId)) {
+            return (Pair) chairRecovery.get(itemId);
+        }
+        int recoveryHP = MapleDataTool.getIntConvert("info/recoveryHP", getItemData(itemId), 0);
+        int recoveryMP = MapleDataTool.getIntConvert("info/recoveryMP", getItemData(itemId), 0);
+        Pair ret = new Pair(Integer.valueOf(recoveryHP), Integer.valueOf(recoveryMP));
+        chairRecovery.put(itemId, ret);
+        return ret;
+    }
+
+    public int getLimitBreak(int itemId) {
+        if ((getEquipStats(itemId) == null) || (!getEquipStats(itemId).containsKey("limitBreak"))) {
+            return 999999;
+        }
+        return (getEquipStats(itemId).get("limitBreak"));
+    }
+
+    public Equip resetEquipStats(Equip oldEquip, boolean prefectReset) {
         Equip newEquip = (Equip) getEquipById(oldEquip.getItemId());
-        oldEquip.reset(newEquip);
+        oldEquip.reset(newEquip, prefectReset);
         return newEquip;
     }
 

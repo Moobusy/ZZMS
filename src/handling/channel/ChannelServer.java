@@ -109,7 +109,7 @@ public class ChannelServer {
     public final void run_startup_configurations() {
         setChannel(channel); //instances.put
         try {
-            eventSM = new EventScriptManager(this, ServerConfig.EVENTS.split(","));
+            eventSM = new EventScriptManager(this, ServerConfig.getEvents(true));
             port = (short) (DEFAULT_PORT + channel);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -267,7 +267,7 @@ public class ChannelServer {
 
     public final void reloadEvents() {
         eventSM.cancel();
-        eventSM = new EventScriptManager(this, ServerConfig.EVENTS.split(","));
+        eventSM = new EventScriptManager(this, ServerConfig.getEvents(true));
         eventSM.init();
     }
 
@@ -555,21 +555,5 @@ public class ChannelServer {
         } else {
             chr.dropMessage(5, "Bomberman Event is not active.");
         }
-    }
-
-    public String getShopPack() {
-        if (this.ShopPack != null) {
-            return this.ShopPack;
-        }
-        Properties props = new Properties();
-        try {
-            try (FileInputStream is = new FileInputStream("購物商城.txt")) {
-                props.load(is);
-            }
-        } catch (IOException ex) {
-            System.out.println("無法讀取 購物商城.txt 檔案資訊。");
-        }
-        this.ShopPack = props.getProperty("pack");
-        return this.ShopPack;
     }
 }

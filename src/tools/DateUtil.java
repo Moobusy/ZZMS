@@ -47,6 +47,11 @@
      }
      return time + PacketHelper.FT_UT_OFFSET;
    }
+
+    public static int getTime(long realTimestamp) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyMMddHHmm");
+        return Integer.valueOf(sdf.format(realTimestamp));
+    }
  
    public static int getTime() {
      String time = new SimpleDateFormat("yyyy-MM-dd-HH").format(new Date()).replace("-", "");

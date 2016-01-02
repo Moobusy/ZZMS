@@ -79,43 +79,47 @@ public class StatsHandling {
                     stat.setLuk((short) (stat.getLuk() + 1), chr);
                     statupdate.put(MapleStat.LUK, (long) stat.getLuk());
                     break;
-                case 0x400: // HP
+                case 0x800: // HP
                     int maxhp = stat.getMaxHp();
                     if (chr.getHpApUsed() >= 10000 || maxhp >= 500000) {
                         return;
                     }
                     if (MapleJob.isBeginner(job)) { // Beginner
                         maxhp += Randomizer.rand(8, 12);
+                    } else if (MapleJob.is惡魔復仇者(job)) {
+                        maxhp += 30;
                     } else if ((job >= 100 && job <= 132) || (job >= 3200 && job <= 3212) || (job >= 1100 && job <= 1112) || (job >= 3100 && job <= 3112)) { // Warrior
                         maxhp += Randomizer.rand(36, 42);
-                    } else if ((job >= 200 && job <= 232) || (MapleJob.is龍魔導士(job))) { // Magician
+                    } else if ((job >= 200 && job <= 232) || (MapleJob.is龍魔導士(job)) || (job >= 2700 && job <= 2712)) { // Magician
                         maxhp += Randomizer.rand(10, 20);
                     } else if ((job >= 300 && job <= 322) || (job >= 400 && job <= 434) || (job >= 1300 && job <= 1312) || (job >= 1400 && job <= 1412) || (job >= 3300 && job <= 3312) || (job >= 2300 && job <= 2312)) { // Bowman
                         maxhp += Randomizer.rand(16, 20);
                     } else if ((job >= 510 && job <= 512) || (job >= 1510 && job <= 1512)) {
                         maxhp += Randomizer.rand(28, 32);
-                    } else if ((job >= 500 && job <= 532) || (job >= 3500 && job <= 3512) || job == 1500) { // Pirate
+                    } else if ((job >= 500 && job <= 532) || MapleJob.is蒼龍俠客(job) || (job >= 3500 && job <= 3512) || job == 1500) { // Pirate
                         maxhp += Randomizer.rand(18, 22);
                     } else if (job >= 1200 && job <= 1212) { // Flame Wizard
                         maxhp += Randomizer.rand(15, 21);
                     } else if (job >= 2000 && job <= 2112) { // Aran
                         maxhp += Randomizer.rand(38, 42);
+                    } else if (job >= 10100 && job <= 10112) {
+                        maxhp += Randomizer.rand(48, 52);
                     } else { // GameMaster
-                        maxhp += Randomizer.rand(50, 100);
+                        maxhp += Randomizer.rand(18, 26);
                     }
                     maxhp = Math.min(500000, Math.abs(maxhp));
                     chr.setHpApUsed((short) (chr.getHpApUsed() + 1));
                     stat.setMaxHp(maxhp, chr);
                     statupdate.put(MapleStat.MAXHP, (long) maxhp);
                     break;
-                case 0x800: // MP
+                case 0x2000: // MP
                     int maxmp = stat.getMaxMp();
                     if (chr.getHpApUsed() >= 10000 || stat.getMaxMp() >= 500000) {
                         return;
                     }
                     if (MapleJob.isBeginner(job)) { // Beginner
                         maxmp += Randomizer.rand(6, 8);
-                    } else if (MapleJob.is惡魔(job) || MapleJob.is天使破壞者(job)) { // Demon, Angelic Buster
+                    } else if (MapleJob.isNotMpJob(job)) {
                         return;
                     } else if ((job >= 200 && job <= 232) || (MapleJob.is龍魔導士(job)) || (job >= 3200 && job <= 3212) || (job >= 1200 && job <= 1212)) { // Magician
                         maxmp += Randomizer.rand(38, 40);
@@ -124,7 +128,7 @@ public class StatsHandling {
                     } else if ((job >= 100 && job <= 132) || (job >= 1100 && job <= 1112) || (job >= 2000 && job <= 2112)) { // Soul Master
                         maxmp += Randomizer.rand(6, 9);
                     } else { // GameMaster
-                        maxmp += Randomizer.rand(50, 100);
+                        maxmp += Randomizer.rand(6, 12);
                     }
                     maxmp = Math.min(500000, Math.abs(maxmp));
                     chr.setHpApUsed((short) (chr.getHpApUsed() + 1));
@@ -135,6 +139,11 @@ public class StatsHandling {
                     c.getSession().write(CWvsContext.enableActions());
                     return;
             }
+
+            if (chr.getQuestStatus(59006) == 1) {
+                chr.updateInfoQuest(59006, "ap=1");
+            }
+
             chr.setRemainingAp((short) (chr.getRemainingAp() - 1));
             statupdate.put(MapleStat.AVAILABLEAP, (long) chr.getRemainingAp());
             c.getSession().write(CWvsContext.updatePlayerStats(statupdate, true, chr));
@@ -149,6 +158,9 @@ public class StatsHandling {
         int amount = slea.readInt();
         amount = amount == 0 ? 1 : amount;
 
+        if (chr.isShowInfo()) {
+            chr.dropMessage(5, "開始加技能點 - 技能ID: " + skillid + " 等級: " + amount);
+        }
         //null
         boolean isBeginnerSkill = false;
         final int remainingSp;
@@ -160,6 +172,9 @@ public class StatsHandling {
             remainingSp = Math.min((chr.getLevel() - 1), resistance ? 9 : 6) - snailsLevel - recoveryLevel - nimbleFeetLevel;
             isBeginnerSkill = true;
         } else if (MapleJob.isBeginner(skillid / 10000)) {
+            if (chr.isShowErr()) {
+                chr.dropMessage(5, "加技能點錯誤 - 1");
+            }
             return;
         } else {
             remainingSp = chr.getRemainingSp(GameConstants.getSkillBookBySkill(skillid));
@@ -218,18 +233,12 @@ public class StatsHandling {
 
     public static final void AutoAssignAP(LittleEndianAccessor slea, MapleClient c, MapleCharacter chr) {
         chr.updateTick(slea.readInt());
-        //slea.skip(4);
         int autoSpSize = slea.readInt();
-        /*if (slea.available() < 16L) {
-         return;
-         }*/
         if (slea.available() < autoSpSize * 12) {
             return;
         }
         int PrimaryStat = (int) slea.readLong();
         int amount = slea.readInt();
-        //int SecondaryStat = (int) slea.readLong();
-        //int amount2 = slea.readInt();
         int SecondaryStat = autoSpSize > 1 ? (int) slea.readLong() : 0;
         int amount2 = autoSpSize > 1 ? slea.readInt() : 0;
         if ((amount < 0) || (amount2 < 0)) {
@@ -237,67 +246,78 @@ public class StatsHandling {
         }
 
         PlayerStats playerst = chr.getStat();
-
+        boolean usedAp1 = true;
+        boolean usedAp2 = true;
         Map statupdate = new EnumMap(MapleStat.class);
         c.getSession().write(CWvsContext.updatePlayerStats(statupdate, true, chr));
 
-        if (chr.getRemainingAp() == amount + amount2) {
+        if (chr.getRemainingAp() >= amount + amount2) {
             switch (PrimaryStat) {
-                case 64:
+                case 0x40:
                     if (playerst.getStr() + amount > statLimit) {
                         return;
                     }
                     playerst.setStr((short) (playerst.getStr() + amount), chr);
                     statupdate.put(MapleStat.STR, (long) playerst.getStr());
                     break;
-                case 128:
+                case 0x80:
                     if (playerst.getDex() + amount > statLimit) {
                         return;
                     }
                     playerst.setDex((short) (playerst.getDex() + amount), chr);
                     statupdate.put(MapleStat.DEX, (long) playerst.getDex());
                     break;
-                case 256:
+                case 0x100:
                     if (playerst.getInt() + amount > statLimit) {
                         return;
                     }
                     playerst.setInt((short) (playerst.getInt() + amount), chr);
                     statupdate.put(MapleStat.INT, (long) playerst.getInt());
                     break;
-                case 512:
+                case 0x200:
                     if (playerst.getLuk() + amount > statLimit) {
                         return;
                     }
                     playerst.setLuk((short) (playerst.getLuk() + amount), chr);
                     statupdate.put(MapleStat.LUK, (long) playerst.getLuk());
                     break;
+                case 0x800:
+                    int maxhp = playerst.getMaxHp();
+                    if ((chr.getHpApUsed() >= 10000) || (maxhp >= 500000) || (!MapleJob.is惡魔復仇者(chr.getJob()))) {
+                        return;
+                    }
+                    maxhp += 30 * amount;
+                    maxhp = Math.min(500000, Math.abs(maxhp));
+                    chr.setHpApUsed((short) (chr.getHpApUsed() + amount));
+                    playerst.setMaxHp(maxhp, chr);
+                    statupdate.put(MapleStat.MAXHP, (long) maxhp);
+                    break;
                 default:
-                    c.getSession().write(CWvsContext.enableActions());
-                    return;
+                    usedAp1 = false;
             }
             switch (SecondaryStat) {
-                case 64:
+                case 0x40:
                     if (playerst.getStr() + amount2 > statLimit) {
                         return;
                     }
                     playerst.setStr((short) (playerst.getStr() + amount2), chr);
                     statupdate.put(MapleStat.STR, (long) playerst.getStr());
                     break;
-                case 128:
+                case 0x80:
                     if (playerst.getDex() + amount2 > statLimit) {
                         return;
                     }
                     playerst.setDex((short) (playerst.getDex() + amount2), chr);
                     statupdate.put(MapleStat.DEX, (long) playerst.getDex());
                     break;
-                case 256:
+                case 0x100:
                     if (playerst.getInt() + amount2 > statLimit) {
                         return;
                     }
                     playerst.setInt((short) (playerst.getInt() + amount2), chr);
                     statupdate.put(MapleStat.INT, (long) playerst.getInt());
                     break;
-                case 512:
+                case 0x200:
                     if (playerst.getLuk() + amount2 > statLimit) {
                         return;
                     }
@@ -305,10 +325,17 @@ public class StatsHandling {
                     statupdate.put(MapleStat.LUK, (long) playerst.getLuk());
                     break;
                 default:
-                    c.getSession().write(CWvsContext.enableActions());
-                    return;
+                    usedAp2 = false;
             }
-            chr.setRemainingAp((short) (chr.getRemainingAp() - (amount + amount2)));
+
+            if (chr.getQuestStatus(59006) == 1) {
+                chr.updateInfoQuest(59006, "ap=1");
+            }
+
+            if ((!usedAp1 || !usedAp2) && chr.isShowInfo()) {
+                chr.dropMessage(5, "自動分配能力點 - 主能力: " + usedAp1 + " 副能力: " + usedAp2);
+            }
+            chr.setRemainingAp((short) (chr.getRemainingAp() - ((usedAp1 ? amount : 0) + (usedAp2 ? amount2 : 0))));
             statupdate.put(MapleStat.AVAILABLEAP, (long) chr.getRemainingAp());
             c.getSession().write(CWvsContext.updatePlayerStats(statupdate, true, chr));
         }

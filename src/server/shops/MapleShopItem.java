@@ -1,5 +1,8 @@
 package server.shops;
 
+import client.inventory.Item;
+import server.MapleItemInformationProvider;
+
 public class MapleShopItem {
 
     private final short buyable;
@@ -15,11 +18,26 @@ public class MapleShopItem {
     private final byte rank;
     private final boolean potential;
 
+    public MapleShopItem(Item item, byte rank) {
+        this.buyable = item.getQuantity();
+        this.quantity = item.getQuantity();
+        this.itemId = item.getItemId();
+        this.price = (int) (Math.max(MapleItemInformationProvider.getInstance().getPrice(item.getItemId()), 0.0) * item.getQuantity());
+        this.slot = 0;
+        this.reqItem = 0;
+        this.reqItemQ = 0;
+        this.rank = rank;
+        this.category = 0;
+        this.minLevel = 0;
+        this.expiration = 0;
+        this.potential = false;
+    }
+
     public MapleShopItem(int itemId, int price, short slot, short buyable) {
         this.buyable = buyable;
         this.quantity = 1;
         this.itemId = itemId;
-        this.price = price;
+        this.price = Math.max(price, 0);
         this.slot = slot;
         this.reqItem = 0;
         this.reqItemQ = 0;
@@ -34,7 +52,7 @@ public class MapleShopItem {
         this.buyable = buyable;
         this.quantity = quantity;
         this.itemId = itemId;
-        this.price = price;
+        this.price = Math.max(price, 0);
         this.slot = slot;
         this.reqItem = reqItem;
         this.reqItemQ = reqItemQ;

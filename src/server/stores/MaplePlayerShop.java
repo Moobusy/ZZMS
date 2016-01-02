@@ -53,7 +53,7 @@ public class MaplePlayerShop extends AbstractPlayerStore {
             }
             final int gainmeso = pItem.price * quantity;
             if (c.getPlayer().getMeso() >= gainmeso) {
-                if (getMCOwner().getMeso() + gainmeso > 0 && MapleInventoryManipulator.checkSpace(c, newItem.getItemId(), newItem.getQuantity(), newItem.getOwner()) && MapleInventoryManipulator.addFromDrop(c, newItem, false)) {
+                if (getMCOwner().getMeso() + gainmeso > 0 && MapleInventoryManipulator.checkSpace(c, newItem.getItemId(), newItem.getQuantity(), newItem.getOwner()) && MapleInventoryManipulator.addFromDrop(c, newItem)) {
                     pItem.bundles -= quantity;
                     bought.add(new BoughtItem(newItem.getItemId(), quantity, gainmeso, c.getPlayer().getName()));
                     c.getPlayer().gainMeso(-gainmeso, false);
@@ -91,7 +91,7 @@ public class MaplePlayerShop extends AbstractPlayerStore {
             if (items.bundles > 0) {
                 Item newItem = items.item.copy();
                 newItem.setQuantity((short) (items.bundles * newItem.getQuantity()));
-                if (MapleInventoryManipulator.addFromDrop(owner.getClient(), newItem, false)) {
+                if (MapleInventoryManipulator.addFromDrop(owner.getClient(), newItem)) {
                     items.bundles = 0;
                 } else {
                     saveItems(); //O_o

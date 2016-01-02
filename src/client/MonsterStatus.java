@@ -34,20 +34,6 @@ public enum MonsterStatus implements Serializable, Buffstat {
 
     //  =========== MASK[0]
     //物攻
-//  =========== MASK[0]
-    //物攻
-//  =========== MASK[0]
-    //物攻
-//  =========== MASK[0]
-    //物攻
-//  =========== MASK[0]
-    //物攻
-//  =========== MASK[0]
-    //物攻
-//  =========== MASK[0]
-    //物攻
-//  =========== MASK[0]
-    //物攻
     WATK(0),
     //物防
     WDEF(1),
@@ -172,7 +158,7 @@ public enum MonsterStatus implements Serializable, Buffstat {
     MBS71(71, true),
     MBS72(72, true),
     MBS73(73, true),
-    MBS74(74, true),    
+    MBS74(74, true), 
     ;
     static final long serialVersionUID = 0L;
     private final int i;
@@ -216,19 +202,19 @@ public enum MonsterStatus implements Serializable, Buffstat {
         switch (skill) {
             case STUN:
             case SHADOW_WEB:
-                return MapleDisease.STUN;
+                return MapleDisease.昏迷;
             case POISON:
             case VENOMOUS_WEAPON:
-                return MapleDisease.POISON;
+                return MapleDisease.中毒;
             case SEAL:
             case MAGIC_CRASH:
-                return MapleDisease.SEAL;
+                return MapleDisease.封印;
             case FREEZE:
-                return MapleDisease.FREEZE;
+                return MapleDisease.冰凍;
             case DARKNESS:
-                return MapleDisease.DARKNESS;
+                return MapleDisease.黑暗;
             case SPEED:
-                return MapleDisease.SLOW;
+                return MapleDisease.緩慢;
         }
         return null;
     }

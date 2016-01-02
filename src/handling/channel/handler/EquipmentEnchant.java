@@ -4,11 +4,14 @@ import client.MapleClient;
 import client.inventory.EchantEquipStat;
 import client.inventory.EchantScroll;
 import client.inventory.Equip;
+import client.inventory.EquipStat;
 import client.inventory.Item;
+import client.inventory.MapleInventory;
 import client.inventory.MapleInventoryType;
 import constants.GameConstants;
 import constants.ItemConstants;
 import constants.ServerConstants;
+import constants.ZZMSConfig;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,8 +27,9 @@ public class EquipmentEnchant {
 
     //星力強化
     private static final int[] sfSuccessProp = {950, 900, 850, 850, 800, 750, 700, 650, 600, 550, 450, 350, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 30, 20, 10};
-    private static final int[] sfDestroyProp = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 10, 10, 20, 20, 20, 30, 30, 70, 70, 190, 290, 400};
-    private static final int[] sfFallProp = {0, 0, 0, 0, 0, 0, 30, 35, 40, 45, 0, 65, 69, 69, 69, 0, 68, 68, 67, 67, 0, 63, 78, 69, 59};
+    private static final int[] sfDestroyProp = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 200, 350, 400, 450, 600, 650, 750, 800, 850, 900, 950, 1000, 1000, 1000};
+    private static final int[] sfSuccessPropSup = {500, 500, 450, 400, 400, 400, 400, 400, 400, 370, 350, 350, 30, 20, 10};
+    private static final int[] sfDestroyPropSup = {0, 0, 0, 0, 0, 60, 100, 140, 200, 300, 400, 500, 1000, 1000, 1000};
 
     private static enum StarForceResult {
 
@@ -47,6 +51,7 @@ public class EquipmentEnchant {
     }
 
     public static void handlePacket(final LittleEndianAccessor slea, final MapleClient c) {
+        MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
         byte code = slea.readByte();
         switch (code) {
             case 0: { //咒文的痕跡 強化
@@ -57,12 +62,15 @@ public class EquipmentEnchant {
                 success = 0;
                 Equip item = (Equip) c.getPlayer().getInventory(position < 0 ? MapleInventoryType.EQUIPPED : MapleInventoryType.EQUIP).getItem(position);
                 if (item == null) {
-                    c.getSession().write(CWvsContext.Enchant.getEnchantResult(item, 0, sposition, c));
+                    c.getSession().write(CWvsContext.Enchant.getEnchantResult(item, 0, sposition));
+                    return;
+                }
+                if (EquipStat.EnhanctBuff.EQUIP_MARK.check(item.getEnhanctBuff())) {
                     return;
                 }
                 ArrayList<EchantScroll> scrolls = getEchantScrolls(item);
                 if (scrolls.isEmpty() || scrolls.size() < sposition - 1 || item.getUpgradeSlots() < 1 || !c.getPlayer().haveItem(4001832, scrolls.get(sposition).getCost())) {
-                    c.getSession().write(CWvsContext.Enchant.getEnchantResult(item, 0, sposition, c));
+                    c.getSession().write(CWvsContext.Enchant.getEnchantResult(item, 0, sposition));
                     if (c.getPlayer().isShowErr()) {
                         c.getPlayer().showInfo("咒文強化", true, "咒文強化檢測 找不到捲軸：" + (scrolls.isEmpty()) + " 收到的捲軸不在範圍：" + (scrolls.size() < sposition - 1) + " 沒有剩餘升級次數：" + (item.getUpgradeSlots() < 1) + " 咒文不足：" + (!c.getPlayer().haveItem(4001832, scrolls.get(sposition).getCost())));
                     }
@@ -99,62 +107,68 @@ public class EquipmentEnchant {
 
                 MapleInventoryManipulator.removeById(c, GameConstants.getInventoryType(4001832), 4001832, (short) scroll.getCost(), true, false);
                 item.setUpgradeSlots((byte) (item.getUpgradeSlots() - 1));
-                c.getSession().write(CWvsContext.Enchant.getEnchantResult(item, success, sposition, c));
+                c.getSession().write(CWvsContext.Enchant.getEnchantResult(item, success, sposition));
                 c.getPlayer().forceReAddItem(item, item.getPosition() >= 0 ? MapleInventoryType.EQUIP : MapleInventoryType.EQUIPPED);
                 break;
             }
             case 1: { //星力強化
                 slea.skip(4);
                 short position = slea.readShort();
-                boolean maplePoint = slea.readByte() == 1;
+                byte mode = slea.readByte();
+                boolean maplePoint = mode != 0;
+                boolean safe = mode == 2;
                 boolean mgsuccess = slea.readByte() == 1;
-                boolean safe = false;
                 if (mgsuccess) {
                     slea.skip(4);
                 }
-                int targetstar = slea.readInt();
+                slea.readInt(); // [01 00 00 00]
+                slea.readInt(); // [FF FF FF FF]
                 final Equip item = (Equip) c.getPlayer().getInventory(position < 0 ? MapleInventoryType.EQUIPPED : MapleInventoryType.EQUIP).getItem(position);
                 if (item == null) {
-                    c.getSession().write(CWvsContext.Enchant.getStarForceResult(c.getPlayer(), item, item, StarForceResult.失敗.getValue()));
+                    c.getSession().write(CWvsContext.Enchant.getStarForceResult(item, item, StarForceResult.失敗.getValue()));
                     return;
                 }
-                if (maplePoint) {
-                    c.getSession().write(CWvsContext.Enchant.getStarForceResult(c.getPlayer(), item, item, StarForceResult.失敗.getValue()));
-                    c.getPlayer().dropMessage(1, "暫時無法使用楓點強化。");
+                if (EquipStat.EnhanctBuff.EQUIP_MARK.check(item.getEnhanctBuff())) {
                     return;
                 }
-                final MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
+                int enhance = item.getEnhance();
                 int reqLevel = ii.getReqLevel(item.getItemId());
-                long meso = maplePoint ? safe ? 50 : 9 : getStarForceMeso(reqLevel, item.getEnhance());
-                if (item.getUpgradeSlots() > 0 || item.getEnhance() >= ItemConstants.卷軸.getEnhanceTimes(item.getItemId()) || ii.isCash(item.getItemId()) || maplePoint ? c.getPlayer().getCSPoints(2) < meso : c.getPlayer().getMeso() < meso) {
-                    c.getSession().write(CWvsContext.Enchant.getStarForceResult(c.getPlayer(), item, item, StarForceResult.失敗.getValue()));
+                boolean isSuperior = ii.isSuperiorEquip(item.getItemId());
+                if (!maplePoint) {
+                    safe = false;
+                }
+                long meso = maplePoint ? safe ? 50 : 9 : getStarForceMeso(reqLevel, enhance, isSuperior);
+                if (item.getUpgradeSlots() > 0 || enhance >= ItemConstants.卷軸.getEnhanceTimes(item.getItemId()) || ii.isCash(item.getItemId()) || maplePoint ? c.getPlayer().getCSPoints(2) < meso : c.getPlayer().getMeso() < meso) {
+                    c.getSession().write(CWvsContext.Enchant.getStarForceResult(item, item, StarForceResult.失敗.getValue()));
                     if (c.getPlayer().isShowErr()) {
-                        c.getPlayer().showInfo("星力強化", true, "星力強化檢測 裝備是否有剩餘升級次數：" + (item.getUpgradeSlots() >= 1) + " 裝備星級是否大於可升級的星數：" + (item.getEnhance() >= ItemConstants.卷軸.getEnhanceTimes(item.getItemId())) + " 裝備是否是為點裝：" + ii.isCash(item.getItemId()) + (maplePoint ? " 楓點" : " 楓幣") + "不足：" + (maplePoint ? c.getPlayer().getCSPoints(2) < meso : c.getPlayer().getMeso() < meso));
+                        c.getPlayer().showInfo("星力強化", true, "星力強化檢測 裝備是否有剩餘升級次數：" + (item.getUpgradeSlots() >= 1) + " 裝備星級是否大於可升級的星數：" + (enhance >= ItemConstants.卷軸.getEnhanceTimes(item.getItemId())) + " 裝備是否是為點裝：" + ii.isCash(item.getItemId()) + (maplePoint ? " 楓點" : " 楓幣") + "不足：" + (maplePoint ? c.getPlayer().getCSPoints(2) < meso : c.getPlayer().getMeso() < meso));
                     }
                     return;
                 }
-                int successprop = sfSuccessProp[item.getEnhance()] / 10;
-                int destroyprop = sfDestroyProp[item.getEnhance()] / 10;
-                int fallprop = sfFallProp[item.getEnhance()];
+                final Equip source = (Equip) item.copy();
+                int successprop = isSuperior ? sfSuccessPropSup[enhance] : sfSuccessProp[enhance];
+                int destroyprop = isSuperior ? sfDestroyPropSup[enhance] : sfDestroyProp[enhance];
+                boolean fall = false;
+                int fallprop = 1000 - successprop - destroyprop;
+                if ((isSuperior && enhance > 0) || (enhance >= 5 && enhance % 5 != 0)) {
+                    fall = true;
+                }
                 StarForceResult result;
-                if (Randomizer.isSuccess(successprop - (mgsuccess ? 0 : 10)) || item.getFailCount() >= 2) { //成功
+                if (Randomizer.nextInt(1000) < (successprop - (mgsuccess ? 0 : 100)) || item.getFailCount() >= 2) { //成功
                     result = StarForceResult.成功;
-                } else { //失敗
-                    if (Randomizer.isSuccess(fallprop)) {
-                        result = StarForceResult.降級;
-                    } else if (Randomizer.isSuccess(destroyprop) && !safe) { //損壞概率
-                        //道具損壞
-                        result = StarForceResult.損壞;
-                    } else {
-                        result = StarForceResult.失敗;
-                    }
+                } else if (Randomizer.nextInt(1000) < destroyprop && !safe) { //損壞概率
+                    result = StarForceResult.損壞;
+                } else if (fall) {
+                    result = StarForceResult.降級;
+                } else {
+                    result = StarForceResult.失敗;
                 }
                 if (c.getPlayer().isShowInfo()) {
-                    c.getPlayer().showMessage(30, "星力強化 - 強化道具：" + item + " 當前星級：" + item.getEnhance() + "星 消耗幣種：" + (maplePoint ? "楓點" : "楓幣") + " 消耗量：" + meso + " 成功率：" + (successprop - (mgsuccess ? 0 : 10)) + "% 小遊戲成功率加成：" + (mgsuccess ? 10 : 0) + "% 損壞率：" + destroyprop + "% 降級率：" + fallprop + "% 強化結果：" + result.name());
+                    c.getPlayer().showMessage(30, "星力強化 - 強化道具：" + item + " 當前星級：" + enhance + "星 消耗幣種：" + (maplePoint ? "楓點" : "楓幣") + " 消耗量：" + meso + " 成功機率：" + ((successprop - (mgsuccess ? 0.0 : 100.0)) / 10.0) + "% 小遊戲成功機率加成：" + (mgsuccess ? 10.0 : 0) + "% 損壞機率：" + (destroyprop / 10.0) + "% 失敗(" + (fall ? "下滑" : "維持") + ")機率：" + (fallprop / 10.0) + "% 強化結果：" + result.name());
                 }
-                if (c.getPlayer().isAdmin()) {
+                if (c.getPlayer().isAdmin() && c.getPlayer().isInvincible()) {
                     result = StarForceResult.成功;
-                    c.getPlayer().dropMessage(-6, "伺服器管理員升星成功率提升到100%");
+                    c.getPlayer().dropMessage(-6, "伺服器管理員無敵狀態升星成功率提升到100%");
                 }
                 //道具處理
                 switch (result) {
@@ -165,9 +179,25 @@ public class EquipmentEnchant {
                     case 成功:
                         StarForceEnhanceItem(item, false);
                         item.setFailCount(0);
+                        break;
                     case 損壞:
+                        for (int i = 0 ; i < enhance ; i++) {
+                            int newEnhance = item.getEnhance();
+                            if (newEnhance == 0) {
+                                break;
+                            }
+                            if (ZZMSConfig.星力損毀保持星階 && !(isSuperior && newEnhance > 0) && !(newEnhance >= 5 && newEnhance % 5 != 0)) {
+                                break;
+                            }
+                            StarForceEnhanceItem(item, true);
+                        }
+                        if (c.getPlayer().isShowInfo()) {
+                            c.getPlayer().showMessage(30, "星力強化損毀處理 - 原星級：" + enhance + "損毀后星級：" + item.getEnhance());
+                        }
+                        item.setEnhanctBuff((short) (item.getEnhanctBuff() | EquipStat.EnhanctBuff.EQUIP_MARK.getValue()));
+                        item.setFailCount(0);
+                        break;
                     case 失敗:
-                        item.getFailCount();
                         item.setFailCount(0);
                         break;
                 }
@@ -176,30 +206,57 @@ public class EquipmentEnchant {
                 } else {
                     c.getPlayer().gainMeso(-meso, false, false);
                 }
+                c.getSession().write(CWvsContext.Enchant.getStarForceResult(source, item, result.getValue()));
                 c.getPlayer().forceReAddItem(item, item.getPosition() >= 0 ? MapleInventoryType.EQUIP : MapleInventoryType.EQUIPPED);
-                final Equip source = (Equip) item.copy();
-                c.getSession().write(CWvsContext.Enchant.getStarForceResult(c.getPlayer(), source, item, result.getValue()));
                 break;
             }
-            case 50: { // FIXME 咒文的痕跡 放置道具
+            case 2: { // 星力強化 繼承
+                slea.skip(4);
+                short newPos = slea.readShort();
+                short oldPos = slea.readShort();
+                MapleInventory iv = c.getPlayer().getInventory(MapleInventoryType.EQUIP);
+                Equip nEquip = (Equip) iv.getItem(newPos);
+                Equip equip = (Equip) iv.getItem(oldPos);
+                if (equip == null || nEquip == null || equip.getItemId() != nEquip.getItemId() || !EquipStat.EnhanctBuff.EQUIP_MARK.check(equip.getEnhanctBuff()) || EquipStat.EnhanctBuff.EQUIP_MARK.check(nEquip.getEnhanctBuff())) {
+                    return;
+                }
+                c.getSession().write(CWvsContext.Enchant.getInheritance(nEquip.copy(), nEquip.inheritance(equip)));
+                MapleInventoryManipulator.removeFromSlot(c, MapleInventoryType.EQUIP, oldPos, (short) 1, false);
+                c.getPlayer().forceReAddItem(nEquip, MapleInventoryType.EQUIP);
+                break;
+            }
+            case 0x32: { // 咒文的痕跡 放置道具
                 short position = slea.readShort();
                 slea.skip(2);
                 Equip item = (Equip) c.getPlayer().getInventory(position < 0 ? MapleInventoryType.EQUIPPED : MapleInventoryType.EQUIP).getItem(position);
+                if (item == null || EquipStat.EnhanctBuff.EQUIP_MARK.check(item.getEnhanctBuff())) {
+                    return;
+                }
                 c.getSession().write(CWvsContext.Enchant.getEnchantList(c, item, getEchantScrolls(item), ServerConstants.FEVER_TIME));
                 break;
             }
-            case 52: { //星力強化 放置道具
+            case 0x34: { // 星力強化 放置道具
                 short position = slea.readShort();
                 Equip item = (Equip) c.getPlayer().getInventory(position < 0 ? MapleInventoryType.EQUIPPED : MapleInventoryType.EQUIP).getItem(position);
-                int reqLevel = MapleItemInformationProvider.getInstance().getReqLevel(item.getItemId());
-                long meso = getStarForceMeso(reqLevel, item.getEnhance());
-                int successprop = sfSuccessProp[item.getEnhance()];
-                int destroyprop = sfDestroyProp[item.getEnhance()];
-                Map<EchantEquipStat, Integer> stats = getStarForceStatus(item);
-                c.getSession().write(CWvsContext.Enchant.getStarForcePreview(c, stats, meso, successprop, destroyprop, destroyprop != 0, item.getFailCount() >= 2));
+                if (item == null || EquipStat.EnhanctBuff.EQUIP_MARK.check(item.getEnhanctBuff())) {
+                    return;
+                }
+                int reqLevel = ii.getReqLevel(item.getItemId());
+                int enhance = item.getEnhance();
+                boolean isSuperior = ii.isSuperiorEquip(item.getItemId());
+                long meso = getStarForceMeso(reqLevel, enhance, isSuperior);
+                int successprop = isSuperior ? sfSuccessPropSup[enhance] : sfSuccessProp[enhance];
+                int destroyType = isSuperior ? sfDestroyPropSup[enhance] : sfDestroyProp[enhance];
+                destroyType = (destroyType < 200 && destroyType > 0) ? 1 : (destroyType / 200);
+                boolean fall = false;
+                if ((isSuperior && enhance > 0) || (enhance >= 5 && enhance % 5 != 0)) {
+                    fall = true;
+                }
+                Map<EchantEquipStat, Integer> stats = getStarForceStatus(item, false);
+                c.getSession().write(CWvsContext.Enchant.getStarForcePreview(stats, meso, successprop, destroyType, fall, item.getFailCount() >= 2));
                 break;
             }
-            case 53: { //星力強化成功率加成遊戲
+            case 0x35: { //星力強化成功率加成遊戲
                 c.getSession().write(CWvsContext.Enchant.getStarForceMiniGame());
                 break;
             }
@@ -216,40 +273,40 @@ public class EquipmentEnchant {
         MapleData info = data.getChildByPath("info");
         int reqJob = MapleDataTool.getInt("reqJob", info, 0);
         Map<EchantEquipStat, Integer> stats = new HashMap();
-        if (ItemConstants.類型.武器(eq.getItemId())) {
+        if (ItemConstants.類型.武器(eq.getItemId()) || ItemConstants.類型.雙刀(eq.getItemId())) {
             switch (reqJob) {
                 case 0: {
-                    scrolls.add(EchantScroll.攻擊_力量_100);
-                    scrolls.add(EchantScroll.攻擊_力量_70);
-                    scrolls.add(EchantScroll.攻擊_力量_30);
-                    scrolls.add(EchantScroll.攻擊_力量_15);
+                    scrolls.add(EchantScroll.攻擊力_力量_100);
+                    scrolls.add(EchantScroll.攻擊力_力量_70);
+                    scrolls.add(EchantScroll.攻擊力_力量_30);
+                    scrolls.add(EchantScroll.攻擊力_力量_15);
                     scrolls.add(EchantScroll.魔力_智力_100);
                     scrolls.add(EchantScroll.魔力_智力_70);
                     scrolls.add(EchantScroll.魔力_智力_30);
                     scrolls.add(EchantScroll.魔力_智力_15);
-                    scrolls.add(EchantScroll.攻擊_敏捷_100);
-                    scrolls.add(EchantScroll.攻擊_敏捷_70);
-                    scrolls.add(EchantScroll.攻擊_敏捷_30);
-                    scrolls.add(EchantScroll.攻擊_敏捷_15);
-                    scrolls.add(EchantScroll.攻擊_運氣_100);
-                    scrolls.add(EchantScroll.攻擊_運氣_70);
-                    scrolls.add(EchantScroll.攻擊_運氣_30);
-                    scrolls.add(EchantScroll.攻擊_運氣_15);
-                    scrolls.add(EchantScroll.攻擊_體力_100);
-                    scrolls.add(EchantScroll.攻擊_體力_70);
-                    scrolls.add(EchantScroll.攻擊_體力_30);
-                    scrolls.add(EchantScroll.攻擊_體力_15);
+                    scrolls.add(EchantScroll.攻擊力_敏捷_100);
+                    scrolls.add(EchantScroll.攻擊力_敏捷_70);
+                    scrolls.add(EchantScroll.攻擊力_敏捷_30);
+                    scrolls.add(EchantScroll.攻擊力_敏捷_15);
+                    scrolls.add(EchantScroll.攻擊力_幸運_100);
+                    scrolls.add(EchantScroll.攻擊力_幸運_70);
+                    scrolls.add(EchantScroll.攻擊力_幸運_30);
+                    scrolls.add(EchantScroll.攻擊力_幸運_15);
+                    scrolls.add(EchantScroll.攻擊力_體力_100);
+                    scrolls.add(EchantScroll.攻擊力_體力_70);
+                    scrolls.add(EchantScroll.攻擊力_體力_30);
+                    scrolls.add(EchantScroll.攻擊力_體力_15);
                     break;
                 }
                 case 1: {
-                    scrolls.add(EchantScroll.攻擊_力量_100);
-                    scrolls.add(EchantScroll.攻擊_力量_70);
-                    scrolls.add(EchantScroll.攻擊_力量_30);
-                    scrolls.add(EchantScroll.攻擊_力量_15);
-                    scrolls.add(EchantScroll.攻擊_體力_100);
-                    scrolls.add(EchantScroll.攻擊_體力_70);
-                    scrolls.add(EchantScroll.攻擊_體力_30);
-                    scrolls.add(EchantScroll.攻擊_體力_15);
+                    scrolls.add(EchantScroll.攻擊力_力量_100);
+                    scrolls.add(EchantScroll.攻擊力_力量_70);
+                    scrolls.add(EchantScroll.攻擊力_力量_30);
+                    scrolls.add(EchantScroll.攻擊力_力量_15);
+                    scrolls.add(EchantScroll.攻擊力_體力_100);
+                    scrolls.add(EchantScroll.攻擊力_體力_70);
+                    scrolls.add(EchantScroll.攻擊力_體力_30);
+                    scrolls.add(EchantScroll.攻擊力_體力_15);
                     break;
                 }
                 case 2:
@@ -259,42 +316,42 @@ public class EquipmentEnchant {
                     scrolls.add(EchantScroll.魔力_智力_15);
                     break;
                 case 4:
-                    scrolls.add(EchantScroll.攻擊_敏捷_100);
-                    scrolls.add(EchantScroll.攻擊_敏捷_70);
-                    scrolls.add(EchantScroll.攻擊_敏捷_30);
-                    scrolls.add(EchantScroll.攻擊_敏捷_15);
-                    scrolls.add(EchantScroll.攻擊_體力_100);
-                    scrolls.add(EchantScroll.攻擊_體力_70);
-                    scrolls.add(EchantScroll.攻擊_體力_30);
-                    scrolls.add(EchantScroll.攻擊_體力_15);
+                    scrolls.add(EchantScroll.攻擊力_敏捷_100);
+                    scrolls.add(EchantScroll.攻擊力_敏捷_70);
+                    scrolls.add(EchantScroll.攻擊力_敏捷_30);
+                    scrolls.add(EchantScroll.攻擊力_敏捷_15);
+                    scrolls.add(EchantScroll.攻擊力_體力_100);
+                    scrolls.add(EchantScroll.攻擊力_體力_70);
+                    scrolls.add(EchantScroll.攻擊力_體力_30);
+                    scrolls.add(EchantScroll.攻擊力_體力_15);
                     break;
                 case 8:
-                    scrolls.add(EchantScroll.攻擊_力量_100);
-                    scrolls.add(EchantScroll.攻擊_力量_70);
-                    scrolls.add(EchantScroll.攻擊_力量_30);
-                    scrolls.add(EchantScroll.攻擊_力量_15);
-                    scrolls.add(EchantScroll.攻擊_敏捷_100);
-                    scrolls.add(EchantScroll.攻擊_敏捷_70);
-                    scrolls.add(EchantScroll.攻擊_敏捷_30);
-                    scrolls.add(EchantScroll.攻擊_敏捷_15);
-                    scrolls.add(EchantScroll.攻擊_運氣_100);
-                    scrolls.add(EchantScroll.攻擊_運氣_70);
-                    scrolls.add(EchantScroll.攻擊_運氣_30);
-                    scrolls.add(EchantScroll.攻擊_運氣_15);
+                    scrolls.add(EchantScroll.攻擊力_力量_100);
+                    scrolls.add(EchantScroll.攻擊力_力量_70);
+                    scrolls.add(EchantScroll.攻擊力_力量_30);
+                    scrolls.add(EchantScroll.攻擊力_力量_15);
+                    scrolls.add(EchantScroll.攻擊力_敏捷_100);
+                    scrolls.add(EchantScroll.攻擊力_敏捷_70);
+                    scrolls.add(EchantScroll.攻擊力_敏捷_30);
+                    scrolls.add(EchantScroll.攻擊力_敏捷_15);
+                    scrolls.add(EchantScroll.攻擊力_幸運_100);
+                    scrolls.add(EchantScroll.攻擊力_幸運_70);
+                    scrolls.add(EchantScroll.攻擊力_幸運_30);
+                    scrolls.add(EchantScroll.攻擊力_幸運_15);
                     break;
                 case 16:
-                    scrolls.add(EchantScroll.攻擊_力量_100);
-                    scrolls.add(EchantScroll.攻擊_力量_70);
-                    scrolls.add(EchantScroll.攻擊_力量_30);
-                    scrolls.add(EchantScroll.攻擊_力量_15);
-                    scrolls.add(EchantScroll.攻擊_敏捷_100);
-                    scrolls.add(EchantScroll.攻擊_敏捷_70);
-                    scrolls.add(EchantScroll.攻擊_敏捷_30);
-                    scrolls.add(EchantScroll.攻擊_敏捷_15);
-                    scrolls.add(EchantScroll.攻擊_體力_100);
-                    scrolls.add(EchantScroll.攻擊_體力_70);
-                    scrolls.add(EchantScroll.攻擊_體力_30);
-                    scrolls.add(EchantScroll.攻擊_體力_15);
+                    scrolls.add(EchantScroll.攻擊力_力量_100);
+                    scrolls.add(EchantScroll.攻擊力_力量_70);
+                    scrolls.add(EchantScroll.攻擊力_力量_30);
+                    scrolls.add(EchantScroll.攻擊力_力量_15);
+                    scrolls.add(EchantScroll.攻擊力_敏捷_100);
+                    scrolls.add(EchantScroll.攻擊力_敏捷_70);
+                    scrolls.add(EchantScroll.攻擊力_敏捷_30);
+                    scrolls.add(EchantScroll.攻擊力_敏捷_15);
+                    scrolls.add(EchantScroll.攻擊力_體力_100);
+                    scrolls.add(EchantScroll.攻擊力_體力_70);
+                    scrolls.add(EchantScroll.攻擊力_體力_30);
+                    scrolls.add(EchantScroll.攻擊力_體力_15);
                 case 3:
                 case 5:
                 case 6:
@@ -310,17 +367,17 @@ public class EquipmentEnchant {
         } else if (eq.getItemId() / 10000 == 108) {
             switch (reqJob) {
                 case 0:
-                    scrolls.add(EchantScroll.攻擊_100);
-                    scrolls.add(EchantScroll.攻擊_70);
-                    scrolls.add(EchantScroll.攻擊_30);
+                    scrolls.add(EchantScroll.攻擊力_100);
+                    scrolls.add(EchantScroll.攻擊力_70);
+                    scrolls.add(EchantScroll.攻擊力_30);
                     scrolls.add(EchantScroll.魔力_100);
                     scrolls.add(EchantScroll.魔力_70);
                     scrolls.add(EchantScroll.魔力_30);
                     break;
                 case 1:
-                    scrolls.add(EchantScroll.攻擊_100);
-                    scrolls.add(EchantScroll.攻擊_70);
-                    scrolls.add(EchantScroll.攻擊_30);
+                    scrolls.add(EchantScroll.攻擊力_100);
+                    scrolls.add(EchantScroll.攻擊力_70);
+                    scrolls.add(EchantScroll.攻擊力_30);
                     break;
                 case 2:
                     scrolls.add(EchantScroll.魔力_100);
@@ -328,19 +385,19 @@ public class EquipmentEnchant {
                     scrolls.add(EchantScroll.魔力_30);
                     break;
                 case 4:
-                    scrolls.add(EchantScroll.攻擊_100);
-                    scrolls.add(EchantScroll.攻擊_70);
-                    scrolls.add(EchantScroll.攻擊_30);
+                    scrolls.add(EchantScroll.攻擊力_100);
+                    scrolls.add(EchantScroll.攻擊力_70);
+                    scrolls.add(EchantScroll.攻擊力_30);
                     break;
                 case 8:
-                    scrolls.add(EchantScroll.攻擊_100);
-                    scrolls.add(EchantScroll.攻擊_70);
-                    scrolls.add(EchantScroll.攻擊_30);
+                    scrolls.add(EchantScroll.攻擊力_100);
+                    scrolls.add(EchantScroll.攻擊力_70);
+                    scrolls.add(EchantScroll.攻擊力_30);
                     break;
                 case 16:
-                    scrolls.add(EchantScroll.攻擊_100);
-                    scrolls.add(EchantScroll.攻擊_70);
-                    scrolls.add(EchantScroll.攻擊_30);
+                    scrolls.add(EchantScroll.攻擊力_100);
+                    scrolls.add(EchantScroll.攻擊力_70);
+                    scrolls.add(EchantScroll.攻擊力_30);
                 case 3:
                 case 5:
                 case 6:
@@ -365,9 +422,9 @@ public class EquipmentEnchant {
                     scrolls.add(EchantScroll.敏捷_100);
                     scrolls.add(EchantScroll.敏捷_70);
                     scrolls.add(EchantScroll.敏捷_30);
-                    scrolls.add(EchantScroll.運氣_100);
-                    scrolls.add(EchantScroll.運氣_70);
-                    scrolls.add(EchantScroll.運氣_30);
+                    scrolls.add(EchantScroll.幸運_100);
+                    scrolls.add(EchantScroll.幸運_70);
+                    scrolls.add(EchantScroll.幸運_30);
                     scrolls.add(EchantScroll.體力_100);
                     scrolls.add(EchantScroll.體力_70);
                     scrolls.add(EchantScroll.體力_30);
@@ -403,9 +460,9 @@ public class EquipmentEnchant {
                     scrolls.add(EchantScroll.敏捷_100);
                     scrolls.add(EchantScroll.敏捷_70);
                     scrolls.add(EchantScroll.敏捷_30);
-                    scrolls.add(EchantScroll.運氣_100);
-                    scrolls.add(EchantScroll.運氣_70);
-                    scrolls.add(EchantScroll.運氣_30);
+                    scrolls.add(EchantScroll.幸運_100);
+                    scrolls.add(EchantScroll.幸運_70);
+                    scrolls.add(EchantScroll.幸運_30);
                     break;
                 case 16:
                     scrolls.add(EchantScroll.力量_100);
@@ -433,7 +490,10 @@ public class EquipmentEnchant {
         return scrolls;
     }
 
-    public static long getStarForceMeso(int equiplevel, int enhanced) {
+    public static long getStarForceMeso(int equiplevel, int enhanced, boolean superior) {
+        if (superior) {
+            return getSuperiorStarForceMeso(equiplevel);
+        }
         final long[] sfMeso100lv = {41000, 81000, 121000, 161000, 201000, 241000, 281000, 321000};
         final long[] sfMeso110lv = {54200, 107500, 160700, 214000, 267200, 320400, 373700, 426900, 480200, 533400};
         final long[] sfMeso120lv = {70100, 139200, 208400, 277500, 346600, 415700, 484800, 554000, 623100, 692200, 5602100, 7085400, 8794500, 10742400, 12941800};
@@ -455,46 +515,29 @@ public class EquipmentEnchant {
         }
     }
 
-    public static Map<EchantEquipStat, Integer> getStarForceStatus(Item equip) {
+    public static long getSuperiorStarForceMeso(int equiplevel) {
+        final long[] sfMeso = {55832200, 55832200, 55832200, 55832200, 55832200, 55832200};
+        if (equiplevel >= 0 && equiplevel <= 109) {
+            equiplevel = 0;
+        } else if (equiplevel >= 110 && equiplevel <= 119) {
+            equiplevel = 1;
+        } else if (equiplevel >= 120 && equiplevel <= 129) {
+            equiplevel = 2;
+        } else if (equiplevel >= 130 && equiplevel <= 139) {
+            equiplevel = 3;
+        } else if (equiplevel >= 140 && equiplevel <= 149) {
+            equiplevel = 4;
+        } else {
+            equiplevel = 5;
+        }
+        return sfMeso[equiplevel];
+    }
+
+    public static Map<EchantEquipStat, Integer> getStarForceStatus(Item equip, boolean fall) {
         final Map<EchantEquipStat, Integer> stats = new HashMap<>();
         Equip nEquip = (Equip) equip;
         int enhance = nEquip.getEnhance();
-        if (enhance >= 15) {
-            switch (enhance) {
-                case 15:
-                case 16:
-                case 17:
-                case 18:
-                case 19:
-                    stats.put(EchantEquipStat.WATK, enhance - 6);
-                    stats.put(EchantEquipStat.MATK, enhance - 6);
-                    break;
-                case 20:
-                    stats.put(EchantEquipStat.WATK, 15);
-                    stats.put(EchantEquipStat.MATK, 15);
-                    break;
-                case 21:
-                    stats.put(EchantEquipStat.WATK, 17);
-                    stats.put(EchantEquipStat.MATK, 17);
-                    break;
-                case 22:
-                    stats.put(EchantEquipStat.WATK, 19);
-                    stats.put(EchantEquipStat.MATK, 19);
-                    break;
-                case 23:
-                    stats.put(EchantEquipStat.WATK, 21);
-                    stats.put(EchantEquipStat.MATK, 21);
-                    break;
-                case 24:
-                    stats.put(EchantEquipStat.WATK, 23);
-                    stats.put(EchantEquipStat.MATK, 23);
-                    break;
-            }
-            stats.put(EchantEquipStat.STR, 11);
-            stats.put(EchantEquipStat.DEX, 11);
-            stats.put(EchantEquipStat.INT, 11);
-            stats.put(EchantEquipStat.LUK, 11);
-        } else if (MapleItemInformationProvider.getInstance().isSuperiorEquip(nEquip.getItemId())) {
+        if (MapleItemInformationProvider.getInstance().isSuperiorEquip(nEquip.getItemId())) {
             switch (enhance) {
                 case 0:
                     if (nEquip.getStr() > 0) {
@@ -579,104 +622,156 @@ public class EquipmentEnchant {
                     }
                     break;
                 case 10:
-                    if (nEquip.getWatk() > 0) {
-                        stats.put(EchantEquipStat.WATK, 15);
-                    }
-                    if (nEquip.getMatk() > 0) {
-                        stats.put(EchantEquipStat.MATK, 15);
-                    }
-                    break;
                 case 11:
-                    if (nEquip.getWatk() > 0) {
-                        stats.put(EchantEquipStat.WATK, 17);
-                    }
-                    if (nEquip.getMatk() > 0) {
-                        stats.put(EchantEquipStat.MATK, 17);
-                    }
-                    break;
                 case 12:
-                    if (nEquip.getWatk() > 0) {
-                        stats.put(EchantEquipStat.WATK, 19);
-                    }
-                    if (nEquip.getMatk() > 0) {
-                        stats.put(EchantEquipStat.MATK, 19);
-                    }
-                    break;
                 case 13:
-                    if (nEquip.getWatk() > 0) {
-                        stats.put(EchantEquipStat.WATK, 21);
-                    }
-                    if (nEquip.getMatk() > 0) {
-                        stats.put(EchantEquipStat.MATK, 21);
-                    }
-                    break;
                 case 14:
                     if (nEquip.getWatk() > 0) {
-                        stats.put(EchantEquipStat.WATK, 23);
+                        stats.put(EchantEquipStat.WATK, 15 + 2 * (enhance - 10));
                     }
                     if (nEquip.getMatk() > 0) {
-                        stats.put(EchantEquipStat.MATK, 23);
+                        stats.put(EchantEquipStat.MATK, 15 + 2 * (enhance - 10));
                     }
                     break;
             }
-        } else {
-            int value;
+            return stats;
+        }
+        //普通強化
+        int max = 0;
+        switch(enhance) {
+            case 0:
+            case 1:
+            case 2:
+                max = 5;
+                break;
+            case 3:
+            case 4:
+                max = 10;
+                break;
+            case 5:
+            case 6:
+            case 7:
+                max = 15;
+                break;
+            case 8:
+                max = 20;
+                break;
+            case 9:
+            case 10:
+            case 11:
+            case 12:
+            case 13:
+                max = 25;
+                break;
+            case 14:
+                max = 30;
+                break;
+        }
+        if (ItemConstants.類型.武器(nEquip.getItemId()) || ItemConstants.類型.雙刀(nEquip.getItemId())) {
+            int allStats;
             if (enhance >= 0 && enhance < 5) {
-                value = 2;
+                allStats = 2;
+            } else if (enhance >= 5 && enhance < 10) {
+                allStats = 2;
+            } else if (enhance >= 10 && enhance < 15) {
+                allStats = 3;
+            } else if (enhance >= 15 && enhance < 20) {
+                allStats = 3;
             } else {
-                value = 3;
+                allStats = 11;
             }
             if (nEquip.getStr() > 0) {
-                stats.put(EchantEquipStat.STR, value);
+                stats.put(EchantEquipStat.STR, allStats);
             }
             if (nEquip.getDex() > 0) {
-                stats.put(EchantEquipStat.DEX, value);
+                stats.put(EchantEquipStat.DEX, allStats);
             }
             if (nEquip.getInt() > 0) {
-                stats.put(EchantEquipStat.INT, value);
+                stats.put(EchantEquipStat.INT, allStats);
             }
             if (nEquip.getLuk() > 0) {
-                stats.put(EchantEquipStat.LUK, value);
+                stats.put(EchantEquipStat.LUK, allStats);
             }
-            if (!ItemConstants.類型.武器(nEquip.getItemId())) {
-                return stats;
-            }
-
-            value = nEquip.getWatk() > nEquip.getMatk() ? nEquip.getWatk() : nEquip.getMatk();
-            if (value > 0 && value < 50) {
-                value = 1;
-            } else if (value >= 50 && value < 100) {
-                value = 2;
-            } else if (value >= 100 && value < 150) {
-                value = 3;
-            } else if (value >= 150 && value < 200) {
-                value = 4;
-            } else if (value >= 200 && value < 250) {
-                value = 5;
-            } else if (value >= 250 && value < 300) {
-                value = 6;
-            } else if (value >= 300 && value < 350) {
-                value = 7;
-            } else if (value >= 350 && value < 400) {
-                value = 8;
-            } else if (value >= 400) {
-                value = 9;
+            stats.put(EchantEquipStat.MHP, max);
+            stats.put(EchantEquipStat.MMP, max);
+            int watk;
+            int matk;
+            if (fall) {
+                watk = (int) Math.ceil((nEquip.getWatk() - 1) / 51.0D);
+                matk = (int) Math.ceil((nEquip.getMatk() - 1) / 51.0D);
             } else {
-                value = 0;
+                watk = (int) Math.ceil((nEquip.getWatk() + 1) / 50.0D);
+                matk = (int) Math.ceil((nEquip.getMatk() + 1) / 50.0D);
             }
             if (nEquip.getWatk() > 0) {
-                stats.put(EchantEquipStat.WATK, value);
+                stats.put(EchantEquipStat.WATK, watk);
             }
             if (nEquip.getMatk() > 0) {
-                stats.put(EchantEquipStat.MATK, value);
+                stats.put(EchantEquipStat.MATK, matk);
+            }
+        } else {
+            int allStats;
+            if (enhance >= 0 && enhance < 5) {
+                allStats = 2;
+            } else if (enhance >= 5 && enhance < 10) {
+                allStats = 2;
+            } else if (enhance >= 10 && enhance < 15) {
+                allStats = 3;
+            } else if (enhance >= 15 && enhance < 20) {
+                allStats = 3;
+            } else {
+                allStats = 11;
+            }
+            if (nEquip.getStr() > 0) {
+                stats.put(EchantEquipStat.STR, allStats);
+            }
+            if (nEquip.getDex() > 0) {
+                stats.put(EchantEquipStat.DEX, allStats);
+            }
+            if (nEquip.getInt() > 0) {
+                stats.put(EchantEquipStat.INT, allStats);
+            }
+            if (nEquip.getLuk() > 0) {
+                stats.put(EchantEquipStat.LUK, allStats);
+            }
+
+            if (!ItemConstants.類型.臉飾(nEquip.getItemId()) && !ItemConstants.類型.眼飾(nEquip.getItemId()) && !ItemConstants.類型.耳環(nEquip.getItemId())) {
+                stats.put(EchantEquipStat.MHP, max);
+            }
+
+            if (enhance >= 15) {
+                int value = Math.max((nEquip.getReqLevel() / 10) - 6, 0);
+                stats.put(EchantEquipStat.WATK, value + Math.max((enhance - 15), 1));
+                stats.put(EchantEquipStat.MATK, value + Math.max((enhance - 15), 1));
             }
         }
+        if (fall) {
+            stats.put(EchantEquipStat.WDEF, (int) Math.ceil(nEquip.getWdef() / 21.0D));
+            stats.put(EchantEquipStat.MDEF, (int) Math.ceil(nEquip.getMdef() / 21.0D));
+        } else {
+            stats.put(EchantEquipStat.WDEF, (int) Math.ceil(nEquip.getWdef() / 20.0D));
+            stats.put(EchantEquipStat.MDEF, (int) Math.ceil(nEquip.getMdef() / 20.0D));
+        }
+        int accavoid = 1;
+        switch(enhance) {
+            case 0:
+            case 1:
+            case 3:
+            case 5:
+                accavoid = 0;
+                break;
+        }
+        stats.put(EchantEquipStat.ACC, accavoid);
+        stats.put(EchantEquipStat.AVOID, accavoid);
         return stats;
     }
 
     public static void StarForceEnhanceItem(Item equip, boolean fall) {
-        Map<EchantEquipStat, Integer> stats = getStarForceStatus(equip);
         Equip nEquip = (Equip) equip;
+        if (fall) {
+            nEquip.setEnhance((byte) (Math.max(0, nEquip.getEnhance() - 1)));
+        }
+        Map<EchantEquipStat, Integer> stats = getStarForceStatus(nEquip, fall);
         if (stats.containsKey(EchantEquipStat.WATK)) {
             nEquip.setWatk((short) (nEquip.getWatk() + (fall ? -stats.get(EchantEquipStat.WATK) : stats.get(EchantEquipStat.WATK))));
         }
@@ -719,9 +814,7 @@ public class EquipmentEnchant {
         if (stats.containsKey(EchantEquipStat.SPEED)) {
             nEquip.setSpeed((short) (nEquip.getSpeed() + (fall ? -stats.get(EchantEquipStat.SPEED) : stats.get(EchantEquipStat.SPEED))));
         }
-        if (fall) {
-            nEquip.setEnhance((byte) (Math.max(0, nEquip.getEnhance() - 1)));
-        } else {
+        if (!fall) {
             nEquip.setEnhance((byte) (nEquip.getEnhance() + 1));
         }
         nEquip.setStarForce((byte) 17);

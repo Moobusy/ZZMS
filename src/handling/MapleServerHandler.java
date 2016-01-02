@@ -190,7 +190,8 @@ public class MapleServerHandler extends IoHandlerAdapter {
             try {
                 client.disconnect(true, channel == MapleServerHandler.CASH_SHOP_SERVER);
             } finally {
-                World.Client.removeClient(client);
+                boolean finsh = World.Client.removeClient(client);
+                System.out.println("移除客戶端 - " + finsh);
                 session.close(true);
                 session.removeAttribute(MapleClient.CLIENT_KEY);
                 session.removeAttribute(MaplePacketDecoder.DECODER_STATE_KEY);
@@ -226,9 +227,6 @@ public class MapleServerHandler extends IoHandlerAdapter {
         final short header_num = slea.readShort();
         for (final RecvPacketOpcode recv : RecvPacketOpcode.values()) {
             if (recv.getValue() == header_num) {
-                if (recv.NeedsChecking() && !c.isLoggedIn()) {
-                    return;
-                }
                 try {
                     if (c.getPlayer() != null && c.isMonitored()) {
                         try (FileWriter fw = new FileWriter(new File(FileoutputUtil.Monitor_Dir + c.getPlayer().getName() + "_log.txt"), true)) {
@@ -237,16 +235,13 @@ public class MapleServerHandler extends IoHandlerAdapter {
                         }
                     }
                     handlePacket(recv, slea, c);
-                } catch (NegativeArraySizeException | ArrayIndexOutOfBoundsException e) {
-                    if (ServerConstants.USE_LOCALHOST) {
-                        FileoutputUtil.outputFileError(FileoutputUtil.PacketEx_Log, e);
-                        FileoutputUtil.log(FileoutputUtil.PacketEx_Log, "Packet: " + header_num + "\r\n" + slea.toString(true));
-                    }
                 } catch (Exception e) {
+                    if (c.getPlayer() != null && c.getPlayer().isShowErr()) {
+                        c.getPlayer().showInfo("數據包異常", true, "包頭:" + recv.name() + "(0x" + Integer.toHexString(header_num).toUpperCase() + ")");
+                    }
                     FileoutputUtil.outputFileError(FileoutputUtil.PacketEx_Log, e);
                     FileoutputUtil.log(FileoutputUtil.PacketEx_Log, "Packet: " + header_num + "\r\n" + slea.toString(true));
                 }
-
                 return;
             }
         }
@@ -806,12 +801,8 @@ public class MapleServerHandler extends IoHandlerAdapter {
                 slea.skip(4);
                 c.getSession().write(CSPacket.GoldenHammer((byte) 2, slea.readInt()));
                 break;
-            case USE_PLATINUM_HAMMER:
-                InventoryHandler.UsePlatinumHammer(slea, c);
-                break;
             case PLATINUM_HAMMER:
-                slea.skip(4);
-                c.getSession().write(CSPacket.PlatinumHammer((byte) 2, slea.readInt()));
+                InventoryHandler.UsePlatinumHammer(slea, c);
                 break;
             case USE_NEBULITE_FUSION:
                 InventoryHandler.UseNebuliteFusion(slea, c);
@@ -1080,7 +1071,7 @@ public class MapleServerHandler extends IoHandlerAdapter {
                 break;
             case PET_COMMAND:
                 MaplePet pet;
-                pet = c.getPlayer().getPet(c.getPlayer().getPetIndex(slea.readInt()));
+                pet = c.getPlayer().getSummonedPet(c.getPlayer().getPetIndex(slea.readInt()));
                 slea.readByte(); //always 0?
                 if (pet == null) {
                     return;
@@ -1089,6 +1080,9 @@ public class MapleServerHandler extends IoHandlerAdapter {
                 break;
             case PET_FOOD:
                 PetHandler.PetFood(slea, c, c.getPlayer());
+                break;
+            case PET_AUTO_FOOD:
+                PetHandler.PetAutoFood(slea, c, c.getPlayer());
                 break;
             case PET_LOOT:
                 //System.out.println("PET_LOOT ACCESSED");
@@ -1163,33 +1157,6 @@ public class MapleServerHandler extends IoHandlerAdapter {
             case RING_ACTION:
                 PlayersHandler.RingAction(slea, c);
                 break;
-            case REQUEST_FAMILY:
-                FamilyHandler.RequestFamily(slea, c);
-                break;
-            case OPEN_FAMILY:
-                FamilyHandler.OpenFamily(slea, c);
-                break;
-            case FAMILY_OPERATION:
-                FamilyHandler.FamilyOperation(slea, c);
-                break;
-            case DELETE_JUNIOR:
-                FamilyHandler.DeleteJunior(slea, c);
-                break;
-            case DELETE_SENIOR:
-                FamilyHandler.DeleteSenior(slea, c);
-                break;
-            case USE_FAMILY:
-                FamilyHandler.UseFamily(slea, c);
-                break;
-            case FAMILY_PRECEPT:
-                FamilyHandler.FamilyPrecept(slea, c);
-                break;
-            case FAMILY_SUMMON:
-                FamilyHandler.FamilySummon(slea, c);
-                break;
-            case ACCEPT_FAMILY:
-                FamilyHandler.AcceptFamily(slea, c);
-                break;
             case SOLOMON:
                 PlayersHandler.Solomon(slea, c);
                 break;
@@ -1215,6 +1182,7 @@ public class MapleServerHandler extends IoHandlerAdapter {
                 PlayersHandler.reviveAzwan(slea, c);
                 break;
             case PLAYER_UPDATE:
+                PlayerHandler.PlayerUpdate(c.getPlayer());
                 break;
             case INNER_CIRCULATOR:
                 InventoryHandler.useInnerCirculator(slea, c);
@@ -1264,6 +1232,9 @@ public class MapleServerHandler extends IoHandlerAdapter {
             case RESET_HYPER:
                 StatsHandling.ResetHyper(slea, c, c.getPlayer());
                 break;
+            case MONSTER_BAN:
+                PlayerHandler.MonsterBan(slea, c.getPlayer());
+                break;
             case DF_COMBO:
                 PlayerHandler.absorbingDF(slea, c);
                 break;
@@ -1279,8 +1250,8 @@ public class MapleServerHandler extends IoHandlerAdapter {
             case OS_INFORMATION:
                 System.out.println(c.getSessionIPAddress());
                 break;
-//            case BUFF_RESPONSE://wat does it do?
-//                break;
+            case BUFF_RESPONSE://wat does it do?
+                break;
             case BUTTON_PRESSED:
                 break;
             case CASSANDRAS_COLLECTION:
@@ -1340,6 +1311,12 @@ public class MapleServerHandler extends IoHandlerAdapter {
                 }
                 final MapleMap mapz = ChannelServer.getInstance(c.getChannel()).getMapFactory().getMap(select);
                 c.getPlayer().changeMap(mapz, mapz.getPortal(0));
+                break;
+            case EFFECT_SWITCH:
+                PlayerHandler.EffectSwitch(slea, c);
+                break;
+            case PINKBEAN_YOYO_REQUEST:
+                PlayerHandler.UpdatePinkbeenYoyo(c);
                 break;
             default:
                 System.err.println("[發現未處理數據包] Recv [" + header.toString() + "]");

@@ -181,6 +181,12 @@ public enum MapleJob {
     幻獸師3轉(11211),
     幻獸師4轉(11212),
     皮卡啾(13000),
+    皮卡啾1轉(13100),
+    凱內西斯(14000),
+    凱內西斯1轉(14200),
+    凱內西斯2轉(14210),
+    凱內西斯3轉(14211),
+    凱內西斯4轉(14212),
     未知(999999),
     ;
     private final int jobid;
@@ -403,24 +409,32 @@ public enum MapleJob {
         return job / 100 == 112 || job == 11000;
     }
 
+    public static boolean is皮卡啾(final int job) {
+        return job / 100 == 131 || job == 13000;
+    }
+
+    public static boolean is凱內西斯(final int job) {
+        return job / 100 == 142 || job == 14000;
+    }
+
     public static boolean is劍士(final int job) {
-        return getTrueJobGrade(job) == 1;
+        return getJobBranch(job) == 1;
     }
 
     public static boolean is法師(final int job) {
-        return getTrueJobGrade(job) == 2;
+        return getJobBranch(job) == 2;
     }
 
     public static boolean is弓箭手(final int job) {
-        return getTrueJobGrade(job) == 3;
+        return getJobBranch(job) == 3;
     }
 
     public static boolean is盜賊(final int job) {
-        return getTrueJobGrade(job) == 4 || getTrueJobGrade(job) == 6;
+        return getJobBranch(job) == 4 || getJobBranch(job) == 6;
     }
 
     public static boolean is海盜(final int job) {
-        return getTrueJobGrade(job) == 5 || getTrueJobGrade(job) == 6;
+        return getJobBranch(job) == 5 || getJobBranch(job) == 6;
     }
 
     public static short getBeginner(final short job) {
@@ -486,15 +500,77 @@ public enum MapleJob {
             case 110:
             case 112:
                 return (short) 幻獸師.getId();
+            case 130:
+            case 131:
+                return (short) 皮卡啾.getId();
+            case 140:
+            case 142:
+                return (short) 凱內西斯.getId();
         }
         return (short) 初心者.getId();
     }
 
-    public static boolean isBeginner(final int job) {
-        return getNumber(job) == 0;
+    public static boolean isNotMpJob(int job) {
+        return is惡魔(job) || is天使破壞者(job) || is神之子(job) || is陰陽師(job) || is凱內西斯(job);
     }
 
-    public static int getNumber(int jobz) {
+    public static boolean isBeginner(final int job) {
+        return getJobGrade(job) == 0;
+    }
+
+    public static boolean isSameJob(int job, int job2) {
+        int jobNum = getJobGrade(job);
+        int job2Num = getJobGrade(job2);
+        // 對初心者判斷
+        if (jobNum == 0 || job2Num == 0) {
+            return getBeginner((short) job) == getBeginner((short) job2);
+        }
+
+        // 初心者過濾掉后, 對職業群進行判斷
+        if (getJobGroup(job) != getJobGroup(job2)) {
+            return false;
+        }
+
+        // 代碼特殊的單獨判斷
+        if (MapleJob.is管理員(job) || MapleJob.is管理員(job)) {
+            return MapleJob.is管理員(job2) && MapleJob.is管理員(job2);
+        } else if (MapleJob.is重砲指揮官(job) || MapleJob.is重砲指揮官(job)) {
+            return MapleJob.is重砲指揮官(job2) && MapleJob.is重砲指揮官(job2);
+        } else if (MapleJob.is蒼龍俠客(job) || MapleJob.is蒼龍俠客(job)) {
+            return MapleJob.is蒼龍俠客(job2) && MapleJob.is蒼龍俠客(job2);
+        } else if (MapleJob.is惡魔復仇者(job) || MapleJob.is惡魔復仇者(job)) {
+            return MapleJob.is惡魔復仇者(job2) && MapleJob.is惡魔復仇者(job2);
+        }
+
+        // 對一轉分支判斷(如 劍士 跟 黑騎)
+        if (jobNum == 1 || job2Num == 1) {
+            return job / 100 == job2 / 100;
+        }
+
+        return job / 10 == job2 / 10;
+    }
+
+    public static int getJobGroup(int job) {
+        return job / 1000;
+    }
+
+    public static int getJobBranch(int job) {
+        if (job / 100 == 27) {
+            return 2;
+        } else {
+            return job % 1000 / 100;
+        }
+    }
+
+    public static int getJobBranch2nd(int job) {
+        if (job / 100 == 27) {
+            return 2;
+        } else {
+            return job % 1000 / 100;
+        }
+    }
+
+    public static int getJobGrade(int jobz) {
         int job = (jobz % 1000);
         if (job / 10 == 0) {
             return 0; //beginner
@@ -502,16 +578,6 @@ public enum MapleJob {
             return 1;
         } else {
             return job % 10 + 2;
-        }
-    }
-
-    public static int getTrueJobGrade(int job) {
-        if (job / 100 == 27) {
-            return 2;
-        } else if (job / 100 == 36) {
-            return 6;
-        } else {
-            return job % 1000 / 100;
         }
     }
 }

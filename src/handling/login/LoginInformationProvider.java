@@ -14,47 +14,77 @@ import tools.Triple;
 
 public class LoginInformationProvider {
 
-    public enum JobType {
+    public static enum JobInfoFlag {
 
-        終極冒險家(-1, MapleJob.初心者.getId(), 100000000, false, false, false, false, true, false, false, false, false),
-        末日反抗軍(0, MapleJob.市民.getId(), 931000000, false, false, false, false, false, false, false, false, false),
-        冒險家(1, MapleJob.初心者.getId(), 4000000, false, false, false, false, false, false, false, false, false),
-        皇家騎士團(2, MapleJob.貴族.getId(), 130030000, false, false, false, false, false, true, false, false, false),
-        狂狼勇士(3, MapleJob.傳說.getId(), 914000000, false, false, false, false, true, false, false, false, false),
-        龍魔導士(4, MapleJob.龍魔導士.getId(), 900010000, false, false, false, false, true, false, false, false, false),//evan starter map - need to test tutorial
-        精靈遊俠(5, MapleJob.精靈遊俠.getId(), 910150000, false, false, false, false, false, false, false, false, false),//101050000 - 910150000
-        惡魔(6, MapleJob.惡魔殺手.getId(), 931050310, false, false, true, false, false, false, false, false, false),
-        幻影俠盜(7, MapleJob.幻影俠盜.getId(), 915000000, false, false, false, false, false, true, false, false, false),
-        影武者(8, MapleJob.初心者.getId(), 103050900, false, false, false, false, false, false, false, false, false),
-        米哈逸(9, MapleJob.米哈逸.getId(), 913070000, false, false, false, false, true, false, false, false, false),
-        夜光(10, MapleJob.夜光.getId(), 101000000, false, false, false, false, false, true, false, false, false),//Ellinia atm TODO tutorial
-        凱撒(11, MapleJob.凱撒.getId(), 400000000, false, false, false, false, false, false, false, false, false),
-        天使破壞者(12, MapleJob.天使破壞者.getId(), 940011000, false, false, false, false, false, false, false, false, false),//400000000 - 940011000 - town now TODO tutorial
-        重砲指揮官(13, MapleJob.初心者.getId(), 0, false, false, false, false, false, false, false, false, false),
-        傑諾(14, MapleJob.傑諾.getId(), 931050920, false, false, true, false, false, false, false, false, false),
-        神之子(15, MapleJob.神之子.getId(), 100000000, false, false, false, false, false, true, false, false, false),//321000000 = zero starter map
-        隱月(16, MapleJob.隱月.getId(), 910000000, false, false, false, false, true, true, false, false, false),
-        皮卡啾(17, MapleJob.皮卡啾.getId(), 100000000, false, false, false, false, false, false, false, false, false),//End map for tutorial
-        蒼龍俠客(17, MapleJob.初心者.getId(), 552000050, false, false, false, false, true, false, false, false, false),//End map for tutorial
-        劍豪(18, MapleJob.劍豪.getId(), 807100010, false, false, false, true, false, false, false, false, true),//half stater map TODO real tutorial
-        陰陽師(19, MapleJob.陰陽師.getId(), 807100110, false, false, false, true, false, false, false, false, true),
-        幻獸師(20, MapleJob.幻獸師.getId(), 866135000, false, false, true, false, false, false, true, true, false);//custom tutorial as original tut is borinq
+        臉型(0x1),
+        髮型(0x2),
+        臉飾(0x4),
+        耳朵(0x8),
+        尾巴(0x10),
+        帽子(0x20),
+        衣服(0x40),
+        褲裙(0x80),
+        披風(0x100),
+        鞋子(0x200),
+        手套(0x400),
+        武器(0x800),
+        副手(0x1000),
+        ;
+        private final int value;
+
+        private JobInfoFlag(int value) {
+            this.value = value;
+        }
+
+        public int getVelue() {
+            return value;
+        }
+
+        public boolean check(int x) {
+            return (value & x) != 0;
+        }
+    }
+
+    public static enum JobType {
+
+        終極冒險家(-1, MapleJob.初心者.getId(), 100000000, JobInfoFlag.褲裙.getVelue()),
+        末日反抗軍(0, MapleJob.市民.getId(), 931000000),
+        冒險家(1, MapleJob.初心者.getId(), 4000000),
+        皇家騎士團(2, MapleJob.貴族.getId(), 130030000, JobInfoFlag.披風.getVelue()),
+        狂狼勇士(3, MapleJob.傳說.getId(), 914000000, JobInfoFlag.褲裙.getVelue()),
+        龍魔導士(4, MapleJob.龍魔導士.getId(), 900010000, JobInfoFlag.褲裙.getVelue()),
+        精靈遊俠(5, MapleJob.精靈遊俠.getId(), 910150000),
+        惡魔(6, MapleJob.惡魔殺手.getId(), 931050310, JobInfoFlag.臉飾.getVelue() | JobInfoFlag.副手.getVelue()),
+        幻影俠盜(7, MapleJob.幻影俠盜.getId(), 915000000, JobInfoFlag.披風.getVelue()),
+        影武者(8, MapleJob.初心者.getId(), 103050900),
+        米哈逸(9, MapleJob.米哈逸.getId(), 913070000, JobInfoFlag.褲裙.getVelue()),//TODO 出生劇情修正
+        夜光(10, MapleJob.夜光.getId(), 101000000, JobInfoFlag.披風.getVelue()),//TODO 出生劇情Ellinia atm
+        凱撒(11, MapleJob.凱撒.getId(), 400000000),//TODO 出生劇情
+        天使破壞者(12, MapleJob.天使破壞者.getId(), 940011000),//TODO 出生劇情400000000 - 940011000 - town now
+        重砲指揮官(13, MapleJob.初心者.getId(), 0),//TODO 出生劇情
+        傑諾(14, MapleJob.傑諾.getId(), 931050920, JobInfoFlag.臉飾.getVelue()),//TODO 出生劇情
+        神之子(15, MapleJob.神之子.getId(), 100000000, JobInfoFlag.披風.getVelue()),//TODO 出生劇情321000000 = zero starter map
+        隱月(16, MapleJob.隱月.getId(), 910000000, JobInfoFlag.褲裙.getVelue() | JobInfoFlag.披風.getVelue()),//TODO 出生劇情
+        皮卡啾(17, MapleJob.皮卡啾1轉.getId(), 927030090),
+//        凱內西斯(18, MapleJob.凱內西斯.getId(), 100000000),
+        蒼龍俠客(18, MapleJob.初心者.getId(), 552000050, JobInfoFlag.褲裙.getVelue()),//TODO 出生劇情End map for tutorial
+        劍豪(19, MapleJob.劍豪.getId(), 807100010, JobInfoFlag.帽子.getVelue() | JobInfoFlag.手套.getVelue()),
+        陰陽師(20, MapleJob.陰陽師.getId(), 807100110, JobInfoFlag.帽子.getVelue() | JobInfoFlag.手套.getVelue()),
+        幻獸師(21, MapleJob.幻獸師.getId(), 866100000, JobInfoFlag.臉飾.getVelue() | JobInfoFlag.耳朵.getVelue() | JobInfoFlag.尾巴.getVelue());//TODO 出生劇情
         public int type, id, map;
-        public boolean hairColor, skinColor, faceMark, hat, bottom, cape, ears, tail, glove;
+        public int flag = JobInfoFlag.臉型.getVelue() | JobInfoFlag.髮型.getVelue() | JobInfoFlag.衣服.getVelue() | JobInfoFlag.鞋子.getVelue() | JobInfoFlag.武器.getVelue();
 
-        private JobType(int type, int id, int map, boolean hairColor, boolean skinColor, boolean faceMark, boolean hat, boolean bottom, boolean cape, boolean ears, boolean tail, boolean glove) {
+        private JobType(int type, int id, int map) {
             this.type = type;
             this.id = id;
             this.map = map;
-            this.hairColor = hairColor;
-            this.skinColor = skinColor;
-            this.faceMark = faceMark;
-            this.hat = hat;
-            this.bottom = bottom;
-            this.cape = cape;
-            this.ears = ears;
-            this.tail = tail;
-            this.glove = glove;
+        }
+
+        private JobType(int type, int id, int map, int flag) {
+            this.type = type;
+            this.id = id;
+            this.map = map;
+            this.flag |= flag;
         }
         
         public static JobType getByType(int g) {
@@ -86,6 +116,7 @@ public class LoginInformationProvider {
     }
     private final static LoginInformationProvider instance = new LoginInformationProvider();
     protected final List<String> ForbiddenName = new ArrayList<>();
+    protected final Map<String, String> Curse = new HashMap();
     //gender, val, job
     protected final Map<Triple<Integer, Integer, Integer>, List<Integer>> makeCharInfo = new HashMap<>();
     //0 = eyes 1 = hair 2 = haircolor 3 = skin 4 = top 5 = bottom 6 = shoes 7 = weapon
@@ -102,61 +133,61 @@ public class LoginInformationProvider {
         }
         nameData = prov.getData("Curse.img");
         for (final MapleData data : nameData.getChildren()) {
-            ForbiddenName.add(MapleDataTool.getString(data).split(",")[0]);
+            String[] curse = MapleDataTool.getString(data).split(",");
+            Curse.put(curse[0], curse[1]);
+            ForbiddenName.add(curse[0]);
         }
         final MapleData infoData = prov.getData("MakeCharInfo.img");
-        final MapleData data = infoData.getChildByPath("Info");
         for (MapleData dat : infoData) {
-            try {
-                final int type;
-                if (dat.getName().equals("000_1")) {
-                    type = JobType.影武者.type;
-                } else {
-                    type = JobType.getById(Integer.parseInt(dat.getName())).type;
+            if (!dat.getName().matches("^\\d+$") && !dat.getName().equals("000_1")) {
+                continue;
+            }
+            //System.out.println("讀取創建道具認證訊息:" + dat.getName());
+            final int type;
+            if (dat.getName().equals("000_1")) {
+                type = JobType.影武者.type;
+            } else {
+                JobType jobType = JobType.getById(Integer.parseInt(dat.getName()));
+                int job = Integer.parseInt(dat.getName());
+                if (jobType == null) {
+                    System.err.println("讀取創建職業道具訊息錯誤, 職業不存在" + MapleJob.getById(job).name() + "(" + job +")");
+                    continue;
                 }
-                for (MapleData d : dat) {
-                    int val;
-                    if (d.getName().contains("female")) {
-                        val = 1;
-                    } else if (d.getName().contains("male")) {
-                        val = 0;
-                    } else {
-                        continue;
+                type = JobType.getById(job).type;
+            }
+            for (MapleData d : dat) {
+                int gender;
+                if (d.getName().startsWith("female")) {
+                    gender = 1;
+                } else if (d.getName().startsWith("male")) {
+                    gender = 0;
+                } else {
+                    continue;
+                }
+
+                for (MapleData da : d) {
+                    Triple<Integer, Integer, Integer> key = new Triple<>(gender, Integer.parseInt(da.getName()), type);
+                    List<Integer> our = makeCharInfo.get(key);
+                    if (our == null) {
+                        our = new ArrayList<>();
+                        makeCharInfo.put(key, our);
                     }
-                    for (MapleData da : d) {
-                        int index;
-                        Triple<Integer, Integer, Integer> key;
-                        index = Integer.parseInt(da.getName());
-                        key = new Triple<>(val, index, type);
-                        List<Integer> our = makeCharInfo.get(key);
-                        if (our == null) {
-                            our = new ArrayList<>();
-                            makeCharInfo.put(key, our);
-                        }
-                        for (MapleData dd : da) {
-                            if (dd.getName().equalsIgnoreCase("color")) {
-                                for (MapleData dda : dd) {
-                                    for (MapleData ddd : dda) {
-                                        our.add(MapleDataTool.getInt(ddd, -1));
-                                    }
-                                }
-                            } else {
-                                try {
-                                    our.add(MapleDataTool.getInt(dd, -1));
-                                } catch (Exception ex) { //probably like color
-                                    for (MapleData dda : dd) {
-                                        for (MapleData ddd : dda) {
-                                            our.add(MapleDataTool.getInt(ddd, -1));
-                                        }
-                                    }
+                    for (MapleData dd : da) {
+                        if (dd.getName().equalsIgnoreCase("color")) {
+                            for (MapleData dda : dd) {
+                                for (MapleData ddd : dda) {
+                                    our.add(MapleDataTool.getInt(ddd, -1));
                                 }
                             }
+                        } else if (!dd.getName().equalsIgnoreCase("name")) {
+                            our.add(MapleDataTool.getInt(dd, -1));
                         }
                     }
                 }
-            } catch (NumberFormatException | NullPointerException e) {
             }
         }
+
+
         final MapleData uA = infoData.getChildByPath("UltimateAdventurer");
         for (MapleData dat : uA) {
             final Triple<Integer, Integer, Integer> key = new Triple<>(-1, Integer.parseInt(dat.getName()), JobType.終極冒險家.type);
@@ -182,6 +213,13 @@ public class LoginInformationProvider {
             }
         }
         return false;
+    }
+
+    public String getCurseMsg(String in) {
+        for (Map.Entry<String, String> entry : Curse.entrySet()) {
+            in = in.replaceAll("(?i)" + entry.getKey(), entry.getValue());
+        }
+        return in;
     }
 
     public final boolean isEligibleItem(final int gender, final int val, final int job, final int item) {

@@ -39,8 +39,8 @@ function action(mode, type, selection) {
     else if (chat == 13)
         cm.sendNextPrevS("Wait, what?", 3);
     else if (chat == 14) {
-        cm.introEnableUI(0);
-        cm.introDisableUI(false);
+        cm.lockUI(false);
+        cm.disableOthers(false);
         cm.forceCompleteQuest(20034);
         cm.forceStartQuest(20035);
         cm.mihileAssailantSummon();

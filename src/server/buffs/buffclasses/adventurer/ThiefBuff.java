@@ -10,32 +10,58 @@ public class ThiefBuff extends AbstractBuffClass {
 
     public ThiefBuff() {
         buffs = new int[]{
+            //一轉
             4001003, // 隱身術
             4001005, // 速度激發
+            //下忍
+            4301003, // 自我速度激發
+
+            //二轉
+            //刺客
             4101003, // 極速暗殺
+            //俠盜
+//TODO            4200013, // 爆擊
             4201002, // 快速之刀
             4201009, // 輪迴
             4201011, // 楓幣護盾
-            4111002, // 影分身
-            4111009, // 無形鏢
-            4211003, // 勇者掠奪術
-            4211008, // 影分身
-            4121000, // 楓葉祝福
-            4121014, // 黑暗能量
-            4121053, // 傳說冒險
-            4121054, // 出血毒素
-            4221000, // 楓葉祝福
-            4221013, // 暗殺本能
-            4221053, // 傳說冒險
-            4221054, // 翻轉硬幣
-            4301003, // 自我速度激發
+            //中忍
             4311005, // 輪迴
             4311009, // 神速雙刀
+
+            //三轉
+            //暗殺者
+            4111002, // 影分身
+            4111009, // 無形鏢
+            //神偷
+            4211003, // 勇者掠奪術
+            4211008, // 影分身
+            //隱忍
+//TODO            4330001, // 進階隱身術
+//TODO            4330009, // 暗影迴避
             4331002, // 替身術
             4331006, // 隱‧鎖鏈地獄
+
+            //四轉
+            //夜使者
+            4121000, // 楓葉祝福
+            4121014, // 黑暗能量
+            //暗影神偷
+//TODO            4220015, // 致命爆擊
+            4221000, // 楓葉祝福
+            4221013, // 暗殺本能
+            //影武者
             4341000, // 楓葉祝福
+//TODO            4341002, // 絕殺刃
             4341007, // 荊棘特效
-            //4341006, // 幻影替身
+
+            //超技
+            //夜使者
+            4121053, // 傳說冒險
+            4121054, // 出血毒素
+            //暗影神偷
+            4221053, // 傳說冒險
+//TODO            4221054, // 翻轉硬幣
+            //影武者
             4341052, // 修羅
             4341054, // 隱藏刀
             4341053, // 傳說冒險
@@ -44,7 +70,7 @@ public class ThiefBuff extends AbstractBuffClass {
 
     @Override
     public boolean containsJob(int job) {
-        return MapleJob.is冒險家(job) && job / 100 == 4;
+        return MapleJob.is冒險家(job) && MapleJob.is盜賊(job);
     }
 
     @Override
@@ -115,7 +141,7 @@ public class ThiefBuff extends AbstractBuffClass {
                 eff.statups.put(MapleBuffStat.INDIE_MAX_DAMAGE_OVER, eff.info.get(MapleStatInfo.indieMaxDamageOver));
                 break;
             default:
-                // System.out.println("Thief skill not coded: " + skill);
+                System.out.println("盜賊技能未處理,技能代碼: " + skill);
                 break;
         }
     }

@@ -347,49 +347,48 @@ public class JobPacket {
             mplew.writeShort(3);
             mplew.writeInt(0);
             mplew.writeInt(2100000000);
-            mplew.writeZeroBytes(5);
+            mplew.writeShort(0);
+            mplew.write(0);
+            mplew.write(0);
+            mplew.write(0);
             mplew.writeInt(hp);
-            mplew.writeZeroBytes(13);
             
-            mplew.writeZeroBytes(69); //for no dc
+            mplew.writeInt(0);
+            
+            mplew.writeShort(0);
+            mplew.write(0);
+            mplew.write(0);
+            mplew.write(0);
+            
+            mplew.writeInt(0);
 
             return mplew.getPacket();
         }
 
-        public static byte[] giveExceed(short amount) {
+        public static byte[] giveExceed(int skill, short amount) {
             if (ServerConfig.LOG_PACKETS) {
                 System.out.println("調用位置: " + new java.lang.Throwable().getStackTrace()[0]);
             }
             MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
             mplew.writeShort(SendPacketOpcode.GIVE_BUFF.getValue());
-            PacketHelper.writeSingleMask(mplew, MapleBuffStat.EXCEED);
-
-            mplew.writeShort(amount);
-            mplew.writeInt(30010230); //skill id
-            mplew.writeInt(-1); //duration
-            mplew.writeZeroBytes(18);
-
-            mplew.writeZeroBytes(69); //for no dc
-
-            return mplew.getPacket();
-        }
-
-        public static byte[] giveExceedAttack(int skill, short amount) {
-            if (ServerConfig.LOG_PACKETS) {
-                System.out.println("調用位置: " + new java.lang.Throwable().getStackTrace()[0]);
-            }
-            MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-
-            mplew.writeShort(SendPacketOpcode.GIVE_BUFF.getValue());
-            PacketHelper.writeSingleMask(mplew, MapleBuffStat.EXCEED_ATTACK);
+            PacketHelper.writeSingleMask(mplew, skill == 30010230 ? MapleBuffStat.EXCEED : MapleBuffStat.EXCEED_ATTACK);
 
             mplew.writeShort(amount);
             mplew.writeInt(skill); //skill id
-            mplew.writeInt(15000); //duration
-            mplew.writeZeroBytes(18);
-
-            mplew.writeZeroBytes(69); //for no dc
+            mplew.writeInt(skill == 30010230 ? 0 : 15000); //duration
+            mplew.writeShort(0);
+            mplew.write(0);
+            mplew.write(0);
+            mplew.write(0);
+            mplew.writeInt(0);
+            
+            mplew.writeShort(0);
+            mplew.write(0);
+            mplew.write(0);
+            mplew.write(0);
+            
+            mplew.writeInt(0);
 
             return mplew.getPacket();
         }
@@ -404,6 +403,21 @@ public class JobPacket {
 
             Map<MapleBuffStat, Integer> statups = new EnumMap<>(MapleBuffStat.class);
             statups.put(MapleBuffStat.EXCEED, 0);
+            statups.put(MapleBuffStat.EXCEED_ATTACK, 0);
+            PacketHelper.writeBuffMask(mplew, statups);
+
+            return mplew.getPacket();
+        }
+        
+        public static byte[] cancelExceedAttack() {
+            if (ServerConfig.LOG_PACKETS) {
+                System.out.println("調用位置: " + new java.lang.Throwable().getStackTrace()[0]);
+            }
+            MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
+
+            mplew.writeShort(SendPacketOpcode.CANCEL_BUFF.getValue());
+
+            Map<MapleBuffStat, Integer> statups = new EnumMap<>(MapleBuffStat.class);
             statups.put(MapleBuffStat.EXCEED_ATTACK, 0);
             PacketHelper.writeBuffMask(mplew, statups);
 

@@ -1097,10 +1097,7 @@ public class MapleMapFactory {
         for (MapleData portal : port.getChildren()) {
             MaplePortal myPortal = new MaplePortal(MapleDataTool.getInt(portal.getChildByPath("pt")));
             myPortal.setName(MapleDataTool.getString(portal.getChildByPath("pn")));
-
-            //myPortal.setTarget(MapleDataTool.getString(portal.getChildByPath("tn")));
             myPortal.setTarget(MapleDataTool.getString(portal.getChildByPath("tn"), null));
-
             myPortal.setTargetMapId(MapleDataTool.getInt(portal.getChildByPath("tm")));
             myPortal.setPosition(new Point(MapleDataTool.getInt(portal.getChildByPath("x")), MapleDataTool.getInt(portal.getChildByPath("y"))));
             String script = MapleDataTool.getString("script", portal, null);

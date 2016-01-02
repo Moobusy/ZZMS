@@ -598,7 +598,7 @@ public class PlayerInteractionHandler {
                             c.setMonitored(true); //hack check
                         }
                         if (MapleInventoryManipulator.checkSpace(c, item_get.getItemId(), item_get.getQuantity(), item_get.getOwner())) {
-                            MapleInventoryManipulator.addFromDrop(c, item_get, false);
+                            MapleInventoryManipulator.addFromDrop(c, item_get);
                             item.bundles = 0;
                             shop.removeFromSlot(slot);
                         }

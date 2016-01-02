@@ -19,12 +19,12 @@ function action(mode, type, selection) {
     }
 
     if (status == 0) {
-        ms.EnableUI(1);
-        ms.DisableUI(true);
+        ms.lockUI(true);
+        ms.disableOthers(true);
         ms.getDirectionStatus(true);
-        ms.getDirectionInfo(3, 2);
+        ms.getDirectionEffect(3, "", [2]);
     } else if (status == 1) {
-        ms.getDirectionInfo(3, 0);
+        ms.getDirectionEffect(3, "", [0]);
         ms.sendNextS("#b腦袋一團混亂...", 3);
     } else if (status == 2) {
         ms.sendNextPrevS("#b但是我的力量將近都消失是無法改變的事實。", 3);
@@ -48,7 +48,7 @@ function action(mode, type, selection) {
             if (jobSelect == 0) {
                 ms.changeJob(3101);
                 var gender = ms.getPlayerStat("GENDER");
-                ms.getDirectionInfo("Effect/Direction6.img/effect/tuto/avenger/" + gender, 2820, -283, -120, 1, 1);
+                ms.getDirectionEffect(2, "Effect/Direction6.img/effect/tuto/avenger/" + gender, [2820, -283, -120, 1, 1, 0, 0, 0]);
                 if (gender == 0) {
                     ms.unequip(1050191, true); //1050191 - 黑暗惡魔套裝
                     ms.unequip(1072518, true); //1072518 - 黑暗惡魔鞋子
@@ -67,12 +67,6 @@ function action(mode, type, selection) {
                 ms.addHP(1550); //MAXHP 1744
                 //MAXMP 10
                 ms.gainSp(2); //AVAILABLESP [2] 
-                ms.teachSkill(30010242, 1, 1);
-                ms.teachSkill(30010230, 1, 1);
-                ms.teachSkill(30010231, 1, 1);
-                ms.teachSkill(31011000, 1, 20);
-                ms.teachSkill(31011001, 1, 20);
-                ms.teachSkill(31010002, 1, 10);
                 ms.equip(1232001, -11); //1232001 - 藍色復仇者
                 ms.gainItem(1142553, 1); //1142553 - 憤怒的先驅
                 if (gender == 0) {
@@ -85,8 +79,7 @@ function action(mode, type, selection) {
             } else {
                 ms.equip(1322122, -11); //1322122 - 不幸的復仇
                 ms.changeJob(3100);
-                ms.teachSkill(30010111, 1, 1);
-                ms.getDirectionInfo("Effect/BasicEff.img/JobChangedDemon", 0, 0, 0, 0, 0);
+                ms.getDirectionEffect(2, "Effect/BasicEff.img/JobChangedDemon", [0, 0, 0, 0, 0]);
             }
             ms.environmentChange("tutoCommon/JobChanged", 5);
         }
@@ -98,7 +91,7 @@ function action(mode, type, selection) {
     } else if (status == 9) {
         ms.sendNextPrevS("#b離開之前，打開道具欄，確認消耗欄的物品。按道具欄 #r'I'#b可打開。", 3);
     } else {
-        ms.EnableUI(0);
+        ms.lockUI(false);
         ms.dispose();
     }
 }

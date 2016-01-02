@@ -101,7 +101,7 @@ public class HiredMerchant extends AbstractPlayerStore {
             if (gainmeso > 0) {
                 setMeso(gainmeso);
                 pItem.bundles -= quantity; // Number remaining in the store
-                MapleInventoryManipulator.addFromDrop(c, newItem, false);
+                MapleInventoryManipulator.addFromDrop(c, newItem);
                 bought.add(new BoughtItem(newItem.getItemId(), quantity, theQuantity, c.getPlayer().getName()));
                 c.getPlayer().gainMeso(-theQuantity, false);
                 saveItems();

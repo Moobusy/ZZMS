@@ -24,51 +24,55 @@ public class MagicianBuff extends AbstractBuffClass {
 
             //二轉
             //火毒
+//TODO 抓包            2100009, //元素吸收
             2101001, //精神強化Meditation
             2101008, //極速詠唱Magic Booster
             2101010, //燎原之火
             //冰雷
+//TODO 抓包            2200011, //結冰特效
             2201009, //寒冰迅移
             2201001, //精神強化Meditation
             2201010, //極速詠唱Magic Booster
             //僧侶
-            //2300009, //祝福福音Blessed Ensemble - passive but buff?
+//特殊處理技能            2300009, //祝福福音Blessed Ensemble - passive but buff?
+            2301003, //神聖之光Invicible
             2301004, //天使祝福Bless
             2301008, //極速詠唱Magic Booster
-            2301003, //神聖之光Invicible
 
             //三轉
             //火毒
-            2111011, //元素適應(火、毒)Elemental Adaptation (Fire, Poison)
             2111008, //自然力重置Elemental Decrease
             2111007, //瞬間移動精通Teleport Mastery
+            2111011, //元素適應(火、毒)Elemental Adaptation (Fire, Poison)
             //冰雷
-            2211012, //元素適應(雷、冰)Elemental Adaptation (Ice, Lightning)
             2211008, //自然力重置Elemental Decrease
             2211007, //瞬間移動精通Teleport Mastery
+            2211012, //元素適應(雷、冰)Elemental Adaptation (Ice, Lightning)
             //祭司
-            //            2311011, //神聖之泉Holy Fountain
-            2311012, //聖靈守護Divine Protection
             2311002, //時空門Mystic Door
             2311003, //神聖祈禱Holy Symbol
             2311007, //瞬間移動精通Teleport Mastery
             2311009, //聖十字魔法盾Holy Magic Shield
+            2311012, //聖靈守護Divine Protection
 
             //四轉
             //火毒
-            2121004, //魔力無限Infinity
+            2120010, //神秘狙擊
+//TODO 抓包            2120014, //元素強化
             2121000, //楓葉祝福Maple Warrior
-            2120010,//神秘狙擊
+            2121004, //魔力無限Infinity
             //冰雷
-            2221004, //魔力無限Infinity
+            2220010, //神秘狙擊
+//TODO 抓包            2220015, //冰凍效果
             2221000, //楓葉祝福Maple Warrior
-            2220010,//神秘狙擊
+            2221004, //魔力無限Infinity
             //主教
+            2320011, //神秘狙擊
+//特殊處理技能            2320013, //祝福旋律
+            2321000, //楓葉祝福Maple Warrior
             2221001, //核爆術
             2321004, //魔力無限Infinity
             2321005, //進階祝福Advanced Blessing
-            2321000, //楓葉祝福Maple Warrior
-            2320011,//神秘狙擊
 
             //超技
             //火毒
@@ -86,7 +90,7 @@ public class MagicianBuff extends AbstractBuffClass {
 
     @Override
     public boolean containsJob(int job) {
-        return MapleJob.is冒險家(job) && job / 100 == 2;
+        return MapleJob.is冒險家(job) && MapleJob.is法師(job);
     }
 
     @Override

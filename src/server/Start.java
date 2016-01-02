@@ -148,20 +148,12 @@ public class Start {
         //加載轉存到數據庫的任務訊息
         MapleQuest.initQuests(reload);
         
-        System.out.println("加載掉寶數據");
-        //加載掉寶訊息
-        MapleMonsterInformationProvider.getInstance().addExtra();
-        //加載全域掉寶數據
-        MapleMonsterInformationProvider.getInstance().load();
-        
         System.out.println("加載道具數據");
         //加載道具訊息(從WZ)
         MapleItemInformationProvider.getInstance().runEtc(reload);
         //加載道具訊息(從SQL)
         MapleItemInformationProvider.getInstance().runItems(reload);
-        //加載髮型臉型
-        MapleItemInformationProvider.getInstance().loadStyles(reload);
-        
+
         System.out.println("加載技能數據");
         //加載技能
         SkillFactory.load(reload);
@@ -170,13 +162,19 @@ public class Start {
         //加載角色卡訊息
         CharacterCardFactory.getInstance().initialize(reload);
 
-        System.out.println("loadSpeedRuns");
-        //?
-        SpeedRunner.loadSpeedRuns(reload);
-
         System.out.println("加載商城道具數據");
         //加載商城道具訊息
         CashItemFactory.getInstance().initialize(reload);
+        
+        System.out.println("加載掉寶數據");
+        //加載掉寶和全域掉寶數據
+        MapleMonsterInformationProvider.getInstance().load();
+        //加載額外的掉寶訊息
+        MapleMonsterInformationProvider.getInstance().addExtra();
+
+        System.out.println("loadSpeedRuns");
+        //?
+        SpeedRunner.loadSpeedRuns(reload);
         System.out.println("數據載入完成!\r\n");
     }
 

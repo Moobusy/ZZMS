@@ -22,12 +22,14 @@ package server.maps;
 
 public enum SummonMovementType {
 
-    STATIONARY(0), //octo etc
-    FOLLOW(1), //4th job mage
-    WALK_STATIONARY(2), //reaper
-    CIRCLE_FOLLOW(3), //bowman summons 
-    CIRCLE_STATIONARY(4); //gavi only
-    //3, 6,7, etc is tele follow. idk any skills that use
+    不會移動(0),
+    飛行跟隨(1),
+    自由移動(2),
+    跟隨並隨機移動打怪(3),
+    CIRCLE_STATIONARY(5),
+    移動跟隨(7),
+    跟隨移動跟隨攻擊(8),
+    美洲豹(11);
     private final int val;
 
     private SummonMovementType(int val) {

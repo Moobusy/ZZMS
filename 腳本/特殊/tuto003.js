@@ -3,7 +3,7 @@ function start() {
 }
 
 function action(mode, type, selection) {
-    cm.introEnableUI(0);
+    cm.lockUI(false);
     cm.warp(913070002, 0);
     cm.dispose();
 }

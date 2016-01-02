@@ -47,28 +47,28 @@ public class DemonBuff extends AbstractBuffClass {
     public void handleBuff(MapleStatEffect eff, int skill) {
         switch (skill) {
            case 31001001:
-           case 31201002: // 急速惡魔
+           case 31201002: // 急速惡魔 [184UP]
                 eff.statups.put(MapleBuffStat.BOOSTER, eff.info.get(MapleStatInfo.x) * 2);
                 break;
-           case 31011001: // 超載解放
+           case 31011001: // 超載解放 [184UP]
                 eff.statups.put(MapleBuffStat.INDIE_MHP_R, eff.info.get(MapleStatInfo.indieMhpR));
                 break;
            case 31101003: // Vengeance
                 eff.statups.put(MapleBuffStat.POWERGUARD, eff.info.get(MapleStatInfo.y));
                 break;
-           case 31201003: // 深淵之怒 
+           case 31201003: // 深淵之怒 [184UP]
                eff.statups.put(MapleBuffStat.INDIE_PAD, eff.info.get(MapleStatInfo.indiePad));
                 break;
-           case 31211003: // 邪惡強化
+           case 31211003: // 邪惡強化 [184UP]
                 eff.statups.put(MapleBuffStat.WATER_SHIELD, eff.info.get(MapleStatInfo.y));
                 eff.statups.put(MapleBuffStat.ELEMENTAL_STATUS_R, eff.info.get(MapleStatInfo.z));
                 eff.statups.put(MapleBuffStat.ABNORMAL_STATUS_R, eff.info.get(MapleStatInfo.x));
                 break;
-           case 31211004: // 急速療癒
+           case 31211004: // 急速療癒 [184UP]
                 eff.statups.put(MapleBuffStat.DIABOLIC_RECOVERY, eff.info.get(MapleStatInfo.x));
                 eff.statups.put(MapleBuffStat.INDIE_MHP_R, eff.info.get(MapleStatInfo.indieMhpR));
                 break;
-           case 31221004: // 地獄之力
+           case 31221004: // 地獄之力 [184UP]
                 eff.statups.put(MapleBuffStat.INDIE_DAM_R, eff.info.get(MapleStatInfo.indieDamR));
                 eff.statups.put(MapleBuffStat.INDIE_BOOSTER, eff.info.get(MapleStatInfo.indieBooster));
                 break;

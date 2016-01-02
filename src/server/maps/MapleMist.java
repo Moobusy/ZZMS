@@ -108,7 +108,11 @@ public class MapleMist extends MapleMapObject {
     }
 
     public Skill getSourceSkill() {
-        return SkillFactory.getSkill(source.getSourceId());
+        if (source != null) {
+            return SkillFactory.getSkill(source.getSourceId());
+        } else {
+            return SkillFactory.getSkill(skill.getSkillId());
+        }
     }
 
     public void setSchedule(ScheduledFuture<?> s) {

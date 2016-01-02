@@ -206,14 +206,14 @@ public class MapleQuestRequirement implements Serializable {
                 return c.getQuest(quest).getStatus() != 2 || c.getQuest(quest).getCompletionTime() <= System.currentTimeMillis() - intStore * 60 * 1000L;
             case pet:
                 for (Pair<Integer, Integer> a : dataStore) {
-                    if (c.getPetById(a.getRight()) != -1) {
+                    if (c.getPetIndexById(a.getRight()) != -1) {
                         return true;
                     }
                 }
                 return false;
             case pettamenessmin:
-                for (MaplePet pet : c.getPets()) {
-                    if (pet.getSummoned() && pet.getCloseness() >= intStore) {
+                for (MaplePet pet : c.getSummonedPets()) {
+                    if (pet.getCloseness() >= intStore) {
                         return true;
                     }
                 }

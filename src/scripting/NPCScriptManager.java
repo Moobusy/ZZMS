@@ -64,7 +64,10 @@ public class NPCScriptManager extends AbstractScriptManager {
                 if (c.getPlayer().isShowErr()) {
                     c.getPlayer().showInfo("NPC腳本", true, "無法執行腳本:已有腳本執行-" + cms.containsKey(c) + " | 允許執行腳本-" + c.canClickNPC());
                 }
-                c.getPlayer().dropMessage(-1, "你當前已經和1個NPC對話了. 如果不是請輸入 @解卡 指令進行解卡。");
+                NPCConversationManager cm = cms.get(c);
+                if (cm == null || (cm.getType() != ScriptType.ON_USER_ENTER && cm.getType() != ScriptType.ON_FIRST_USER_ENTER)) {
+                    c.getPlayer().dropMessage(-1, "你當前已經和1個NPC對話了. 如果不是請輸入 @解卡 指令進行解卡。");
+                }
             }
         } catch (final ScriptException | NoSuchMethodException e) {
             System.err.println("執行NPC腳本出錯 : NPC - " + npc + " 特殊腳本 - " + script + " ." + e);
@@ -89,9 +92,9 @@ public class NPCScriptManager extends AbstractScriptManager {
                     dispose(c);
                 } else {
                     c.setClickedNPC();
-                    System.err.println("mode " + mode);
-                    System.err.println("type " + type);
-                    System.err.println("sel " + selection);
+//                    System.err.println("mode " + mode);
+//                    System.err.println("type " + type);
+//                    System.err.println("sel " + selection);
                     cm.getIv().invokeFunction("action", mode, type, selection);
                 }
             } catch (final ScriptException | NoSuchMethodException e) {

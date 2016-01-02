@@ -22,7 +22,7 @@ public class ItemConstants {
     public static final short SHOE = -7; //鞋子
     public static final short GLOVE = -8; //手套
     public static final short CAPE = -9; //披風
-    public static final short SHIELD = -10; //副手武器
+    public static final short SHIELD = -10; //副手
     public static final short WEAPON = -11; //武器
     public static final short RING1 = -12; //戒指1
     public static final short RING2 = -13; //戒指2
@@ -83,10 +83,12 @@ public class ItemConstants {
 //            damageSkin.put(2433456, 21); //韓文的傷害字型
                 damageSkin.put(2433631, 22); //NENE雞的傷害字型
                 damageSkin.put(2433655, 22); //NENE雞的傷害字型
+                damageSkin.put(2433981, 28); //皮卡啾傷害字型
                 damageSkin.put(2432591, 1000); //櫻花浪漫字型傷害肌膚
                 damageSkin.put(2432803, 1004); //濃姬傷害字型(30日)
                 damageSkin.put(2432804, 1004); //濃姬傷害字型(無限期)
                 damageSkin.put(2432846, 1005); //傑特字型交換卷
+                damageSkin.put(2433049, 1009); //初音未來傷害字型
                 damageSkin.put(2433038, 1010); //皇家神獸學院字型
                 damageSkin.put(2433165, 1011); //俠客字型交換卷
                 damageSkin.put(2433197, 1012); //菲歐娜字型交換卷
@@ -97,6 +99,15 @@ public class ItemConstants {
                 //1018 - 跟1014一樣
                 damageSkin.put(2433775, 1032); //殺人鯨傷害字型
                 damageSkin.put(2433776, 1033); //史烏傷害字型
+                damageSkin.put(2433828, 1034); //太陽傷害字型
+                damageSkin.put(2433829, 1035); //雨傷害字型
+                damageSkin.put(2433830, 1036); //彩虹傷害字型
+                damageSkin.put(2433831, 1037); //雪傷害字型
+                damageSkin.put(2433832, 1038); //閃電傷害字型
+                damageSkin.put(2433833, 1039); //風傷害字型
+                damageSkin.put(2434004, 1041); //小筱傷害字型
+                damageSkin.put(2434499, 1049); //月亮傷害字型
+                //1050 - 跟1034一樣
             }
             Map<Integer, Integer> value = new TreeMap<>((v1, v2) -> v1.compareTo(v2));
             value.putAll(damageSkin);
@@ -471,7 +482,9 @@ public class ItemConstants {
             對等(0x80),
             去掉無用潛能(0x100),
             前兩條相同(0x200),
-            附加潛能(0x400);
+            附加潛能(0x400),
+            點商光環(0x800),
+            ;
             private final int value;
 
             private CubeType(int value) {
@@ -519,7 +532,7 @@ public class ItemConstants {
                     type |= CubeType.去掉無用潛能.getValue();
                 case 5062005://驚奇方塊
                 case 5062006://白金奇幻方塊
-                case 5062021://對等方塊
+                case 5062021://新對等方塊
                     type |= CubeType.對等.getValue();
                     break;
                 case 5062008://鏡射方塊
@@ -543,6 +556,9 @@ public class ItemConstants {
                 default:
                     break;
             }
+            if (MapleItemInformationProvider.getInstance().isCash(itemId)) {
+                type |= CubeType.點商光環.getValue();
+            }
             return type;
         }
 
@@ -551,13 +567,13 @@ public class ItemConstants {
             //but, sometimes it is possible to get second/third line as well
             //may seem like big chance, but it's not as it grabs random potential ID anyway
             if (newstate == 20) {
-                return (i == 0 || Randomizer.nextInt(20) == 0 ? potentialID >= 40000 : potentialID >= 30000 && potentialID < 60004); // xml say so
+                return (i == 1 || Randomizer.nextInt(20) == 0 ? potentialID >= 40000 : potentialID >= 30000 && potentialID < 60004); // xml say so
             } else if (newstate == 19) {
-                return (i == 0 || Randomizer.nextInt(20) == 0 ? potentialID >= 30000 && potentialID < 40000 : potentialID >= 20000 && potentialID < 30000);
+                return (i == 1 || Randomizer.nextInt(20) == 0 ? potentialID >= 30000 && potentialID < 40000 : potentialID >= 20000 && potentialID < 30000);
             } else if (newstate == 18) {
-                return (i == 0 || Randomizer.nextInt(20) == 0 ? potentialID >= 20000 && potentialID < 30000 : potentialID >= 10000 && potentialID < 20000);
+                return (i == 1 || Randomizer.nextInt(20) == 0 ? potentialID >= 20000 && potentialID < 30000 : potentialID >= 10000 && potentialID < 20000);
             } else if (newstate == 17) {
-                return (i == 0 || Randomizer.nextInt(20) == 0 ? potentialID >= 10000 && potentialID < 20000 : potentialID < 10000);
+                return (i == 1 || Randomizer.nextInt(20) == 0 ? potentialID >= 10000 && potentialID < 20000 : potentialID < 10000);
             } else {
                 return false;
             }
@@ -566,7 +582,7 @@ public class ItemConstants {
         public static boolean optionTypeFits(final int optionType, final int itemId) {
             switch (optionType) {
                 case 10: // 武器、盾牌、副手和能源
-                    return 類型.武器(itemId) || 類型.盾牌(itemId) || 類型.副手武器(itemId) || 類型.能源(itemId);
+                    return 類型.武器(itemId) || 類型.副手(itemId) || 類型.能源(itemId);
                 case 11: // 除了武器的全部裝備
                     return !類型.武器(itemId);
                 case 20: // 除了配飾和武器的全部裝備
@@ -574,35 +590,34 @@ public class ItemConstants {
                 case 40: // 配飾
                     return 類型.飾品(itemId);
                 case 51: // 帽子
-                    return itemId / 10000 == 100;
+                    return 類型.帽子(itemId);
                 case 52: // 披風
-                    return itemId / 10000 == 110;
+                    return 類型.披風(itemId);
                 case 53: // 上衣、褲子與套服
-                    return itemId / 10000 == 104 || itemId / 10000 == 105 || itemId / 10000 == 106;
+                    return 類型.上衣(itemId) || 類型.套服(itemId) || 類型.褲裙(itemId);
                 case 54: // 手套
-                    return itemId / 10000 == 108;
+                    return 類型.手套(itemId);
                 case 55: // 鞋子
-                    return itemId / 10000 == 107;
+                    return 類型.鞋子(itemId);
                 default:
                     return true;
             }
         }
 
-        public static boolean isAllowedPotentialStat(Equip eqp, int opID, boolean bonus) { //For now
+        public static boolean isAllowedPotentialStat(Equip eqp, int opID, boolean bonus, boolean cash) { //For now
             MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
-            boolean superPot = ZZMSConfig.superiorPotential && ii.isSuperiorEquip(eqp.getItemId());
+            boolean superPot = ZZMSConfig.superiorPotential && ii.isSuperiorEquip(eqp.getItemId()) && Randomizer.nextInt(100) < 15;
             //判斷潛能是主潛還是附潛
             int type = opID / 1000 % 10;
             if ((bonus && ((!superPot && type != 2) || (superPot && type >= 1))) || (!bonus && type == 2)) {
                 return false;
             }
-            //清除罕見以上潛能的非常的垃圾潛能
-            int state = opID / 10000;
-            if (opID % 1000 <= 14 && state > 2 && state < 5 && opID < 60000 && Randomizer.nextInt(10) <= 9) {
+            //點商光環清除罕見以上潛能的非常的垃圾純數字潛能
+            if ((opID % 1000 <= 14 || opID % 1000 == 81) && type != 1 && opID < 60000 && cash) {
                 return false;
             }
 
-            state = opID % 1000;
+            int state = opID % 1000;
             return superPot && !bonus ? (state != 4 && state != 9 && state != 24 && (state < 13 || state > 18)) : opID < 60000;
         }
 
@@ -693,30 +708,21 @@ public class ItemConstants {
                         case "incDEXr":
                         case "incINTr":
                         case "incLUKr":
+                        case "incMHPr":
                         case "incPADr":
                         case "incMADr":
-                        case "incMHPr":
-                        case "incMMPr":
+                        case "incCriticaldamageMin":
+                        case "incCriticaldamageMax":
                         case "incDAMr":
                         case "incTerR":
                         case "incAsrR":
-                        case "incMaxDamage":
-                        case "level":
-                        case "prop":
-                        case "time":
                         case "ignoreTargetDEF":
-                        case "ignoreDAM":
-                        case "incAllskill":
-                        case "ignoreDAMr":
-                        case "RecoveryUP":
-                        case "incCriticaldamageMin":
-                        case "incCriticaldamageMax":
-                        case "DAMreflect":
-                        case "mpconReduce":
+                        case "incMaxDamage":
                         case "reduceCooltime":
+                        case "boss":
                         case "incMesoProp":
                         case "incRewardProp":
-                        case "boss":
+                        case "level":
                         case "attackType":
                             break;
                         default:
@@ -768,7 +774,7 @@ public class ItemConstants {
         }
 
         public static boolean 盾牌(int itemid) {
-            return itemid / 10000 == 109 && !副手武器(itemid);
+            return itemid / 10000 == 109;
         }
 
         public static boolean 披風(int itemid) {
@@ -829,6 +835,10 @@ public class ItemConstants {
 
         public static boolean 幻獸棍棒(final int itemid) {
             return itemid / 10000 == 125;
+        }
+
+        public static boolean ESP限幅器(final int itemid) {
+            return itemid / 10000 == 126;
         }
 
         public static boolean 單手劍(final int itemid) {
@@ -1009,12 +1019,8 @@ public class ItemConstants {
             return 臉飾(itemid) || 眼飾(itemid) || 耳環(itemid) || 戒指(itemid) || 墜飾(itemid) || 腰帶(itemid) || 勳章(itemid) || 肩飾(itemid) || 口袋道具(itemid) || 胸章(itemid) || 能源(itemid) || 圖騰(itemid);
         }
 
-        public static boolean 副手武器(final int itemid) {
-            return itemid / 1000 == 1098 || itemid / 1000 == 1099 || 雙刀(itemid) || 特殊副手(itemid);
-        }
-
         public static boolean 副手(int itemid) {
-            return 盾牌(itemid) || 副手武器(itemid);
+            return 盾牌(itemid) || 雙刀(itemid) || 特殊副手(itemid);
         }
 
         public static boolean 武器(int itemid) {
@@ -1023,6 +1029,7 @@ public class ItemConstants {
                     || 魔劍(itemid)
                     || 能量劍(itemid)
                     || 幻獸棍棒(itemid)
+                    || ESP限幅器(itemid)
                     || 單手劍(itemid)
                     || 單手斧(itemid)
                     || 單手棍(itemid)
@@ -1088,7 +1095,7 @@ public class ItemConstants {
         }
 
         public static boolean 魔法武器(int itemid) {
-            return 短杖(itemid) || 長杖(itemid) || 扇子(itemid) || 幻獸棍棒(itemid);
+            return 短杖(itemid) || 長杖(itemid) || 扇子(itemid) || 幻獸棍棒(itemid) || ESP限幅器(itemid);
         }
 
         public static boolean 騎寵道具(int itemid) {
@@ -1233,7 +1240,7 @@ public class ItemConstants {
             return itemid >= 2046060 && itemid <= 2046069 || itemid >= 2046141 && itemid <= 2046145 || itemid >= 2046519 && itemid <= 2046530 || itemid >= 2046701 && itemid <= 2046712;
         }
 
-        public static boolean 提升卷(int itemid) {
+        public static boolean 提升卷(int itemid) { // 龍騎士獲得的強化牌板
             return itemid >=  2047000 && itemid < 2047310;
         }
 
@@ -1278,6 +1285,10 @@ public class ItemConstants {
 
         public static boolean 裝備強化卷軸(int itemid) {
             return itemid / 100 == 20493;
+        }
+
+        public static boolean 鐵鎚(int itemid) {
+            return itemid / 10000 == 247;
         }
 
         public static boolean 潛能卷軸(int itemid) {
@@ -1388,6 +1399,9 @@ public class ItemConstants {
         if (類型.幻獸棍棒(itemid)) {
             return MapleWeaponType.幻獸棍棒;
         }
+        if (類型.ESP限幅器(itemid)) {
+            return MapleWeaponType.ESP限幅器;
+        }
         if (類型.單手劍(itemid)) {
             return MapleWeaponType.單手劍;
         }
@@ -1402,9 +1416,6 @@ public class ItemConstants {
         }
         if (類型.雙刀(itemid)) {
             return MapleWeaponType.雙刀;
-        }
-        if (類型.特殊副手(itemid)) {
-            return MapleWeaponType.特殊副手;
         }
         if (類型.手杖(itemid)) {
             return MapleWeaponType.手杖;
@@ -1463,7 +1474,7 @@ public class ItemConstants {
         if (類型.璃(itemid)) {
             return MapleWeaponType.璃;
         }
-        return MapleWeaponType.沒有武器;
+        return MapleWeaponType.未知;
     }
 
     public static byte gachaponRareItem(final int itemid) {
@@ -1556,5 +1567,19 @@ public class ItemConstants {
             return false;
         }
         return gm.isStaff();
+    }
+
+    public static int getMaxDamageLimitBreak(int itemId) {
+        MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
+        return ServerConfig.MAX_DAMAGE - (ii.getLimitBreak(itemId) > 0 ? ii.getLimitBreak(itemId) : 999999);
+    }
+
+    public static int getEffectItemID(int itemId) {
+        MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
+        Map<String, Integer> stats = ii.getEquipStats(itemId);
+        if (stats.containsKey("effectItemID")) {
+            return stats.get("effectItemID");
+        }
+        return 0;
     }
 }

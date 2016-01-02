@@ -45,7 +45,9 @@ public class CashCategory {
 
         NORMAL(0),
         NEW(1),
-        HOT(2);
+        HOT(2),
+        EVENT(3),
+        ;
         private final int value;
 
         private CSFlag(int value) {

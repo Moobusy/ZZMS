@@ -340,7 +340,7 @@ public class MapleServerHandler extends IoHandlerAdapter {
             case CREATE_SPECIAL_CHAR:
                 CharLoginHandler.CreateChar(slea, c);
                 break;
-            case CREATE_CHAR_2PW:
+            case CREATE_CHAR_AUTH:
                 CharLoginHandler.CreateChar2Pw(slea, c);
                 break;
             case CREATE_ULTIMATE:

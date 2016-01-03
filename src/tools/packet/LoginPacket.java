@@ -44,7 +44,7 @@ public class LoginPacket {
     public static final byte[] showMapleStory() {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter(6);
 
-        mplew.writeShort(SendPacketOpcode.SHOW_MAPLESTORY.getValue());
+        mplew.writeShort(SendPacketOpcode.MAPLESTORY_AUTH.getValue());
         mplew.writeInt(0);
 
         return mplew.getPacket();

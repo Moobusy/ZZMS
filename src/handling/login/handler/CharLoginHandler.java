@@ -297,6 +297,10 @@ public class CharLoginHandler {
         // 驗證碼
 //        c.getSession().write(LoginPacket.createCharCheckCode(CheckCodeImageCreator.createCheckCode().getRight(), (byte) 0, (byte) 1, (byte) 1, (byte) 0));
     }
+    
+    public static void CreateCharClick(final LittleEndianAccessor slea, final MapleClient c) {
+        c.getSession().write(LoginPacket.secondPasswordWindows());
+    }
 
     public static void CreateChar(final LittleEndianAccessor slea, final MapleClient c) {
         byte gender, skin, unk;

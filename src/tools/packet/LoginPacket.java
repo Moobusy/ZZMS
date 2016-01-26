@@ -27,7 +27,7 @@ public class LoginPacket {
     public static byte[] getHello(byte[] sendIv, byte[] recvIv) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
-        mplew.writeShort(0x0E);
+        mplew.writeShort(0x0F);
         mplew.writeShort(ServerConstants.MAPLE_VERSION);
         mplew.writeMapleAsciiString(ServerConstants.MAPLE_PATCH);
         if (ServerConfig.USE_FIXED_IV) {
@@ -37,6 +37,7 @@ public class LoginPacket {
             mplew.write(sendIv);
         }
         mplew.write(ServerConstants.MAPLE_TYPE.getType());
+        mplew.write(0);
 
         return mplew.getPacket();
     }
@@ -62,7 +63,7 @@ public class LoginPacket {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
         mplew.writeShort(SendPacketOpcode.LOGIN_AUTH.getValue());
-        String[] bg = {"MapLogin", "MapLogin0", "MapLogin1"};
+        String[] bg = {"MapLogin", "MapLogin0", "MapLogin1", "MapLogin2"};
         mplew.writeMapleAsciiString(bg[(int) (Math.random() * bg.length)]);
         mplew.writeInt(GameConstants.getCurrentDate());
         mplew.write(1);
@@ -90,6 +91,9 @@ public class LoginPacket {
 
     public static final void getAuthSuccess(MaplePacketLittleEndianWriter mplew, MapleClient client, boolean second) {
         mplew.write(0);
+        if (!second) {
+            mplew.writeMapleAsciiString("");
+        }
         mplew.writeInt(client.getAccID());
         mplew.write(client.getGender());
         mplew.write(client.isGM() ? 1 : 0);
@@ -283,7 +287,6 @@ public class LoginPacket {
         mplew.write(world.getWorld());
         mplew.writeMapleAsciiString(LoginServer.getServerName());
         mplew.write(world.getFlag());
-        mplew.write(0);
         mplew.writeMapleAsciiString(world.getWorldTip());
         mplew.writeShort(100);
         mplew.writeShort(100);
@@ -373,13 +376,16 @@ public class LoginPacket {
 
         mplew.writeShort(SendPacketOpcode.CHARLIST.getValue());
         mplew.write(0);
+        mplew.writeMapleAsciiString("normal");
+        mplew.writeInt(4);
+        mplew.write(0);
         mplew.writeInt(0); // 176+閃耀之星數量
         mplew.writeLong(DateUtil.getFileTimestamp(System.currentTimeMillis()));//176+
         for (int i = 0; i < 0; i++) { // 閃耀之星數量循環
             mplew.writeInt(0);//176+
             mplew.writeLong(0);//176+
         }
-        mplew.write(0);
+        mplew.write(1);
         mplew.writeInt(charPos.size());
         charPos.forEach((chrId) -> mplew.writeInt(chrId));// 角色順序
         mplew.write(chars.size());
@@ -389,6 +395,17 @@ public class LoginPacket {
         mplew.writeInt(charslots);
         mplew.writeInt(0); // 50級角色卡角色數量
         mplew.writeInt(-1);
+        boolean fireAndice = true;
+        mplew.write(fireAndice);
+        if (fireAndice) {
+            mplew.writeLong(PacketHelper.getTime(130977216000000000L)); // 開始
+            mplew.writeLong(PacketHelper.getTime(130990175990000000L)); // 結束
+            int c_size = 0;
+            mplew.writeInt(c_size);
+            if (c_size > 0) {
+                mplew.writeInt(0);
+            }
+        }
         mplew.writeReversedLong(PacketHelper.getTime(System.currentTimeMillis()));
         mplew.write(0); // 變更角色名稱開關[0:關、1:開]
         mplew.write(0); // 協議書開關[-1:開、0:關]
@@ -502,6 +519,15 @@ public class LoginPacket {
 
         mplew.writeShort(SendPacketOpcode.GENDER_SET.getValue());
         mplew.write(success);
+
+        return mplew.getPacket();
+    }
+    
+    public static byte[] secondPasswordWindows() {
+        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter(4);
+
+        mplew.writeShort(SendPacketOpcode.CREATE_CHAR_AUTH_RESPONSE.getValue());
+        mplew.writeShort(3);
 
         return mplew.getPacket();
     }

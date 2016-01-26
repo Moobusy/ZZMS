@@ -24,6 +24,9 @@ public abstract class AbstractBuffClass {
     }
 
     public boolean containsSkill(int search) {
+        if (buffs == null) {
+            return false;
+        }
         for (int i : buffs) {
             if (i == search) {
                 return true;

@@ -418,8 +418,8 @@ public class CField {
         mplew.writeInt(0);
         mplew.write(CharInfo ? 1 : 2);
         mplew.writeInt(0);
-        mplew.writeInt(0x794);
-        mplew.writeInt(0x32A);
+        mplew.writeInt(0x512);
+        mplew.writeInt(0x14A);
         mplew.write(CharInfo);
 
         int v104 = 0;
@@ -461,6 +461,10 @@ public class CField {
         mplew.writeBoolean(false);
         mplew.write(0);
         mplew.write(GameConstants.isSeparatedSp(chr.getJob()) ? 1 : 0); // v109
+        mplew.writeInt(166);
+        
+        mplew.write(HexTool.getByteArrayFromHexString("03 00 00 00 83 7D 26 5A 02 00 00 DC 66 00 00 00 00 00 03 00 00 00 03 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 40 E0 FD 3B 37 4F 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 82 16 FB 52 01 00 00 DC 0C 00 00 00 00 00 00 00 00 00 00 00 C8 00 00 00 F7 24 11 76 00 00 00 DC 0C 00 00 00 01 00 00 DC 02 00 00 DC 00 00 00 00 "));
+        
         boolean v88 = false;
         mplew.writeBoolean(v88);
         if (v88) {
@@ -478,7 +482,7 @@ public class CField {
             }
         }
 
-        UnkFunction2(mplew, 48140);
+        UnkFunction2(mplew, 50284);
 
         boolean v116 = false;
         mplew.writeBoolean(v116);
@@ -491,7 +495,6 @@ public class CField {
         UnkFunction4(mplew);
         UnkFunction5(mplew);
         mplew.write(150);
-        mplew.writeInt(0);
         int v5 = 0;
         mplew.writeInt(v5);
         for (int i = 0; i < v5; i++) {
@@ -1722,8 +1725,10 @@ public class CField {
         mplew.writeInt(cid);
         mplew.writeInt(craftID);
         mplew.writeInt(ranking);
-        mplew.writeInt(itemId);
-        mplew.writeInt(quantity);
+        if (ranking == 25 || ranking == 26 || ranking == 27) {
+            mplew.writeInt(itemId);
+            mplew.writeInt(quantity);
+        }
         mplew.writeInt(exp);
 
         return mplew.getPacket();

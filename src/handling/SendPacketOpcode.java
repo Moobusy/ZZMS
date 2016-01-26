@@ -60,65 +60,69 @@ public enum SendPacketOpcode implements WritableIntValueHolder {
     // 購物商城
     CS_USE(0x14),
     
-    // 0x15 CClientSocket::OnAuthenMessage【驗證訊息】[Int][Byte]
+    // 0x15 
     // 0x16
-    // 0x17 【外掛偵測】
+    // 0x17
     // 0x18
-    // 0x19 【身分驗證】[Byte]
-    // 0x1A
-    // 0x1B CClientSocket::OnCheckCrcResult【外掛偵測】[Boolean]
+    // 0x19
+    
+    // 建立角色驗證回覆
+    CREATE_CHAR_AUTH_RESPONSE(0x1A),
+    
+    // 0x1B
+    // 0x1C
+    // 0x1D
 
     // 打工系統
-    PART_TIME(0x1C),
+    PART_TIME(0x1E),
     
-    // 0x1D [-]
-    // 0x1E [-]
-    // 0x1F [Int][Int]
-    // 0x20 【購買道具】[Int][Int][Int][Byte][Byte][Byte]
+    // 0x1F [-]
+    // 0x20 [-]
+    // 0x21 [Int][Int]
+    // 0x22 【購買道具】[Int][Int][Int][Byte][Byte][Byte]
 
     // 選擇性別 + 設置第二組密碼
-    CHOOSE_GENDER(0x21),
+    CHOOSE_GENDER(0x23),
     // 選擇性別 + 設置第二組密碼回覆
-    GENDER_SET(0x22),
+    GENDER_SET(0x24),
     // 外掛偵測
-    HACKSHIELD_REQUEST(0x23),
+    HACKSHIELD_REQUEST(0x25),
     // 強制變更角色名稱 [-]
-    FORCED_CHANGE_CHAR_NAME(0x24),
+    FORCED_CHANGE_CHAR_NAME(0x26),
     // 強制變更角色名稱訊息 [Byte]
-    FORCED_CHANGE_CHAR_NAME_NOTICE(0x25),
+    FORCED_CHANGE_CHAR_NAME_NOTICE(0x27),
     // 伺服器狀態
-    SERVERSTATUS(0x26),
+    SERVERSTATUS(0x28),
     // 背景驗證
-    LOGIN_AUTH(0x27),
+    LOGIN_AUTH(0x29),
     
-    // 0x28
-    // 0x29
-    // 0x2A [Byte][Byte][Int]
-    // 0x2B 【新星世界按鈕 + 刪除角色按鈕】[Int]
+    // 0x2A
+    // 0x2B
+    // 0x2C [Byte][Byte][Int]
+    // 0x2D 【新星世界按鈕 + 刪除角色按鈕】[Int]
 
     // 顯示視窗
-    MAPLESTORY_AUTH(0x2C),
+    MAPLESTORY_AUTH(0x2E),
+    // 變更名稱申請成功
+    NAME_CHANGE_SUCCESS(0x2F),
     // 第二組密碼錯誤
-    SECONDPW_ERROR(0x2D),
+    SECONDPW_ERROR(0x30),
     //================================
-    // CMapLoadable::OnPacket 開始(183-完成)
+    // CMapLoadable::OnPacket 開始(186-完成)
     //================================ 
 
     // 移除背景層
-    REMOVE_BG_LAYER(0x2E),
+    REMOVE_BG_LAYER(0x31),
     // 變更背景
-    CHANGE_BACKGROUND(0x2F),
+    CHANGE_BACKGROUND(0x32),
     // 設置物件狀態
-    SET_MAP_OBJECT_VISIBLE(0x30),
+    SET_MAP_OBJECT_VISIBLE(0x33),
     
-    // 0x31
+    // 0x34
 
     // 重置畫面
-    RESET_SCREEN(0x32),
+    RESET_SCREEN(0x35),
     
-    // 0x33
-    // 0x34
-    // 0x35
     // 0x36
     // 0x37
     // 0x38
@@ -126,1211 +130,1235 @@ public enum SendPacketOpcode implements WritableIntValueHolder {
     // 0x3A
     // 0x3B
     // 0x3C
+    // 0x3D
+    // 0x3E
+    // 0x3F
 
     //================================
-    // CWvsContext::OnPacket 開始(183-完成)
+    // CWvsContext::OnPacket 開始(186-完成)
     //================================    
     // 道具操作[完成]
-    INVENTORY_OPERATION(0x3D),
+    INVENTORY_OPERATION(0x40),
     // 擴充道具欄位[完成]
-    INVENTORY_GROW(0x3E),
+    INVENTORY_GROW(0x41),
     // 更新能力值[完成]
-    UPDATE_STATS(0x3F),
+    UPDATE_STATS(0x42),
     // 獲得輔助效果[完成]
-    GIVE_BUFF(0x40),
+    GIVE_BUFF(0x43),
     // 取消輔助效果[完成]
-    CANCEL_BUFF(0x41),
+    CANCEL_BUFF(0x44),
     // 臨時能力值開始[完成]
-    TEMP_STATS(0x42),
+    TEMP_STATS(0x45),
     // 重置臨時能力值[完成]
-    TEMP_STATS_RESET(0x43),
+    TEMP_STATS_RESET(0x46),
     // 更新技能[完成]
-    UPDATE_SKILLS(0x44),
+    UPDATE_SKILLS(0x47),
     // 幻影俠盜複製技能成功
-    UPDATE_STOLEN_SKILLS(0x45),
+    UPDATE_STOLEN_SKILLS(0x48),
     // 幻影俠盜竊取技能時顯示 
-    TARGET_SKILL(0x46),
-    // 0x47
-    // 0x48
-    // 0x49
+    TARGET_SKILL(0x49),
     // 0x4A
+    // 0x4B
+    // 0x4C
+    // 0x4D
 
     // 偷竊技能檢查(Done)
-    STEEL_SKILL_CHECK(0x4B),
-    // 0x4C
+    STEEL_SKILL_CHECK(0x4E),
+    // 0x4F
     // 惡魔追蹤發送
-    CONVEY_TO(0x4D),
+    CONVEY_TO(0x50),
     // 名聲回覆[完成]
-    FAME_RESPONSE(0x4E),
+    FAME_RESPONSE(0x51),
     // 顯示角色狀態信息[完成]
-    SHOW_STATUS_INFO(0x4F),
+    SHOW_STATUS_INFO(0x52),
     // 訊息[完成]
-    SHOW_NOTES(0x50),
+    SHOW_NOTES(0x53),
     // 瞬移之石[完成]
-    TROCK_LOCATIONS(0x51),
+    TROCK_LOCATIONS(0x54),
     // 測謊機[完成]
-    LIE_DETECTOR(0x52),
+    LIE_DETECTOR(0x55),
     // 炸彈測謊機[完成]
-    BOMB_LIE_DETECTOR(0x53),
-    // 0x54 (null)
+    BOMB_LIE_DETECTOR(0x56),
+    // 0x57 (null)
 
     // 設置舉報[完成]
-    REPORT_RESPONSE(0x55),
+    REPORT_RESPONSE(0x58),
     // 舉報時間[完成]
-    REPORT_TIME(0x56),
+    REPORT_TIME(0x59),
     // 舉報狀態[完成]
-    REPORT_STATUS(0x57),
-    // 0x58 [Int] [do { [Int][Int] }] [176+]
+    REPORT_STATUS(0x5A),
+    // 0x5B [Int] [do { [Int][Int] }] [176+]
 
     // 更新騎寵[完成]
-    UPDATE_MOUNT(0x59),
+    UPDATE_MOUNT(0x5C),
     // 任務完成[完成]
-    SHOW_QUEST_COMPLETION(0x5A),
+    SHOW_QUEST_COMPLETION(0x5D),
     // 精靈商人[完成]
-    SEND_TITLE_BOX(0x5B),
+    SEND_TITLE_BOX(0x5E),
     // 使用技能書[完成]
-    USE_SKILL_BOOK(0x5C),
+    USE_SKILL_BOOK(0x5F),
     // 重置SP[完成]
-    SP_RESET(0x5D),
+    SP_RESET(0x60),
     // 重置AP[完成]
-    AP_RESET(0x5E),
+    AP_RESET(0x61),
     // 經驗瓶[完成]
-    EXP_POTION(0x5F),
+    EXP_POTION(0x62),
     // 散佈道具[完成] [Byte][Int][Byte]
-    DISTRIBUTE_ITEM(0x60),
+    DISTRIBUTE_ITEM(0x63),
     // 擴充角色欄位[完成]
-    EXPAND_CHARACTER_SLOTS(0x61),
+    EXPAND_CHARACTER_SLOTS(0x64),
     // 申請變更角色名稱[完成]
-    APPLY_NAME_CHANGE(0x62),
+    APPLY_NAME_CHANGE(0x65),
     // 向上整理[完成]
-    FINISH_SORT(0x63),
+    FINISH_SORT(0x66),
     // 種類排序[完成]
-    FINISH_GATHER(0x64),
-    // 0x65 (null)
-    // 0x66 (null)
+    FINISH_GATHER(0x67),
+    // 0x68 (null)
+    // 0x69 (null)
 
     // 角色信息[完成]
-    CHAR_INFO(0x67),
+    CHAR_INFO(0x6A),
     // 隊伍操作[完成]
-    PARTY_OPERATION(0x68),
+    PARTY_OPERATION(0x6B),
     // 尋找隊員
-    MEMBER_SEARCH(0x69),
+    MEMBER_SEARCH(0x6C),
     // 隊伍搜尋
-    PARTY_SEARCH(0x6A),
-    // 0x6B
-    // 0x6C
-    // 0x6D (null)
+    PARTY_SEARCH(0x6D),
+    // 0x6E
+    // 0x6F
+    // 0x70 [186+]
+    // 0x71 [186+]
+    // 0x72 (null)
 
     // 遠征隊操作
-    EXPEDITION_OPERATION(0x6E),
+    EXPEDITION_OPERATION(0x73),
     // 好友列表[完成]
-    BUDDYLIST(0x6F),
-    // 0x70 [176+]
-    // 0x71 [176+]
+    BUDDYLIST(0x74),
+    // 0x75 [176+]
+    // 0x76 [176+]
 
     // 請求回覆[完成]
-    GUILD_REQUEST(0x72),
+    GUILD_REQUEST(0x77),
     // 公會操作[完成]
-    GUILD_OPERATION(0x73),
+    GUILD_OPERATION(0x78),
     // 公會聯盟操作[完成]
-    ALLIANCE_OPERATION(0x74),
+    ALLIANCE_OPERATION(0x79),
     // 時空門[完成]
-    SPAWN_PORTAL(0x75),
-    // 開放通道[完成]
-    MECH_PORTAL(0x76),
+    SPAWN_PORTAL(0x7A),
+    // 開放通道[完成] // 要重抓
+    MECH_PORTAL(0x7FFF),
     // 伺服器訊息[完成]
-    SERVERMESSAGE(0x77),
+    SERVERMESSAGE(0x7B),
     // 阿斯旺海防戰訊息[完成]
-    AZWAN_MSG(0x78),
+    AZWAN_MSG(0x7C),
     // 花生機獎勵[完成]
-    PIGMI_REWARD(0x79),
+    PIGMI_REWARD(0x7D),
     // 獲得道具[完成]
-    ITEM_OBTAIN(0x7A),
+    ITEM_OBTAIN(0x7E),
     // 智慧貓頭鷹[完成]
-    OWL_OF_MINERVA(0x7B),
+    OWL_OF_MINERVA(0x7F),
     // 智慧貓頭鷹回覆
-    OWL_RESULT(0x7C),
-    // 0x7D (null)
-    // 0x7E (null)
+    OWL_RESULT(0x80),
+    // 0x81 (null)
+    // 0x82 (null)
 
     // 戒指操作請求[完成]
-    ENGAGE_REQUEST(0x7F),
+    ENGAGE_REQUEST(0x83),
     // 戒指操作返回[完成]
-    ENGAGE_RESULT(0x80),
+    ENGAGE_RESULT(0x84),
     // 結婚禮物[完成]
-    WEDDING_GIFT(0x81),
+    WEDDING_GIFT(0x85),
     // 結婚地圖變更[完成] [Int][Int]
-    WEDDING_MAP_TRANSFER(0x82),
+    WEDDING_MAP_TRANSFER(0x86),
     // 使用寵物飼料[完成]
-    USE_CASH_PET_FOOD(0x83),
+    USE_CASH_PET_FOOD(0x87),
     // 使用寵物技能[完成]
-    USE_CASH_PET_SKILL(0x84),
-    // 0x85 [-]
+    USE_CASH_PET_SKILL(0x88),
+    // 0x89 [-]
 
     // 神秘的鐵砧[完成]
-    FUSION_ANVIL(0x86),
-    // 0x87 [Byte][Long]
+    FUSION_ANVIL(0x8A),
+    // 0x8B [Byte][Long]
 
     // 黃色公告[完成]
-    YELLOW_CHAT(0x88),
+    YELLOW_CHAT(0x8C),
     // 商店優惠[完成]
-    SHOP_DISCOUNT(0x89),
+    SHOP_DISCOUNT(0x8D),
     // 捕捉怪物[完成]
-    CATCH_MOB(0x8A),
+    CATCH_MOB(0x8E),
     // 建立玩家Npc[完成] [Byte]
-    MAKE_PLAYER_NPC(0x8B),
+    MAKE_PLAYER_NPC(0x8F),
     // 玩家Npc[完成]
-    PLAYER_NPC(0x8C),
-    // 0x8D(null)
+    PLAYER_NPC(0x90),
+    // 0x91(null)
 
     // 隱藏Npc[完成]
-    DISABLE_NPC(0x8E),
+    DISABLE_NPC(0x92),
     // 獲得卡片[完成]
-    GET_CARD(0x8F),
+    GET_CARD(0x93),
     // 卡片設置[完成] [Int]
-    CARD_SET(0x90),
+    CARD_SET(0x94),
     // 變更小時[完成]
-    CHANGE_HOUR(0x91),
+    CHANGE_HOUR(0x95),
     // 重置小地圖[完成]
-    RESET_MINIMAP(0x92),
+    RESET_MINIMAP(0x96),
     // 教師更新[完成]
-    CONSULT_UPDATE(0x93),
+    CONSULT_UPDATE(0x97),
     // 班級更新[完成]
-    CLASS_UPDATE(0x94),
+    CLASS_UPDATE(0x98),
     // 網頁瀏覽更新[完成]
-    WEB_BOARD_UPDATE(0x95),
+    WEB_BOARD_UPDATE(0x99),
     // 擊殺數量[完成]
-    SESSION_VALUE(0x96),
+    SESSION_VALUE(0x9A),
     // 組隊數值[完成]
-    PARTY_VALUE(0x97),
+    PARTY_VALUE(0x9B),
     // 地圖數值[完成]
-    MAP_VALUE(0x98),
-    // 0x99 [String][String]
+    MAP_VALUE(0x9C),
+    // 0x9D [String][String]
 
     // 精靈墜飾[完成]
-    EXP_BONUS(0x9A),
+    EXP_BONUS(0x9E),
     // 家族系統[已關閉][完成]
-    SEND_PEDIGREE(0x9B),
-    OPEN_FAMILY(0x9C),
-    FAMILY_MESSAGE(0x9D),
-    FAMILY_INVITE(0x9E),
-    FAMILY_JUNIOR(0x9F),
-    SENIOR_MESSAGE(0xA0),
-    FAMILY(0xA1),
-    REP_INCREASE(0xA2),
-    FAMILY_LOGGEDIN(0xA3),
-    FAMILY_BUFF(0xA4),
-    FAMILY_USE_REQUEST(0xA5),
+    SEND_PEDIGREE(0x9F),
+    OPEN_FAMILY(0xA0),
+    FAMILY_MESSAGE(0xA1),
+    FAMILY_INVITE(0xA2),
+    FAMILY_JUNIOR(0xA3),
+    SENIOR_MESSAGE(0xA4),
+    FAMILY(0xA5),
+    REP_INCREASE(0xA6),
+    FAMILY_LOGGEDIN(0xA7),
+    FAMILY_BUFF(0xA8),
+    FAMILY_USE_REQUEST(0xA9),
     // (公會成員)升級訊息[完成]
-    LEVEL_UPDATE(0xA6),
+    LEVEL_UPDATE(0xAA),
     // 结婚訊息[完成]
-    MARRIAGE_UPDATE(0xA7),
+    MARRIAGE_UPDATE(0xAB),
     // 轉職訊息[完成]
-    JOB_UPDATE(0xA8),
+    JOB_UPDATE(0xAC),
     // 項鍊擴充[完成]
-    SLOT_UPDATE(0xA9),
+    SLOT_UPDATE(0xAD),
     // 請求跟隨提示[完成]
-    FOLLOW_REQUEST(0xAA),
+    FOLLOW_REQUEST(0xAE),
     // 新頂部訊息[完成]
-    TOP_MSG2(0xAB),
+    TOP_MSG2(0xAF),
     // 頂部訊息[完成]
-    TOP_MSG(0xAC),
+    TOP_MSG(0xB0),
     // 新頂部訊息[完成]
-    NEW_TOP_MSG(0xAD),
+    NEW_TOP_MSG(0xB1),
     // 中間訊息[完成]
-    MID_MSG(0xAE),
+    MID_MSG(0xB2),
     // 清理中間的訊息[完成]
-    CLEAR_MID_MSG(0xAF),
+    CLEAR_MID_MSG(0xB3),
     // 特殊訊息[完成]
-    SPECIAL_MSG(0xB0),
+    SPECIAL_MSG(0xB4),
     // 182新增的訊息[完成]
-    MAPLE182_ADD_MSG(0xB1),
+    MAPLE182_ADD_MSG(0xB5),
     // 楓之谷提示訊息[完成]
-    MAPLE_TIP_MSG(0xB2),
+    MAPLE_TIP_MSG(0xB6),
     // 楓之谷管理員訊息[完成]
-    MAPLE_ADMIN_MSG(0xB3),
+    MAPLE_ADMIN_MSG(0xB7),
     // 檢查道具欄位[完成]
-    INVENTORY_FULL(0xB4),
+    INVENTORY_FULL(0xB8),
     // 更新美洲豹[完成]
-    UPDATE_JAGUAR(0xB5),
+    UPDATE_JAGUAR(0xB9),
     // 神之子能力值
-    ZERO_STATS(0xB6),
+    ZERO_STATS(0xBA),
     // 神之子更新
-    ZERO_UPDATE(0xB7),
-    // 0xB8
+    ZERO_UPDATE(0xBB),
+    // 0xBC
 
     // 終極冒險家[完成]
-    ULTIMATE_EXPLORER(0xB9),
-    // 0xBA
-
-    // 能力值信息[完成-182]
-    SPECIAL_STAT(0xBB),
-    // 更新培養皿時間[完成]
-    UPDATE_IMP_TIME(0xBC),
-    // 使用培養皿[完成]
-    ITEM_POT(0xBD),
+    ULTIMATE_EXPLORER(0xBD),
     // 0xBE
-    // 0xBF
+
+    // 能力值信息[完成][hyper]
+    SPECIAL_STAT(0xBF),
+    // 更新培養皿時間[完成]
+    UPDATE_IMP_TIME(0xC0),
+    // 使用培養皿[完成]
+    ITEM_POT(0xC1),
+    // 0xC2
+    // 0xC3
 
     // 武陵道場訊息
-    MULUNG_MESSAGE(0xC0),
+    MULUNG_MESSAGE(0xC4),
     // 傳授角色技能
-    GIVE_CHARACTER_SKILL(0xC1),
-    // 0xC2【00 00】
-    // 0xC3
-    // 0xC4
-    // 0xC5
-
-    // 武陵排行[完成]
-    MULUNG_DOJO_RANKING(0xC6),
+    GIVE_CHARACTER_SKILL(0xC5),
+    // 0xC6【00 00】
     // 0xC7
-
-    // 更新潛在能力值
-    UPDATE_INNER_ABILITY(0xC8),
+    // 0xC8
     // 0xC9
 
+    // 武陵排行[完成] // 要重抓
+    MULUNG_DOJO_RANKING(0xCA),
+    // 0xCB
+
+    // 更新潛在能力值
+    UPDATE_INNER_ABILITY(0xCC),
+    // 0xCD
+
     // 使用/刪除技能[完成]
-    REPLACE_SKILLS(0xCA),
+    REPLACE_SKILLS(0xCE),
     // 內在能力值訊息[完成]
-    INNER_ABILITY_MSG(0xCB),
+    INNER_ABILITY_MSG(0xCF),
     // 地圖指引[完成] [Int]
-    MINIMAP_ARROW(0xCC),
-    // 0xCD [Boolean][Int] true => [Int]
+    MINIMAP_ARROW(0xD0),
+    // 0xD1 [Boolean][Int] true => [Int]
 
     // 角色潛在能力設定[完成]
-    ENABLE_INNER_ABILITY(0xCE),
+    ENABLE_INNER_ABILITY(0xD2),
     // 角色潛在能力重置
-    DISABLE_INNER_ABILITY(0xCF),
+    DISABLE_INNER_ABILITY(0xD3),
     // 獲得名聲值[完成]
-    UPDATE_HONOUR(0xD0),
+    UPDATE_HONOUR(0xD4),
     // 阿斯旺未知[未知]
-    AZWAN_UNKNOWN(0xD1),
+    AZWAN_UNKNOWN(0xD5),
     // 阿斯旺結果[完成] [Int][Int][Int][Int][Int][Int][Int][Int][Boolean]
-    AZWAN_RESULT(0xD2),
+    AZWAN_RESULT(0xD6),
     // 阿斯旺擊殺[完成]
-    AZWAN_KILLED(0xD3),
-    // 0xD4 【point】
-    // 0xD5 阿斯旺復活[String(玩家名稱)][Int](復活時間)
+    AZWAN_KILLED(0xD7),
+    // 0xD8 【point】
+    // 0xD9 阿斯旺復活[String(玩家名稱)][Int](復活時間)
 
-    // 能力傳播者[完成]
-    CIRCULATOR_ON_LEVEL(0xD6),
-    // 十字獵人訊息[完成]
-    SILENT_CRUSADE_MSG(0xD7),
-    // 十字獵人商店[完成]
-    SILENT_CRUSADE_SHOP(0xD8),
-    // 0xD9 幸運怪物【UI/UIWindow2.img/mapleMuseum】【UI/UIWindow2.img/mapleMuseum2)(UI/UIWindow2.img/luckyMonstery】
-    // 0xDA
-    // 0xDB 幸運怪物【UI/UIWindow2.img/mapleMuseum】【UI/UIWindow2.img/mapleMuseum2)(UI/UIWindow2.img/luckyMonstery】
-    // 0xDC 【state】
-    // 0xDD 【state】
+    // 能力傳播者
+    CIRCULATOR_ON_LEVEL(0xDA),
+    // 十字獵人訊息
+    SILENT_CRUSADE_MSG(0xDB),
+    // 十字獵人商店
+    SILENT_CRUSADE_SHOP(0xDC),
+    
+    // 0xDD 幸運怪物【UI/UIWindow2.img/mapleMuseum】【UI/UIWindow2.img/mapleMuseum2)(UI/UIWindow2.img/luckyMonstery】
     // 0xDE
-    // 自動飛行[完成] [Int]
-    AUTO_FLYING(0xDF),
+    // 0xDF 幸運怪物【UI/UIWindow2.img/mapleMuseum】【UI/UIWindow2.img/mapleMuseum2)(UI/UIWindow2.img/luckyMonstery】
+    // 0xE0 【state】
+    // 0xE1 【state】
+    // 0xE2
+    
+    // 自動飛行 [Int]
+    AUTO_FLYING(0xE3),
     // 禁止完成任務
-    DISALLOW_DELIVERY_QUEST(0xE0),
-    // 0xE1 【彈跳視窗】
-    // 0xE2 【賓果活動?】 [Byte] 【deck】【bingo】
-    // 0xE3 【賓果活動?】 [Byte] 【deck】【bingo】
-    // 0xE4
-    // 0xE5 【獲取物品?】【---】
+    DISALLOW_DELIVERY_QUEST(0xE4),
+    // 0xE5 【彈跳視窗】
+    // 0xE6 【賓果活動?】 [Byte] 【deck】【bingo】
+    // 0xE7 【賓果活動?】 [Byte] 【deck】【bingo】
+    // 0xE8
+    // 0xE9 【獲取物品?】【---】
 
     // 楓葉點數(完成)
-    MAPLE_POINT(0xE6),
-    // 0xE7 [Long]
-    // 0xE8 【方塊洗洗樂?】
-    // 0xE9 【重置神聖SP】 [Byte][Int][Byte]
-    // 0xEA 【Debug信息?】 [Short](年)[Short](月)[Short](日)[Short](點)[Short](分)[Int]((DWORD)%u, (LONG)%d)【(DWORD)%u, (LONG)%d】
-    // 0xEB 【Debug信息?】 [Int][Long]
-    // 0xEC
-    // 0xED 【沒有可以套用回復效果的對象。】【Recv => 0x176([Int][Byte])】
-    // 0xEE
-    // 0xEF 【Recv => 0xC9([Int][Short][Long])】
-    // 0xF0 【Recv => 0xC9([Int][Short][Long])】
-    // 0xF1
+    MAPLE_POINT(0xEA),
+    // 0xEB [Long]
+    // 0xEC 【方塊洗洗樂?】
+    // 0xED 【重置神聖SP】 [Byte][Int][Byte]
+    // 0xEE 【Debug信息?】 [Short](年)[Short](月)[Short](日)[Short](點)[Short](分)[Int]((DWORD)%u, (LONG)%d)【(DWORD)%u, (LONG)%d】
+    // 0xEF 【Debug信息?】 [Int][Long]
+    // 0xF0
+    // 0xF1 【沒有可以套用回復效果的對象。】【Recv => 0x176([Int][Byte])】
+    // 0xF2
+    // 0xF3 【Recv => 0xC9([Int][Short][Long])】
+    // 0xF4 【Recv => 0xC9([Int][Short][Long])】
+    // 0xF5
 
-    // 變成破壞天使【Recv => 0x173([Byte])
-    CHANGE_ANGELIC(0xF2),
+    // 變成破壞天使
+    CHANGE_ANGELIC(0xF6),
     // 解鎖充電技能
-    UNLOCK_CHARGE_SKILL(0xF3),
+    UNLOCK_CHARGE_SKILL(0xF7),
     // 上鎖充電技能
-    LOCK_CHARGE_SKILL(0xF4),
+    LOCK_CHARGE_SKILL(0xF8),
     // 自動登入
-    AUTO_LOGIN(0xF5),
-    // 0xF6 【寵物名牌戒指?】【[BP:%02d] %d】【///////////////////////////////】
+    AUTO_LOGIN(0xF9),
+    // 0xFA 【寵物名牌戒指?】【[BP:%02d] %d】【///////////////////////////////】
 
-    // 進化系統[完成]
-    EVOLVING_ACTION(0xF7),
-    // BossPvP技能【Recv => 0x16D】[完成]
-    BOSSPVP_SKILL_UI(0xF8),
-    // 0xF9
+    // 進化系統
+    EVOLVING_ACTION(0xFB),
+    // BossPvP技能【Recv => 0x16D】
+    BOSSPVP_SKILL_UI(0xFC),
+    
+    // 0xFD
 
     // 公會搜索
-    GUILD_SEARCH(0xFA),
-    // 0xFB
-    // 0xFC 【幸運怪物】【UI/UIWindow2.img/mapleMuseum】【UI/UIWindow2.img/mapleMuseum2】【UI/UIWindow2.img/luckyMonstery】【UI/UIWindow2.img/luckyMonResult】
-    // 0xFD 【獲取物品?】
-    // 0xFE 【10 00 00 00 00 00 00 00 00 00 00 00 00 00 00】
+    GUILD_SEARCH(0xFE),
     // 0xFF
-
-    // 請求進程列表[完成]
-    SYSTEM_PROCESS_LIST(0x100),
-    // 0x101
-    // 0x102
+    // 0x100 【幸運怪物】【UI/UIWindow2.img/mapleMuseum】【UI/UIWindow2.img/mapleMuseum2】【UI/UIWindow2.img/luckyMonstery】【UI/UIWindow2.img/luckyMonResult】
+    // 0x101 【獲取物品?】
+    // 0x102 【10 00 00 00 00 00 00 00 00 00 00 00 00 00 00】
     // 0x103
 
-    // 情景喇叭訊息[完成]
-    AVATAR_MEGA_RESULT(0x104),
-    // 情景喇叭[完成]
-    AVATAR_MEGA(0x105),
-    // 移除情景喇叭[完成]
-    AVATAR_MEGA_REMOVE(0x106),
-    // 活動清單[完成]
-    EVENT_LIST(0x107),
+    // 請求進程列表
+    SYSTEM_PROCESS_LIST(0x104),
+    
+    // 0x105
+    // 0x106
+    // 0x107
+    // 0x108
+
+    // 情景喇叭訊息
+    AVATAR_MEGA_RESULT(0x109),
+    // 情景喇叭
+    AVATAR_MEGA(0x10A),
+    // 移除情景喇叭
+    AVATAR_MEGA_REMOVE(0x10B),
+    // 活動清單
+    EVENT_LIST(0x10C),
     // 楓之谷聊天室
-    MESSENGER_OPEN(0x108),
-    // 0x109 【簽名】
-    // 0x10A 【問候玩家】
+    MESSENGER_OPEN(0x10D),
+    // 0x10E 【簽名】
+    // 0x10F 【問候玩家】
+    
+    // 王冠活動
+    EVENT_CROWN(0x110),
+    
+    // 0x111 [Byte][Byte]
 
-    // 王冠活動[完成]
-    EVENT_CROWN(0x10B),
-    // 0x10C [Byte][Byte]
-
-    // 自由轉職[完成]
-    FREE_CHANGE_JOB(0x10D),
-    // 0x10E
-    // 0x10F
-    // 0x110
-    // 0x111
-    // 0x112
+    // 自由轉職
+    FREE_CHANGE_JOB(0x112),
+    
     // 0x113
     // 0x114
     // 0x115
     // 0x116
-    // 0x117 【頂部訊息】
-    // 0x118 【IP驗證】
-    // 0x119 【Etc/CashPackage.img/%d/SN】
-    // 0x11A 【獸魔激鬥擂台賽】
-    // 0x11B 【UI/UIWindowBT.img/MonsterBattleSelection/num】
-    // 0x11C 【任務抵達】
-    // 0x11D
-    // 0x11E
-    // 0x11F
-    // 0x120
-    // 0x121
+    // 0x117
+    // 0x118
+    // 0x119
+    // 0x11A
+    // 0x11B
+    // 0x11C 【頂部訊息】
+    // 0x11D 【IP驗證】
+    // 0x11E 【Etc/CashPackage.img/%d/SN】
+    // 0x11F 【獸魔激鬥擂台賽】
+    // 0x120 【UI/UIWindowBT.img/MonsterBattleSelection/num】
+    // 0x121 【任務抵達】
+    // 0x122
+    // 0x123
+    // 0x124
+    // 0x125
+    // 0x126
 
     // 開啟墜飾欄(175+)
-    UPDATE_PENDANT_SLOT(0x122),
-    // 魔王競技場配對成功[完成]
-    BOSSPVP_FOUND(0x123),
-    // 魔王競技場配對失敗[完成]【Recv => 0x1FD ([Byte])】
-    BOSSPVP_FAIL(0x124),
-    // 參加魔王競技場配對[完成]
-    BOSSPVP_SEARCH(0x125),
-    // 0x126
-    // 0x127
-    // 0x128
-    // 0x129
-    // 0x12A 【00】
-    // 0x12B 【伺服器移民】
-    // 0x12C 【擴充倉庫欄位】
-
-    // 菁英王訊息[完成]
-    ELITE_BOSS_NOTICE(0x12D),
-    // 0x12E 【00 00 00 00 00 00 00 00 00】
-
-    // 咒文的痕跡[完成-182]
-    EQUIPMENT_ENCHANT(0x130),
-    // The Seed 排行
-    TOWER_OF_OZ_RANKING(0x131),
-    // The Seed 好友排行
-    TOWER_OF_OZ_FRIEND_RANKING(0x132),
-    // The Seed 獎勵[完成] [Int](樓層)[Int](時間)[Int](The Seed點數)[Int](獲得經驗值)[Int][Int]
-    TOWER_OF_OZ_REWARD(0x133),
-    // 0x12F [Int][Int][Byte]
-    // 0x130
-    // 0x131
+    UPDATE_PENDANT_SLOT(0x127),
+    // 魔王競技場配對成功
+    BOSSPVP_FOUND(0x128),
+    // 魔王競技場配對失敗
+    BOSSPVP_FAIL(0x129),
+    // 參加魔王競技場配對
+    BOSSPVP_SEARCH(0x12A),
+    // 0x12B
+    // 0x12C
+    // 0x12D
+    // 0x12E
+    // 0x12F 【00】
+    // 0x130 【伺服器移民】
+    // 0x131 【擴充倉庫欄位】
     // 0x132
-    // 0x133
-    // 0x134
 
-    // 離開遊戲[完成]
-    EXIT_GAME(0x140),
-    // 火步行[未知]
-    FIRE_STEP(0x141),
-    // 0x137
-    // 0x138
-    // 0x139 【臉部情緒?】【Unlock request Failed】
-    // 0x13A 【Recv => 0x23D ([Byte][Int][String][Byte])】
-    // 0x13B 【Item/Cash/0501.img/%08d/effect】
+    // 菁英王訊息
+    ELITE_BOSS_NOTICE(0x133),
+    
+    // 0x134 【00 00 00 00 00 00 00 00 00】
+
+    // 咒文的痕跡
+    EQUIPMENT_ENCHANT(0x135),
+    // The Seed 排行
+    TOWER_OF_OZ_RANKING(0x136),
+    // The Seed 好友排行
+    TOWER_OF_OZ_FRIEND_RANKING(0x137),
+    // The Seed 獎勵 [Int](樓層)[Int](時間)[Int](The Seed點數)[Int](獲得經驗值)[Int][Int]
+    TOWER_OF_OZ_REWARD(0x138),
+    // 0x139 [Int][Int][Byte]
+    // 0x13A
+    // 0x13B
     // 0x13C
     // 0x13D
     // 0x13E
-    // 0x13F
-    // 0x140
-    // 0x141 【彈跳視窗】
-    // 申請變更角色名稱[完成]
-    NAME_CHANGE(0x142),
-    // 雪橇活動[完成]【UI/Sboating.img/Basic/backgrnd】【Recv => 0x243 ([Byte])】
-    SELECT_SLEIGH(0x143),
-    // 潘姆音樂[完成]
-    PAM_SONG(0x144),
-    // 餽贈認證[完成-182]
-    MAPLE_FEED_AUTHEN(0x14B),
-    // 速配指數[完成]
-    QUICK_PAIR_RESULT(0x146),
+
+    // 離開遊戲
+    EXIT_GAME(0x13F),
+    // 火步行[未知]
+    FIRE_STEP(0x140),
+    
+    // 0x141
+    // 0x142
+    // 0x143
+    // 0x144 【臉部情緒?】【Unlock request Failed】
+    // 0x145 【Recv => [Byte][Int][String][Byte]】
+    // 0x146 【Item/Cash/0501.img/%08d/effect】
     // 0x147
     // 0x148
     // 0x149
-    // 贈送小鋼珠[完成]
-    GIFTS_BALL(0x14A),
+    // 0x14A
+    // 0x14B
+    // 0x14C 【彈跳視窗】
+    
+    // 申請變更角色名稱
+    NAME_CHANGE(0x14D),
+    // 雪橇活動【UI/Sboating.img/Basic/backgrnd】
+    SELECT_SLEIGH(0x14E),
+    // 潘姆音樂
+    PAM_SONG(0x14F),
+    // 餽贈認證
+    MAPLE_FEED_AUTHEN(0x150),
+    // 速配指數
+    QUICK_PAIR_RESULT(0x151),
+    
+    // 0x152
+    // 0x153
+    // 0x154
+    
+    // 贈送小鋼珠
+    GIFTS_BALL(0x155),
     // 九龍珠
-    DRAGON_BALL(0x14B),
-    // 開啟寶箱[完成]
-    TREASURE_BOX(0x14C), //[Int] [0:金、1:銀、5:神秘開罐器、6:幻想開罐器]
-    // 0x14D
-    // 0x14E 【釣魚系統】
-    // 0x14F
-    // 0x150 【周圍沒有攻擊的怪物。】、【無法連續使用.】
-
-    // 管理員警告[完成]
-    GM_POLICE(0x151),
-    // 新年賀卡[完成]
-    NEW_YEAR_CARD(0x152),
-    // 隨機變身藥水[完成]
-    RANDOM_MORPH(0x153),
-    // 個性文字[完成](5480000)
-    DISPOSITION_TEXT(0x154),
-    // 經驗值椅子[完成]
-    CHAIR_EXP_MSG(0x155),
-    // 0x156
-    // 0x157
-
-    // 變更頻道 + 訊息[完成]
-    AUTO_CC_MSG(0x158),
-    // 0x159
+    DRAGON_BALL(0x156),
+    // 開啟寶箱
+    TREASURE_BOX(0x157), //[Int] [0:金、1:銀、5:神秘開罐器、6:幻想開罐器]
+    // 0x158
+    // 0x159 【釣魚系統】
     // 0x15A
-    // 0x15B
-    // 0x15C [Int][Int]
-    // 0x15D
-    // 0x15E
-    // 0x15F
+    // 0x15B 【周圍沒有攻擊的怪物。】、【無法連續使用.】
 
-    // 獲得獎勵[完成-182]
-    REWARD(0x7FFE),
-    // 0x161
+    // 管理員警告[完成] [GMKiKi][HACK]
+    GM_POLICE(0x15C),    
+    // 新年賀卡[完成]
+    NEW_YEAR_CARD(0x15D),
+    // 隨機變身藥水[完成]
+    RANDOM_MORPH(0x15E),
+    // 個性文字[完成](5480000)
+    DISPOSITION_TEXT(0x15F),
+    // 經驗值椅子[完成]
+    CHAIR_EXP_MSG(0x160),
+    // 0x161    
     // 0x162
 
-    // 閃炫方塊回覆[完成-182]
-    SHIMMER_CUBE_RESPONSE(0x169),
-    // 0x164  178新增
-    // 0x165 【任務抵達】
+    // 變更頻道 + 訊息[完成]
+    AUTO_CC_MSG(0x163),
+    // 0x164
+    // 0x165
     // 0x166
-    // 0x167 【購物商城 => [B0 1A 25 00 00 00 00 00 00 80 59 DA 6B 2E CE 01 80 29 A5 02 EC 33 CE 01 18 00 00 00 98 A3 98 00 99 A3 98 00 9A A3 98 00 9B A3 98 00 24 52 A6 00 25 52 A6 00 76 6F 40 01 77 6F 40 01 78 6F 40 01 79 6F 40 01 20 4A CB 01 22 4A CB 01 2E 4A CB 01 2F 4A CB 01 30 4A CB 01 4E 4A CB 01 4F 4A CB 01 50 4A CB 01 55 4A CB 01 6C 4A CB 01 6D 4A CB 01 6E 4A CB 01 6F 4A CB 01 70 4A CB 01]
-    // 0x168 【[BlackListLoadDone] [BlackSize:%d] [sTargetIGNs:%s]】
-    // 0x169 【神奇剪刀】
+    // 0x167 [Int][Int]
+    // 0x168
+    // 0x169
     // 0x16A
-    // 0x16B 【組隊任務?】
-    // 0x16C 
-    // 0x16D 【輸入觀戰板內容】【Recv => 0x95】
-    // 0x16E 【UI/UIMiniGame.img/starPlanetResult/backgrnd】
-    // 0x16F 【新星世界試穿衣服】
-    // 0x170 【等待列表】
+
+    // 獲得獎勵[完成]
+    REWARD(0x16B),
+    // 0x16C
+    // 0x16D
+
+    // 閃炫方塊回覆
+    SHIMMER_CUBE_RESPONSE(0x16E),
+    
+    // 0x16F  178新增
+    // 0x170 【任務抵達】
     // 0x171
-    // 0x172
-    // 0x173
-    // 0x174 178新增
-    // 0x175 178新增
-    // 0x176 178新增
-    // 0x177 178新增
-    // 0x178 178新增
-    // 0x179 178新增
-    // 0x17A 178新增    
-    // 0x17B
-    // 0x17C 179新增 
-    // 0x17D 179新增
-    // 0x17E 179新增
+    // 0x172 【購物商城 => [B0 1A 25 00 00 00 00 00 00 80 59 DA 6B 2E CE 01 80 29 A5 02 EC 33 CE 01 18 00 00 00 98 A3 98 00 99 A3 98 00 9A A3 98 00 9B A3 98 00 24 52 A6 00 25 52 A6 00 76 6F 40 01 77 6F 40 01 78 6F 40 01 79 6F 40 01 20 4A CB 01 22 4A CB 01 2E 4A CB 01 2F 4A CB 01 30 4A CB 01 4E 4A CB 01 4F 4A CB 01 50 4A CB 01 55 4A CB 01 6C 4A CB 01 6D 4A CB 01 6E 4A CB 01 6F 4A CB 01 70 4A CB 01]
+    // 0x173 【[BlackListLoadDone] [BlackSize:%d] [sTargetIGNs:%s]】
+    // 0x174 【神奇剪刀】
+    // 0x175
+    // 0x176 【組隊任務?】
+    // 0x177 
+    // 0x178 【輸入觀戰板內容】【Recv => 0x95】
+    // 0x179 【UI/UIMiniGame.img/starPlanetResult/backgrnd】
+    // 0x17A 【新星世界試穿衣服】
+    // 0x17B 【等待列表】
+    // 0x17C
+    // 0x17D
+    // 0x17E
+    // 0x17F 178新增
+    // 0x180 178新增
+    // 0x181 178新增
+    // 0x182 178新增
+    // 0x183 178新增
+    // 0x184 178新增
+    // 0x185 178新增    
+    // 0x186
+    // 0x187 179新增 
+    // 0x188 179新增
+    // 0x189 179新增
 
     // 咒文的痕跡(FOREVER_TIME)
-    FEVER_TIME(0x7FFE),
-    // 0x18E 183新增 RETURN 0
-    // 0x18F 183新增 [INT][v4->INT][[INT]*v4]
-    // 0x190 183新增 [INT][v4->INT][[INT]*v4]
+    FEVER_TIME(0x18A),
+    
+    // 0x18B
+    // 0x18C
+    // 0x18D
+    // 0x18E
+    // 0x18F
+    // 0x190
+    // 0x191
+    // 0x192
+    // 0x193
+    // 0x194
+    // 0x195
+    // 0x196
+    // 0x197
+    // 0x198
+    // 0x199
+    // 0x19A
+    // 0x19B
+    
     // 技能組合[完成]
-    SKILL_MACRO(0x191),
+    SKILL_MACRO(0x19C),
     //================================
-    // CStage::OnPacket 開始(185-完成)
+    // CStage::OnPacket 開始(186-完成)
     //================================ 
 
     // 地圖傳送[完成]
-    WARP_TO_MAP(0x192),
+    WARP_TO_MAP(0x19D),
     // 農場[關閉]
-    FARM_OPEN(0x193),
+    FARM_OPEN(0x19E),
     // 拍賣系統[完成]
-    MTS_OPEN(0x194),
+    MTS_OPEN(0x19F),
     // 購物商城[完成]
-    CS_OPEN(0x195),
+    CS_OPEN(0x1A0),
     // 購物商城信息[完成]
-    CS_INFO(0x196),
+    CS_INFO(0x1A1),
     CASH_SHOP(0x7FFE),
     //================================
-    // CField::OnPacket 開始(185-完成)
+    // CField::OnPacket 開始(186-完成)
     //================================ 
 
     // 地圖阻擋[完成]
-    MAP_BLOCKED(0x197),
+    MAP_BLOCKED(0x1A2),
     // 伺服器阻擋[完成]
-    SERVER_BLOCKED(0x198),
+    SERVER_BLOCKED(0x1A3),
     // 隊伍阻擋[完成]
-    PARTY_BLOCKED(0x199),
+    PARTY_BLOCKED(0x1A4),
     // 裝備效果[完成]
-    SHOW_EQUIP_EFFECT(0x19A),
+    SHOW_EQUIP_EFFECT(0x1A5),
     // 組隊公會聊天
-    MULTICHAT(0x19B),
+    MULTICHAT(0x1A6),
     // 世界聊天模式[完成]
-    WORLD_MULTICHAT(0x19C),
+    WORLD_MULTICHAT(0x1A7),
     // 悄悄話
-    WHISPER(0x19D),
+    WHISPER(0x1A8),
     // 夫妻聊天
-    SPOUSE_CHAT(0x19E),
+    SPOUSE_CHAT(0x1A9),
     // Boss血條[完成]
-    BOSS_ENV(0x19F),
+    BOSS_ENV(0x1AA),
     // 地圖效果[完成]
-    MAP_EFFECT(0x1A0),
+    MAP_EFFECT(0x1AB),
     // 祝賀音樂(5100000)[完成]
-    CASH_SONG(0x1A1),
+    CASH_SONG(0x1AC),
     // GM效果[完成]
-    GM_EFFECT(0x1A2),
+    GM_EFFECT(0x1AD),
     // GM日誌[完成]
-    GM_LOG(0x1A3),
+    GM_LOG(0x1AE),
     // 選邊站[完成]
-    OX_QUIZ(0x1A4),
+    OX_QUIZ(0x1AF),
     // GM活動說明[完成]
-    GMEVENT_INSTRUCTIONS(0x1A5),
+    GMEVENT_INSTRUCTIONS(0x1B0),
     // 計時器[完成]
-    CLOCK(0x1A6),
+    CLOCK(0x1B1),
     //================================
-    // CField_ContiMove::OnPacket 開始(183-完成)
+    // CField_ContiMove::OnPacket 開始(186-完成)
     //================================ 
 
     // 船隻移動[完成]
-    BOAT_MOVE(0x1A7),
+    BOAT_MOVE(0x1B2),
     // 船隻狀態[完成]
-    BOAT_STATE(0x1A8),
+    BOAT_STATE(0x1B3),
     //================================
     // CField_ContiMove::OnPacket 結束
     //================================ 
 
-    // 0x1A9
-    // 0x1AA
-    // 0x1AB
+    // 0x1B4
+    // 0x1B5
+    // 0x1B6
 
     // 停止計時[完成]
-    STOP_CLOCK(0x1AC),
+    STOP_CLOCK(0x1B7),
     //================================
-    //CField_AriantArena::OnPacket（CField_AriantArena::OnShowResult） 開始(185-完成)
+    //CField_AriantArena::OnPacket（CField_AriantArena::OnShowResult） 開始(186-完成)
     //================================ 
     // 納希競技大會分數[完成]
-    ARIANT_SCOREBOARD(0x1AD),
+    ARIANT_SCOREBOARD(0x1B8),
     //================================
     // CField_AriantArena::OnPacket（CField_AriantArena::OnShowResult） 結束
     //================================ 
     // 金字塔更新[完成]
-    PYRAMID_UPDATE(0x1AE),
+    PYRAMID_UPDATE(0x1B9),
     //================================
-    // CField_KillCount::OnPacket 開始(185-完成)
+    // CField_KillCount::OnPacket 開始(186-完成)
     //================================ 
     // 金字塔擊殺數量[完成]
-    PYRAMID_KILL_COUNT(0x1AF),
+    PYRAMID_KILL_COUNT(0x1BA),
     //================================
     // CField_KillCount::OnPacket 結束
     //================================ 
     // 金字塔分數[完成]
-    PYRAMID_RESULT(0x1B0),
+    PYRAMID_RESULT(0x1BB),
     // 快速按鍵[完成]
-    QUICK_SLOT(0x1B1),
-    // 移動平臺[完成]
-    MOVE_PLATFORM(0x1B2),
-    // 0x1B3
-    // 0x1B4 
-    // 0x1B5
-    // 0x1B6
-    // 0x1B7
-    // 0x1B8
-
-    // PvP信息[完成]
-    PVP_INFO(0x1B9),
-    // 角色站立方向狀態[完成]
-    DIRECTION_STATUS(0x1BA),
-    // 惡魔之力[完成]
-    GAIN_FORCE(0x1BB),
-    // 組隊任務達成率[完成]
-    ACHIEVEMENT_RATIO(0x1BC),
-    // 快速移動[完成]
-    QUICK_MOVE(0x1BD),
+    QUICK_SLOT(0x1BC),
     
-    // 0x1BE
-    // 0x1BF
-    // 0x1C0 
+    // 0x1BD
+    
+    // 移動平臺[完成]
+    MOVE_PLATFORM(0x1BE),
+    
+    // 0x1BF 
+    // 0x1C0
     // 0x1C1
-    // 0x1C2 // 副本BOSS技能特效
+    // 0x1C2
     // 0x1C3
-    // 0x1C4 // 副本BOSS技能特效
+    // 0x1C4
     // 0x1C5
     // 0x1C6
-    // 0x1C7
-    // 0x1C8
-    // 0x1C9
-    // 0x1CA // 帳號保護
-    // 0x1CB
+
+    // PvP信息[完成]
+    PVP_INFO(0x1C7),
+    // 角色站立方向狀態[完成]
+    DIRECTION_STATUS(0x1C8),
+    // 惡魔之力[完成]
+    GAIN_FORCE(0x1C9),
+    // 組隊任務達成率[完成]
+    ACHIEVEMENT_RATIO(0x1CA),
+    // 快速移動[完成]
+    QUICK_MOVE(0x1CB),
+    
     // 0x1CC
     // 0x1CD
     // 0x1CE
-    // 0x1CF // 完成造型王預賽參加申請
-    // 0x1D0 // 菁英怪物
+    // 0x1CF
+    // 0x1D0 // 副本BOSS技能特效
     // 0x1D1
-    // 0x1D2
+    // 0x1D2 // 副本BOSS技能特效
     // 0x1D3
     // 0x1D4
     // 0x1D5
     // 0x1D6
     // 0x1D7
-    // 0x1D8
+    // 0x1D8 // 帳號保護
     // 0x1D9
     // 0x1DA
     // 0x1DB
     // 0x1DC
-    // 0x1DD
+    // 0x1DD // 完成造型王預賽參加申請
+    // 0x1DE // 菁英怪物
+    // 0x1DF
+    // 0x1E0
+    // 0x1E1
+    // 0x1E2
+    // 0x1E3
+    // 0x1E4
+    // 0x1E5
+    // 0x1E6
+    // 0x1E7
+    // 0x1E8
+    // 0x1E9
+    // 0x1EA
+    // 0x1EB
+    // 0x1EC
+    // 0x1ED
 
     //================================
-    // CUserPool::OnPacket 開始(185-完成)
+    // CUserPool::OnPacket 開始(186-完成)
     //================================ 
 
     // 召喚玩家[完成]
-    SPAWN_PLAYER(0x1DE),
+    SPAWN_PLAYER(0x1EE),
     // 移除玩家[完成]
-    REMOVE_PLAYER_FROM_MAP(0x1DF),
+    REMOVE_PLAYER_FROM_MAP(0x1EF),
     //================================
-    // CUserPool::OnUserCommonPacket 開始(185-完成)
+    // CUserPool::OnUserCommonPacket 開始(186-完成)
     //================================ 
 
     // 普通聊天[完成]
-    CHATTEXT(0x1E0),
+    CHATTEXT(0x1F0),
     // 黑板[完成]
-    CHALKBOARD(0x1E1),
+    CHALKBOARD(0x1F1),
     // 更新玩家[完成]
-    UPDATE_CHAR_BOX(0x1E2),
+    UPDATE_CHAR_BOX(0x1F2),
     // 消費效果[未知]
-    SHOW_CONSUME_EFFECT(0x1E3),
+    SHOW_CONSUME_EFFECT(0x1F3),
     // 使用卷軸效果[完成]
-    SHOW_SCROLL_EFFECT(0x1E4),
+    SHOW_SCROLL_EFFECT(0x1F4),
     
-    // 0x1E5 (null)
+    // 0x1F5 (null)
 
     // 咒文的痕跡[完成]
-    SHOW_ENCHANTER_EFFECT(0x1E6),
+    SHOW_ENCHANTER_EFFECT(0x1F6),
     // 使用魂之珠[完成]
-    SHOW_SOULSCROLL_EFFECT(0x1E7),
+    SHOW_SOULSCROLL_EFFECT(0x1F7),
     // 放大鏡效果[完成]
-    SHOW_MAGNIFYING_EFFECT(0x1E8),
+    SHOW_MAGNIFYING_EFFECT(0x1F8),
     // 擴充潛能欄位
-    SHOW_POTENTIAL_EXPANSION(0x1E9),
+    SHOW_POTENTIAL_EXPANSION(0x1F9),
     // 潛能重置效果
-    SHOW_POTENTIAL_RESET(0x1EA),
+    SHOW_POTENTIAL_RESET(0x1FA),
     // 重新設置潛能效果
-    SHOW_BONUS_POTENTIAL_RESET(0x1EB),
+    SHOW_BONUS_POTENTIAL_RESET(0x1FB),
     
-    // 0x1EC 使用幸運卷?
+    // 0x1FC 使用幸運卷?
 
     // 顯示煙花效果
-    SHOW_FIREWORKS_EFFECT(0x1ED),
+    SHOW_FIREWORKS_EFFECT(0x1FD),
     
-    // 0x1EE
-    // 0x1EF
-    // 0x1F0
+    // 0x1FE
+    // 0x1FF
+    // 0x200
 
     // 顯示星岩效果
-    SHOW_NEBULITE_EFFECT(0x1F1),
+    SHOW_NEBULITE_EFFECT(0x201),
     // 顯示合成效果
-    SHOW_FUSION_EFFECT(0x1F2),
+    SHOW_FUSION_EFFECT(0x202),
     // PvP攻擊
-    PVP_ATTACK(0x1F3),
+    PVP_ATTACK(0x203),
     // PvP煙霧[完成] find:[ invenom ]
-    PVP_MIST(0x1F4),
+    PVP_MIST(0x204),
     
-    // 0x1F5
+    // 0x205
 
     // PvP冷卻時間
-    PVP_COOL(0x1F6),
+    PVP_COOL(0x206),
     // 磁場技能
-    TESLA_TRIANGLE(0x1F7),
+    TESLA_TRIANGLE(0x207),
     
-    // 0x1F8
+    // 0x208
 
     // 跟隨效果
-    FOLLOW_EFFECT(0x1F9),
+    FOLLOW_EFFECT(0x209),
     // 顯示組隊任務獎勵[完成]
-    SHOW_PQ_REWARD(0x1FA),
+    SHOW_PQ_REWARD(0x20A),
     // 工藝效果
-    CRAFT_EFFECT(0x1FB),
+    CRAFT_EFFECT(0x20B),
     // 工藝完成
-    CRAFT_COMPLETE(0x1FC),
+    CRAFT_COMPLETE(0x20C),
     // 採集結束特效
-    HARVESTED_EFFECT(0x1FD),
+    HARVESTED_EFFECT(0x20D),
     // 採集結束
-    HARVESTED(0x1FE),
+    HARVESTED(0x20E),
     
-    // 0x1FF
+    // 0x20F
 
     // 玩家傷害
-    PLAYER_DAMAGED(0x200),
+    PLAYER_DAMAGED(0x210),
     // 奈特的金字塔
-    NETT_PYRAMID(0x201),
+    NETT_PYRAMID(0x211),
     // 設定特效
-    SET_PHASE(0x202),
-    
-    // 0x203
-    // 0x204
-    // 0x205
-    // 0x206
-    // 0x207
-
-    // 潘姆音樂
-    PAMS_SONG(0x208),
-    // 取消椅子
-    CANCEL_CHAIR(0x209),
-    
-    // 0x20A
-    // 0x20B
-    // 0x20C
-
-    // 攻擊Skin[完成]
-    SHOW_DAMAGE_SKIN(0x20D),
-    
-    // 0x20E
-    // 0x20F
-    // 0x210
-    // 0x211
-    
-    // 裝備特效開關
-    EFFECT_SWITCH(0x212),
+    SET_PHASE(0x212),
     
     // 0x213
     // 0x214
     // 0x215
     // 0x216
     // 0x217
-    // 0x218
-    // 0x219
+
+    // 潘姆音樂
+    PAMS_SONG(0x218),
+    // 取消椅子
+    CANCEL_CHAIR(0x219),
+    
     // 0x21A
     // 0x21B
     // 0x21C
-    // 0x21D
+
+    // 攻擊Skin[完成]
+    SHOW_DAMAGE_SKIN(0x21D),
+    
+    // 0x21E
+    // 0x21F
+    // 0x220
+    // 0x221
+    
+    // 裝備特效開關
+    EFFECT_SWITCH(0x222),
+    
+    // 0x223
+    // 0x224
+    // 0x225
+    // 0x226
+    // 0x227
+    // 0x228
+    // 0x229
+    // 0x22A
+    // 0x22B
+    // 0x22C
+    // 0x22D
+    // 0x22E
+    // 0x22F
+    // 0x230
+    // 0x231
+    // 0x232
+    // 0x233
+    // 0x234
+    // 0x235
 
     //================================
-    // CUserPool::OnUserPetPacket 開始(185-完成)
+    // CUserPool::OnUserPetPacket 開始(186-完成)
     //================================ 
 
     // 召喚寵物[完成]
-    SPAWN_PET(0x21E),
+    SPAWN_PET(0x236),
     // 寵物移動[完成]
-    MOVE_PET(0x21F),
+    MOVE_PET(0x237),
     // 寵物說話[完成]
-    PET_CHAT(0x220),
+    PET_CHAT(0x238),
     // 變更寵物名稱
-    PET_NAMECHANGE(0x221),
+    PET_NAMECHANGE(0x239),
     
-    // 0x222
+    // 0x23A
 
     // 寵物例外清單[完成]
-    PET_EXCEPTION_LIST(0x223),
+    PET_EXCEPTION_LIST(0x23B),
     // 寵物顏色[完成]
-    PET_COLOR(0x224),
+    PET_COLOR(0x23C),
     // 寵物大小[完成]
-    PET_SIZE(0x225),
+    PET_SIZE(0x23D),
     
-    // 0x226
+    // 0x23E
 
     // 顯示寵物[完成]
-    SHOW_PET(0x227),
+    SHOW_PET(0x23F),
     // 寵物指令[完成]
-    PET_COMMAND(0x228),
+    PET_COMMAND(0x240),
     //================================
-    // CUserPool::OnUserDragonPacket 開始(185-完成)
+    // CUserPool::OnUserDragonPacket 開始(186-完成)
     //================================ 
 
     // 召喚龍神[完成] 
-    DRAGON_SPAWN(0x229),
+    DRAGON_SPAWN(0x241),
     // 龍神移動[完成]
-    DRAGON_MOVE(0x22A),
+    DRAGON_MOVE(0x242),
     // 移除龍神[完成]
-    DRAGON_REMOVE(0x22B),
+    DRAGON_REMOVE(0x243),
     //================================
-    // CUserPool::OnUserAndroidPacket 開始(185-完成)
+    // CUserPool::OnUserAndroidPacket 開始(186-完成)
     //================================ 
 
     // 召喚機器人[完成]
-    ANDROID_SPAWN(0x22C),
+    ANDROID_SPAWN(0x244),
     // 機器人移動[完成]
-    ANDROID_MOVE(0x22D),
+    ANDROID_MOVE(0x245),
     // 機器人情緒[完成]
-    ANDROID_EMOTION(0x22E),
+    ANDROID_EMOTION(0x246),
     // 更新機器人外觀[完成]
-    ANDROID_UPDATE(0x22F),
+    ANDROID_UPDATE(0x247),
     // 移除機器人[完成]
-    ANDROID_DEACTIVATED(0x230),
+    ANDROID_DEACTIVATED(0x248),
     //================================
-    // CUserPool::OnUserHakuPacket1 開始(185-完成)
+    // CUserPool::OnUserHakuPacket1 開始(186-完成)
     //================================ 
 
     // 變更花弧
-    HAKU_CHANGE_1(0x231),
+    HAKU_CHANGE_1(0x249),
     
-    // 0x232
+    // 0x24A
 
     // 花狐使用技能後發的(Done)
-    HAKU_USE_BUFF(0x233),
+    HAKU_USE_BUFF(0x24B),
     // 變更花弧
-    HAKU_CHANGE_0(0x234),
+    HAKU_CHANGE_0(0x24C),
     
-    // 0x235
+    // 0x24D
 
     // 花弧未知
-    HAKU_UNK(0x236),
+    HAKU_UNK(0x24E),
     //================================
-    // CUserPool::OnUserHakuPacket2 開始(185-完成)
+    // CUserPool::OnUserHakuPacket2 開始(186-完成)
     //================================ 
 
-    // 0x237
+    // 0x24F
 
     //花狐移動
-    HAKU_MOVE(0x238),
+    HAKU_MOVE(0x250),
     //花狐更新
-    HAKU_UPDATE(0x239),
+    HAKU_UPDATE(0x251),
     //變更花狐
-    HAKU_CHANGE(0x23A),
+    HAKU_CHANGE(0x252),
     
-    // 0x23B[null]
-    // 0x23C[null]
+    // 0x253[null]
+    // 0x254[null]
 
     //召喚花狐[完成]
-    SPAWN_HAKU(0x23D),
+    SPAWN_HAKU(0x255),
     
-    // 0x23E
-    // 0x23F
+    // 0x256
+    // 0x257
 
     //================================
-    // CUserPool::OnUserRemotePacket 開始(183-完成)
+    // CUserPool::OnUserRemotePacket 開始(186-完成)
     //================================ 
 
     // 玩家移動[完成]
-    MOVE_PLAYER(0x23F),
+    MOVE_PLAYER(0x258),
     // 近距離攻擊[完成]
-    CLOSE_RANGE_ATTACK(0x240),
+    CLOSE_RANGE_ATTACK(0x259),
     // 遠距離攻擊[完成]
-    RANGED_ATTACK(0x241),
+    RANGED_ATTACK(0x25A),
     // 魔法攻擊[完成]
-    MAGIC_ATTACK(0x242),
+    MAGIC_ATTACK(0x25B),
     // 被動攻擊[完成]
-    PASSIVE_ATTACK(0x243),
+    PASSIVE_ATTACK(0x25C),
     //技能效果[完成][用主教的创世之破抓到包]
-    SKILL_EFFECT(0x244),
+    SKILL_EFFECT(0x25D),
     //移動攻擊[完成][33121214 - 狂野機關砲]
-    MOVE_ATTACK(0x245),
+    MOVE_ATTACK(0x25E),
     //取消技能效果[完成]
-    CANCEL_SKILL_EFFECT(0x246),
+    CANCEL_SKILL_EFFECT(0x25F),
     //玩家受到傷害[完成]
-    DAMAGE_PLAYER(0x247),
+    DAMAGE_PLAYER(0x260),
     //玩家面部表情[完成]
-    FACIAL_EXPRESSION(0x248),
-    // 0x249
+    FACIAL_EXPRESSION(0x261),
+    // 0x262
 
     //顯示物品效果
-    SHOW_EFFECT(0x24A),
+    SHOW_EFFECT(0x263),
     //顯示頭上稱號
-    SHOW_TITLE(0x24B),
+    SHOW_TITLE(0x264),
     //天使破壞者變更
-    ANGELIC_CHANGE(0x24C),
-    // 0x24D
-    // 0x24E
-    // 0x24F
-
-    //顯示椅子效果[完成]
-    SHOW_CHAIR(0x250),
-    //更新玩家外觀[完成]
-    UPDATE_CHAR_LOOK(0x251),
-    //玩家外觀效果[完成]
-    SHOW_FOREIGN_EFFECT(0x252),
-    //獲得異常狀態[完成]
-    GIVE_FOREIGN_BUFF(0x253),
-    //取消異常狀態
-    CANCEL_FOREIGN_BUFF(0x254),
-    //更新隊員血量
-    UPDATE_PARTYMEMBER_HP(0x255),
-    //讀取公會名稱[完成]
-    LOAD_GUILD_NAME(0x256),
-    //讀取公會標誌[完成]
-    LOAD_GUILD_ICON(0x257),
-    //讀取隊伍(Done)
-    LOAD_TEAM(0x258),
-    //採集
-    SHOW_HARVEST(0x259),
-    //PvP血量
-    PVP_HP(0x25A),
-    // 0x25B
-    // 0x25C
-    // 0x25D
-    // 0x25E
-    // 0x25F
-    // 0x260
-    // 0x261
-    // 0x262
-    // 0x263
-    // 0x264
-
-    //神之子狀態
-    ZERO_MUITTAG(0x265),
+    ANGELIC_CHANGE(0x265),
     // 0x266
     // 0x267
     // 0x268
-    // 0x269 [NULL]
-    // 0x26A
-    // 0x26B
-    // 0x26C
-    // 0x26D
+
+    //顯示椅子效果[完成]
+    SHOW_CHAIR(0x269),
+    //更新玩家外觀[完成]
+    UPDATE_CHAR_LOOK(0x26A),
+    //玩家外觀效果[完成]
+    SHOW_FOREIGN_EFFECT(0x26B),
+    //獲得異常狀態[完成]
+    GIVE_FOREIGN_BUFF(0x26C),
+    //取消異常狀態
+    CANCEL_FOREIGN_BUFF(0x26D),
+    //更新隊員血量
+    UPDATE_PARTYMEMBER_HP(0x26E),
+    //讀取公會名稱[完成]
+    LOAD_GUILD_NAME(0x26F),
+    //讀取公會標誌[完成]
+    LOAD_GUILD_ICON(0x270),
+    //讀取隊伍(Done)
+    LOAD_TEAM(0x271),
+    //採集
+    SHOW_HARVEST(0x272),
+    //PvP血量
+    PVP_HP(0x273),
+    // 0x274
+    // 0x275
+    // 0x276
+    // 0x277
+    // 0x278
+    // 0x279
+    // 0x27A
+    // 0x27B
+    // 0x27C
+    // 0x27D
+
+    //神之子狀態
+    ZERO_MUITTAG(0x27E),
+    // 0x27F
+    // 0x280
+    // 0x281
+    // 0x282 [NULL]
+    // 0x283
+    // 0x284
+    // 0x285
+    // 0x286
+    // 0x287
+    // 0x288
 
     //================================
-    // CUserPool::OnUserLocalPacket 開始(185-完成)
+    // CUserPool::OnUserLocalPacket 開始(186-完成)
     //================================ 
 
     // 動畫表情[完成]
-    DIRECTION_FACIAL_EXPRESSION(0x270),
+    DIRECTION_FACIAL_EXPRESSION(0x289),
     // 畫面移動
-    MOVE_SCREEN(0x271),
+    MOVE_SCREEN(0x28A),
     // 顯示物品效果[完成]
-    SHOW_SPECIAL_EFFECT(0x272),
+    SHOW_SPECIAL_EFFECT(0x28B),
     // 角色地圖瞬移 武陵道場會出現
-    CURRENT_MAP_WARP(0x273),
+    CURRENT_MAP_WARP(0x28C),
     
-    // 0x274
+    // 0x28D
 
     // 使用福包成功(5200000)[完成]
-    MESOBAG_SUCCESS(0x275),
+    MESOBAG_SUCCESS(0x28E),
     // 使用福包失敗(5200000)[完成]
-    MESOBAG_FAILURE(0x276),
+    MESOBAG_FAILURE(0x28F),
     // 更新任務信息
-    UPDATE_QUEST_INFO(0x277),
+    UPDATE_QUEST_INFO(0x290),
     // 血量減少
-    HP_DECREASE(0x278),
+    HP_DECREASE(0x291),
     // 變更寵物技能[完成]
-    PET_FLAG_CHANGE(0x279),
+    PET_FLAG_CHANGE(0x292),
     // 玩家提示[完成]
-    PLAYER_HINT(0x27A),
+    PLAYER_HINT(0x293),
     // 播放事件音效
-    PLAY_EVENT_SOUND(0x27B),
+    PLAY_EVENT_SOUND(0x294),
     // 播放迷你遊戲音效
-    PLAY_MINIGAME_SOUND(0x27C),
+    PLAY_MINIGAME_SOUND(0x295),
     // 生產用技能
-    MAKER_SKILL(0x27D),
+    MAKER_SKILL(0x296),
     
-    // 0x27E (null)
-    // 0x27F
+    // 0x297 (null)
+    // 0x298
 
     // 開啟介面[完成]
-    OPEN_UI(0x280),
+    OPEN_UI(0x299),
     
-    // 0x281
+    // 0x29A
 
     // 開啟選項介面[完成]
-    OPEN_UI_OPTION(0x282),
+    OPEN_UI_OPTION(0x29B),
     
-    // 0x283
+    // 0x29C
 
     // 鎖定玩家按鍵動作[完成]
-    LOCK_KEY(0x284),
+    LOCK_KEY(0x29D),
     // 劇情鎖定介面[完成]
-    LOCK_UI(0x285),
+    LOCK_UI(0x29E),
     // 不顯示其他玩家[完成]
-    DISABLE_OTHERS(0x286),
+    DISABLE_OTHERS(0x29F),
     // 召喚初心者幫手[完成]
-    SUMMON_HINT(0x287),
+    SUMMON_HINT(0x2A0),
     // 初心者幫手訊息[完成]
-    SUMMON_HINT_MSG(0x288),
+    SUMMON_HINT_MSG(0x2A1),
     
-    // 0x289
-    // 0x28A
-    // 0x28B
+    // 0x2A2
+    // 0x2A3
+    // 0x2A4
 
     // 狂狼勇士連擊[完成]
-    ARAN_COMBO(0x28C),
+    ARAN_COMBO(0x2A5),
     // 狂狼勇士鬥氣重生[完成]
-    ARAN_COMBO_RECHARGE(0x28D),
+    ARAN_COMBO_RECHARGE(0x2A6),
     
-    // 0x28E
-    // 0x28F
+    // 0x2A7
+    // 0x2A8
 
     // 公告提示[完成]
-    GAME_MSG(0x290),
+    GAME_MSG(0x2A9),
     // 遊戲訊息[完成]
-    GAME_MESSAGE(0x291),
+    GAME_MESSAGE(0x2AA),
     
-    // 0x292 [String][Int]
+    // 0x2AB [String][Int]
 
     //
-    BUFF_ZONE_EFFECT(0x293),
+    BUFF_ZONE_EFFECT(0x2AC),
     //
-    DAMAGE_METER(0x294),
+    DAMAGE_METER(0x2AD),
     // 炸彈攻擊
-    TIME_BOMB_ATTACK(0x295),
+    TIME_BOMB_ATTACK(0x2AE),
     // 跟隨移動
-    FOLLOW_MOVE(0x296),
+    FOLLOW_MOVE(0x2AF),
     // 跟隨訊息
-    FOLLOW_MSG(0x297),
+    FOLLOW_MSG(0x2B0),
     
-    //　0x298
+    //　0x2B1
 
     // 建立終極冒險家
-    CREATE_ULTIMATE(0x299),
+    CREATE_ULTIMATE(0x2B2),
     // 採集訊息
-    HARVEST_MESSAGE(0x29A),
+    HARVEST_MESSAGE(0x2B3),
     // 符文介面
-    RUNE_ACTION(0x29B),
+    RUNE_ACTION(0x2B4),
     // 礦物背包
-    OPEN_BAG(0x29C),
+    OPEN_BAG(0x2B5),
     // 龍之氣息
-    DRAGON_BLINK(0x29D),
+    DRAGON_BLINK(0x2B6),
     // PvP冰騎士
-    PVP_ICEGAGE(0x29E),
+    PVP_ICEGAGE(0x2B7),
     // 位置信息[完成]
-    DIRECTION_INFO(0x29F),
+    DIRECTION_INFO(0x2B8),
     // 重新獲得勳章
-    REISSUE_MEDAL(0x2A0),
+    REISSUE_MEDAL(0x2B9),
     
-    // 0x2A1
-    // 0x2A2 [Int]
+    // 0x2BA
+    // 0x2BB [Int]
 
     // 動畫播放[完成]
-    PLAY_MOVIE(0x2A3),
+    PLAY_MOVIE(0x2BC),
     // 蛋糕 vs 派餅 活動
-    CAKE_VS_PIE_MSG(0x2A4),
+    CAKE_VS_PIE_MSG(0x2BD),
     // 幻影俠盜卡片[完成]
-    PHANTOM_CARD(0x2A5),
+    PHANTOM_CARD(0x2BE),
     
-    // 0x2A6 [Int]
-    // 0x2A7 [Int][Byte]
+    // 0x2BF [Int]
+    // 0x2C0 [Int][Byte]
 
     // 夜光連擊
-    LUMINOUS_COMBO(0x2A8),
+    LUMINOUS_COMBO(0x2C1),
     
-    // 0x2A9
-    // 0x2AA
-    // 0x2AB
-    // 0x2AC
-    // 0x2AD
-    // 0x2AE
-    // 0x2AF
-    // 0x2B0
-    // 0x2B1
-    // 0x2B2
-    // 0x2B3
-    // 0x2B4
-    // 0x2B5
-    // 0x2B6
-    
-    // 死亡視窗
-    DEATH_TIP(0x2B7),
-    
-    // 0x2B8
-    // 0x2B9
-    // 0x2BA
-
-    // 時間膠囊[完成] (3010587)
-    TIME_CAPSULE(0x2BB),
-    
-    // 0x2BC
-    // 0x2BD
-    // 0x2BE
-    // 0x2BF
-
-    // 神之子衝擊波[完成] (101000102)
-    ZERO_SHOCKWAVE(0x2C0),
-    // 設定槍的名稱[完成]
-    SET_GUN_NAME(0x2C1),
-    // 設定槍彈[完成]
-    SET_GUN_AMMO(0x2C2),
-    // 建立槍[完成]
-    CREATE_GUN(0x2C3),
-    // 清除槍[完成]
-    CLEAR_GUN(0x2C4),
-    
+    // 0x2C2
+    // 0x2C3
+    // 0x2C4
     // 0x2C5
     // 0x2C6
     // 0x2C7
     // 0x2C8
     // 0x2C9
     // 0x2CA
-
-    // 戰鬥回復[完成] (101110205)
-    ZERO_BATTLE_HEAL(0x2CB),
-    
+    // 0x2CB
     // 0x2CC
     // 0x2CD
     // 0x2CE
     // 0x2CF
-    // 0x2D0
+    
+    // 死亡視窗
+    DEATH_TIP(0x2D0),
+    
     // 0x2D1
     // 0x2D2
     // 0x2D3
-    // 0x2D4
-    // 0x2D5
 
-    // 神之子參數(Done)
-    ZERO_OPTION(0x2D6),
-    // 翻轉硬幣(Done)
-    FLIP_THE_COIN(0x2D7),
+    // 時間膠囊[完成] (3010587)
+    TIME_CAPSULE(0x2D4),
     
+    // 0x2D5
+    // 0x2D6
+    // 0x2D7
     // 0x2D8
-    // 0x2D9
-    // 0x2DA
-    // 0x2DB
 
-    //幽靈水彩特效(Done) (skill == 80001408)
-    GHOST_WATERCOLOR_EFFECT(0x2DC),
-    //符文特效(Done) (80001429)
-    RUNE_EFFECT(0x2DD),
+    // 神之子衝擊波[完成] (101000102)
+    ZERO_SHOCKWAVE(0x2D9),
+    // 設定槍的名稱[完成]
+    SET_GUN_NAME(0x2DA),
+    // 設定槍彈[完成]
+    SET_GUN_AMMO(0x2DB),
+    // 建立槍[完成]
+    CREATE_GUN(0x2DC),
+    // 清除槍[完成]
+    CLEAR_GUN(0x2DD),
     
     // 0x2DE
-    // 0x2DF
+    // 0x2DF // 進入副本錯誤訊息
     // 0x2E0
     // 0x2E1
     // 0x2E2
     // 0x2E3
-    // 0x2E4
+
+    // 戰鬥回復[完成] (101110205)
+    ZERO_BATTLE_HEAL(0x2E4),
+    
     // 0x2E5
     // 0x2E6
     // 0x2E7
     // 0x2E8
     // 0x2E9
     // 0x2EA
-
-    // Setp GiftID[完成]
-    SETP_GIFT_ID(0x2EB),
-    
+    // 0x2EB
     // 0x2EC
+    // 0x2ED
+    // 0x2EE
 
-    // Step Coin[完成]
-    SETP_COIN(0x2ED),
-    //凱撒快速鍵[完成]
-    KAISER_QUICK_KEY(0x2EE),
+    // 神之子參數(Done)
+    ZERO_OPTION(0x2EF),
+    // 翻轉硬幣(Done)
+    FLIP_THE_COIN(0x2F0),
     
+    // 0x2ED
     // 0x2EF
     // 0x2F0
     // 0x2F1
-    // 0x2F2
-    // 0x2F3
-    // 0x2F4
-    // 0x2F5
-    // 0x2F6
-    // 0x2F7
+
+    //幽靈水彩特效(Done) (skill == 80001408)
+    GHOST_WATERCOLOR_EFFECT(0x2F5),
+    
+    // 0x2F6 [186+]
+    
+    //符文特效(Done) (80001429)
+    RUNE_EFFECT(0x2F7),
+    
     // 0x2F8
     // 0x2F9
     // 0x2FA
@@ -1344,26 +1372,31 @@ public enum SendPacketOpcode implements WritableIntValueHolder {
     // 0x302
     // 0x303
     // 0x304
+
+    // Setp GiftID[完成]
+    SETP_GIFT_ID(0x304),
+    
     // 0x305
-    // 0x306
-    // 0x307
+
+    // Step Coin[完成]
+    SETP_COIN(0x306),
+    //凱撒快速鍵[完成]
+    KAISER_QUICK_KEY(0x307),
+    
     // 0x308
     // 0x309
     // 0x30A
     // 0x30B
     // 0x30C
     // 0x30D
-
-    //閃耀方塊反饋 (CField頂端內容有/12的用xRef回找)
-    FLASH_CUBE_RESPONSE(0x30E),
-    
+    // 0x30E (42100007)(61111008)
     // 0x30F
-    // 0x310
-    // 0x311
+    // 0x310 (透過隨機楓幣袋子，得到 %d 楓幣。)
+    // 0x311 (楓幣一個也沒有出現。)
     // 0x312
     // 0x313
-    // 0x314
-    // 0x315
+    // 0x314 (小鋼珠儲值完畢！)
+    // 0x315 (小鋼珠儲值失敗！)
     // 0x316
     // 0x317
     // 0x318
@@ -1373,184 +1406,160 @@ public enum SendPacketOpcode implements WritableIntValueHolder {
     // 0x31C
     // 0x31D
     // 0x31E
-    // 0x31F
-    // 0x320
-
-    // 0x321 跟技能冷卻很像的Sub
-
+    // 0x31F (邀請失敗或無法騎乘的區域。)
+    // 0x320 (邀請失敗或無法騎乘的區域。)
+    // 0x321
     // 0x322
     // 0x323
     // 0x324
     // 0x325
-    // 0x326
-    // 0x327
-    // 0x328
+    // 0x326 (請將消耗欄位空出一格以上後再試一次)
 
-    // 技能冷卻[完成]
-    COOLDOWN(0x329),
+    //閃耀方塊反饋 (CField頂端內容有/12的用xRef回找)
+    FLASH_CUBE_RESPONSE(0x327),
     
+    // 0x328 (flag)(deck)(bingo)
+    // 0x329 (今天沒有可使用的免費智慧女神的貓頭鷹)
     // 0x32A
-
-    //================================
-    // CUser::OnSummonedPacket 開始(185-完成)
-    //================================ 
-
-    // 召喚召喚獸[完成]
-    SPAWN_SUMMON(0x32D),
-    // 移除召喚獸[完成]
-    REMOVE_SUMMON(0x32E),
-    // 召喚獸移動[完成]
-    MOVE_SUMMON(0x32F),
-    // 召喚獸攻擊[完成]
-    SUMMON_ATTACK(0x330),
-    // PvP召喚獸
-    PVP_SUMMON(0x331),
-    // 召喚獸技能
-    SUMMON_SKILL_2(0x332),
-    // 召喚獸技能
-    SUMMON_SKILL(0x333),
-    // 召喚獸延遲
-    SUMMON_DELAY(0x334),
-    // 召喚獸受傷
-    DAMAGE_SUMMON(0x335),
-    
+    // 0x32B
+    // 0x32C
+    // 0x32D
+    // 0x32E
+    // 0x32F (已將天燈升上天空了。請明天再試)
+    // 0x330
+    // 0x331
+    // 0x332
+    // 0x333
+    // 0x334
+    // 0x335
     // 0x336
     // 0x337
     // 0x338
     // 0x339
     // 0x33A
     // 0x33B
+    // 0x33C
+    // 0x33D
+    // 0x33E
+    // 0x33F
+    // 0x340
+    // 0x341
+    // 0x342
+    // 0x343
+    // 0x344
+    // 0x345
+    // 0x346
+    // 0x347
+    // 0x348
+    // 0x349
+    // 0x34A
+    // 0x34B
+    // 0x34C
+    // 0x34D
+    // 0x34E
+    // 0x34F
+
+    // 技能冷卻[完成]
+    COOLDOWN(0x351),
+    
+    // 0x352
 
     //================================
-    // CMobPool::OnMobPacket 開始(185-完成)
+    // CUser::OnSummonedPacket 開始(186-完成)
     //================================ 
 
-    // 怪物召喚[完成]
-    SPAWN_MONSTER(0x33C),
-    // 殺除怪物[完成]
-    KILL_MONSTER(0x33D),
-    // 控制召喚怪物[完成]
-    SPAWN_MONSTER_CONTROL(0x33E),
+    // 召喚召喚獸[完成]
+    SPAWN_SUMMON(0x353),
+    // 移除召喚獸[完成]
+    REMOVE_SUMMON(0x354),
+    // 召喚獸移動[完成]
+    MOVE_SUMMON(0x355),
+    // 召喚獸攻擊[完成]
+    SUMMON_ATTACK(0x356),
+    // PvP召喚獸
+    PVP_SUMMON(0x357),
+    // 召喚獸技能
+    SUMMON_SKILL_2(0x358),
+    // 召喚獸技能
+    SUMMON_SKILL(0x359),
+    // 召喚獸延遲
+    SUMMON_DELAY(0x35A),
+    // 召喚獸受傷
+    DAMAGE_SUMMON(0x35B),
     
-    // 0x33F [Int(MOB_ID)][Short][Int][Byte]
-
-    // 怪物移動[完成]
-    MOVE_MONSTER(0x340),
-    // 怪物移動回覆[完成]
-    MOVE_MONSTER_RESPONSE(0x341),
-    
-    // 0x342 (null)
-
-    // 添加怪物状态[完成]
-    APPLY_MONSTER_STATUS(0x343),
-    // 取消怪物状态[完成]
-    CANCEL_MONSTER_STATUS(0x344),
-    // 怪物暫停重置[完成]
-    MONSTER_SUSPEND_RESET(0x345),
-    // 影響怪物[完成]
-    MONSTER_AFFECTED(0x346),
-    // 怪物受到傷害
-    DAMAGE_MONSTER(0x347),
-    // 怪物技能特效[完成]
-    SKILL_EFFECT_MOB(0x348),
-    
-    // 0x349 (null)
-
-    // 怪物CRC[完成] 接收=> 0x156
-    MONSTER_CRC_CHANGE(0x34A),
-    // 顯示怪物HP[完成]
-    SHOW_MONSTER_HP(0x34B),
-    // 捕捉怪物[完成]
-    CATCH_MONSTER(0x34C),
-    // 怪物物品特效[完成]
-    ITEM_EFFECT_MOB(0x34D),
-    
-    // 0x34E
-
-    // 怪物說話[完成]
-    TALK_MONSTER(0x34F),
-    // 移除怪物說話
-    REMOVE_TALK_MONSTER(0x350),
-    // 怪物技能延遲[完成]
-    MONSTER_SKILL_DELAY(0x351),
-    // 怪物護送全部路徑[完成]
-    MONSTER_ESCORT_FULL_PATH(0x352),
-    // 怪物護送暫停/停止允許[完成]
-    MONSTER_ESCORT_STOP_END_PERMISSION(0x353),
-    // 怪物護送暫停/停止允許[完成]
-    MONSTER_ESCORT_STOP_END_PERMISSION2(0x354),
-    // 怪物護送暫停說話[完成]
-    MONSTER_ESCORT_STOP_SAY(0x355),
-    // 怪物護送返回前[完成]
-    MONSTER_ESCORT_RETURN_BEFORE(0x356),
-    // 怪物下個攻擊[完成]
-    MONSTER_NEXT_ATTACK(0x357),
-    
-    // 0x358
-    // 0x359
-    // 0x35A
-    // 0x35B
     // 0x35C
     // 0x35D
     // 0x35E
     // 0x35F
     // 0x360
     // 0x361
-    // 0x362
-    // 0x363
-    // 0x364
-    // 0x365
-    // 0x366
-    // 0x367
+
+    //================================
+    // CMobPool::OnMobPacket 開始(186-完成)
+    //================================ 
+
+    // 怪物召喚[完成]
+    SPAWN_MONSTER(0x362),
+    // 殺除怪物[完成]
+    KILL_MONSTER(0x363),
+    // 控制召喚怪物[完成]
+    SPAWN_MONSTER_CONTROL(0x364),
+    
+    // 0x365 [Int(MOB_ID)][Short][Int][Byte]
+
+    // 怪物移動[完成]
+    MOVE_MONSTER(0x366),
+    // 怪物移動回覆[完成]
+    MOVE_MONSTER_RESPONSE(0x367),
+    
     // 0x368
     // 0x369
-    // 0x36A
-    // 0x36B
-    // 0x36C
-    // 0x36D
-    // 0x36E
-    // 0x36F
-    // 0x370
+    // 0x36A (NULL)
 
-    // 怪物攻擊怪物[完成]
-    MOB_TO_MOB_DAMAGE(0x371),
+    // 添加怪物状态[完成]
+    APPLY_MONSTER_STATUS(0x36B),
+    // 取消怪物状态[完成]
+    CANCEL_MONSTER_STATUS(0x36C),
+    // 怪物暫停重置[完成]
+    MONSTER_SUSPEND_RESET(0x36D),
+    // 影響怪物[完成]
+    MONSTER_AFFECTED(0x36E),
+    // 怪物受到傷害
+    DAMAGE_MONSTER(0x36F),
+    // 怪物技能特效[完成]
+    SKILL_EFFECT_MOB(0x370),
     
-    // 0x372 (null)    
+    // 0x371 (null)
 
-    //================================
-    // CMobPool::OnAzwanMobPacket 開始(185-完成)
-    //================================ 
+    // 怪物CRC[完成] 接收=> 0x156
+    MONSTER_CRC_CHANGE(0x372),
+    // 顯示怪物HP[完成]
+    SHOW_MONSTER_HP(0x373),
+    // 捕捉怪物[完成]
+    CATCH_MONSTER(0x374),
+    // 怪物物品特效[完成]
+    ITEM_EFFECT_MOB(0x375),
     
-    // 阿斯旺怪物攻擊怪物[完成]
-    AZWAN_MOB_TO_MOB_DAMAGE(0x373),
-    // 阿斯旺怪物召喚[完成]
-    AZWAN_SPAWN_MONSTER(0x374),
-    // 阿斯旺怪物死亡[完成]
-    AZWAN_KILL_MONSTER(0x375),
-    // 阿斯旺控制召喚怪物[完成]
-    AZWAN_SPAWN_MONSTER_CONTROL(0x376),
-    //================================
-    // CNpcPool::OnPacket 開始(185-完成)
-    //================================ 
+    // 0x376
 
-    // 召喚Npc[完成]
-    SPAWN_NPC(0x377),
-    // 移除Npc[完成]
-    REMOVE_NPC(0x378),
-    
-    // 0x379
-
-    // 控制召喚Npc[完成]
-    SPAWN_NPC_REQUEST_CONTROLLER(0x37A),
-    // Npc動作[完成]
-    NPC_ACTION(0x37B),
-    
-    // 0x37C
-    // 0x37D
-    // 0x37E
-
-    // 更新Npc狀態信息
-    NPC_UPDATE_LIMITED_INFO(0x37F),
+    // 怪物說話[完成]
+    TALK_MONSTER(0x377),
+    // 移除怪物說話
+    REMOVE_TALK_MONSTER(0x378),
+    // 怪物技能延遲[完成]
+    MONSTER_SKILL_DELAY(0x379),
+    // 怪物護送全部路徑[完成]
+    MONSTER_ESCORT_FULL_PATH(0x37A),
+    // 怪物護送暫停/停止允許[完成]
+    MONSTER_ESCORT_STOP_END_PERMISSION(0x37B),
+    // 怪物護送暫停/停止允許[完成]
+    MONSTER_ESCORT_STOP_END_PERMISSION2(0x37C),
+    // 怪物護送暫停說話[完成]
+    MONSTER_ESCORT_STOP_SAY(0x37D),
+    // 怪物護送返回前[完成]
+    MONSTER_ESCORT_RETURN_BEFORE(0x37E),
+    // 怪物下個攻擊[完成]
+    MONSTER_NEXT_ATTACK(0x37F),
     
     // 0x380
     // 0x381
@@ -1558,108 +1567,177 @@ public enum SendPacketOpcode implements WritableIntValueHolder {
     // 0x383
     // 0x384
     // 0x385
-    
-    // 重置Npc動作
-    RESET_NPC(0x386),
-    
+    // 0x386
     // 0x387
     // 0x388
     // 0x389
     // 0x38A
-
-    // Npc特殊事件[完成]
-    NPC_SET_SPECIAL_ACTION(0x38B),
-    // 設置Npc腳本[完成]
-    NPC_SCRIPTABLE(0x38C),
-    
+    // 0x38B
+    // 0x38C
     // 0x38D
+    // 0x38E
+    // 0x38F
+    // 0x390
+    // 0x391
+    // 0x392
+    // 0x393
+    // 0x394
+    // 0x395
+    // 0x396
+    // 0x397
+    // 0x398
+    
+    // 怪物攻擊怪物[完成]
+    MOB_TO_MOB_DAMAGE(0x399),
+    
+    // 0x39A (null)    
 
     //================================
-    // CEmployeePool::OnPacket 開始(185-完成)
+    // CMobPool::OnAzwanMobPacket 開始(186-完成)
+    //================================ 
+    
+    // 阿斯旺怪物攻擊怪物[完成]
+    AZWAN_MOB_TO_MOB_DAMAGE(0x39F),
+    // 阿斯旺怪物召喚[完成]
+    AZWAN_SPAWN_MONSTER(0x3A0),
+    // 阿斯旺怪物死亡[完成]
+    AZWAN_KILL_MONSTER(0x3A1),
+    // 阿斯旺控制召喚怪物[完成]
+    AZWAN_SPAWN_MONSTER_CONTROL(0x3A2),
+    //================================
+    // CNpcPool::OnPacket 開始(186-完成)
+    //================================ 
+
+    // 召喚Npc[完成]
+    SPAWN_NPC(0x3A3),
+    // 移除Npc[完成]
+    REMOVE_NPC(0x3A4),
+    
+    // 0x3A5
+
+    // 控制召喚Npc[完成]
+    SPAWN_NPC_REQUEST_CONTROLLER(0x3A6),
+    // Npc動作[完成]
+    NPC_ACTION(0x3A7),
+    
+    // 0x3A8
+    // 0x3A9
+    // 0x3AA
+
+    // 更新Npc狀態信息
+    NPC_UPDATE_LIMITED_INFO(0x3AB),
+    
+    // 0x3AC
+    // 0x3AD
+    // 0x3AE
+    // 0x3AF
+    // 0x3B0
+    // 0x3B1
+    
+    // 重置Npc動作
+    RESET_NPC(0x3B2),
+    
+    // 0x3B3
+    // 0x3B4
+    // 0x3B5
+    // 0x3B6
+
+    // Npc特殊事件[完成]
+    NPC_SET_SPECIAL_ACTION(0x3B7),
+    // 設置Npc腳本[完成]
+    NPC_SCRIPTABLE(0x3B8),
+    
+    // 0x3B9
+
+    //================================
+    // CEmployeePool::OnPacket 開始(186-完成)
     //================================ 
 
     // 召喚精靈商人
-    SPAWN_HIRED_MERCHANT(0x38E),
+    SPAWN_HIRED_MERCHANT(0x3BA),
     // 移除精靈商人
-    DESTROY_HIRED_MERCHANT(0x38F),
+    DESTROY_HIRED_MERCHANT(0x3BB),
     
-    // 0x390
+    // 0x3BC
 
     // 精靈商人更新
-    UPDATE_HIRED_MERCHANT(0x391),
+    UPDATE_HIRED_MERCHANT(0x3BD),
     //================================
-    // CDropPool::OnPacket 開始(185-完成)
+    // CDropPool::OnPacket 開始(186-完成)
     //================================ 
 
     // 物品掉落[完成]
-    DROP_ITEM_FROM_MAPOBJECT(0x392),
+    DROP_ITEM_FROM_MAPOBJECT(0x3BE),
     
-    // 0x393 (null)
+    // 0x3BF (null)
 
     // 物品消失[完成]
-    REMOVE_ITEM_FROM_MAP(0x394),
+    REMOVE_ITEM_FROM_MAP(0x3C0),
     //================================
-    // CMessageBoxPool::OnPacket 開始(185-完成)
+    // CMessageBoxPool::OnPacket 開始(186-完成)
     //================================ 
 
     // 召喚風箏錯誤[完成]
-    SPAWN_KITE_ERROR(0x395),
+    SPAWN_KITE_ERROR(0x3C1),
     // 召喚風箏[完成]
-    SPAWN_KITE(0x396),
+    SPAWN_KITE(0x3C2),
     // 移除風箏[完成]
-    DESTROY_KITE(0x397),
+    DESTROY_KITE(0x3C3),
     //================================
-    // CAffectedAreaPool::OnPacket 開始(185-完成)
+    // CAffectedAreaPool::OnPacket 開始(186-完成)
     //================================ 
 
     // 召喚煙霧[完成]
-    SPAWN_MIST(0x398),
+    SPAWN_MIST(0x3C4),
     // 煙霧未知[完成]
-    MIST_UNK(0x399),
+    MIST_UNK(0x3C5),
     // 移除煙霧[完成]
-    REMOVE_MIST(0x39A),
+    REMOVE_MIST(0x3C6),
     //================================
-    // CTownPortalPool::OnPacket 開始(185-完成)
+    // CTownPortalPool::OnPacket 開始(186-完成)
     //================================ 
 
     // 時空門[完成]
-    SPAWN_DOOR(0x39B),
+    SPAWN_DOOR(0x3C7),
     // 移除時空門[完成]
-    REMOVE_DOOR(0x39C),
+    REMOVE_DOOR(0x3C8),
     //================================
-    // C182AddUnkPool::OnPacket 開始(185-完成)
+    // C182AddUnkPool::OnPacket 開始(186-完成)
     //================================ 
 
-    // 0x39D
-    // 0x39E
-    // 0x39F
+    // 0x3C9
+    // 0x3CA
+    // 0x3CB
 
     //================================
-    // COpenGatePool::OnPacket 開始(185-完成)
+    // COpenGatePool::OnPacket 開始(186-完成)
     //================================ 
 
     // 召喚開放通道[完成]
-    MECH_DOOR_SPAWN(0x3A0),
+    MECH_DOOR_SPAWN(0x3CC),
     // 移除開放通道[完成]
-    MECH_DOOR_REMOVE(0x3A1),
+    MECH_DOOR_REMOVE(0x3CD),
+    
+    // 0x3CE [186+]
+    
     //================================
-    // CReactorPool::OnPacket 開始(185-完成)
+    // CReactorPool::OnPacket 開始(186-完成)
     //================================ 
 
     // 攻擊箱子[完成]
-    REACTOR_HIT(0x3A2),
+    REACTOR_HIT(0x3CF),
     // 箱子移動[完成]
-    REACTOR_MOVE(0x3A3),
+    REACTOR_MOVE(0x3D0),
     // 召喚箱子[完成]
-    REACTOR_SPAWN(0x3A4),
+    REACTOR_SPAWN(0x3D1),
     // 箱子未知[完成]
-    REACTOR_UNK(0x3A5),
+    REACTOR_UNK(0x3D2),
     // 箱子未知2[完成]
-    REACTOR_UNK2(0x3A6),
+    REACTOR_UNK2(0x3D3),
     // 箱子消失(隱藏?)[Int - oid][完成]
-    REACTOR_UNK3(0x3A7),
+    REACTOR_UNK3(0x3D4),
     // 重置箱子[完成]
-    REACTOR_DESTROY(0x3A8),
+    REACTOR_DESTROY(0x3D5),
     //================================
     // CReactorPool::OnExtractorPacket 開始(185-完成)
     //================================ 
@@ -2005,124 +2083,124 @@ public enum SendPacketOpcode implements WritableIntValueHolder {
     // }
 
     // PvP(奪旗模式)
-    CAPTURE_FLAGS(0x458),
-    CAPTURE_POSITION(0x459),
-    CAPTURE_RESET(0x45A),
+    CAPTURE_FLAGS(0x4DA),
+    CAPTURE_POSITION(0x4DB),
+    CAPTURE_RESET(0x4DC),
     // 粉紅色炎魔祭壇[完成]
-    PINK_ZAKUM_SHRINE(0x45B),
+    PINK_ZAKUM_SHRINE(0x4DD),
     //================================
-    // CScriptMan::OnPacket 開始(185-完成)
+    // CScriptMan::OnPacket 開始(186-完成)
     //================================ 
 
     // Npc交談[完成]
-    NPC_TALK(0x4B0),
+    NPC_TALK(0x4DE),
     //================================
-    // CShopDlg::OnPacket 開始(183-完成)
+    // CShopDlg::OnPacket 開始(186-完成)
     //================================ 
 
     // Npc商店[完成]
-    OPEN_NPC_SHOP(0x4B1),
+    OPEN_NPC_SHOP(0x4DF),
     // 購買Npc商店道具[完成]
-    CONFIRM_SHOP_TRANSACTION(0x4B2),
+    CONFIRM_SHOP_TRANSACTION(0x4E0),
     //================================
-    // CAdminShopDlg::OnPacket 開始(183-完成)
+    // CAdminShopDlg::OnPacket 開始(186-完成)
     //================================ 
 
     // 管理員商店[完成]
-    ADMIN_SHOP_RESULT(0x4B3),
+    ADMIN_SHOP_RESULT(0x4E1),
     // 管理員商店-商品[完成]
-    ADMIN_SHOP_COMMODITY(0x4B4),
+    ADMIN_SHOP_COMMODITY(0x4E2),
     //================================
     // CAdminShopDlg::OnPacket 結束
     //================================ 
 
-    // 0x4B5
-    // 0x4B6
-    // 0x4B7
-    // 0x4B8
-    // 0x4B9
-    // 0x4BA
-    // 0x4BB
+    // 0x4E3
+    // 0x4E4
+    // 0x4E5
+    // 0x4E6
+    // 0x4E7
+    // 0x4E8
+    // 0x4E9
 
     //================================
-    // sub_6F1C61 開始(183-完成)
+    // sub_6F1C61 開始(186-完成)
     //================================ 
 
-    // 0x4BC
-    // 0x4BD
-    // 0x4BE 【靈魂陷阱】
-    // 0x4BF
-    // 0x4C0
-    // 0x4C1
-    // 0x4C2
-    // 0x4C3 【姆勒姆勒地城地圖】、【姆勒姆勒的炸彈】
-    // 0x4C4
+    // 0x4EA
+    // 0x4EB
+    // 0x4EC 【靈魂陷阱】
+    // 0x4ED
+    // 0x4EE
+    // 0x4EF
+    // 0x4F0
+    // 0x4F1 【姆勒姆勒地城地圖】、【姆勒姆勒的炸彈】
+    // 0x4F2
 
     //================================
     // sub_6F1C61 結束
     //================================ 
 
-    // 0x4C5
-    // 0x4C6
+    // 0x4F3
+    // 0x4F4
 
     //================================
     // sub_6A7380 開始(183-完成)
     //================================ 
 
-    // 0x4C7
+    // 0x4F5
 
     //================================
     // sub_6A7380 結束
     //================================ 
 
-    // 0x4C8
+    // 0x4F6
 
     // 倉庫[完成]
-    OPEN_STORAGE(0x4C9),
+    OPEN_STORAGE(0x4F7),
     //================================
-    // CStoreBankDlg::OnPacket 開始(183-完成)
+    // CStoreBankDlg::OnPacket 開始(186-完成)
     //================================
 
     // 富蘭德里訊息
-    MERCH_ITEM_MSG(0x4CA),
+    MERCH_ITEM_MSG(0x4F8),
     // 富蘭德里倉庫
-    MERCH_ITEM_STORE(0x4CB),
+    MERCH_ITEM_STORE(0x4F9),
     //================================
-    // CStoreBankDlg::OnPacket 結束(185-完成)
+    // CStoreBankDlg::OnPacket 結束(186-完成)
     //================================
 
     // 猜拳遊戲[完成]
-    RPS_GAME(0x4CC),
+    RPS_GAME(0x4FA),
     
-    // 0x4CD
-    // 0x4CE
+    // 0x4FB
+    // 0x4FC
 
     // 聊天室[完成]
-    MESSENGER(0x4CF),
+    MESSENGER(0x4FD),
     // 玩家互動[完成]
-    PLAYER_INTERACTION(0x4D0),
+    PLAYER_INTERACTION(0x4FE),
     
-    // 0x4D1
-    // 0x4D2
+    // 0x4FF
+    // 0x500
     
     //================================
-    // CField_Tournament::OnPacket 開始(185-完成)
+    // CField_Tournament::OnPacket 開始(186-完成)
     //================================
 
     // CField_Tournament::OnTournament[完成]
-    TOURNAMENT(0x4D3),
+    TOURNAMENT(0x501),
     // CField_Tournament::OnTournamentMatchTable[完成]
-    TOURNAMENT_MATCH_TABLE(0x4D4),
+    TOURNAMENT_MATCH_TABLE(0x502),
     // CField_Tournament::OnTournamentSetPrize[完成]
-    TOURNAMENT_SET_PRIZE(0x4D5),
+    TOURNAMENT_SET_PRIZE(0x503),
     // CField_Tournament::OnTournamentUEW[完成]
-    TOURNAMENT_UEW(0x4D6),
+    TOURNAMENT_UEW(0x504),
     // CField_Tournament::OnTournamentAvatarInfo[完成]
-    TOURNAMENT_CHARACTERS(0x4D7),
+    TOURNAMENT_CHARACTERS(0x505),
     // CField_Wedding::OnWeddingProgress[完成]
-    WEDDING_PROGRESS(0x4D8),
+    WEDDING_PROGRESS(0x506),
     // CField_Wedding::OnWeddingCeremonyEnd[完成]
-    WEDDING_CEREMONY_END(0x4D9),
+    WEDDING_CEREMONY_END(0x507),
 
     // 小鋼珠 {
     // 0x4DE
@@ -2192,71 +2270,71 @@ public enum SendPacketOpcode implements WritableIntValueHolder {
     // 0x50A 羊群牧場[Boolean] 【true => [String][Long]「[String][Long]」* 3】【false => [Int](分數)[Int](排行)[Int](咒文的痕跡)】
 
     //==================================
-    // CFuncKeyMappedMan::OnPacket 開始(185-完成)
+    // CFuncKeyMappedMan::OnPacket 開始(186-完成)
     //==================================
 
     // 鍵盤設置[完成]
-    KEYMAP(0x527),
+    KEYMAP(0x561),
     // 寵物技能(HP)[完成]
-    PET_AUTO_HP(0x528),
+    PET_AUTO_HP(0x562),
     // 寵物技能(MP)[完成]
-    PET_AUTO_MP(0x529),
+    PET_AUTO_MP(0x563),
     // 寵物技能(Buff)[完成]
-    PET_AUTO_CURE(0x52A),
+    PET_AUTO_CURE(0x564),
     //================================
-    // CLogin::OnPacket 開始(185-完成)
+    // CLogin::OnPacket 開始(186-完成)
     //================================ 
 
     // 創建角色第二組密碼驗證[完成]【獲得驗證碼 + 第二組密碼錯誤回應 + 獲得可建立職業】
-    CREATE_CHAR_RESPONSE(0x52B),
+    CREATE_CHAR_RESPONSE(0x565),
     
-    // 0x52C
+    // 0x566
 
     //==================================
-    // CField::OnGoldHammerRes 開始(183-完成)
+    // CField::OnGoldHammerRes 開始(186-完成)
     //==================================
 
-    // 0x52E
+    // 0x56B
 
-    // 黃金鐵鎚使用完成[完成-181]
-    VICIOUS_HAMMER(0x52F),
-    // 0x530   
+    // 黃金鐵鎚使用完成[完成]
+    VICIOUS_HAMMER(0x56C),
+    // 0x56D   
 
     //==================================
-    // CField::OnPlatinumHammerRes 開始(183-完成)
+    // CField::OnPlatinumHammerRes 開始(186-完成)
     //==================================
 
-    // 0x531 // 181.Add
+    // 0x56E
 
     // 白金槌子
-    PLATINUM_HAMMER(0x532),
-    // 0x533 // 181.Add
+    PLATINUM_HAMMER(0x56F),
+    // 0x570 
 
     //==================================
-    // CField::OnZeroScroll 開始(183-完成)
+    // CField::OnZeroScroll 開始(186-完成)
     //==================================
 
-    // 0x534
+    // 0x571
 
     // 神之子使用卷軸[完成]
-    ZERO_SCROLL_START(0x535),
+    ZERO_SCROLL_START(0x572),
     // 神之子武器介面[完成]
-    ZERO_RESULT(0x536),
+    ZERO_RESULT(0x573),
     // 神之子卷軸[完成]
-    ZERO_SCROLL(0x537),
-    // 0x538
-    // 0x539
+    ZERO_SCROLL(0x574),
+    // 0x575
+    // 0x576
 
     //==================================
-    // CField::OnZeroWeapon 開始(183-完成)
+    // CField::OnZeroWeapon 開始(186-完成)
     //==================================
 
     // 武器資訊
-    ZERO_WEAPONINFO(0x53A),
+    ZERO_WEAPONINFO(0x577),
     // 武器成長[完成]
-    ZERO_UPGRADE(0x53B),
-    // 0x53C
-    // 0x53D
+    ZERO_UPGRADE(0x578),
+    // 0x579
+    // 0x57A
 
     //==================================
     // CField::OnZeroWeapon 結束
@@ -2267,25 +2345,25 @@ public enum SendPacketOpcode implements WritableIntValueHolder {
     // 0x540
 
     //==================================
-    // CField::OnArrowBlaster 開始(183-完成)
+    // CField::OnArrowBlaster 開始(186-完成)
     //==================================
 
     // 召喚箭座[完成]
-    SPAWN_ARROW_BLASTER(0x541),
-    // 0x542 【dispear】
+    SPAWN_ARROW_BLASTER(0x57E),
+    // 0x57F 【dispear】
 
     // 取消箭座[完成]
-    CANCEL_ARROW_BLASTER(0x543),
-    // 0x544
-    // 0x545
+    CANCEL_ARROW_BLASTER(0x580),
+    // 0x581
+    // 0x582
 
     // 箭座控制[完成]
-    ARROW_BLASTER_CONTROL(0x546),
-    // 0x547
-    // 0x548 【破除封印】
-    // 0x549
-    // 0x54A
-    // 0x54B
+    ARROW_BLASTER_CONTROL(0x583),
+    // 0x584
+    // 0x585 【破除封印】
+    // 0x586
+    // 0x587
+    // 0x588
 
     //==================================
     // CField::OnArrowBlaster 結束
@@ -2299,10 +2377,10 @@ public enum SendPacketOpcode implements WritableIntValueHolder {
     // 0x4D0
     // }
 
-    // 潛能方塊[完成-182]
-    STRENGTHEN_UI(0x59D),
-    // 階段介面[完成-182]
-    LEVEL_UI(0x59E),
+    // 潛能方塊[完成-186]
+    STRENGTHEN_UI(0x5DB),
+    // 階段介面[完成-186]
+    LEVEL_UI(0x5DE),
     // sub_6921D9 {
     // 0x54B
     // 0x54C
@@ -2312,10 +2390,10 @@ public enum SendPacketOpcode implements WritableIntValueHolder {
     // 0x54D [Byte]
     // }
 
-    // 每日免費強化任意門[完成-185]
-    DAY_OF_CHRONOSPHERE(0x5BB),
-    // 強化任意門錯誤[完成-185]
-    ERROR_CHRONOSPHERE(0x5BC),
+    // 每日免費強化任意門[完成-186]
+    DAY_OF_CHRONOSPHERE(0x5F6),
+    // 強化任意門錯誤[完成-186]
+    ERROR_CHRONOSPHERE(0x5F7),
     // sub_6DF4C6 {
     // 0x56D
     // 0x56E

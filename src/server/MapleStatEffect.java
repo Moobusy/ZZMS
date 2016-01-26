@@ -115,6 +115,9 @@ public class MapleStatEffect implements Serializable {
             dddd = dddd.substring(1, dddd.length());
         } else if (dddd.contains("y")) { // AngelicBuster Exception
             dddd = "0";
+        } else if (dddd.contains("X")) {
+            String replace = dddd.replace("X", String.valueOf(level));
+            dddd = replace;
         }
         return (int) (new CaltechEval(dddd).evaluate());
     }

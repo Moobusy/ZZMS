@@ -5158,7 +5158,7 @@ public class MapleCharacter extends AnimatedMapleMapObject implements Serializab
         //    changeMap(map.getReturnMap(), map.getReturnMap().getPortal(0));
         //    dropMessage(-1, "You have been expelled from the map.");
         //}
-        checkCustomReward(level);
+        //checkCustomReward(level);
         baseSkills();
         stats.heal(this);
     }

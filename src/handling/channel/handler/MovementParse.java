@@ -60,7 +60,7 @@ public class MovementParse {
                 }
                 case 54:
                 case 64:
-                case 79: {
+                case 81: {
                     final short xpos = (short) lea.readShort();
                     final short ypos = lea.readShort();
                     final short xwobble = lea.readShort();
@@ -136,7 +136,8 @@ public class MovementParse {
                 case 69:
                 case 70:
                 case 72:
-                case 77: {
+                case 77:
+                case 79: {
                     final byte newstate = lea.readByte();
                     final short duration = lea.readShort();
                     final byte wui = lea.readByte();
@@ -162,7 +163,8 @@ public class MovementParse {
                 case 57:
                 case 74:
                 case 75:
-                case 76: {
+                case 76: 
+                case 78: {
                     final short xpos = (short) lea.readShort();
                     final short ypos = lea.readShort();
                     final short unk = lea.readShort();

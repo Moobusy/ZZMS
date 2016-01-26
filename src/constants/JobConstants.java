@@ -6,7 +6,7 @@ public class JobConstants {
 
     public static final boolean enableJobs = true;
     // UI.wz/Login.img/RaceSelect_new/order
-    public static final int jobOrder = 182;
+    public static final int jobOrder = 186;
 
     public enum LoginJob {
 
@@ -28,11 +28,11 @@ public class JobConstants {
         神之子(15),
         隱月(16),
         皮卡啾(17),
-//        凱內西斯(17),
-        蒼龍俠客(18),
-        劍豪(19),
-        陰陽師(20),
-        幻獸師(21),;
+        凱內西斯(18),
+        蒼龍俠客(19),
+        劍豪(20),
+        陰陽師(21),
+        幻獸師(22),;
         private final int jobType;
         private final boolean enableCreate = true;
 

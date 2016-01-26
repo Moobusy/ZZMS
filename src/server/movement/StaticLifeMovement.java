@@ -75,7 +75,7 @@ public class StaticLifeMovement extends AbstractLifeMovement {
                 break;
             case 54:
             case 64:
-            case 79:
+            case 81:
                 lew.writePos(getPosition());
                 lew.writePos(pixelsPerSecond);
                 lew.writeShort(unk);
@@ -126,6 +126,7 @@ public class StaticLifeMovement extends AbstractLifeMovement {
             case 70:
             case 72:
             case 77:
+            case 79:
                 break;
             case 3:
             case 4:
@@ -145,6 +146,7 @@ public class StaticLifeMovement extends AbstractLifeMovement {
             case 74:
             case 75:
             case 76:
+            case 78:
                 lew.writePos(getPosition());
                 lew.writeShort(unk);
                 break;

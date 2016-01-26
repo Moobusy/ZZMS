@@ -2099,7 +2099,7 @@ public class PlayerHandler {
 
         if ((res != null) && (c.getPlayer().getMap() != null)) {
             //if ((slea.available() < 11L) || (slea.available() > 26L)) {
-            if (slea.available() != 8) {
+            if (slea.available() != 0) {
                 System.err.println("角色移動錯誤: 玩家" + chr.getName() + "(" + MapleJob.getName(MapleJob.getById(chr.getJob())) + ") slea.available != 8 剩餘封包長度: " + slea.available());
                 if (chr.isShowErr()) {
                     chr.showInfo("移動", true, "角色移動錯誤: slea.available != 8 剩餘封包長度: " + slea.available());

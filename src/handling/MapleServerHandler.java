@@ -336,6 +336,9 @@ public class MapleServerHandler extends IoHandlerAdapter {
             case CHECK_CHAR_NAME:
                 CharLoginHandler.CheckCharName(slea.readMapleAsciiString(), c);
                 break;
+            case CREATE_CHAR_AUTH_REQUEST:
+                CharLoginHandler.CreateCharClick(slea, c);                
+                break;
             case CREATE_CHAR:
             case CREATE_SPECIAL_CHAR:
                 CharLoginHandler.CreateChar(slea, c);
@@ -359,7 +362,7 @@ public class MapleServerHandler extends IoHandlerAdapter {
                 CharLoginHandler.PartJob(slea, c);
                 break;
             case CHAR_SELECT:
-            case CREACTE_CHAR_SELECT:
+            case CREATE_CHAR_SELECT:
                 CharLoginHandler.Character_WithoutSecondPassword(slea, c, true, false);
                 break;
             case VIEW_SELECT_PIC:

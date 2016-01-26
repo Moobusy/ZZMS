@@ -317,7 +317,7 @@ public class InterServerHandler {
         //清理斷線未處理的方塊任務
         c.getPlayer().clearInfoQuest(GameConstants.台方塊);
 
-        player.updateReward();
+        //player.updateReward();
     }
 
     public static final void ChangeChannel(final LittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr, final boolean room) {

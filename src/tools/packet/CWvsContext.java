@@ -5237,28 +5237,59 @@ public class CWvsContext {
                 case 0x0F:
                     mplew.writeInt(id);
                     mplew.writeInt(quantity); //quantity
-                    //Popup: You have received the Exp.\r\n( %d exp )
+                    //Popup: 獲得經驗值。\r\n( %d 經驗值 )
                     break;
+                case 0x10:
+                case 0x11:
+                case 0x12:
+                case 0x13: {
+                    int val = 0;
+                    mplew.write(val);
+                    switch (val)
+                    {
+                        case 102:
+                            //Popup: 背包已滿。
+                            break;
+                        case 103:
+                            //Popup: 已經擁有此道具了。
+                            break;
+                        default:
+                            //Popup: 道具領取失敗。
+                            break;
+                    }
+                    break;
+                }
                 case 0x14:
-                    //Popup: Failed to receive the Maple Points.
+                    //Popup: 楓點領取失敗。
                     break;
                 case 0x15:
-                    mplew.write(0);
-                    //Popup: Failed to receive the Game Item.
+                    //Popup: 獎勵領取失敗。請再試一次。
                     break;
-                case 0x16:
-                    mplew.write(0);
-                    //Popup: Failed to receive the Game Item.
+                case 0x16: {
+                    int val = 0;
+                    mplew.write(val);
+                    switch (val)
+                    {
+                        case 0:
+                            //Popup: 現金道具領取失敗。
+                            break;
+                        case 30:
+                            //Popup: 背包已滿。
+                            break;
+                        case 63:
+                            //Popup: 保有的現金道具太多了。\r\n請空下1格後再試一次。
+                            break;
+                        default:
+                            //Popup: 獎勵領取失敗。請再試一次。
+                            break;
+                    }
                     break;
+                }
                 case 0x17:
-                    //Popup: Failed to receive the Mesos.
+                    //Popup: 楓幣領取失敗。
                     break;
                 case 0x18:
-                    //Popup: Failed to receive the Exp.
-                    break;
-                case 0x21:
-                    mplew.write(0); //66
-                    //No inventory space
+                    //Popup: 經驗值領取失敗。
                     break;
             }
 

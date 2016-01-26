@@ -66,11 +66,11 @@ public class LoginInformationProvider {
         神之子(15, MapleJob.神之子.getId(), 100000000, JobInfoFlag.披風.getVelue()),//TODO 出生劇情321000000 = zero starter map
         隱月(16, MapleJob.隱月.getId(), 910000000, JobInfoFlag.褲裙.getVelue() | JobInfoFlag.披風.getVelue()),//TODO 出生劇情
         皮卡啾(17, MapleJob.皮卡啾1轉.getId(), 927030090),
-//        凱內西斯(18, MapleJob.凱內西斯.getId(), 100000000),
-        蒼龍俠客(18, MapleJob.初心者.getId(), 552000050, JobInfoFlag.褲裙.getVelue()),//TODO 出生劇情End map for tutorial
-        劍豪(19, MapleJob.劍豪.getId(), 807100010, JobInfoFlag.帽子.getVelue() | JobInfoFlag.手套.getVelue()),
-        陰陽師(20, MapleJob.陰陽師.getId(), 807100110, JobInfoFlag.帽子.getVelue() | JobInfoFlag.手套.getVelue()),
-        幻獸師(21, MapleJob.幻獸師.getId(), 866100000, JobInfoFlag.臉飾.getVelue() | JobInfoFlag.耳朵.getVelue() | JobInfoFlag.尾巴.getVelue());//TODO 出生劇情
+        凱內西斯(18, MapleJob.凱內西斯.getId(), 100000000),
+        蒼龍俠客(19, MapleJob.初心者.getId(), 552000050, JobInfoFlag.褲裙.getVelue()),//TODO 出生劇情End map for tutorial
+        劍豪(20, MapleJob.劍豪.getId(), 807100010, JobInfoFlag.帽子.getVelue() | JobInfoFlag.手套.getVelue()),
+        陰陽師(21, MapleJob.陰陽師.getId(), 807100110, JobInfoFlag.帽子.getVelue() | JobInfoFlag.手套.getVelue()),
+        幻獸師(22, MapleJob.幻獸師.getId(), 866100000, JobInfoFlag.臉飾.getVelue() | JobInfoFlag.耳朵.getVelue() | JobInfoFlag.尾巴.getVelue());//TODO 出生劇情
         public int type, id, map;
         public int flag = JobInfoFlag.臉型.getVelue() | JobInfoFlag.髮型.getVelue() | JobInfoFlag.衣服.getVelue() | JobInfoFlag.鞋子.getVelue() | JobInfoFlag.武器.getVelue();
 

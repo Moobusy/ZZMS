@@ -52,6 +52,9 @@ public class SkillFactory {
                         for (MapleData data2 : data) { // Loop thru each jobs
                             if (data2 != null) {
                                 skillid = Integer.parseInt(data2.getName());
+                                if (skillid == 142111006) {
+                                    continue;
+                                }
                                 Skill skil = Skill.loadFromData(skillid, data2, delayData);
                                 List<Integer> job = skillsByJob.get(skillid / 10000);
                                 if (job == null) {

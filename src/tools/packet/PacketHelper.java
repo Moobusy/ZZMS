@@ -271,9 +271,6 @@ public class PacketHelper {
         for (int i = 0; i < 13; i++) {
             mplew.writeInt(maps[i]);
         }
-//        for (int i = 0; i < 13; i++) {
-//            mplew.writeInt(maps[i]);
-//        }
     }
 
     public static void addMiniGameInfo(MaplePacketLittleEndianWriter mplew, MapleCharacter chr) {
@@ -474,6 +471,7 @@ public class PacketHelper {
             mplew.writeInt(-1);
         }
         mplew.writeZeroBytes(9);//was9
+        mplew.writeInt(0); // 185 or 186
     }
 
     public static void addPotionPotInfo(MaplePacketLittleEndianWriter mplew, MapleCharacter chr) {
@@ -497,7 +495,7 @@ public class PacketHelper {
     public static void addCharCreateStats(MaplePacketLittleEndianWriter mplew, MapleCharacter chr) {
         mplew.writeInt(chr.getId());
         mplew.writeInt(0);
-        mplew.writeInt(0);
+        mplew.writeInt(1);
         mplew.writeAsciiString(chr.getName(), 15);
         mplew.write(chr.getGender());
         mplew.write(0); // addCharCreateStats unk
@@ -711,6 +709,7 @@ public class PacketHelper {
         }
         mplew.write(0);//176+
         mplew.write(0);//176+
+        mplew.writeZeroBytes(5);//186+
     }
 
     public static void addExpirationTime(MaplePacketLittleEndianWriter mplew, long time) {
@@ -770,6 +769,7 @@ public class PacketHelper {
                     mplew.writeLong(/*(int)*/(item.getInventoryId() <= 0 ? -1 : item.getInventoryId()));
                     //mplew.writeShort(0);
                 }
+                mplew.write(HexTool.getByteArrayFromHexString("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00")); // 推測位置(186)
             }
         }
     }
@@ -954,7 +954,7 @@ public class PacketHelper {
         }
 
         //Ver182手記……這裡為0或沒有這個那麼將無法使用楓方塊
-        mplew.writeLong(/*equip.getInventoryId()*/1); //some tracking ID
+        mplew.writeLong(/*equip.getInventoryId()*/-1); //some tracking ID
         mplew.writeLong(getTime(-2));
         mplew.writeInt(-1);
         mplew.writeLong(0);
@@ -1008,7 +1008,7 @@ public class PacketHelper {
         mplew.writeLong(mask);
         mplew.write(0);
         for (int i = 0; i < 3; i++) {
-            mplew.writeInt(-1);
+            mplew.writeInt(-15);
         }
 
         int v7 = 0;
@@ -1371,6 +1371,9 @@ public class PacketHelper {
             mplew.writeInt(0);
             mplew.writeLong(getTime(-2));
             mplew.writeInt(30);
+        }
+        if ((2000000 & mask) != 0) {
+            mplew.write(0);
         }
     }
 

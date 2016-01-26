@@ -5,6 +5,7 @@ import client.inventory.Item;
 import client.inventory.MapleInventoryType;
 import client.MapleClient;
 import client.MapleCharacter;
+import client.MapleJob;
 import constants.GameConstants;
 import client.MapleQuestStatus;
 import client.RockPaperScissors;
@@ -28,6 +29,8 @@ import scripting.ScriptType;
 import server.MapleItemInformationProvider;
 import server.life.MapleLifeFactory;
 import scripting.MapScriptMethods;
+import tools.FileoutputUtil;
+import tools.HexTool;
 import tools.packet.CField;
 import tools.Pair;
 import tools.data.LittleEndianAccessor;
@@ -39,17 +42,24 @@ public class NPCHandler {
     public static void NPCAnimation(LittleEndianAccessor slea, MapleClient c) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         mplew.writeShort(SendPacketOpcode.NPC_ACTION.getValue());
+        
+        int npcid = slea.readInt();
+        byte u1 = slea.readByte();
+        byte u2 = slea.readByte();
+        int u3 = slea.readInt();
+        
+        mplew.writeInt(npcid);
+        mplew.write(u1);
+        mplew.write(u2);
+        mplew.writeInt(u3);
+        
         int length = (int) slea.available();
-        if (length == 10) {
-            mplew.writeInt(slea.readInt());
-            mplew.write(slea.readByte());
-            mplew.write(slea.readByte());
-            mplew.writeInt(slea.readInt());
-        } else if (length > 6) {
-            mplew.write(slea.read(length - 9));
-        } else {
-            return;
+        if (length > 0) {
+            FileoutputUtil.log(FileoutputUtil.Movement_Log, "NPC" + "(" + npcid + ")" + ", 封包: " + slea.toString(true));
+            mplew.write(slea.read(length));
+            FileoutputUtil.log(FileoutputUtil.Movement_Log, "NPC" + "(" + npcid + ")" + ", 封包: " + mplew.toString());
         }
+        
         c.getSession().write(mplew.getPacket());
     }
 

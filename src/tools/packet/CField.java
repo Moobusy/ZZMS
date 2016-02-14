@@ -2780,6 +2780,7 @@ public class CField {
         //E6 00 BB FE 00 00 00 00 
 
         mplew.write(0);
+        mplew.write(0);
         if (drop.getMeso() == 0) {
             PacketHelper.addExpirationTime(mplew, drop.getItem().getExpiration());
         }
@@ -2792,14 +2793,7 @@ public class CField {
     }
 
     public static byte[] explodeDrop(int oid) {
-        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-
-        mplew.writeShort(SendPacketOpcode.REMOVE_ITEM_FROM_MAP.getValue());
-        mplew.write(4);
-        mplew.writeInt(oid);
-        mplew.writeShort(655);
-
-        return mplew.getPacket();
+        return removeItemFromMap(oid, 4, 0, 0);
     }
 
     public static byte[] removeItemFromMap(int oid, int animation, int cid) {
@@ -2813,11 +2807,23 @@ public class CField {
         mplew.write(animation);
         mplew.writeInt(oid);
         if (animation >= 2) {
-            mplew.writeInt(cid);
+            if (animation == 4) {
+                mplew.writeShort(655);
+                return mplew.getPacket();
+            }
             if (animation == 5) {
                 mplew.writeInt(slot);
-            }
+            } else {
+                mplew.writeInt(cid);  
+            }            
         }
+        if (animation == 5) {
+            mplew.writeInt(0);
+        }
+        if (animation >= 7) {
+            mplew.writeInt(0);
+        }
+        
         return mplew.getPacket();
     }
 
@@ -4494,6 +4500,7 @@ public class CField {
                 mplew.writeShort(0);
             }
             mplew.write(0);
+            mplew.writeInt(0);
 
             return mplew.getPacket();
         }

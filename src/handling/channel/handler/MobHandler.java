@@ -146,13 +146,13 @@ public class MobHandler {
 //            slea.skip(4);
 //            slea.skip(4);
             c.getSession().write(MobPacket.moveMonsterResponse(monster.getObjectId(), moveid, monster.getMp(), monster.isControllerHasAggro(), realskill, level));
-            if (slea.available() != 37L) {
+            if (slea.available() != 30L) {
 //            if (slea.available() != 30) {
-                System.err.println("怪物移動錯誤Move_life : slea.available != 37 剩餘封包長度: " + slea.available());
+                System.err.println("怪物移動錯誤Move_life : slea.available != 30 剩餘封包長度: " + slea.available());
                 if (chr.isShowErr()) {
-                    chr.showInfo("移動", true, "怪物移動錯誤Move_life : slea.available != 37");
+                    chr.showInfo("移動", true, "怪物移動錯誤Move_life : slea.available != 31");
                 }
-                FileoutputUtil.log(FileoutputUtil.Movement_Log, "怪物移動錯誤: slea.available != 36\r\n怪物ID: " + monster.getId() + "\r\n" + slea.toString(true));
+                FileoutputUtil.log(FileoutputUtil.Movement_Log, "怪物移動錯誤: slea.available != 30\r\n怪物ID: " + monster.getId() + "\r\n" + slea.toString(true));
                 return;
             }
             MovementParse.updatePosition(res, monster, -1);

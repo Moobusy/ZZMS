@@ -136,29 +136,38 @@ public enum MonsterStatus implements Serializable, Buffstat {
     MBS55(55),
     MBS56(56),
     MBS57(57),
-    MBS58(58, true),
+    MBS58(58),
     MBS59(59),
-    MBS60(60, true),
+    MBS60(60),
     MBS61(61),
+    MBS62(62),
+    MBS63(63),
+    MBS64(64),
+    MBS65(65),
+    MBS66(66),
+    DEFUALT_1(66, true),
+    MBS67(67),
+    DEFAULT_2(68, true),
+    MBS69(69),
     
     //持續扣血 - 破滅之輪[178-完成]
-    BLEED(62, true),    
-    MBS63(63, true),
+    BLEED(70, true),    
+    DEFAULT_3(71, true),
     
     // =========== MASK[2]
     
-    MBS64(64, true),
-    MBS65(65, true),
-    MBS66(66, true),    
-    MBS67(67, true),
-    MBS68(68, true),
+    DEFAULT_4(72, true),
+    DEFAULT_5(73, true),
+    DEFAULT_6(74, true),    
+    DEFAULT_7(75, true),
+    DEFAULT_8(76, true),
     //召喚怪物
-    SUMMON(69, true),
-    MBS70(70, true),
-    MBS71(71, true),
-    MBS72(72, true),
-    MBS73(73, true),
-    MBS74(74, true), 
+    SUMMON(77, true),
+    DEFAULT_9(78, true),
+    DEFAULT_10(79, true),
+    DEFAULT_11(80, true),
+    DEFAULT_12(81, true),
+    DEFAULT_13(82, true), 
     ;
     static final long serialVersionUID = 0L;
     private final int i;

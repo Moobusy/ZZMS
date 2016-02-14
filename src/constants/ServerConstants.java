@@ -52,7 +52,7 @@ public class ServerConstants {
     // GMS stuff
     public static boolean TESPIA = false;
     public static short MAPLE_VERSION = (short) 186;
-    public static String MAPLE_PATCH = "3";
+    public static String MAPLE_PATCH = "4";
     public static MapleType MAPLE_TYPE = MapleType.台灣;
 
     // Server stuff

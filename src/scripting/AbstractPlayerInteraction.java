@@ -1293,7 +1293,11 @@ public abstract class AbstractPlayerInteraction {
     public void spawnMonster(int id) {
         spawnMonster(id, 1, getPlayer().getTruePosition());
     }
-
+    
+    public void spawnEliteMonster(int id, int elite) {
+        spawnMonster(id, 1, getPlayer().getTruePosition());
+    }
+    
     // summon one monster, remote location
     public void spawnMonster(int id, int x, int y) {
         spawnMonster(id, 1, new Point(x, y));
@@ -1303,14 +1307,20 @@ public abstract class AbstractPlayerInteraction {
     public void spawnMonster(int id, int qty, int x, int y) {
         spawnMonster(id, qty, new Point(x, y));
     }
-
-    // handler for all spawnMonster
+    
     public void spawnMonster(int id, int qty, Point pos) {
-        for (int i = 0; i < qty; i++) {
-            getMap().spawnMonsterOnGroundBelow(MapleLifeFactory.getMonster(id), pos);
-        }
+        spawnMonster(id, qty, pos, -1);
     }
 
+    // handler for all spawnMonster
+    public void spawnMonster(int id, int qty, Point pos, int elite) {
+        for (int i = 0; i < qty; i++) {
+            MapleMonster mobb = MapleLifeFactory.getMonster(id);
+            mobb.setEliteMobType(elite);
+            getMap().spawnMonsterOnGroundBelow(mobb, pos);
+        }
+    }
+    
     public void sendNPCText(final String text, final int npc) {
         getMap().broadcastMessage(NPCPacket.getNPCTalk(npc, (byte) 0, text, "00 00", (byte) 0));
     }

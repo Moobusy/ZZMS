@@ -830,13 +830,14 @@ public class PlayerHandler {
     }
 
     public static void QuickSlot(LittleEndianAccessor slea, MapleCharacter chr) {
-        if ((slea.available() == 112L) && (chr != null)) {
+        if ((slea.available() == 114) && (chr != null)) {
+            slea.readShort();
             StringBuilder ret = new StringBuilder();
             for (int i = 0; i < 28; i++) {
                 ret.append(slea.readInt()).append(",");
             }
             ret.deleteCharAt(ret.length() - 1);
-            chr.getQuestNAdd(MapleQuest.getInstance(123000)).setCustomData(ret.toString());
+            chr.getQuestNAdd(MapleQuest.getInstance(GameConstants.QUICK_SLOT)).setCustomData(ret.toString());
         }
     }
 

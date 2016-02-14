@@ -1195,6 +1195,7 @@ public class GMCommand {
             }
             for (int i = 0; i < num; i++) {
                 MapleMonster mob = MapleLifeFactory.getMonster(mid);
+                mob.setEliteMobType(2);
                 c.getPlayer().getMap().spawnMonsterOnGroundBelow(mob, c.getPlayer().getPosition());
             }
             return 1;

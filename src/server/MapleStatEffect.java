@@ -1703,7 +1703,7 @@ public class MapleStatEffect implements Serializable {
         } else if (sourceid == 4341006) {
             applyto.cancelEffectFromBuffStat(MapleBuffStat.SHADOWPARTNER);
         } else if (this.sourceid == 14111024) {
-            stat.put(MapleBuffStat.暗影僕從, 1);
+            stat.put(MapleBuffStat.IDA_BUFF_374, 1);
             buff = BuffPacket.giveBuff(this.sourceid, localDuration, stat, this, applyto);
         } else if (this.sourceid == 1301013) {
             stat.put(MapleBuffStat.BEHOLDER, Integer.valueOf(level));

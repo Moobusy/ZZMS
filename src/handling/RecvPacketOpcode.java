@@ -129,14 +129,14 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     
     // 變更地圖[完成]
     CHANGE_MAP(0xAA),
-    // 變更頻道
+    // 變更頻道[完成]
     CHANGE_CHANNEL(0xAB),
     
     // 0xAC
     // 0xAD
     // 0xAE
     
-    // 購物商城
+    // 購物商城[完成]
     ENTER_CASH_SHOP(0xAF),
     // PvP開始
     ENTER_PVP(0xB0),
@@ -211,12 +211,12 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     // 0xD4
     // 0xD5
     
-    // Npc交談
+    // Npc交談[完成]
     NPC_TALK(0xD6),
     
     // 0xD7
     
-    // Npc詳細交談
+    // Npc詳細交談[完成]
     NPC_TALK_MORE(0xD8),
     // Npc商店
     NPC_SHOP(0xD9),
@@ -246,11 +246,11 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     
     // 管理員商店
     ADMIN_SHOP(0xE7),
-    // 向上整理
+    // 向上整理[完成]
     ITEM_SORT(0xE8),
-    // 種類排序
+    // 種類排序[完成]
     ITEM_GATHER(0xE9),
-    // 物品移動
+    // 物品移動[完成]
     ITEM_MOVE(0xEA),
     
     // 0xEB【輸入觀戰板內容】
@@ -318,75 +318,72 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     USE_OWL_MINERVA(0x110),
     // 使用瞬移之石
     USE_TELE_ROCK(0x111),
-    // 使用回家卷軸
-    USE_RETURN_SCROLL(0x112),
+    // 使用回家卷軸[完成]
+    USE_RETURN_SCROLL(0x10D),
     // 移動至梅斯特鎮
-    MOVE_ARDENTMILL(0x113),
+    MOVE_ARDENTMILL(0x10E),
     // 使用卷軸
-    USE_UPGRADE_SCROLL(0x114),
+    USE_UPGRADE_SCROLL(0x10F),
     // 使用卷軸保護卡(5064300)
-    USE_FLAG_SCROLL(0x115),
+    USE_FLAG_SCROLL(0x110),
     // 使用裝備強化卷軸
-    USE_EQUIP_SCROLL(0x116),
+    USE_EQUIP_SCROLL(0x111),
     // 使用潛能賦予卷軸
-    USE_POTENTIAL_SCROLL(0x117),
+    USE_POTENTIAL_SCROLL(0x112),
     // 使用附加潛在能力賦予卷軸
-    USE_BONUS_POTENTIAL_SCROLL(0x118),
+    USE_BONUS_POTENTIAL_SCROLL(0x113),
     // 使用烙的印章(2049500)
-    USE_CARVED_SEAL(0x119),
+    USE_CARVED_SEAL(0x114),
     // 使用奇怪的方塊(2710000)
-    USE_CRAFTED_CUBE(0x11A),
+    USE_CRAFTED_CUBE(0x115),
     
     // 0x11B
     
     // 靈魂卷軸
-    USE_SOUL_ENCHANTER(0x11C),
+    USE_SOUL_ENCHANTER(0x11A),
     // 靈魂寶珠
-    USE_SOUL_SCROLL(0x11D),
-    // 咒語的痕跡
-    EQUIPMENT_ENCHANT(0x11E),
+    USE_SOUL_SCROLL(0x11B),
+    // 咒語的痕跡[完成]
+    EQUIPMENT_ENCHANT(0x11C),
     
-    // 0x11F
+    // +0x2
     
-    // 使用背包
-    USE_BAG(0x120),
-    // 使用放大鏡
-    USE_MAGNIFY_GLASS(0x121),
+    // 使用背包[完成]
+    USE_BAG(0x11E),
+    // 使用放大鏡[完成]
+    USE_MAGNIFY_GLASS(0x11F),
     
-    // 0x122
-    // 0x123
-    // 0x124
-    // 0x125
+    // +0x7
     
-    // 使用能力點數
+    // 使用能力點數[完成]
     DISTRIBUTE_AP(0x126),
-    // 自動分配能力點數
+    // 自動分配能力點數[完成]
     AUTO_ASSIGN_AP(0x127),
     
-    // 0x128
+    // +0x2
     
-    // 自動恢復HP/MP
+    // 自動恢復HP/MP[完成]
     HEAL_OVER_TIME(0x129),
     
     // 0x12A [Int][Long][Short][Short]
     // 0x12B
 
-    // 使用技能點數
+    // 使用技能點數[完成]
     DISTRIBUTE_SP(0x12C),
-    // 角色使用技能
+    // 角色使用技能[完成]
     SPECIAL_SKILL(0x12D),
-    // 取消輔助效果
+    // 取消輔助效果[完成]
     CANCEL_BUFF(0x12E),
-    // 技能效果
+    // 技能效果[完成]
     SKILL_EFFECT(0x12F),
-    // 楓幣掉落
+    // 楓幣掉落[完成]
     MESO_DROP(0x130),
     // 添加名聲
     GIVE_FAME(0x131),
     
     // 0x132
     
-    // 角色信息
+    // 角色信息[完成]
     CHAR_INFO_REQUEST(0x133),
     // 召喚寵物
     SPAWN_PET(0x134),
@@ -491,24 +488,24 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     ADMIN_CHAT,
     // 隊伍聊天
     PARTYCHAT,
-    // 悄悄話
-    COMMAND,
-    // 聊天招待
-    MESSENGER,
+    // 悄悄話[完成]
+    COMMAND(0x178),
+    // 聊天招待[完成]
+    MESSENGER(0x179),
     // 玩家互動
-    PLAYER_INTERACTION,
-    // 隊伍操作
-    PARTY_OPERATION,
+    PLAYER_INTERACTION(0x17A),
+    // 隊伍操作[完成]
+    PARTY_OPERATION(0x17B),
     // 接受/拒絕組隊邀請
     DENY_PARTY_REQUEST,
     // 允許組隊邀請
-    ALLOW_PARTY_INVITE,
+    ALLOW_PARTY_INVITE(0x17D),
     // 建立遠征隊
     EXPEDITION_OPERATION,
     // 遠征隊搜尋
     EXPEDITION_LISTING,
-    // 公會操作
-    GUILD_OPERATION,
+    // 公會操作[完成]
+    GUILD_OPERATION(0x181),
     // 拒絕公會邀請
     DENY_GUILD_REQUEST,
     // 申請加入公會
@@ -525,8 +522,8 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     ADMIN_COMMAND2(0x184),
     // 管理員日誌
     ADMIN_LOG(0x185),
-    // 好友操作
-    BUDDYLIST_MODIFY(0x186),
+    // 好友操作[完成]
+    BUDDYLIST_MODIFY(0x18C),
     
     // 0x187
     // 0x188
@@ -539,160 +536,169 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     // 0x18C
     
     // 使用時空門
-    USE_DOOR(0x18D),
+    USE_DOOR(0x193),
     // 使用開放通道
     USE_MECH_DOOR(0x194),
     
-    // 0x18F
+    // 0x195
     
-    // 變更鍵盤設置
-    CHANGE_KEYMAP(0x190),
+    // 變更鍵盤設置[完成]
+    CHANGE_KEYMAP(0x196),
     // 猜拳遊戲
-    RPS_GAME(0x191),
+    RPS_GAME(0x197),
     // 戒指操作
-    RING_ACTION(0x1A1),
+    RING_ACTION(0x198),
     // 結婚操作
-    WEDDING_ACTION(0x1A2),
+    WEDDING_ACTION(0x199),
     // 公會聯盟操作
-    ALLIANCE_OPERATION(0x1A3),
+    ALLIANCE_OPERATION(0x19A),
     // 拒絕公會聯盟邀請
-    DENY_ALLIANCE_REQUEST(0x1A4),
+    DENY_ALLIANCE_REQUEST(0x19B),
     // 與 狂狼/皇家騎士團 嚮導時召喚的NPC對話
-    CYGNUS_SUMMON(0x1A5),
+    CYGNUS_SUMMON(0x19C),
     
-    // 0x1A6
+    // 0x19D
     
     // 狂郎勇士連擊
-    ARAN_COMBO(0x1A7),
+    ARAN_COMBO(0x19E),
     // 怪物CRC Key改變回傳
-    MONSTER_CRC_KEY(0x1A8),
+    MONSTER_CRC_KEY(0x19F),
     // 製作道具完成
-    CRAFT_DONE(0x1A9),
+    CRAFT_DONE(0x1A0),
     // 製作道具效果
-    CRAFT_EFFECT(0x1AA),
+    CRAFT_EFFECT(0x1A1),
     // 製作道具開始
-    CRAFT_MAKE(0x1AB),
+    CRAFT_MAKE(0x1A2),
     
-    // 0x1AC
-    // 0x1AD
-    // 0x1AE
-    // 0x1AF
-    // 0x1B0
-    // 0x1B1
-    // 0x1B2
+    // 0x1A2
+    // 0x1A3
+    // 0x1A4
+    // 0x1A5
+    // 0x1A6
+    // 0x1A7
+    // 0x1A8
     
-    // 變更房間
-    CHANGE_ROOM_CHANNEL(0x1B3),
+    // 變更房間[完成]
+    CHANGE_ROOM_CHANNEL(0x1B9),
     
-    // 0x1B4
+    // 0x1BA
     
     // 選擇技能
-    CHOOSE_SKILL(0x1B5),
+    CHOOSE_SKILL(0x1BB),
     // 技能竊取
-    SKILL_SWIPE(0x1B6),
+    SKILL_SWIPE(0x1BC),
     // 檢視技能
-    VIEW_SKILLS(0x1B7),
+    VIEW_SKILLS(0x1BD),
     // 撤銷偷竊技能
-    CANCEL_OUT_SWIPE(0x1B8),
+    CANCEL_OUT_SWIPE(0x1BE),
     
-    // 0x1B9
-    // 0x1BA
-    // 0x1BB
-    // 0x1BC
-    // 0x1BD
-    // 0x1BE
-    
-    // 釋放意志之劍
-    RELEASE_TEMPEST_BLADES(0x1BF),
-    
+    // 0x1BF
     // 0x1C0
     // 0x1C1
     // 0x1C2
     // 0x1C3
     // 0x1C4
-    // 0x1C5
     
-    // 更新超級技能(Done)
-    UPDATE_HYPER(0x1C6),
-    // 重置超級技能(Done)
-    RESET_HYPER(0x1C7),
+    // 釋放意志之劍[完成]
+    RELEASE_TEMPEST_BLADES(0x1C5),
+    
+    // 0x1C6
+    // 0x1B7
+    // 0x1B8
+    // 0x1B9
+    // 0x1BA
+    // 0x1BB
+    
+    // 更新超級技能
+    UPDATE_HYPER(0x1BC),
+    // 重置超級技能
+    RESET_HYPER(0x1BD),
     // 被怪物抓到
     MONSTER_BAN(0x1C8),
-    // 返回選角界面
-    BACK_TO_CHARLIST(0x1D8),
+    // 返回選角界面[完成]
+    BACK_TO_CHARLIST(0x1E0),
     // 創建角色跟刪除角色輸入的驗證碼
     SECURITY_CODE(0x1EF),
     // 更新烈焰溜溜球個數
     PINKBEAN_YOYO_REQUEST,
     // 快速移動(非打開NPC)
     QUICK_MOVE_SPECIAL(0x1EA),
-    // 幸運怪物(完成)
+    // 幸運怪物
     LUCKY_LUCKY_MONSTORY(0x1F4),
     // 活動卡片
     EVENT_CARD(0x1F9),
     // 神之子鏡子世界地圖傳送
     ZERO_QUICK_MOVE(0x1FB),
-    // 凱撒快速鍵(176-Done)
-    KAISER_QUICK_KEY(0x206),
+    
+    // 開啟活動列表[完成]
+    OPEN_EVENT_LIST(0x201),
+    
+    // 凱撒快速鍵[完成]
+    KAISER_QUICK_KEY(0x20E),
+    
+    // 黑名單[完成]
+    BLACK_LIST(0x21C),
     
     // 0x207
     // 0x208
     
     // 賓果
-    BINGO(0x209),
+    BINGO(0x228),
     // 燃燒計畫
-    COMBUSTION_PROJECT(0x220),
-    // 變更角色順序
+    COMBUSTION_PROJECT(0x229),
+    // 變更角色順序[完成]
     CHANGE_CHAR_POSITION(0x221),
-    // 創角進入遊戲
+    // 創角進入遊戲[完成]
     CREATE_CHAR_SELECT(0x222),
+    
     // 寵物移動
-    MOVE_PET(0x21B),
+    MOVE_PET(0x22C),
     // 寵物說話
-    PET_CHAT(0x21C),
+    PET_CHAT(0x22D),
     // 寵物指令
-    PET_COMMAND(0x21D),
+    PET_COMMAND(0x22E),
     // 寵物拾取
-    PET_LOOT(0x21E),
+    PET_LOOT(0x22F),
     // 寵物自動吃藥
-    PET_AUTO_POT(0x21F),
+    PET_AUTO_POT(0x230),
     // 寵物_除外道具
-    PET_IGNORE(0x220),
+    PET_IGNORE(0x231),
     // 寵物自動吃食品
-    PET_AUTO_FOOD(0x221),
+    PET_AUTO_FOOD(0x232),
     // 花狐移動
-    MOVE_HAKU(0x225),
+    MOVE_HAKU(0x233),
     // 花狐動作(包括變身)
-    HAKU_ACTION(0x226),
+    HAKU_ACTION(0x234),
     // 影朋花狐使用輔助技能
-    HAKU_USE_BUFF(0x229),
-    // 召喚獸移動
-    MOVE_SUMMON(0x22C),
-    // 召喚獸攻擊(176.Done)
-    SUMMON_ATTACK(0x22D),
-    // 召喚獸傷害(176.Done)
-    DAMAGE_SUMMON(0x22E),
-    // 召喚獸技能(176.Done)
-    SUB_SUMMON(0x22F),
-    // 召喚獸移除(176.Done)
-    REMOVE_SUMMON(0x230),
+    HAKU_USE_BUFF(0x235),
+    // 召喚獸移動[完成]
+    MOVE_SUMMON(0x236),
+    // 召喚獸攻擊[完成]
+    SUMMON_ATTACK(0x237),
+    // 召喚獸傷害[完成]
+    DAMAGE_SUMMON(0x238),
+    // 召喚獸技能[完成]
+    SUB_SUMMON(0x239),
+    // 召喚獸移除[完成]
+    REMOVE_SUMMON(0x23A),
     // 龍神移動
-    MOVE_DRAGON(0x236),
+    MOVE_DRAGON(0x23B),
     // 使用物品任務
-    USE_ITEM_QUEST(0x239),
+    USE_ITEM_QUEST(0x23C),
     // 機器人移動
-    MOVE_ANDROID(0x23A),
+    MOVE_ANDROID(0x23D),
     // 機器人情感回覆(176.Done)
-    ANDROID_EMOTION_RESULT(0x23B),
+    ANDROID_EMOTION_RESULT(0x23E),
     // 更新任務
-    UPDATE_QUEST(0x23C),
-    QUEST_ITEM(0x23D),
+    UPDATE_QUEST(0x23F),
+    // 任務物品
+    QUEST_ITEM(0x240),
     
     // 0x23E
     // 0x23F
     // 0x240
     
-    // 快速欄按鍵
+    // 快速欄按鍵[完成]
     QUICK_SLOT(0x24B),
     // 按下按鈕
     BUTTON_PRESSED(0x24C),
@@ -754,8 +760,8 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     // 0x270
     // 0x271
     
-    // 遊戲嚮導
-    GUIDE_TRANSFER(0x272),
+    // 遊戲嚮導[完成]
+    GUIDE_TRANSFER(0x276),
     
     // 0x273
     // 0x274
@@ -769,10 +775,10 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     // 0x27C
     // 0x27D
     
-    // 新星世界
-    SHINING_STAR_WORLD(0x27E),
-    // Boss清單
-    BOSS_LIST(0x27F),
+    // 新星世界[完成]
+    SHINING_STAR_WORLD(0x27C),
+    // Boss清單[完成]
+    BOSS_LIST(0x27D),
     
     // +22
     
@@ -791,7 +797,9 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     
     // 潘姆音樂
     PAM_SONG(0x2C0),
-    // 聖誕團隊藥水[2212000]
+    // 新年賀卡(2160101)[完成]
+    NEW_YEAR_CARD(0x2C0),
+    // 聖誕團隊藥水[2212000][完成]
     TRANSFORM_PLAYER(0x2C1),
     
     // 0x2C2 [Long]
@@ -801,22 +809,30 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     
     // 0x2C4
     
-    // 拍賣系統
+    // 拍賣系統[完成]
     ENTER_MTS(0x2C5),
-    // 使用兵法書(2370000)
+    // 使用兵法書(2370000)[完成]
     SOLOMON(0x2C6),
-    // 獲得兵法書經驗值
+    // 獲得兵法書經驗值[完成]
     GACH_EXP(0x2C7),
+    
+    // +0xE
+    
     // 使用強化任意門[完成]
     CHRONOSPHERE(0x2D5),
-    // 使用閃耀方塊(5062017)
-    USE_FLASH_CUBE(0x2CD),
     
-    // 怪物移動
+    // +0x4
+    
+    // 使用閃耀方塊(5062017)[完成]
+    USE_FLASH_CUBE(0x2D9),
+    
+    // +0x31
+    
+    // 怪物移動[完成]
     MOVE_LIFE(0x30A),
-    // 怪物復仇
+    // 怪物復仇[完成]
     AUTO_AGGRO(0x30B),
-    // 怪物自爆
+    // 怪物自爆[完成]
     MONSTER_BOMB(0x30C),
     
     // +0x18
@@ -824,22 +840,16 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     // Npc動作(包括說話)[完成]
     NPC_ACTION(0x324),
     
-    // 0x325
-    // 0x326
-    // 0x327
-    // 0x328
-    // 0x329
-    // 0x32A
+    // +0x7
     
-    // 拾取物品
+    // 拾取物品[完成]
     ITEM_PICKUP(0x32B),
     
-    // 0x32C
-    // 0x32D
+    // +0x3
     
-    // 攻擊箱子
+    // 攻擊箱子[完成]
     DAMAGE_REACTOR(0x32E),
-    // 雙擊箱子
+    // 雙擊箱子[完成]
     TOUCH_REACTOR(0x32F),
     
     // 0x330
@@ -859,11 +869,11 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     // 向左擊飛
     LEFT_KNOCK_BACK(0x338),
     // 玩家更新
-    PLAYER_UPDATE(0x339),
-    // 隊員搜尋
-    MEMBER_SEARCH(0x33A),
-    // 隊伍搜尋
-    PARTY_SEARCH(0x33B),
+    PLAYER_UPDATE(0x34B),
+    // 推薦隊員[完成]
+    MEMBER_SEARCH(0x34C),
+    // 尋找隊伍[完成]
+    PARTY_SEARCH(0x34E),
     // 開始採集
     START_HARVEST(0x33C),
     // 停止採集
@@ -872,8 +882,8 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     // 0x33E
     // 0x33F
     
-    // 快速移動(開啟Npc)
-    QUICK_MOVE(0x340),
+    // 快速移動(開啟Npc)[完成]
+    QUICK_MOVE(0x357),
     // 採集符文輪
     TOUCH_RUNE(0x341),
     // 取得符文
@@ -899,6 +909,10 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     
     // 使用白金鎚子
     PLATINUM_HAMMER(0x3D9),
+    
+    // 戰鬥分析開始[完成]
+    BATTLE_STATISTICS(0x404),
+    
     // 獲得獎勵
     REWARD(0x41E),
     // 裝備特效開關
@@ -940,8 +954,7 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     RENAME_FAMILIAR,
     PET_BUFF,
     USE_TREASURE_CHEST,
-    SOLOMON_EXP,
-    NEW_YEAR_CARD,
+    SOLOMON_EXP,    
     XMAS_SURPRISE,
     TWIN_DRAGON_EGG,
     YOUR_INFORMATION,

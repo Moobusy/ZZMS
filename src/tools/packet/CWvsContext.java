@@ -3866,6 +3866,8 @@ public class CWvsContext {
                     mplew.writeInt(bufflength);
                 }
             }
+            
+//            IsBaseBuff(mplew, statups, effect, chr, buffid, bufflength);
 
             // IDA 確定的部分...太多寫到另一個Function
             IsSpecialBuff(mplew, statups, effect, chr, buffid, bufflength);
@@ -3912,7 +3914,12 @@ public class CWvsContext {
             if (statups.containsKey(MapleBuffStat.XENON_FLY)) {
                 mplew.writeInt(0);
             }
-
+            if (statups.containsKey(MapleBuffStat.IDA_BUFF_461)) {
+                mplew.write(0);
+            }
+            if (statups.containsKey(MapleBuffStat.IDA_BUFF_462)) {
+                mplew.writeInt(0);
+            }
             // IDA 確認的格式
             mplew.writeShort(0); //MoopleDEV 寫 delay ??
             mplew.write(0);
@@ -3929,6 +3936,3990 @@ public class CWvsContext {
 
 //            System.err.println("\u001B[34m buff " + mplew.toString());
             return mplew.getPacket();
+        }
+        
+        public static void IsBaseBuff(MaplePacketLittleEndianWriter mplew, Map<MapleBuffStat, Integer> statups, MapleStatEffect effect, MapleCharacter chr, int buffid, int bufflength) {
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(177))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(177);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(178))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(178);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(179))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(179);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(180))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(180);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(51))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(51);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(52))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(52);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(53))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(53);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(54))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(54);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(55))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(55);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(56))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(56);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(306))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(306);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(57))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(57);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(58))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(58);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(59))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(59);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(139))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(139);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(140))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(140);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(141))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(141);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(142))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(142);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(143))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(143);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(144))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(144);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(60))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(60);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(61))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(61);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(62))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(62);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(63))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(63);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(145))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(145);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(64))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(64);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(65))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(65);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(66))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(66);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(67))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(67);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(68))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(68);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(192))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(192);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(69))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(69);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(70))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(70);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(71))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(71);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(72))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(72);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(73))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(73);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(328))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(328);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(74))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(74);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(75))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(75);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(76))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(76);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(77))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(77);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(78))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(78);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(79))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(79);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(80))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(80);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(187))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(187);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(81))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(81);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(82))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(82);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(171))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(171);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(176))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(176);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(174))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(174);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(172))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(172);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(173))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(173);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(83))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(83);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(99))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(99);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(84))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(84);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(85))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(85);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(86))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(86);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(87))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(87);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(88))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(88);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(89))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(89);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(242))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(242);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(243))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(243);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(90))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(90);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(248))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(248);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(263))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(263);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(91))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(91);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(92))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(92);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(93))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(93);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(94))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(94);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(95))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(95);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(96))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(96);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(97))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(97);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(100))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(100);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(109))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(109);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(101))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(101);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(98))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(98);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(102))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(102);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(103))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(103);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(104))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(104);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(105))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(105);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(106))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(106);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(107))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(107);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(108))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(108);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(110))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(110);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(111))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(111);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(112))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(112);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(113))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(113);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(114))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(114);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(115))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(115);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(116))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(116);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(117))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(117);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(254))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(254);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(118))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(118);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(119))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(119);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(120))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(120);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(121))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(121);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(122))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(122);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(123))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(123);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(124))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(124);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(126))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(126);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(127))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(127);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(128))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(128);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(129))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(129);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(307))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(307);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(339))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(339);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(130))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(130);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(188))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(188);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(169))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(169);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(132))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(132);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(134))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(134);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(135))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(135);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(136))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(136);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(137))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(137);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(138))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(138);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(148))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(148);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(309))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(309);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(149))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(149);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(150))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(150);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(151))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(151);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(152))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(152);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(153))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(153);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(154))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(154);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(155))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(155);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(156))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(156);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(157))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(157);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(133))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(133);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(158))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(158);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(159))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(159);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(160))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(160);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(245))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(245);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(161))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(161);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(162))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(162);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(163))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(163);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(165))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(165);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(181))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(181);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(166))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(166);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(167))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(167);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(168))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(168);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(170))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(170);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(175))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(175);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(182))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(182);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(194))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(194);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(195))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(195);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(183))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(183);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(189))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(189);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(184))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(184);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(185))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(185);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(186))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(186);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(191))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(191);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(196))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(196);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(193))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(193);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(190))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(190);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(197))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(197);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(199))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(199);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(200))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(200);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(206))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(206);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(201))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(201);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(202))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(202);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(204))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(204);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(207))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(207);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(205))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(205);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(208))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(208);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(209))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(209);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(210))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(210);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(211))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(211);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(213))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(213);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(214))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(214);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(215))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(215);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(216))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(216);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(217))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(217);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(218))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(218);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(219))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(219);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(220))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(220);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(221))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(221);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(222))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(222);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(241))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(241);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(223))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(223);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(224))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(224);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(244))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(244);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(257))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(257);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(225))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(225);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(226))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(226);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(228))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(228);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(229))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(229);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(230))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(230);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(232))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(232);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(233))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(233);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(246))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(246);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(310))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(310);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(234))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(234);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(236))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(236);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(235))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(235);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(250))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(250);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(237))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(237);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(238))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(238);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(249))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(249);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(251))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(251);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(239))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(239);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(240))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(240);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(252))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(252);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(247))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(247);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(253))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(253);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(255))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(255);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(256))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(256);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(198))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(198);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(258))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(258);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(259))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(259);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(260))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(260);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(261))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(261);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(262))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(262);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(271))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(271);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(125))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(125);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(265))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(265);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(266))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(266);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(267))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(267);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(268))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(268);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(269))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(269);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(270))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(270);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(272))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(272);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(273))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(273);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(274))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(274);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(275))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(275);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(276))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(276);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(333))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(333);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(277))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(277);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(278))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(278);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(279))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(279);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(280))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(280);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(281))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(281);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(282))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(282);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(283))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(283);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(284))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(284);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(325))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(325);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(326))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(326);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(327))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(327);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(285))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(285);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(286))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(286);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(287))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(287);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(288))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(288);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(289))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(289);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(290))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(290);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(291))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(291);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(295))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(295);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(292))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(292);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(293))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(293);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(294))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(294);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(296))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(296);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(297))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(297);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(298))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(298);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(299))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(299);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(203))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(203);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(300))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(300);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(301))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(301);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(302))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(302);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(303))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(303);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(304))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(304);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(305))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(305);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(308))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(308);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(311))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(311);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(312))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(312);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(313))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(313);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(314))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(314);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(315))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(315);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(316))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(316);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(317))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(317);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(318))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(318);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(319))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(319);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(320))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(320);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(321))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(321);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(322))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(322);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(329))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(329);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(337))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(337);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(331))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(331);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(323))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(323);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(330))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(330);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(334))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(334);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(335))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(335);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(336))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(336);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(338))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(338);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(340))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(340);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(341))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(341);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(342))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(342);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(343))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(343);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(344))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(344);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(345))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(345);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(346))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(346);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(347))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(347);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(348))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(348);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(349))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(349);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(350))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(350);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(351))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(351);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(352))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(352);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(353))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(353);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(355))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(355);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(354))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(354);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(400))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(400);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(401))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(401);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(402))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(402);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(398))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(398);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(264))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(264);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(399))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(399);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(396))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(396);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(397))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(397);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(378))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(378);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(379))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(379);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(386))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(386);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(380))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(380);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(382))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(382);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(383))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(383);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(384))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(384);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(385))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(385);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(389))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(389);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(390))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(390);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(391))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(391);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(392))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(392);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(393))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(393);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(394))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(394);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(395))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(395);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(146))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(146);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(404))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(404);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(381))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(381);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(405))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(405);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(406))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(406);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(147))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(147);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(356))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(356);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(357))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(357);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(358))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(358);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(359))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(359);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(360))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(360);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(361))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(361);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(362))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(362);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(363))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(363);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(364))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(364);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(365))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(365);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(366))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(366);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(367))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(367);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(368))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(368);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(369))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(369);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(370))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(370);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(371))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(371);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(372))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(372);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(373))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(373);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(374))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(374);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(375))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(375);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(376))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(376);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(407))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(407);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(408))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(408);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(409))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(409);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(410))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(410);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(411))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(411);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(412))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(412);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(413))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(413);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(414))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(414);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(415))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(415);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(416))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(416);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(417))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(417);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(418))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(418);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(419))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(419);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(422))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(422);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(423))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(423);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(424))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(424);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(425))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(425);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(426))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(426);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(427))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(427);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(428))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(428);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(429))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(429);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(430))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(430);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(431))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(431);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(432))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(432);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(433))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(433);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(437))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(437);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(420))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(420);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(421))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(421);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(434))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(434);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(436))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(436);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(438))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(438);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(439))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(439);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(440))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(440);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(441))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(441);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(442))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(442);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(443))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(443);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(444))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(444);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(445))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(445);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(446))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(446);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(447))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(447);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(448))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(448);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(449))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(449);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(450))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(450);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(451))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(451);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(452))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(452);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(453))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(453);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(454))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(454);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(455))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(455);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(456))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(456);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(457))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(457);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(458))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(458);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(459))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(459);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+            if (statups.containsKey(MapleBuffStat.getMapleBuffStat(463))) {
+                MapleBuffStat buff = MapleBuffStat.getMapleBuffStat(463);
+                if (GameConstants.isIDA_SpecialBuff(buff)) {
+                    mplew.writeInt(statups.get(buff));
+                } else {
+                    mplew.writeShort(statups.get(buff));
+                }
+                mplew.writeInt(buffid);
+                mplew.writeInt(bufflength);
+            }
+
         }
 
         public static void IsSpecialBuff(MaplePacketLittleEndianWriter mplew, Map<MapleBuffStat, Integer> statups, MapleStatEffect effect, MapleCharacter chr, int buffid, int bufflength) {
@@ -3958,6 +7949,9 @@ public class CWvsContext {
             }
             if (statups.containsKey(MapleBuffStat.MOUNT_MORPH)) {
                 mplew.write(1);
+            }
+            if (statups.containsKey(MapleBuffStat.DEFAULTBUFF4)) {
+                mplew.write(0);
             }
             if (statups.containsKey(MapleBuffStat.JUDGMENT_DRAW)) {
                 switch (statups.get(MapleBuffStat.JUDGMENT_DRAW)) {
@@ -4139,11 +8133,7 @@ public class CWvsContext {
             if (statups.containsKey(MapleBuffStat.IDA_UNK_BUFF16)) {
                 mplew.writeInt(0);
                 mplew.writeInt(0);
-            }
-            if (statups.containsKey(MapleBuffStat.PROP)) {
-                mplew.writeInt(0xA);
-                mplew.writeInt(0);
-            }
+            }            
             if (statups.containsKey(MapleBuffStat.IDA_UNK_BUFF2)) {
                 mplew.writeInt(1);
             }
@@ -4154,10 +8144,26 @@ public class CWvsContext {
                 mplew.writeInt(bufflength);
                 mplew.write(1);
             }
+            if (statups.containsKey(MapleBuffStat.ENERGY_CHARGE)) {
+                mplew.writeInt(0);
+            }
             if (statups.containsKey(MapleBuffStat.PINK_BEAN_ATTACK)) {
                 mplew.writeInt(buffid);
             }
+            if (statups.containsKey(MapleBuffStat.IDA_BUFF_443)) {
+                mplew.writeInt(0);
+                mplew.writeInt(0);
+            }
+            if (statups.containsKey(MapleBuffStat.IDA_BUFF_445)) {
+                mplew.writeInt(0);
+                mplew.write(0);
+                mplew.writeInt(0);
+                mplew.writeInt(0);
+            }
             mplew.writeInt(0);
+            if (statups.containsKey(MapleBuffStat.DARKSIGHT)) {
+                mplew.writeInt(0);
+            }            
         }
 
         public static byte[] giveDebuff(MapleDisease statups, int x, int skillid, int level, int duration) {

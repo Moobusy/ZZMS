@@ -9,6 +9,7 @@ import constants.ItemConstants;
 import handling.SendPacketOpcode;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -62,13 +63,19 @@ public class CSPacket {
 
         CashItemFactory cif = CashItemFactory.getInstance();
 
-        mplew.writeInt(0);
-
-        short unk_itemSize = 0;
-        mplew.writeShort(unk_itemSize);
-        for (int i = 0 ; i < unk_itemSize ; i++) { // 是控制商城商品用的
-            addCommodityInfo(mplew);
+        int[] unk_cashSize = new int[]{110100044, 110100045, 110100047,110100054, 110100056, 110100063, 110100075};
+        mplew.writeInt(unk_cashSize.length);
+        for (int i = 0 ; i < unk_cashSize.length ; i++) {
+            mplew.writeInt(unk_cashSize[i]);
         }
+        
+        
+        Collection<CashItemInfo.CashModInfo> ami = cif.getAllModInfo();
+        ami.clear();
+        mplew.writeShort(ami.size());
+        ami.stream().forEach((cmi) -> { // 是控制商城商品用的
+            addModCashItemInfo(mplew, cmi);
+        });
 
         mplew.writeShort(0);
 
@@ -109,21 +116,97 @@ public class CSPacket {
 
         mplew.writeInt(0);
         mplew.writeInt(3);
-        mplew.write(HexTool.getByteArrayFromHexString("02 00 3F 3F 29 00 3F 3F 3F 20 3F 3F 3F 20 3F 3F 20 3F 3F 3F 3F 20 3F 3F 3F 3F 20 3F 20 3F 3F 3F 20 3F 3F 3F 3F 20 2D 2D 2D 2D 2D 3E 20 3F 3F 05 00 3F 3F 3F 20 3F 13 00 3F 3F 3F 3F 3F 21 20 3F 3F 3F 20 3F 3F 3F 20 3F 3F 3F 21 03 00 3F 3F 3F 20 00 3F 3F 3F 20 3F 3F 3F 3F 20 3F 3F 3F 3F 20 3F 3F 3F 21 20 3F 3F 20 3F 3F 20 3F 3F 3F 3F 3F 3F 7E"));
-        mplew.writeZeroBytes(1093);
-
+        mplew.write(HexTool.getByteArrayFromHexString("02 00 3F 3F 29 00 3F 3F 3F 20 3F 3F 3F 20 3F 3F 20 3F 3F 3F 3F 20 3F 3F 3F 3F 20 3F 20 3F 3F 3F 20 3F 3F 3F 3F 20 2D 2D 2D 2D 2D 3E 20 3F 3F 05 00 3F 3F 3F 20 3F 13 00 3F 3F 3F 3F 3F 21 20 3F 3F 3F 20 3F 3F 3F 20 3F 3F 3F 21 03 00 3F 3F 3F 20 00 3F 3F 3F 20 3F 3F 3F 3F 20 3F 3F 3F 3F 20 3F 3F 3F 21 20 3F 3F 20 3F 3F 20 3F 3F 3F 3F 3F 3F 7E CC 0B 00 00 64 00 65 00 73 00 63 00 00 00 00 00 55 12 38 12 00 00 00 80 DB 0B 00 00 64 00 65 00 73 00 63 00 00 00 00 00 50 12 38 12 00 00 00 80 EA 0B 00 00 6E 00 61 00 6D 00 65 00 00 00 00 00 5F 12 38 12 00 00 00 80 E1 0B 00 00 6E 00 61 00 6D 00 65 00 00 00 00 00 5A 12 38 12 00 00 00 80 D8 0B 00 00 64 00 65 00 73 00 63 00 00 00 00 00 59 12 38 12 00 00 00 80 E7 0B 00 00 64 00 65 00 73 00 63 00 00 00 00 00 24 12 38 12 00 00 00 80 F6 0B 00 00 6E 00 61 00 6D 00 65 00 00 00 00 00 23 12 38 12 00 00 00 80 ED 0B 00 00 6E 00 61 00 6D 00 65 00 00 00 00 00 2E 12 38 12 00 00 00 80 73 0D 00 00 64 00 65 00 73 00 63 00 00 00 00 00 2D 12 38 12 00 00 00 80 F3 0B 00 00 64 00 65 00 73 00 63 00 00 00 00 00 28 12 38 12 00 00 00 80 02 0C 00 00 6E 00 61 00 6D 00 65 00 00 00 00 00 37 12 38 12 00 00 00 80 F9 0B 00 00 6E 00 61 00 6D 00 65 00 00 00 00 00 32 12 38 12 00 00 00 80 D6 07 00 00 64 00 65 00 73 00 63 00 00 00 00 00 31 12 38 12 00 00 00 80 FF 0B 00 00 64 00 65 00 73 00 63 00 00 00 00 00 3C 12 38 12 00 00 00 80 0E 0C 00 00 6E 00 61 00 6D 00 65 00 00 00 00 00 3B 12 38 12 00 00 00 80 05 0C 00 00 6E 00 61 00 6D 00 65 00 00 00 00 00 06 12 38 12 00 00 00 80 E2 07 00 00 64 00 65 00 73 00 63 00 00 00 00 00 05 12 38 12 00 00 00 80 0B 0C 00 00 64 00 65 00 73 00 63 00 00 00 00 00 00 12 38 12 00 00 00 80 1A 0C 00 00 6E 00 61 00 6D 00 65 00 00 00 00 00 0F 12 38 12 00 00 00 80 11 0C 00 00 6E 00 61 00 6D 00 65 00 00 00 00 00 0A 12 38 12 00 00 00 80 EE 07 00 00 64 00 65 00 73 00 63 00 00 00 00 00 09 12 38 12 00 00 00 80 17 0C 00 00 64 00 65 00 73 00 63 00 00 00 00 00 14 12 38 12 00 00 00 80 20 0C 00 00 6E 00 61 00 6D 00 65 00 00 00 00 00 13 12 38 12 00 00 00 80 29 0C 00 00 0E 5C BD 89 F8 66 00 00 00 00 00 00 1E 12 38 12 00 00 00 80 1D 0C 00 00 6E 00 61 00 6D 00 65 00 00 00 00 00 1D 12 38 12 00 00 00 80 FA 07 00 00 64 00 65 00 73 00 63 00 00 00 00 00 18 12 38 12 00 00 00 80 26 0C 00 00 64 00 65 00 73 00 63 00 00 00 00 00 E7 1D 38 12 00 00 00 80 35 0C 00 00 6E 00 61 00 6D 00 65 00 00 00 00 00 E2 1D 38 12 00 00 00 80 2C 0C 00 00 6E 00 61 00 6D 00 65 00 00 00 00 00 E1 1D 38 12 00 00 00 80 DE 08 00 00 64 00 65 00 73 00 63 00 00 00 00 00 EC 1D 38 12 00 00 00 80 32 0C 00 00 64 00 65 00 73 00 63 00 00 00 00 00 EB 1D 38 12 00 00 00 80 41 0C 00 00 6E 00 61 00 6D 00 65 00 00 00 00 00 F6 1D 38 12 00 00 00 80 38 0C 00 00 6E 00 61 00 6D 00 65 00 00 00 00 00 F5 1D 38 12 00 00 00 80 A2 0E 00 00 64 00 65 00 73 00 63 00 00 00 00 00 F0 1D 38 12 00 00 00 80 3E 0C 00 00 64 00 65 00 73 00 63 00 00 00 00 00 FF 1D 38 12 00 00 00 80 4D 0C 00 00 6E 00 61 00 6D 00 65 00 00 00 00 00 FA 1D 38 12 00 00 00 80 44 0C 00 00 6E 00 61 00 6D 00 65 00 00 00 00 00 F9 1D 38 12 00 00 00 80 AE 0E 00 00 64 00 65 00 73 00 63 00 00 00 00 00 C4 1D 38 12 00 00 00 80 4A 0C 00 00 64 00 65 00 73 00 63 00 00 00 00 00 C3 1D 38 12 00 00 00 80 59 0C 00 00 6E 00 61 00 6D 00 65 00 00 00 00 00 CE 1D 38 12 00 00 00 80 50 0C 00 00 6E 00 61 00 6D 00 65 00 00 00 00 00 CD 1D 38 12 00 00 00 80 4A 09 00 00 64 00 65 00 73 00 63 00 00 00 00 00 C8 1D 38 12 00 00 00 80 56 0C 00 00 64 00 65 00 73 00 63 00 00 00 00 00 D7 1D 38 12 00 00 00 80 62 0C 00 00 6E 00 61 00 6D 00 65 00 00 00 00 00 D2 1D 38 12 00 00 00 80 6C 0B 00 00 37 00 31 90 74 5E E5 65 18 8A 00 00 D1 1D 38 12 00 00 00 80 00 00 01 00 81 3D 4D 00 51 FE 8F 06 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 FF FF FF FF FF FF FF FF FF FF FF FF 0E 00 00 00 7B 9E 33 01 7B 9E 33 01 00 00 00 00 18 00 00 00 01 00 00 00 01 00 00 00 01 00 00 00 01 00 00 00 01 00 00 00 01 00 00 00 01 00 00 00 00 E1 CB 57 00 00 00 00 3C 00 00 00 00 00 00 00 02 00 00 00 01 FA AE 4F 00 2B 00 15 4D 4C 00 16 4D 4C 00 17 4D 4C 00 1D 4C 4C 00 7F 4C 4C 00 41 4B 4C 00 42 4B 4C 00 43 4B 4C 00 44 4B 4C 00 45 4B 4C 00 48 4B 4C 00 49 4B 4C 00 4A 4B 4C 00 4B 4B 4C 00 4D 4B 4C 00 50 4B 4C 00 54 4B 4C 00 56 4B 4C 00 57 4B 4C 00 58 4B 4C 00 5B 4B 4C 00 6B 4B 4C 00 6E 4B 4C 00 82 4B 4C 00 88 4B 4C 00 91 4B 4C 00 0B 4C 4C 00 0C 4C 4C 00 0D 4C 4C 00 7D 4C 4C 00 80 4C 4C 00 81 4C 4C 00 82 4C 4C 00 96 4C 4C 00 97 4C 4C 00 98 4C 4C 00 9F 4B 4C 00 F6 4B 4C 00 F7 4B 4C 00 F8 4B 4C 00 53 4C 4C 00 54 4C 4C 00 55 4C 4C 00 01 EB AE 4F 00 29 00 5D 11 10 00 EB 5F 10 00 0F FB 19 00 E7 72 4C 00 FE D3 10 00 2D 54 0F 00 DF FA 19 00 26 73 0F 00 C9 53 0F 00 CA 53 0F 00 24 99 0F 00 25 73 0F 00 82 F8 10 00 7F 03 11 00 83 F8 10 00 80 03 11 00 CA 4A 0F 00 59 71 0F 00 60 98 0F 00 D7 D0 10 00 F6 82 10 00 19 5C 10 00 58 BF 0F 00 5A 95 4E 00 5B 95 4E 00 31 9D 4E 00 32 9D 4E 00 F5 A0 4E 00 39 99 4E 00 64 9D 4E 00 65 9D 4E 00 66 9D 4E 00 67 9D 4E 00 68 9D 4E 00 69 9D 4E 00 6A 9D 4E 00 6B 9D 4E 00 82 3A 54 00 04 3F 4D 00 F1 7B 4D 00 80 64 4D 00 00 00 00 00 00"));
+        
         return mplew.getPacket();
     }
-
-    public static void addCommodityInfo(MaplePacketLittleEndianWriter mplew) {
-        mplew.writeInt(0); // [D4 84 91 06] 商品SN
-        //0x400 顯示商品開關
-        //0x800 商品FLAG 0-NEW,1-SALE,2-HOT,3-EVENT,其他-無
-        mplew.writeInt(0); // [00 04 00 00] 不知道是什麼的基址
-        mplew.writeInt(0); // unk
-        int 基址值個數 = 0;
-        for (int j = 0 ; j < 基址值個數 ; j++) {
-            mplew.write(0); // 有-1, 0, 1, 2 當基址為0x20時 short?
+        
+    public static void addModCashItemInfo(MaplePacketLittleEndianWriter mplew, CashItemInfo.CashModInfo item) {
+        int flags = item.flags;
+        mplew.writeInt(item.sn); // 商品SN
+        mplew.writeInt(flags); // 商品FLAG
+        mplew.writeInt(0); // Unk
+        if ((flags & 0x1) != 0) {
+            mplew.writeInt(item.itemid);
+        }
+        if ((flags & 0x2) != 0) {
+            mplew.writeShort(item.count);
+        }
+        if ((flags & 0x10) != 0) {
+            mplew.write(item.priority);
+        }
+        if ((flags & 0x4) != 0) {
+            mplew.writeInt(item.discountPrice);
+        }
+        if ((flags & 0x8) != 0) {
+            mplew.write(item.unk_1 - 1);
+        }
+        if ((flags & 0x20) != 0) {
+            mplew.writeShort(item.period);
+        }
+        if ((flags & 0x20000) != 0) {
+            mplew.writeShort(0);
+        }
+        if ((flags & 0x40000) != 0) {
+            mplew.writeShort(0);
+        }
+        if ((flags & 0x40) != 0) {
+            mplew.writeInt(0);
+        }
+        if ((flags & 0x80) != 0) {
+            mplew.writeInt(item.meso);
+        }
+        if ((flags & 0x100) != 0) {
+            mplew.write(item.unk_2 - 1);
+        }
+        if ((flags & 0x200) != 0) {
+            mplew.write(item.gender);
+        }
+        if ((flags & 0x400) != 0) {
+            mplew.write(item.showUp ? 1 : 0);
+        }
+        if ((flags & 0x800) != 0) {
+            mplew.write(item.mark);
+        }
+        if ((flags & 0x1000) != 0) {
+            mplew.write(item.unk_3 - 1);
+        }
+        if ((flags & 0x2000) != 0) {
+            mplew.writeShort(0);
+        }
+        if ((flags & 0x4000) != 0) {
+            mplew.writeShort(0);
+        }
+        if ((flags & 0x8000) != 0) {
+            mplew.writeShort(0);
+        }
+        if ((flags & 0x10000) != 0) {
+            List pack = CashItemFactory.getInstance().getPackageItems(item.sn);
+            if (pack == null) {
+                mplew.write(0);
+            } else {
+                mplew.write(pack.size());
+                pack.stream().forEach((pack1) -> {
+                    mplew.writeInt((Integer) pack1);
+                });
+            }
+        }
+        
+        if ((flags & 0x80000) != 0) { // 開始販售時間[完成]
+            mplew.writeInt(2016020300); // 2016020300
+        }
+        
+        if ((flags & 0x100000) != 0) { // 結束販售時間[完成]
+            mplew.writeInt(2016020300); // 2016020324
+        }
+        
+        if ((flags & 0x4000000) != 0) { // [完成]
+            mplew.write(0); 
+        }        
+        
+        if (((flags & 0x80000) == 0) || (((flags & 0x100000) == 0)
+                || ((flags & 0x200000) != 0))) {
+            mplew.write(0);
         }
     }
 

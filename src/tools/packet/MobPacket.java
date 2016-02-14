@@ -546,10 +546,10 @@ public class MobPacket {
             mplew.writeInt(0);
             mplew.writeInt(0);
         }
-        if (mobstat.contains(MonsterStatus.MBS61)) {
+        if (mobstat.contains(MonsterStatus.MBS69)) {
             mplew.writeInt(0);
         }
-        if (mobstat.contains(MonsterStatus.MBS65)) {
+        if (mobstat.contains(MonsterStatus.DEFAULT_5)) {
             int result = 0;
             mplew.write(result);
             if (result != 0) {
@@ -580,6 +580,9 @@ public class MobPacket {
         if (mobstat.contains(MonsterStatus.MBS56)) {
             mplew.writeInt(0);
         }
+        if (mobstat.contains(MonsterStatus.MBS62)) { // (186++)
+            mplew.writeInt(0);
+        }
         if (mobstat.contains(MonsterStatus.BLEED)) {
             int v4 = 0;
             int v23 = 0;
@@ -600,11 +603,11 @@ public class MobPacket {
                 } while (v23 < v4);
             }
         }
-        if (mobstat.contains(MonsterStatus.MBS63)) {
+        if (mobstat.contains(MonsterStatus.DEFAULT_3)) {
             mplew.write(0);
             mplew.write(0);
         }
-        if (mobstat.contains(MonsterStatus.MBS64)) {
+        if (mobstat.contains(MonsterStatus.DEFAULT_4)) {
             mplew.write(0);
         }
         if (mobstat.contains(MonsterStatus.MONSTER_BOMB)) {
@@ -612,15 +615,15 @@ public class MobPacket {
             mplew.writeInt(0);
             mplew.writeInt(0);
         }
-        if (mobstat.contains(MonsterStatus.MBS66)) {
+        if (mobstat.contains(MonsterStatus.DEFAULT_6)) {
             mplew.writeMapleAsciiString("");
         }
-        if (mobstat.contains(MonsterStatus.MBS67)) {
+        if (mobstat.contains(MonsterStatus.DEFAULT_7)) {
             mplew.writeInt(0);
             mplew.writeInt(0);
             mplew.writeInt(0);
         }
-        if (mobstat.contains(MonsterStatus.MBS68)) {
+        if (mobstat.contains(MonsterStatus.DEFAULT_8)) {
             mplew.writeInt(0);
             mplew.writeInt(0);
             mplew.writeShort(0);
@@ -633,14 +636,14 @@ public class MobPacket {
             mplew.writeShort(0);
             mplew.writeInt(0);
         }
-        if (mobstat.contains(MonsterStatus.MBS70)) {
+        if (mobstat.contains(MonsterStatus.DEFAULT_9)) {
             mplew.writeInt(0);
             mplew.writeInt(0);
             mplew.writeInt(0);
             mplew.writeInt(0);
             mplew.writeInt(0);
         }
-        if (mobstat.contains(MonsterStatus.MBS71)) {
+        if (mobstat.contains(MonsterStatus.DEFAULT_10)) {
             mplew.writeInt(0);
             mplew.writeInt(0);
             mplew.writeInt(0);
@@ -649,10 +652,20 @@ public class MobPacket {
             mplew.writeInt(0);
             mplew.writeInt(0);
         }
-        if (mobstat.contains(MonsterStatus.MBS72)) {
+        if (mobstat.contains(MonsterStatus.DEFAULT_11)) {
             mplew.writeInt(0);
             mplew.writeInt(0);
             mplew.writeInt(0);
+            mplew.writeInt(0);
+            mplew.writeInt(0);
+        }
+        if (mobstat.contains(MonsterStatus.MBS63)) {
+            mplew.writeInt(0);
+            mplew.writeInt(0);
+            mplew.writeInt(0);
+            mplew.writeInt(0);
+        }
+        if (mobstat.contains(MonsterStatus.MBS64)) {
             mplew.writeInt(0);
             mplew.writeInt(0);
         }
@@ -692,7 +705,7 @@ public class MobPacket {
             mplew.writeInt(link);
         }
         mplew.write(life.getCarnivalTeam());
-        mplew.writeInt(life.getHp() > 2147483647 ? 2147483647 : (int) life.getHp());
+        mplew.writeInt(life.getHp() > 2147483647 ? 2147483647 : (life.getChangedStats() != null ? (int) life.getChangedStats().getHp() : (int) life.getHp()));
         mplew.writeInt(0);
         if (unk) { // 巡邏怪物的偵測範圍?
             mplew.writeInt(-2350);
@@ -708,15 +721,13 @@ public class MobPacket {
         mplew.writeInt(-1);
         mplew.write(0);
         mplew.writeInt(0);
-        mplew.writeInt(0);
-        mplew.writeInt(-1);
-        byte v1 = 0;
-        mplew.write(v1); // 怪物類型？菁英怪？
-        if (v1 > 0) {
-            mplew.writeInt(0);//*v2
-            mplew.writeInt(0);//*(v2 + 1)
-            mplew.writeInt(0);//*(v2 + 2)
-            mplew.writeInt(0);//*(v2 + 3)
+        mplew.writeInt(life.getEliteMobType() >= 0 ? 200 : 100);
+        mplew.writeInt(life.getEliteMobType());
+        mplew.write(life.getEliteMobType() >= 0); // 菁英怪物
+        if (life.getEliteMobType() >= 0) {
+            mplew.writeInt(life.getEliteMobType() == 2 ? 0x80 : 0x66);//*(v2 + 1)
+            mplew.writeInt(life.getEliteMobType() == 2 ? 0x24 : 0xC);//*(v2 + 2)
+            mplew.writeInt(0x1);//*(v2 + 3)
             mplew.writeInt(0);//*(v2 + 4)
         }
         mplew.write(-1);

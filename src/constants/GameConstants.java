@@ -4090,18 +4090,15 @@ public class GameConstants {
             case DASH_JUMP:
             case SOARING:
             case FREEZE:
-            case MECH_CHANGE:
-//            case FROZEN:
+            case PLAYERS_BUFF12:
+            case IDA_BUFF_224:
             case INDIE_SPEED:
             case INDIE_JUMP:
             case USING_SKILL_MOVE:
-            case ENERGY_CHARGE:
-//            case SHADOW: 179 remove
-//            case SLOWNESS: 178 remove
+            case DEFAULTBUFF5:
+            case MECH_CHANGE:
             case IDA_MOVE_BUFF2:
-            case IDA_MOVE_BUFF3:
-            case DEFAULTBUFF2:
-            case IDA_SPECIAL_BUFF_4:
+            case IDA_MOVE_BUFF3:            
             case IDA_MOVE_BUFF4:
             case IDA_MOVE_BUFF5:
             case IDA_MOVE_BUFF6:
@@ -4111,6 +4108,11 @@ public class GameConstants {
             case IDA_MOVE_BUFF8:
             case RAINING_MINES:
             case IDA_MOVE_BUFF9:
+            case DEFAULTBUFF2:
+            case IDA_SPECIAL_BUFF_4:
+            case IDA_BUFF_429:
+            case IDA_BUFF_431:
+            case IDA_BUFF_268:
                 return true;
         }
         return false;

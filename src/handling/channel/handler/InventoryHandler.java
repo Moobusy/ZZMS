@@ -151,19 +151,33 @@ public class InventoryHandler {
     }
 
     public static final void MoveBag(final LittleEndianAccessor slea, final MapleClient c) {
-        if (c.getPlayer().hasBlockedInventory()) { //hack
-            return;
+        if (slea.available() <= 13) {
+            if (c.getPlayer().hasBlockedInventory()) { //hack
+                return;
+            }
+            c.getPlayer().setScrolledPosition((short) 0);
+            c.getPlayer().updateTick(slea.readInt());
+            final boolean srcFirst = slea.readInt() > 0;
+            if (slea.readByte() != 4) { //must be etc
+                c.getSession().write(CWvsContext.enableActions());
+                return;
+            }
+            short dst = (short) slea.readInt();
+            short src = slea.readShort();                                             //00 00
+            MapleInventoryManipulator.move(c, MapleInventoryType.ETC, srcFirst ? dst : src, srcFirst ? src : dst);
+        } else {
+            if (c.getPlayer().hasBlockedInventory()) { //hack
+                return;
+            }
+            c.getPlayer().setScrolledPosition((short) 0);
+            c.getPlayer().updateTick(slea.readInt());
+            final short src = (short) slea.readInt();                                       //01 00
+            final short dst = (short) slea.readInt();                                       //00 00
+            if (src < 100 || dst < 100) {
+                return;
+            }
+            MapleInventoryManipulator.move(c, MapleInventoryType.ETC, src, dst);
         }
-        c.getPlayer().setScrolledPosition((short) 0);
-        c.getPlayer().updateTick(slea.readInt());
-        final boolean srcFirst = slea.readInt() > 0;
-        if (slea.readByte() != 4) { //must be etc
-            c.getSession().write(CWvsContext.enableActions());
-            return;
-        }
-        short dst = (short) slea.readInt();
-        short src = slea.readShort();                                             //00 00
-        MapleInventoryManipulator.move(c, MapleInventoryType.ETC, srcFirst ? dst : src, srcFirst ? src : dst);
     }
 
     public static final void ItemSort(final LittleEndianAccessor slea, final MapleClient c) {

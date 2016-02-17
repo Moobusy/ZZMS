@@ -123,7 +123,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     public void sendSlideMenu(final int type, final String sel) {
         int lasticon = 0;
         c.getSession().write(NPCPacket.getSlideMenu(id, type, lasticon, sel));
-        lastMsg = 0x11;//was12
+        lastMsg = 0x12;//was12
     }
 
     public String getDimensionalMirror(MapleCharacter character) {
@@ -295,19 +295,19 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     }
 
     public void sendSangokuTalk(String talk, int type, int idd, boolean next, boolean prev) {
-        sendSangokuTalk(false, talk, (byte) 0x19, (byte) type, idd, next, prev, true);
+        sendSangokuTalk(false, talk, (byte) 0x1A, (byte) type, idd, next, prev, true);
     }
 
     public void sendSangokuTalk(boolean unknown, String talk, int type, int idd, boolean next, boolean prev) {
-        sendSangokuTalk(unknown, talk, (byte) 0x19, (byte) type, idd, next, prev, true);
+        sendSangokuTalk(unknown, talk, (byte) 0x1A, (byte) type, idd, next, prev, true);
     }
 
     public void sendSangokuTalk(String talk, int type, int idd, boolean next, boolean prev, boolean pic) {
-        sendSangokuTalk(false, talk, (byte) 0x19, (byte) type, idd, next, prev, pic);
+        sendSangokuTalk(false, talk, (byte) 0x1A, (byte) type, idd, next, prev, pic);
     }
 
     public void sendSangokuTalk(boolean unknown, String talk, int type, int idd, boolean next, boolean prev, boolean pic) {
-        sendSangokuTalk(unknown, talk, (byte) 0x19, (byte) type, idd, next, prev, pic);
+        sendSangokuTalk(unknown, talk, (byte) 0x1A, (byte) type, idd, next, prev, pic);
     }
 
     public void sendSangokuTalk(boolean unknown, String talk, int msgType, int type, int idd, boolean next, boolean prev, boolean pic) {
@@ -537,7 +537,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
 
     public void askAngelicBusterAvatar() {
         c.getSession().write(NPCPacket.getAngelicBusterAvatarSelect(id));
-        lastMsg = 0x17;
+        lastMsg = 0x18;
     }
 
     public void askAvatar(String text, int... args) {
@@ -1161,11 +1161,11 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
             case 3:
             case 4:
             case 5:
-                lastMsg = 0x12;
+                lastMsg = 0x13;
                 break;
             case 0xB:
                 if (values[0] == 1) {
-                    lastMsg = 0x22;
+                    lastMsg = 0x23;
                 }
                 break;
         }
@@ -1182,7 +1182,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     @Override
     public void playMovie(String data, boolean show) {
         super.playMovie(data, show);
-        lastMsg = 0x13;
+        lastMsg = 0x14;
     }
 
     public void updateBuddyCapacity(int capacity) {
@@ -2967,7 +2967,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
 
     public void getDemonSelection() {
         c.getSession().write(NPCPacket.getDemonSelection());
-        lastMsg = 0x17;
+        lastMsg = 0x18;
     }
 
     public void checkMedalQuest() {

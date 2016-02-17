@@ -55,9 +55,9 @@ public class NPCHandler {
         
         int length = (int) slea.available();
         if (length > 0) {
-            FileoutputUtil.log(FileoutputUtil.Movement_Log, "NPC" + "(" + npcid + ")" + ", 封包: " + slea.toString(true));
+//            FileoutputUtil.log(FileoutputUtil.Movement_Log, "NPC" + "(" + npcid + ")" + ", 封包: " + slea.toString(true));
             mplew.write(slea.read(length));
-            FileoutputUtil.log(FileoutputUtil.Movement_Log, "NPC" + "(" + npcid + ")" + ", 封包: " + mplew.toString());
+//            FileoutputUtil.log(FileoutputUtil.Movement_Log, "NPC" + "(" + npcid + ")" + ", 封包: " + mplew.toString());
         }
         
         c.getSession().write(mplew.getPacket());

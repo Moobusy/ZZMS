@@ -157,20 +157,20 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     // 0xB7
     // 0xB8
     
-    // 玩家移動
+    // 玩家移動[完成]
     MOVE_PLAYER(0xB9),
-    // 取消椅子
+    // 取消椅子[完成]
     CANCEL_CHAIR(0xBA),
-    // 使用椅子
+    // 使用椅子[完成]
     USE_CHAIR(0xBB),
     
     // 0xBC
     
-    // 近距離攻擊
+    // 近距離攻擊[完成]
     CLOSE_RANGE_ATTACK(0xBD),
-    // 遠距離攻擊
+    // 遠距離攻擊[完成]
     RANGED_ATTACK(0xBE),
-    // 魔法攻擊
+    // 魔法攻擊[完成]
     MAGIC_ATTACK(0xBF),
     // 被動攻擊(抗壓...)
     PASSIVE_ATTACK(0xC0),
@@ -178,7 +178,7 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     // 0xC1
     // 0xC2
     
-    // 角色受傷
+    // 角色受傷[完成]
     TAKE_DAMAGE(0xC3),
     // PvP攻擊
     PVP_ATTACK(0xC4),
@@ -218,7 +218,7 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     
     // Npc詳細交談[完成]
     NPC_TALK_MORE(0xD8),
-    // Npc商店
+    // Npc商店[完成]
     NPC_SHOP(0xD9),
     // 倉庫
     STORAGE(0xDA),
@@ -233,9 +233,13 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     
     // 0xDF
     // 0xE0
-    // 0xE1
+    
+    // 寒冰迅移[完成]
+    SPAWN_SPECIAL(0xE1),
+    
     // 0xE2
     // 0xE3
+    
     
     // 智慧貓頭鷹(5230000)
     OWL(0xE4),
@@ -258,11 +262,11 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     // 移動道具至背包欄位
     MOVE_BAG(0xEC),
     // 背包道具至道具欄位
-    SWITCH_BAG(0xED),
+    SWITCH_BAG(0x7FFF),
     
     // 0xEE
     
-    // 使用物品
+    // 使用物品[完成]
     USE_ITEM(0xEF),
     // 取消物品效果
     CANCEL_ITEM_EFFECT(0xF0),
@@ -385,7 +389,7 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     
     // 角色信息[完成]
     CHAR_INFO_REQUEST(0x133),
-    // 召喚寵物
+    // 召喚寵物[完成]
     SPAWN_PET(0x134),
     
     // 0x135
@@ -424,7 +428,7 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     // 0x146
     // 0x147
     
-    // 技能組合
+    // 技能組合[完成]
     SKILL_MACRO(0x148),
     
     // 0x149
@@ -455,17 +459,17 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     FOLLOW_REPLY(0x156),
     // 自動跟隨回覆()
     AUTO_FOLLOW_REPLY(0x157),
-    // 能力值信息
+    // 能力值信息[完成]
     PROFESSION_INFO(0x158),
-    // 使用培養皿
+    // 使用培養皿[完成]
     USE_POT(0x159),
-    // 清理培養皿
+    // 清理培養皿[完成]
     CLEAR_POT(0x15A),
-    // 餵食培養皿
+    // 餵食培養皿[完成]
     FEED_POT(0x15B),
-    // 治癒培養皿
+    // 治癒培養皿[完成]
     CURE_POT(0x15C),
-    // 培養皿獎勵
+    // 培養皿獎勵[完成]
     REWARD_POT(0x15D),
     // 阿斯旺復活
     AZWAN_REVIVE(0x15E),
@@ -485,9 +489,9 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     // PvP重生
     PVP_RESPAWN(2),
     // 管理員聊天
-    ADMIN_CHAT,
+    ADMIN_CHAT(0x176),
     // 隊伍聊天
-    PARTYCHAT,
+    PARTYCHAT(0x177),
     // 悄悄話[完成]
     COMMAND(0x178),
     // 聊天招待[完成]
@@ -497,13 +501,13 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     // 隊伍操作[完成]
     PARTY_OPERATION(0x17B),
     // 接受/拒絕組隊邀請
-    DENY_PARTY_REQUEST,
+    DENY_PARTY_REQUEST(0x17C),
     // 允許組隊邀請
     ALLOW_PARTY_INVITE(0x17D),
     // 建立遠征隊
-    EXPEDITION_OPERATION,
+    EXPEDITION_OPERATION(0x17E),
     // 遠征隊搜尋
-    EXPEDITION_LISTING,
+    EXPEDITION_LISTING(0x17F),
     // 公會操作[完成]
     GUILD_OPERATION(0x181),
     // 拒絕公會邀請
@@ -525,15 +529,15 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     // 好友操作[完成]
     BUDDYLIST_MODIFY(0x18C),
     
-    // 0x187
-    // 0x188
-    // 0x189
-    // 0x18A
+    // 0x18D
+    // 0x18E
+    // 0x18F
+    // 0x190
     
     // 訊息操作
-    NOTE_ACTION(0x18B),
+    NOTE_ACTION(0x191),
     
-    // 0x18C
+    // 0x192
     
     // 使用時空門
     USE_DOOR(0x193),
@@ -563,20 +567,20 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     ARAN_COMBO(0x19E),
     // 怪物CRC Key改變回傳
     MONSTER_CRC_KEY(0x19F),
-    // 製作道具完成
-    CRAFT_DONE(0x1A0),
-    // 製作道具效果
-    CRAFT_EFFECT(0x1A1),
-    // 製作道具開始
-    CRAFT_MAKE(0x1A2),
+    // 製作道具完成[完成]
+    CRAFT_DONE(0x1B2),
+    // 製作道具效果[完成]
+    CRAFT_EFFECT(0x1B3),
+    // 製作道具開始[完成]
+    CRAFT_MAKE(0x1B4),
     
-    // 0x1A2
     // 0x1A3
     // 0x1A4
     // 0x1A5
     // 0x1A6
     // 0x1A7
     // 0x1A8
+    // 0x1A9
     
     // 變更房間[完成]
     CHANGE_ROOM_CHANNEL(0x1B9),
@@ -609,10 +613,10 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     // 0x1BA
     // 0x1BB
     
-    // 更新超級技能
-    UPDATE_HYPER(0x1BC),
-    // 重置超級技能
-    RESET_HYPER(0x1BD),
+    // 更新超級技能[完成]
+    UPDATE_HYPER(0x1CC),
+    // 重置超級技能[完成]
+    RESET_HYPER(0x1CD),
     // 被怪物抓到
     MONSTER_BAN(0x1C8),
     // 返回選角界面[完成]
@@ -643,34 +647,34 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     // 0x208
     
     // 賓果
-    BINGO(0x228),
+    BINGO(0x21F),
     // 燃燒計畫
-    COMBUSTION_PROJECT(0x229),
+    COMBUSTION_PROJECT(0x220),
     // 變更角色順序[完成]
     CHANGE_CHAR_POSITION(0x221),
     // 創角進入遊戲[完成]
     CREATE_CHAR_SELECT(0x222),
     
-    // 寵物移動
-    MOVE_PET(0x22C),
-    // 寵物說話
-    PET_CHAT(0x22D),
-    // 寵物指令
-    PET_COMMAND(0x22E),
-    // 寵物拾取
-    PET_LOOT(0x22F),
-    // 寵物自動吃藥
-    PET_AUTO_POT(0x230),
-    // 寵物_除外道具
-    PET_IGNORE(0x231),
-    // 寵物自動吃食品
-    PET_AUTO_FOOD(0x232),
+    // 寵物移動[完成]
+    MOVE_PET(0x225),
+    // 寵物說話[完成]
+    PET_CHAT(0x226),
+    // 寵物指令[完成]
+    PET_COMMAND(0x227),
+    // 寵物拾取[完成]
+    PET_LOOT(0x228),
+    // 寵物自動吃藥[完成]
+    PET_AUTO_POT(0x229),
+    // 寵物_除外道具[完成]
+    PET_IGNORE(0x22A),
+    // 寵物自動吃食品[完成]
+    PET_AUTO_FOOD(0x22B),
     // 花狐移動
-    MOVE_HAKU(0x233),
+    MOVE_HAKU(0x22C),
     // 花狐動作(包括變身)
-    HAKU_ACTION(0x234),
+    HAKU_ACTION(0x22D),
     // 影朋花狐使用輔助技能
-    HAKU_USE_BUFF(0x235),
+    HAKU_USE_BUFF(0x22E),
     // 召喚獸移動[完成]
     MOVE_SUMMON(0x236),
     // 召喚獸攻擊[完成]
@@ -735,13 +739,13 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     
     // 0x25B
     // 0x25C
-    
-    // 箭座控制
-    ARROW_BLASTER_ACTION(0x25D),
-    
+    // 0x25D
     // 0x25E
     // 0x25F
-    // 0x260
+    
+    // 箭座控制[完成]
+    ARROW_BLASTER_ACTION(0x260),
+    
     // 0x261
     // 0x262
     // 0x263
@@ -874,30 +878,31 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     MEMBER_SEARCH(0x34C),
     // 尋找隊伍[完成]
     PARTY_SEARCH(0x34E),
-    // 開始採集
-    START_HARVEST(0x33C),
-    // 停止採集
-    STOP_HARVEST(0x33D),
+    // 開始採集[完成]
+    START_HARVEST(0x353),
+    // 停止採集[完成]
+    STOP_HARVEST(0x354),
     
-    // 0x33E
-    // 0x33F
+    // 0x355
+    // 0x356
     
     // 快速移動(開啟Npc)[完成]
     QUICK_MOVE(0x357),
     // 採集符文輪
-    TOUCH_RUNE(0x341),
+    TOUCH_RUNE(0x358),
     // 取得符文
-    USE_RUNE(0x342),
-    // 購物商城更新
-    CS_UPDATE(0x3B8),
-    // 購買點數道具
-    BUY_CS_ITEM(0x3B9),
+    USE_RUNE(0x359),
+    
+    // 購物商城更新[完成]
+    CS_UPDATE(0x3E0),
+    // 購買點數道具[完成]
+    BUY_CS_ITEM(0x3E1),
     // 使用兌換券
-    COUPON_CODE(0x3BA),
+    COUPON_CODE(0x3E2),
     // 購物商城送禮
-    CS_GIFT(0x3BB),
+    CS_GIFT(0x3E3),
     // 儲存造型設計
-    CASH_CATEGORY(0x3BC),
+    CASH_CATEGORY(0x3E4),
     // 創建角色二次密碼認證[完成]
     CREATE_CHAR_AUTH(0x3EF),
     // 使用黃金鐵鎚

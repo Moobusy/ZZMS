@@ -263,12 +263,12 @@ public class PetHandler {
         slea.skip(9); // byte(index?), int(pos), int
         final List<LifeMovementFragment> res = MovementParse.parseMovement(slea, 3, chr);
         if (res != null && chr != null && !res.isEmpty() && chr.getMap() != null) { // map crash hack
-            if (slea.available() != 8) {
-                System.out.println("寵物移動出錯: slea.available != 8 剩餘封包長度: " + slea.available());
+            if (slea.available() != 0) {
+                System.out.println("寵物移動出錯: slea.available != 0 剩餘封包長度: " + slea.available());
                 if (chr.isShowErr()) {
-                    chr.showInfo("移動", true, "寵物移動出錯: slea.available != 8 剩餘封包長度: " + slea.available());
+                    chr.showInfo("移動", true, "寵物移動出錯: slea.available != 0 剩餘封包長度: " + slea.available());
                 }
-                FileoutputUtil.log(FileoutputUtil.Movement_Log, "寵物移動出錯: slea.available != 8 封包: " + slea.toString(true));
+                FileoutputUtil.log(FileoutputUtil.Movement_Log, "寵物移動出錯: slea.available != 0 封包: " + slea.toString(true));
                 return;
             }
             final MaplePet pet = chr.getSummonedPet(chr.getPetIndex(petId));

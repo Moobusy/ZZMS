@@ -584,13 +584,14 @@ public class MobPacket {
             mplew.writeInt(0);
         }
         if (mobstat.contains(MonsterStatus.BLEED)) {
+            buffs.stream().filter((buff) -> (buff.getStati().getBitNumber() == MonsterStatus.BLEED.getBitNumber())).forEach((buff) -> {
             int v4 = 0;
             int v23 = 0;
             mplew.write(v4);
             if (v4 > 0) {
                 do {
                     mplew.writeInt(8695624);
-                    mplew.writeInt(80001431); // 技能ID
+                    mplew.writeInt(buff.getSkill()); // 技能ID
                     mplew.writeInt(7100);
                     mplew.writeInt(1000); // 延遲毫秒 : dotInterval * 1000
                     mplew.writeInt(187277775);
@@ -602,6 +603,7 @@ public class MobPacket {
                     ++v23;
                 } while (v23 < v4);
             }
+            });
         }
         if (mobstat.contains(MonsterStatus.DEFAULT_3)) {
             mplew.write(0);
@@ -725,9 +727,9 @@ public class MobPacket {
         mplew.writeInt(life.getEliteMobType());
         mplew.write(life.getEliteMobType() >= 0); // 菁英怪物
         if (life.getEliteMobType() >= 0) {
-            mplew.writeInt(life.getEliteMobType() == 2 ? 0x80 : 0x66);//*(v2 + 1)
-            mplew.writeInt(life.getEliteMobType() == 2 ? 0x24 : 0xC);//*(v2 + 2)
-            mplew.writeInt(0x1);//*(v2 + 3)
+            mplew.writeInt(life.getEliteMobType() == 2 ? 0x80000000 : 0x66000000);//*(v2 + 1)
+            mplew.writeInt(life.getEliteMobType() == 2 ? 0x24000000 : 0xC000000);//*(v2 + 2)
+            mplew.writeInt(0x1000000);//*(v2 + 3)
             mplew.writeInt(0);//*(v2 + 4)
         }
         mplew.write(-1);

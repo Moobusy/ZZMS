@@ -815,7 +815,8 @@ public enum SendPacketOpcode implements WritableIntValueHolder {
     QUICK_MOVE(0x1CB),
     
     // 0x1CC
-    // 0x1CD
+    // 招喚障礙物[完成]
+    SPAWN_OBTACLE_ATOM(0x1CD),
     // 0x1CE
     // 0x1CF
     // 0x1D0 // 副本BOSS技能特效
@@ -1280,7 +1281,8 @@ public enum SendPacketOpcode implements WritableIntValueHolder {
     LUMINOUS_COMBO(0x2C1),
     
     // 0x2C2
-    // 0x2C3
+    // Aggressive排名[完成]
+    AGGRESSIVE_RANKING(0x2C3),
     // 0x2C4
     // 0x2C5
     // 0x2C6
@@ -1457,7 +1459,11 @@ public enum SendPacketOpcode implements WritableIntValueHolder {
     // 0x34C
     // 0x34D
     // 0x34E
-    // 0x34F
+    
+    // 寒冰迅移[完成]
+    SPAWN_SPECIAL(0x34F),
+    
+    // 0x350
 
     // 技能冷卻[完成]
     COOLDOWN(0x351),
@@ -1508,9 +1514,9 @@ public enum SendPacketOpcode implements WritableIntValueHolder {
     // 0x365 [Int(MOB_ID)][Short][Int][Byte]
 
     // 怪物移動[完成]
-    MOVE_MONSTER(0x366),
+    MOVE_MONSTER(0x368),
     // 怪物移動回覆[完成]
-    MOVE_MONSTER_RESPONSE(0x367),
+    MOVE_MONSTER_RESPONSE(0x369),
     
     // 0x368
     // 0x369
@@ -2213,45 +2219,45 @@ public enum SendPacketOpcode implements WritableIntValueHolder {
     
     // 0x4E6
 
-    // 購物商城更新[完成-183]
-    CS_UPDATE(0x4E7),
+    // 購物商城更新[完成]
+    CS_UPDATE(0x51D),
     // 購物商城操作[完成]
-    CS_OPERATION(0x4E8),
+    CS_OPERATION(0x51E),
     // CCashShop::OnPurchaseExpChanged[完成]
-    CS_EXP_PURCHASE(0x4E9),
-    // 0x4EA
-    // 0x4EB 【00 00 04 00 00 00 00 00 84 11 06 00 00 00 00 00 FF 00 00】
-    // 0x4EC
-    // 0x4ED
+    CS_EXP_PURCHASE(0x51F),
+    // 0x520
+    // 0x521 【00 00 04 00 00 00 00 00 84 11 06 00 00 00 00 00 FF 00 00】
+    // 0x522
+    // 0x523
 
     // 購物商城未知[完成]
-    CASH_USE4(0x4EE),
+    CASH_USE4(0x524),
     
-    // 0x4EF
-    // 0x4F0
-    // 0x4F1
-    // 0x4F2
-    // 0x4F3
-    // 0x4F4
-    // 0x4F5
-    // 0x4F6
-    // 0x4F7
+    // 0x525
+    // 0x526
+    // 0x527
+    // 0x528
+    // 0x529
+    // 0x52A
+    // 0x52B
+    // 0x52C
+    // 0x52D
 
     // 購物商城帳號[完成]
-    CS_ACCOUNT(0x4F8),
+    CS_ACCOUNT(0x52E),
     // 購物商城未知[完成]
-    CASH_USE3(0x4F9),
+    CASH_USE3(0x52F),
     // 購物商城未知[完成]
-    CASH_USE(0x4FA),
+    CASH_USE(0x530),
     
-    // 0x4FB
-    // 0x4FC
-    // 0x4FD
-    // 0x4FE
-    // 0x4FF
+    // 0x531
+    // 0x532
+    // 0x533
+    // 0x534
+    // 0x535
 
     // 購物商城未知[完成]
-    CASH_USE2(0x500),
+    CASH_USE2(0x536),
     
     // 0x4FE 【CCashShop::OnMemberShopResult】
 

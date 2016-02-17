@@ -1721,4 +1721,21 @@ public class MapleClient implements Serializable {
         }
         return farm;
     }
+    
+    public List<String> getRanking(int limit) {
+        List<String> ret = new LinkedList<>();
+        Connection con = DatabaseConnection.getConnection();
+        try {
+            PreparedStatement ps = con.prepareStatement("SELECT `name`, `gm` FROM `characters` ORDER BY `level` DESC LIMIT " + limit);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                if (rs.getInt("gm") <= PlayerGMRank.NORMAL.getLevel()) {
+                    ret.add(rs.getString("name"));
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return ret;
+    }
 }

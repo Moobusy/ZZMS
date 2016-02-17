@@ -35,6 +35,7 @@ import server.maps.FieldLimitType;
 import server.maps.MapleMap;
 import server.maps.MapleMapObject;
 import server.maps.MapleMapObjectType;
+import server.maps.MapleMist;
 import server.movement.LifeMovementFragment;
 import server.quest.MapleQuest;
 import tools.AttackPair;
@@ -783,6 +784,24 @@ public class PlayerHandler {
             chr.cancelEffect(skill.getEffect(slea.readByte()), false, -1L);
         }
     }
+    
+    public static void spawnSpecial(LittleEndianAccessor slea, MapleClient c, MapleCharacter chr) {        
+        int t_count = slea.readInt();
+        int skillid = slea.readInt();
+        slea.skip(4);
+        int total = slea.readShort();
+        for (int i = 0; i < total; i++) {
+            int x1 = slea.readInt();
+            int y1 = slea.readInt();
+            int x2 = slea.readInt();
+            int y2 = slea.readInt();
+            Rectangle bounds = new Rectangle(x1, y1 - 5, (x2 - x1), (y2 - y1) + 50);
+
+            
+            MapleMist mist = new MapleMist(bounds, chr, SkillFactory.getSkill(skillid).getEffect(chr.getTotalSkillLevel(skillid)));
+            chr.getMap().spawnMist(mist, 6 * 1000, false);
+        }
+    }
 
     public static void releaseTempestBlades(LittleEndianAccessor slea, MapleCharacter chr) {
         if (!chr.isAlive()) {
@@ -1272,6 +1291,14 @@ public class PlayerHandler {
                 } else {
                     c.getSession().write(AngelicPacket.lockSkill(skillid));
                 }
+            }
+        }
+        
+        if (skillid == 2001009) 
+        {
+            if (chr.getBuffSource(MapleBuffStat.CHILLING_STEP) == 2201009) {
+                Point newUserPos = chr.getPosition();
+                c.getSession().write(CField.spawnSpecial(2201009, newUserPos.x, newUserPos.y, newUserPos.x + 179, newUserPos.y + 21));
             }
         }
 

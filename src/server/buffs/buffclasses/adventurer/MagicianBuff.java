@@ -29,6 +29,7 @@ public class MagicianBuff extends AbstractBuffClass {
             2101008, //極速詠唱Magic Booster
             2101010, //燎原之火
             //冰雷
+            2201008, //冰錐劍
 //TODO 抓包            2200011, //結冰特效
             2201009, //寒冰迅移
             2201001, //精神強化Meditation
@@ -110,6 +111,9 @@ public class MagicianBuff extends AbstractBuffClass {
             case 2201010: //極速詠唱Magic Booster
             case 2301008: //極速詠唱Magic Booster
                 eff.statups.put(MapleBuffStat.BOOSTER, eff.info.get(MapleStatInfo.x));
+                break;
+            case 2201008: //冰錐劍
+                eff.monsterStatus.put(MonsterStatus.SPEED, eff.info.get(MapleStatInfo.x));
                 break;
             case 2201009: //寒冰迅移
                 eff.info.put(MapleStatInfo.time, 2100000000);

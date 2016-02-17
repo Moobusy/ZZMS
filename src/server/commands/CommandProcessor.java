@@ -109,6 +109,7 @@ public class CommandProcessor {
         sb.append("\r\n@卡圖：只有卡圖無法出來時才能使用。");
         sb.append("\r\n@獲取貓頭鷹：獲得一個可以搜尋怪物掉寶的貓頭鷹。");
         sb.append("\r\n@地圖掉寶：查看當前地圖怪物的掉寶數據。");
+        sb.append("\r\n@fm：可以傳送到自由市場");
         sb.append("\r\n* 游標在話框閃爍的狀態下，按下Tab鍵；或是游標不在話框中的狀態下，");
         sb.append("\r\n按下數字鍵1、2、3，即可變更聊天對象。");
         for (String command : sb.toString().split("\r\n")) {

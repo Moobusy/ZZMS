@@ -632,6 +632,9 @@ public class MapleServerHandler extends IoHandlerAdapter {
             case MECH_CANCEL:
                 PlayerHandler.CancelMech(slea, c.getPlayer());
                 break;
+            case SPAWN_SPECIAL:
+                PlayerHandler.spawnSpecial(slea, c, c.getPlayer());
+                break;
             case CANCEL_ITEM_EFFECT:
                 PlayerHandler.CancelItemEffect(slea.readInt(), c.getPlayer());
                 break;

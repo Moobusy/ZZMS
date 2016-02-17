@@ -434,7 +434,7 @@ public class CField {
         if (CharInfo) {
             chr.CRand().connectData(mplew); // [Int][Int][Int] 
             PacketHelper.addCharacterInfo(mplew, chr);
-            UnkFunction(mplew);
+            PacketHelper.addLuckyLogoutInfo(mplew, chr);
         } else {
             mplew.writeBoolean(false);
             mplew.writeInt(to.getId());
@@ -502,13 +502,6 @@ public class CField {
         }
 
         return mplew.getPacket();
-    }
-
-    public static void UnkFunction(final MaplePacketLittleEndianWriter mplew) {
-        mplew.writeInt(0);
-        for (int i = 0; i < 3; i++) {
-            mplew.writeInt(0);
-        }
     }
 
     public static void UnkFunction2(final MaplePacketLittleEndianWriter mplew, int v) {
@@ -1234,6 +1227,7 @@ public class CField {
         mplew.writeInt(0);
         mplew.writeInt(0);
         mplew.writeInt(0);
+        mplew.writeInt(0);
         mplew.writeShort(-1);
         mplew.writeMapleAsciiString("");
         mplew.writeMapleAsciiString("");
@@ -1253,13 +1247,14 @@ public class CField {
 
         for (int i = 0 ; i <= 3 ; i++) { // 寵物
             MaplePet pet = chr.getSummonedPet(i);
-            mplew.write(pet != null);
             if (pet == null) {
                 break;
             }
+            mplew.write(pet != null);            
             mplew.writeInt(i);
             PetPacket.addPetInfo(mplew, chr, pet, false);
         }
+        mplew.write(0); //Unk
         mplew.write(chr.getHaku() != null && MapleJob.is陰陽師(chr.getJob()));
         if (chr.getHaku() != null && MapleJob.is陰陽師(chr.getJob())) {
             MapleHaku haku = chr.getHaku();
@@ -1355,10 +1350,14 @@ public class CField {
         mplew.write(0);
         mplew.writeInt(0);
         mplew.writeInt(0);
+        
+        mplew.write(0);
 
         mplew.writeInt(0);
 
         mplew.writeInt(0);
+        mplew.writeInt(0);
+        
         mplew.writeInt(0);
 
         mplew.writeInt(0); // for
@@ -2731,6 +2730,69 @@ public class CField {
 
         return mplew.getPacket();
     }
+    
+    public static byte[] spawnObtacleAtomBomb(List<ObtacleAtom> bombs){
+        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
+
+        mplew.writeShort(SendPacketOpcode.SPAWN_OBTACLE_ATOM.getValue());        
+        //Number of bomb objects to spawn.  You can also just send multiple packets instead of putting them all in one packet.
+        mplew.writeInt(bombs.size());        
+        //Unknown, this part is from IDA.
+        byte unk = 0;
+        mplew.write(unk); //animation data or some shit
+        if(unk == 1){
+            mplew.writeInt(300); //from Effect.img/BasicEff/ObtacleAtomCreate/%d
+            mplew.write(0); //rest idk
+            mplew.writeInt(0);
+            mplew.writeInt(0);
+            mplew.writeInt(0);
+            mplew.writeInt(0);
+        }        
+        for(ObtacleAtom bomb : bombs){
+            mplew.write(1);            
+            //Bomb type.  Determines the graphics used as well as the projectile's hitbox.
+            //Pointer to an entry in Effect.wz/BasicEff.img/ObtacleAtom/
+            mplew.writeInt(bomb.getType());            
+            //This must be unique for every bomb you spawn on the map.  Give it an ObjectID, or something.
+            mplew.writeInt(bomb.getUniqueID());            
+            //Spawnpoint, X origin.
+            mplew.writeInt(bomb.getPosition().x);            
+            //Spawnpoint, Y origin.
+            mplew.writeInt(bomb.getPosition().y);            
+            //Maximum movement speed.  Roughly 2 * pixels per second.
+            mplew.writeInt(bomb.getMaxSpeed());            
+            //Acceleration.  Always below 5 in GMS, unsure exactly how it's calculated.  Setting this to 0 makes a permanent, stationary bomb.
+            mplew.writeInt(bomb.getAcceleration());            
+            //No idea, set it to 0.  If you find out what this does, please let me know.
+            mplew.writeInt(bomb.getUnk());            
+            //Affects exploding, the higher the number, the quicker it explodes.  25 is the value GMS uses.
+            mplew.writeInt(bomb.getExplodeSpeed());            
+            //Percent of the character's Max HP to deal as damage.  You can set this to negative values, which will heal the player.
+            //Damage dealt by projectiles ignores all defenses, resistances, and evasion.  Your source must support damage type -5, which is what these projectiles use.
+            mplew.writeInt(bomb.getDamagePercent());            
+            //Time, in milliseconds, to wait until actually spawning the projectile.
+            mplew.writeInt(bomb.getSpawnDelay());            
+            //The maximum distance the projectile will move before exploding.  Measured in pixels.
+            mplew.writeInt(bomb.getDistance());            
+            //Direction.  Behaves oddly; from 0 upwards, the angle goes clock wise, until it hits 80, then you add 80 and it'll continue going clockwise, until it hits 240, add 80 and it'll continue to go clockwise until 360 is hit then it starts over.
+            //Varies among different projectile types.
+            mplew.writeInt(bomb.getAngle());
+        }
+        
+        return mplew.getPacket();
+    }  
+    
+    public static byte[] showAggressiveRanking(List<String> names) {
+        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
+        
+        mplew.writeShort(SendPacketOpcode.AGGRESSIVE_RANKING.getValue());
+        mplew.writeInt(names.size());
+        for (String name : names) {
+            mplew.writeMapleAsciiString(name);
+        }
+        
+        return mplew.getPacket();
+    }
 
     public static byte[] skillCooldown(int sid, int time) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
@@ -2742,7 +2804,22 @@ public class CField {
 
         return mplew.getPacket();
     }
+    
+    public static byte[] spawnSpecial(int skillid, int x1, int y1, int x2, int y2) {
+        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
+        mplew.writeShort(SendPacketOpcode.SPAWN_SPECIAL.getValue());
+        mplew.writeInt(3);
+        mplew.writeInt(skillid);
+        mplew.writeInt(0);
+        mplew.writeInt(x1);
+        mplew.writeInt(y1);
+        mplew.writeInt(x2);
+        mplew.writeInt(y2);
+
+        return mplew.getPacket();
+    }
+    
     public static byte[] showFusionAnvil(int itemId, int giveItemId, boolean success) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
@@ -4045,7 +4122,7 @@ public class CField {
             mplew.write(4); // slide menu
             mplew.writeInt(npcid);
             mplew.write(0); // Boolean
-            mplew.write(0x11);
+            mplew.write(0x12);
             mplew.write(0);
             mplew.write(0); // 175+
             mplew.writeInt(type); // 選單類型
@@ -4337,21 +4414,35 @@ public class CField {
 
             mplew.writeShort(SendPacketOpcode.CONFIRM_SHOP_TRANSACTION.getValue());
             mplew.write(code);
-            if (code == 8) {
-                mplew.writeInt(0);
-                mplew.writeInt(shop.getNpcId());
-                PacketHelper.addShopInfo(mplew, shop, c);
-            } else {
-                mplew.write(indexBought >= 0 ? 1 : 0);
-                if (indexBought >= 0) {
-                    mplew.writeInt(indexBought);
-                } else {
-                    mplew.write(0);
-                }
-                mplew.write(0);
-                mplew.write(0);
+            switch (code) {
+                case 8:
+                    mplew.writeInt(0);
+                    mplew.writeInt(shop.getNpcId());
+                    PacketHelper.addShopInfo(mplew, shop, c);
+                    break;
+                case 27:
+                case 4:
+                case 21:
+                case 22:
+                case 24:
+                case 30:
+                    mplew.writeInt(0);
+                    break;
+                default:
+                    mplew.write(indexBought >= 0 ? 1 : 0);
+                    if (indexBought >= 0) {
+                        mplew.writeInt(indexBought);
+                    } else {
+                        int size = 0;
+                        mplew.write(size);
+                        if (size > 0) {
+                            mplew.writeInt(0);
+                        }
+                    }
+                    mplew.writeInt(0);
+                    break;
             }
-
+            
             return mplew.getPacket();
         }
 
@@ -5182,14 +5273,16 @@ public class CField {
                         mplew.writeInt(value[2]);
                         mplew.writeInt(value[3]);
                         break;
-                    }
-                    mplew.write(value[1]);
-                    if (value[1] == 0) {
-                        break;
-                    }
-                    mplew.write(value[2]);
-                    mplew.writeInt(value[3]);
-                    mplew.writeInt(value[4]);
+                    } else {
+                        mplew.write(value[1]);
+                        if (value[1] == 0) {
+                            break;
+                        } else {
+                            mplew.write(value[2]);
+                            mplew.writeInt(value[3]);
+                            mplew.writeInt(value[4]);
+                        }
+                    }                    
                     break;
                 case UNK_44:
                     mplew.writeMapleAsciiString(str[0]);
@@ -5703,23 +5796,55 @@ public class CField {
             } else {
                 mplew.writeShort(SendPacketOpcode.SHOW_SPECIAL_EFFECT.getValue());
             }
-            mplew.write(effect.getValue());
-            mplew.writeShort(0);
             mplew.writeInt(skillid);
-            mplew.write(0);
             mplew.write(playerLevel - 1);
             mplew.write(skillLevel);
-            if (direction != 3) {
-                mplew.write(direction);
-                if (!self && chr != null) {
-                    switch (skillid) {
-                        case 65121052:
-                            mplew.writeInt(chr.getTruePosition().x);
-                            mplew.writeInt(chr.getTruePosition().y);
-                            mplew.write(1);
-                    }
-                }
+            mplew.write(direction);
+            if (skillid == 4331006) {
+                mplew.writeInt(0);
             }
+            if ( skillid == 3211010 || skillid == 3111010 || skillid == 1100012 )
+            {
+                mplew.write(0);
+                mplew.writeInt(0);
+                mplew.writeInt(0);
+                mplew.writeInt(0);
+            }
+            if (skillid == 30001062) {
+                mplew.write(0);
+                mplew.writeShort(0);
+                mplew.writeShort(0);
+            }
+            if (skillid == 30001061 || skillid == 80001132) {
+                mplew.write(0);
+            }
+            if ( skillid == 60001218 || skillid == 60011218 ){
+                mplew.writeInt(0);
+                mplew.writeInt(0);
+                mplew.writeInt(0);
+            }
+            if ( skillid == 11121013 || skillid == 12100029 || skillid == 13121009 || skillid == 36110005 || skillid == 65101006){
+                mplew.writeInt(0);
+                mplew.writeInt(0);
+                mplew.writeInt(0);
+            }
+            if (skillid == 32111016) {
+                mplew.write(0);
+                mplew.write(0);
+                mplew.writeInt(0);
+                mplew.writeInt(0);
+                mplew.writeInt(0);
+                mplew.writeInt(0);
+            }
+            if (skillid == 4221052 || skillid == 65121052) {
+                if (!self && chr != null) {
+                    mplew.writeInt(chr.getTruePosition().x);
+                    mplew.writeInt(chr.getTruePosition().y);
+                    mplew.write(1);
+                }                
+            }
+            
+            mplew.writeZeroBytes(20); // skip error 38 
 
             return mplew.getPacket();
         }

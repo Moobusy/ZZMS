@@ -1376,7 +1376,7 @@ public class PacketHelper {
             mplew.write(0);
         }
     }
-
+    
     public static void UnkFunction(final MaplePacketLittleEndianWriter mplew) {
         mplew.writeInt(0);
         mplew.writeInt(0);
@@ -1598,6 +1598,7 @@ public class PacketHelper {
 
     public static void addShopInfo(MaplePacketLittleEndianWriter mplew, MapleShop shop, MapleClient c) {
         MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
+        mplew.writeInt(1);
         mplew.write(0);
         mplew.writeInt(GameConstants.getCurrentDate());
         mplew.write(shop.getRanks().size() > 0 ? 1 : 0);
@@ -1651,6 +1652,7 @@ public class PacketHelper {
         mplew.writeInt(0);//點數道具
         mplew.writeInt(0);//消耗點數數量
         mplew.writeInt(0);
+        mplew.writeInt(0);
         mplew.writeMapleAsciiString("");
         mplew.writeInt(0);
         mplew.writeInt(0);
@@ -1663,11 +1665,12 @@ public class PacketHelper {
         mplew.writeLong(getTime(-2L));
         mplew.writeLong(getTime(-1L));
         mplew.writeInt(item.getCategory());
+        mplew.write(0);//未知
         mplew.writeMapleAsciiString("1900010100");
         mplew.writeMapleAsciiString("2079010100");
         mplew.writeInt(ItemConstants.類型.裝備(item.getItemId()) && item.hasPotential() ? 1 : 0);
         mplew.writeInt(0);//允許購買次數
-        mplew.write(0);
+        mplew.write(0);//未知
         if (!ItemConstants.類型.可充值道具(item.getItemId())) {
             int slotMax = ii.getSlotMax(item.getItemId());
             int quantity = item.getQuantity() == 0 ? slotMax : item.getQuantity();
@@ -1785,12 +1788,10 @@ public class PacketHelper {
         }
     }
 
-    public static void addLuckyLogoutInfo(MaplePacketLittleEndianWriter mplew, boolean enable, CashItem item0, CashItem item1, CashItem item2) {
-        mplew.writeInt(enable ? 1 : 0);
-        if (enable) {
-            CSPacket.addCSItemInfo(mplew, item0);
-            CSPacket.addCSItemInfo(mplew, item1);
-            CSPacket.addCSItemInfo(mplew, item2);
+    public static void addLuckyLogoutInfo(MaplePacketLittleEndianWriter mplew, MapleCharacter chr) {
+        mplew.writeInt(0);
+        for (int i = 0; i < 3; i++) {
+            mplew.writeInt(0);
         }
     }
 

@@ -8073,7 +8073,7 @@ public class CWvsContext {
             if (statups.containsKey(MapleBuffStat.ABSOLUTE_ZERO_AURA)) {
                 mplew.write(0);
             }
-            if (statups.containsKey(MapleBuffStat.CHILLING_STEP)) {
+            if (statups.containsKey(MapleBuffStat.IDA_BUFF_333)) {
                 mplew.write(0);
             }
             if (statups.containsKey(MapleBuffStat.IDA_UNK_BUFF8)) {
@@ -9468,11 +9468,7 @@ public class CWvsContext {
             mplew.write(0);
             mplew.writeInt(result); //0 - 失敗, 1 - 成功, 2 - 損壞
             PacketHelper.addItemInfo(mplew, item, null);
-            if (result == 2) {
-                mplew.writeShort(0);
-            } else {
-                PacketHelper.addItemInfo(mplew, item, null);
-            }
+            PacketHelper.addItemInfo(mplew, item, null);
 
             return mplew.getPacket();
         }
@@ -9482,8 +9478,8 @@ public class CWvsContext {
 
             mplew.writeShort(SendPacketOpcode.EQUIPMENT_ENCHANT.getValue());
             mplew.write(0x65);
-            mplew.write(result); //0 - 下降, 1 - 成功, 2 - 損壞, 3 - 失敗
-            mplew.writeInt(0);
+            mplew.writeInt(result); 
+            mplew.write(0); 
             if (oldItem == null) {
                 mplew.writeShort(0);
             } else {

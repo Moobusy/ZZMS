@@ -744,11 +744,12 @@ public enum MapleBuffStat implements Serializable, Buffstat {
     PARASHOCK_GUARD(331),
     //功能不知道                   [IDA找的-186]
     IDA_UNK_BUFF12(332),
-    //寒冰迅移[猜測]               [IDA找的-186]          
-    CHILLING_STEP(333),    
-    // 更新BUFF用                   [IDA找的-186]
-    IDA_BUFF_334(334),
+    // 更新BUFF用                  [IDA找的-186]          
+    IDA_BUFF_333(333),    
+    //寒冰迅移                     [IDA找的-186]
+    CHILLING_STEP(334),
     
+    //
     
     //祝福福音                      [IDA找的-186]
     PASSIVE_BLESS(336),

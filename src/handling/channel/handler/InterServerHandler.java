@@ -316,6 +316,11 @@ public class InterServerHandler {
 
         //清理斷線未處理的方塊任務
         c.getPlayer().clearInfoQuest(GameConstants.台方塊);
+        
+        List<String> ranking = c.getRanking(3);
+        if (!ranking.isEmpty()) {
+            c.getSession().write(CField.showAggressiveRanking(ranking));
+        }
 
         //player.updateReward();
     }

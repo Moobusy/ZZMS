@@ -8,8 +8,10 @@ import handling.channel.ChannelServer;
 import java.util.Arrays;
 import scripting.NPCScriptManager;
 import server.life.MapleMonster;
+import server.maps.MapleMap;
 import server.maps.MapleMapObject;
 import server.maps.MapleMapObjectType;
+import server.maps.SavedLocationType;
 import tools.FileoutputUtil;
 import tools.StringUtil;
 import tools.packet.CField.NPCPacket;
@@ -207,4 +209,30 @@ public class PlayerCommand {
             return 1;
         }
     }
+    
+    public static class FM extends CommandExecute {
+
+        @Override
+        public int execute(MapleClient c, String[] splitted) {
+            for (int i : GameConstants.blockedMaps) {
+                if (c.getPlayer().getMapId() == i) {
+                    c.getPlayer().dropMessage(5, "你不能在這個地圖使用指令。");
+                    return 0;
+                }
+            }
+            if (c.getPlayer().hasBlockedInventory() || c.getPlayer().getMap().getSquadByMap() != null || c.getPlayer().getEventInstance() != null || c.getPlayer().getMap().getEMByMap() != null || c.getPlayer().getMapId() >= 990000000/* || FieldLimitType.VipRock.check(c.getPlayer().getMap().getFieldLimit())*/) {
+                c.getPlayer().dropMessage(5, "你不能在這個地圖使用指令。");
+                return 0;
+            }
+            if ((c.getPlayer().getMapId() >= 680000210 && c.getPlayer().getMapId() <= 680000502) || (c.getPlayer().getMapId() / 1000 == 980000 && c.getPlayer().getMapId() != 980000000) || (c.getPlayer().getMapId() / 100 == 1030008) || (c.getPlayer().getMapId() / 100 == 922010) || (c.getPlayer().getMapId() / 10 == 13003000)) {
+                c.getPlayer().dropMessage(5, "你不能在這個地圖使用指令。");
+                return 0;
+            }
+            c.getPlayer().saveLocation(SavedLocationType.FREE_MARKET, c.getPlayer().getMap().getReturnMap().getId());
+            MapleMap map = c.getChannelServer().getMapFactory().getMap(910000000);
+            c.getPlayer().changeMap(map, map.getPortal(0));
+            return 1;
+        }
+    }
+    
 }

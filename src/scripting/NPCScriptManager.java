@@ -328,7 +328,7 @@ public class NPCScriptManager extends AbstractScriptManager {
                     iv.invokeFunction("action", (byte) 1, (byte) 0, 0);
                 }
             } else if (c.getPlayer().isShowErr()) {
-                c.getPlayer().showInfo("onUserEnter腳本", true, "無法執行腳本:已有腳本執行-" + cms.containsKey(c));
+                c.getPlayer().showInfo("onUserEnter腳本", true, "無法執行腳本:已有腳本執行-" + cms.containsKey(c) + "(" + cms.get(c).getScript() + ")");
             }
         } catch (final ScriptException | NoSuchMethodException e) {
             System.err.println("執行onUserEnter腳本出錯 : " + script + ". " + e);

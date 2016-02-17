@@ -450,6 +450,7 @@ public class CharLoginHandler {
             {100000279/*時之意志*/, 100000282/*雙重打擊*/, 100001262/*神殿回歸*/, 100001263/*時之威能*/, 100001264/*聖靈神速*/, 100001265/*爆裂跳躍*/, 100001266/*爆裂衝刺*/, 100001268/*時之庇護*/},//神之子Zero
             {20051284/*閃現*/, 20050285/*精靈降臨1式*/},//隱月Eunwol
             {},//皮卡啾PinkBean
+            {140000291},//凱內西斯
             {},//蒼龍俠客Jett
             {},//劍豪Hayato
             {},//陰陽師Kanna
@@ -471,6 +472,12 @@ public class CharLoginHandler {
                 ss.put(SkillFactory.getSkill(101000203), new SkillEntry((byte) 8, (byte) 10, -1));//琉之力
             }
             newchar.changeSkillLevel_Skip(ss, false);
+        }
+        if (job == JobType.凱內西斯) {
+            newchar.getInventory(MapleInventoryType.EQUIP).addItem(new Item(1353200, (byte) 0, (short) 1, (byte) 0));
+        }
+        if (job == JobType.隱月) {
+            newchar.getInventory(MapleInventoryType.EQUIP).addItem(new Item(1353100, (byte) 0, (short) 1, (byte) 0));
         }
 
         String info =

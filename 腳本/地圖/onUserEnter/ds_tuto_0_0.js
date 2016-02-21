@@ -19,42 +19,42 @@ function action(mode, type, selection) {
         ms.teachSkill(30011109, 1, 1);
         ms.teachSkill(30010110, 1, 1);
         ms.teachSkill(30010185, 1, 1);
-        ms.getDirectionEffect(3, "", [0]);
+        ms.playerWaite();
         ms.spawnNPCRequestController(2159307, 1430, 50);
         ms.showEffect(false, "demonSlayer/back");
         ms.showEffect(false, "demonSlayer/text0");
-        ms.getDirectionEffect(1, "", [500]);
+        ms.exceTime(500);
     } else if (status == 0) {
         ms.showEffect(false, "demonSlayer/text1");
-        ms.getDirectionEffect(1, "", [1000]);
+        ms.exceTime(1000);
     } else if (status == 1) {
-        ms.getDirectionEffect(3, "", [2]);
-        ms.getDirectionEffect(1, "", [3000]);
+        ms.playerMoveRight();
+        ms.exceTime(3000);
     } else if (status == 2) {
         ms.showEffect(false, "demonSlayer/text2");
-        ms.getDirectionEffect(1, "", [500]);
+        ms.exceTime(1, "", [500]);
     } else if (status == 3) {
         ms.showEffect(false, "demonSlayer/text3");
-        ms.getDirectionEffect(1, "", [4000]);
+        ms.exceTime(1, "", [4000]);
     } else if (status == 4) {
         ms.showEffect(false, "demonSlayer/text4");
-        ms.getDirectionEffect(1, "", [500]);
+        ms.exceTime(1, "", [500]);
     } else if (status == 5) {
         ms.showEffect(false, "demonSlayer/text5");
-        ms.getDirectionEffect(1, "", [4000]);
+        ms.exceTime(1, "", [4000]);
     } else if (status == 6) {
         ms.showEffect(false, "demonSlayer/text6");
-        ms.getDirectionEffect(1, "", [500]);
+        ms.exceTime(1, "", [500]);
     } else if (status == 7) {
-        ms.getDirectionEffect(3, "", [0]);
+        ms.playerWaite();
         ms.showEffect(false, "demonSlayer/text7");
-        ms.getDirectionEffect(1, "", [100]);
+        ms.exceTime(1, "", [100]);
     } else if (status == 8) {
         ms.sendNextS("軍團長！ 這段期間你跑去哪了，為何會音訊全無呢？ 你比任何人都清楚 #p2159309#為了找碴，一直處心積慮地在等待機會…", 5, 2159307);
     } else if (status == 9) {
         ms.sendNextPrevS("整個氣氛真的很不尋常。 大概是因為軍團長捕捉到時間神殿的女神，所以才會招惹他人忌妒的。 哼！ #p2159309#充其量只是稍微掩蔽女神的雙眼而已。 而且還是靠利用本來的地位來進行的！", 5, 2159307);
     } else if (status == 10) {
-        ms.getDirectionEffect(3, "", [2]);
+        ms.playerMoveRight();
         ms.getDirectionStatus(true);
     } else if (status == 11) {
         ms.sendNextS("嗯… 如果是平常的話，你早就責罵我說不准說這種毫無意義的話了… 你該不會是發生什麼事了吧？ 仔細看看，你的臉色非常難看… 是哪裡不舒服嗎？ 還是先前在戰鬥中受傷了呢？", 5, 2159307);
@@ -102,12 +102,12 @@ function action(mode, type, selection) {
         ms.sendNextPrevS("那我就遵從命令上路了。 希望你能夠成功…", 5, 2159307);
     } else if (status == 33) {
         ms.setNPCSpecialAction(2159307, "teleportation");
-        ms.getDirectionEffect(1, "", [720]);
+        ms.exceTime(1, "", [720]);
     } else if (status == 34) {
         ms.removeNPCRequestController(2159307);
         ms.sendNextS("(這段期間謝謝你了。 #p2151009#.)", 3);
     } else if (status == 35) {
-        ms.getDirectionEffect(3, "", [2]);
+        ms.playerMoveRight();
         ms.getDirectionStatus(true);
     } else {
         ms.getDirectionStatus(true);

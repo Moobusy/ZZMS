@@ -23,6 +23,18 @@ import tools.data.MaplePacketLittleEndianWriter;
  * @author Itzik
  */
 public class JobPacket {
+    
+    public static class KinesisPacket {
+        
+        public static byte[] showESPCount(int mp) {
+            MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
+            
+            Map<MapleBuffStat, Integer> statups = new EnumMap<>(MapleBuffStat.class);
+            statups.put(MapleBuffStat.ESP_COUNT, mp);
+            
+            return CWvsContext.BuffPacket.giveBuff(14200, 0, statups, null, null);
+        }
+    }
 
     public static class PhantomPacket {
 
@@ -102,28 +114,6 @@ public class JobPacket {
             }
 
             return CField.gainForce(false, chr, mobid, 1, job == 2412 ? 24120002 : 24100003, forceinfo);
-        }
-
-        public static byte[] giveAriaBuff(int bufflevel, int buffid, int bufflength) {
-            if (ServerConfig.LOG_PACKETS) {
-                System.out.println("調用位置: " + new java.lang.Throwable().getStackTrace()[0]);
-            }
-            MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-
-            mplew.writeShort(SendPacketOpcode.GIVE_BUFF.getValue());
-            Map<MapleBuffStat, Integer> statups = new EnumMap<>(MapleBuffStat.class);
-            statups.put(MapleBuffStat.DAMAGE_RATE, 0);
-            statups.put(MapleBuffStat.INDIE_DAM_R, 0);
-            PacketHelper.writeBuffMask(mplew, statups);
-            for (int i = 0; i < 2; i++) {
-                mplew.writeShort(bufflevel);
-                mplew.writeInt(buffid);
-                mplew.writeInt(bufflength);
-            }
-            mplew.writeZeroBytes(3);
-            mplew.writeShort(0);
-            mplew.write(0);
-            return mplew.getPacket();
         }
     }
 

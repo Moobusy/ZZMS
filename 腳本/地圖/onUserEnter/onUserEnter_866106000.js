@@ -16,10 +16,10 @@ function action(mode, type, selection) {
         ms.resetMap(ms.getMapId());
         ms.getDirectionStatus(true);
         ms.lockUI(true);
-        ms.getDirectionEffect(3, "", [0]);
+        ms.playerWaite();
         ms.disableOthers(true);
         ms.spawnNPCRequestController(9390381, 89, 32);
-        ms.wait(1000);
+        ms.exceTime(1000);
     } else if (status === i++) {
         ms.sendOthersTalk("喵嗚!!!謝謝喵.\r\n我是阿樂喵嗚.", 9390381, [false, true], 1);
     } else if (status === i++) {
@@ -30,29 +30,29 @@ function action(mode, type, selection) {
         ms.sendOthersTalk("喵嗚!!雖然還沒什麼名氣,但馬上楓之谷的所有人都會稱讚我們了喵.", 9390381, [true, true], 1);
     } else if (status === i++) {
         ms.spawnMob(9390931, 600, 246);
-        ms.wait(300);
+        ms.exceTime(300);
     } else if (status === i++) {
         ms.spawnMob(9390931, 722, 246);
-        ms.wait(300);
+        ms.exceTime(300);
     } else if (status === i++) {
         ms.spawnMob(9390931, 825, 246);
-        ms.wait(300);
+        ms.exceTime(300);
     } else if (status === i++) {
         ms.spawnMob(9390931, 918, 246);
-        ms.wait(300);
+        ms.exceTime(300);
     } else if (status === i++) {
         ms.spawnMob(9390931, 1069, 246);
-        ms.wait(300);
+        ms.exceTime(300);
     } else if (status === i++) {
         ms.spawnMob(9390931, 1174, 246);
-        ms.wait(300);
+        ms.exceTime(300);
     } else if (status === i++) {
         ms.getDirectionEffect(5, "", [0, 1000, 900, 217]);
     } else if (status === i++) {
-        ms.wait(1588);
+        ms.exceTime(1588);
     } else if (status === i++) {
         ms.getDirectionEffect(2, "Effect/Direction14.img/effect/ShamanBT/balloonMsg1/7", [1000, 600, 0, 1, 0, 0]);
-        ms.wait(1500);
+        ms.exceTime(1500);
     } else if (status === i++) {
         ms.sendOthersTalk("啊!是野狼!", 9390381, [false, true], 3);
     } else if (status === i++) {
@@ -60,7 +60,7 @@ function action(mode, type, selection) {
     } else if (status === i++) {
         ms.getDirectionEffect(5, "", [0, 1000, -165, -4]);
     } else if (status === i++) {
-        ms.wait(1588);
+        ms.exceTime(1588);
     } else if (status === i++) {
         ms.sendOthersTalk("但.. 但要怎麼做..", 9390381, [false, true], 3);
     } else if (status === i++) {

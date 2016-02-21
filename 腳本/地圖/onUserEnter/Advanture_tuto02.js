@@ -15,7 +15,7 @@ function action(mode, type, selection) {
 		ms.getDirectionStatus(true);
 		ms.lockUI(true);
 		ms.environmentChange("demonSlayer/whiteOut", 13);
-		ms.getDirectionEffect(1, "", [1950]);
+		ms.exceTime(1950);
 	} else if (status == 1) {
 		ms.forceStartQuest(32201);
 		ms.dispose();

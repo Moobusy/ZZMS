@@ -333,7 +333,9 @@ public class CharLoginHandler {
         }
 
         subcategory = slea.readShort();
-        if ((subcategory != 0 && job != JobType.影武者) || (subcategory != 1 && job == JobType.影武者)) {
+        if ((subcategory != 0 && job != JobType.影武者) || (subcategory != 1 && job == JobType.影武者) 
+                || (subcategory != 10 && job == JobType.蒼龍俠客) || (subcategory == 10 && job != JobType.蒼龍俠客)
+                || (subcategory != 2 && job == JobType.重砲指揮官) || (subcategory == 2 && job != JobType.重砲指揮官)) {
             System.err.println("創建職業子類別異常:" + subcategory);
             return;
         }

@@ -25,7 +25,7 @@ function action(mode, type, selection) {
         ms.changeDamageSkin(28);
         ms.spawnNPCRequestController(9072302, 3995, 115);
         ms.spawnNPCRequestController(9072304, 3700, 115);
-        ms.wait(5000);
+        ms.exceTime(5000);
     } else if (status == i++) {
         ms.setNPCSpecialAction(9072302, "expectation2", -1, true);
         ms.playSound("Sound/SoundEff.img/PinkBean/expectation");
@@ -39,7 +39,7 @@ function action(mode, type, selection) {
         ms.getNPCBubble(9072304, "#fn歌德 ExtraBold##fs15#你看什麼看的這麼驚訝？ 最近冒險家真的很多！", 0, 0, 1500, 1500);
     } else if (status == i++) {
         ms.resetNPCController(9072304);
-        ms.wait(500);
+        ms.exceTime(500);
     } else if (status == i++) {
         ms.setNPCSpecialAction(9072302, "worry", -1, true);
         ms.playSound("Sound/SoundEff.img/PinkBean/worry");
@@ -49,7 +49,7 @@ function action(mode, type, selection) {
         ms.getNPCBubble(9072304, "#fn歌德 ExtraBold##fs15#你吃錯什麼藥了嗎？你看起來當然是冒險家啊，難不成看起來是菇菇寶貝嗎？", 0, 0, 1500, 1500);
     } else if (status == i++) {
         ms.resetNPCController(9072304);
-        ms.wait(500);
+        ms.exceTime(500);
     } else if (status == i++) {
         ms.setNPCSpecialAction(9072302, "expectation2", -1, true);
         ms.playSound("Sound/SoundEff.img/PinkBean/expectation");
@@ -63,7 +63,7 @@ function action(mode, type, selection) {
         ms.getNPCBubble(9072304, "#fn歌德 ExtraBold##fs15#最近的年輕人，嘖嘖嘖…", 1, 0, 1500, 1500);
     } else if (status == i++) {
         ms.resetNPCController(9072304);
-        ms.wait(500);
+        ms.exceTime(500);
     } else if (status == i++) {
         ms.removeNPCRequestController(9072302);
         ms.hidePlayer(false);

@@ -16,52 +16,52 @@ function action(mode, type, selection) {
         ms.resetMap(ms.getMapId());
         ms.getDirectionStatus(true);
         ms.lockUI(true);
-        ms.getDirectionEffect(3, "", [0]);
+        ms.playerWaite();
         ms.disableOthers(true);
         ms.spawnNPCRequestController(9390383, -180, 0, 1);
-        ms.wait(1000);
+        ms.exceTime(1000);
         ms.showDarkEffect(false);
     } else if (status === i++) {
         ms.getDirectionEffect(2, "Effect/Direction14.img/effect/ShamanBT/balloonMsg/21", [1500, 0, -150, 1, 0, 0]);
         ms.getDirectionFacialExpression(5, 5000);
-        ms.wait(300);
+        ms.exceTime(300);
     } else if (status === i++) {
         ms.getDirectionEffect(2, "Effect/Direction14.img/effect/ShamanBT/balloonMsg/23", [1500, -180, -150, 1, 0, 0]);
-        ms.wait(1800);
+        ms.exceTime(1800);
     } else if (status === i++) {
         ms.getDirectionEffect(5, "", [0, 1000, 1496, 0]);
     } else if (status === i++) {
-        ms.wait(2495);
+        ms.exceTime(2495);
     } else if (status === i++) {
         ms.spawnNPCRequestController(9390436, 1496, 0);
         ms.updateNPCSpecialAction(9390436, -1, 700, 100);
-        ms.wait(800);
+        ms.exceTime(800);
     } else if (status === i++) {
         ms.spawnNPCRequestController(9390437, 1496, 0);
         ms.updateNPCSpecialAction(9390437, -1, 153855, 100);
-        ms.wait(1000);
+        ms.exceTime(1000);
     } else if (status === i++) {
         ms.spawnNPCRequestController(9390438, 1496, 0);
         ms.updateNPCSpecialAction(9390438, -1, 900, 100);
-        ms.wait(1200);
+        ms.exceTime(1200);
     } else if (status === i++) {
         ms.spawnNPCRequestController(9390439, 1496, 0);
         ms.updateNPCSpecialAction(9390439, -1, 1000, 100);
-        ms.wait(800);
+        ms.exceTime(800);
     } else if (status === i++) {
         ms.spawnNPCRequestController(9390440, 1496, 0);
         ms.updateNPCSpecialAction(9390440, -1, 1100, 100);
-        ms.wait(1200);
+        ms.exceTime(1200);
     } else if (status === i++) {
         ms.updateNPCSpecialAction(9390437, -1, 500, 100);
-        ms.wait(1300);
+        ms.exceTime(1300);
     } else if (status === i++) {
         ms.setNPCSpecialAction(9390436, "attack1", 0, true, 300);
     } else if (status === i++) {
         ms.setNPCSpecialAction(9390437, "attack1", 0, true, 1000);
     } else if (status === i++) {
         ms.getDirectionEffect(2, "Effect/Direction14.img/effect/ShamanBT/balloonMsg1/11", [1500, 400, -150, 1, 0, 0]);
-        ms.wait(1800);
+        ms.exceTime(1800);
     } else if (status === i++) {
         ms.setNPCSpecialAction(9390438, "attack1", 0, true, 800);
     } else if (status === i++) {
@@ -69,7 +69,7 @@ function action(mode, type, selection) {
     } else if (status === i++) {
         ms.getDirectionEffect(5, "", [1, 1000]);
     } else if (status === i++) {
-        ms.wait(800);
+        ms.exceTime(800);
     } else if (status === i++) {
         ms.setNPCSpecialAction(9390436, "attack1", 0, true, 300);
     } else if (status === i++) {
@@ -79,7 +79,7 @@ function action(mode, type, selection) {
     } else if (status === i++) {
         ms.sendOthersTalk("喂~ #bBOSS#k! 還真是不死心的傢伙", 9390383, [false, true], 1);
     } else if (status === i++) {
-        ms.wait(500);
+        ms.exceTime(500);
     } else if (status === i++) {
         ms.setNPCSpecialAction(9390438, "attack1", 0, true, 500);
     } else if (status === i++) {

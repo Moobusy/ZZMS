@@ -19,13 +19,13 @@ function action(mode, type, selection) {
     } else if (status === i++) {
         ms.lockUI(true);
         ms.getDirectionEffect(2, "Effect/Direction5.img/effect/mercedesInIce/merBalloon/6", [2000, 0, -100, 1, 0, 0]);
-        ms.wait(2000);
+        ms.exceTime(2000);
         ms.getDirectionStatus(true);
     } else if (status === i++) {
-        ms.getDirectionEffect(3, "", [2]);
+        ms.playerMoveRight();
     } else if (status === i++) {
         ms.getDirectionEffect(2, "Effect/Direction5.img/effect/mercedesInIce/merBalloon/8", [2000, 0, -100, 1, 0, 0]);
-        ms.wait(2000);
+        ms.exceTime(2000);
     } else if (status === i++) {
         ms.lockUI(false);
         ms.dispose();

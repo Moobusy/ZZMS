@@ -5,8 +5,10 @@
  */
 package server.buffs.buffclasses.kinesis;
 
+import client.MapleBuffStat;
 import client.MapleJob;
 import server.MapleStatEffect;
+import server.MapleStatInfo;
 import server.buffs.AbstractBuffClass;
 
 /**
@@ -14,6 +16,12 @@ import server.buffs.AbstractBuffClass;
  * @author Pungin
  */
 public class KinesisBufff extends AbstractBuffClass {
+    
+    public KinesisBufff() {
+        buffs = new int[]{
+            142001003, // ESP 加速器
+        };
+    }
     
     @Override
     public boolean containsJob(int job) {
@@ -23,6 +31,9 @@ public class KinesisBufff extends AbstractBuffClass {
     @Override
     public void handleBuff(MapleStatEffect eff, int skill) {
         switch (skill) {
+            case 142001003: //ESP 加速器
+                eff.statups.put(MapleBuffStat.BOOSTER, eff.info.get(MapleStatInfo.x));
+                break;
             default:
                 System.out.println("未知的 凱內西斯(14200) Buff: " + skill);
                 break;

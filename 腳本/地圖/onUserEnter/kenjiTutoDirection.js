@@ -9,7 +9,7 @@ function action(mode, type, selection) {
                 ms.lockUI(true);
                 ms.disableOthers(true);
                 ms.showEffect(false, "JPKenji/text0");
-                ms.getDirectionEffect(1, "", [7000]);
+                ms.exceTime(7000);
             } else {
                 ms.dispose();
                 ms.warp(807100000, 0);
@@ -20,11 +20,11 @@ function action(mode, type, selection) {
                 ms.getDirectionStatus(true);
                 ms.lockUI(true);
                 ms.disableOthers(true);
-                ms.getDirectionEffect(3, "", [1]);
-                ms.getDirectionEffect(1, "", [4300]);
+                ms.playerMoveLeft();
+                ms.exceTime(4300);
                 ms.getDirectionStatus(true);
             } else {
-                ms.getDirectionEffect(3, "", [0]);
+                ms.playerWaite();
                 ms.dispose();
                 ms.openNpc(500001);
             }
@@ -35,7 +35,7 @@ function action(mode, type, selection) {
                 ms.lockUI(true);
                 ms.disableOthers(true);
                 ms.showEffect(false, "JPKenji/text1");
-                ms.getDirectionEffect(1, "", [7000]);
+                ms.exceTime(7000);
                 ms.getDirectionStatus(true);
             } else {
                 ms.dispose();
@@ -61,11 +61,11 @@ function action(mode, type, selection) {
                 ms.teachSkill(40011185, 1, 1);
                 ms.teachSkill(40011186, 1, 1);
                 ms.getDirectionEffect(2, "Effect/DirectionJP3.img/effect/kenjiTuto/balloonMsg/0", [0, 0, -120, 0, 0]);
-                ms.getDirectionEffect(1, "", [2000]);
+                ms.exceTime(2000);
                 ms.getDirectionStatus(true);
             } else if (status == 1) {
                 ms.getDirectionEffect(2, "Effect/DirectionJP3.img/effect/kenjiTuto/balloonMsg/2", [0, 0, -120, 0, 0]);
-                ms.getDirectionEffect(1, "", [2000]);
+                ms.exceTime(2000);
                 ms.getDirectionStatus(true);
             } else {
                 ms.lockUI(false);
@@ -80,7 +80,7 @@ function action(mode, type, selection) {
                 ms.lockUI(true);
                 ms.disableOthers(true);
                 ms.showEffect(false, "JPKenji/text2");
-                ms.getDirectionEffect(1, "", [7000]);
+                ms.exceTime(7000);
             } else {
                 ms.dispose();
                 ms.warp(807100003, 0);

@@ -23,6 +23,8 @@ public class NightWalkerBuff extends AbstractBuffClass {
             14001022, // 急速
             14001023, // 黑暗面
             14001027, // 暗影蝙蝠
+            14101022, // 投擲助推器
+            14111025, // 精神投擲
         };
     }
     
@@ -47,6 +49,12 @@ public class NightWalkerBuff extends AbstractBuffClass {
             case 14001027: //暗影蝙蝠
                 eff.info.put(MapleStatInfo.time, 2100000000);
                 eff.statups.put(MapleBuffStat.SHADOW_BAT, 1);
+                break;
+            case 14101022: //投擲助推器
+                eff.statups.put(MapleBuffStat.BOOSTER, eff.info.get(MapleStatInfo.x));
+                break;
+            case 14111025: //精神投擲
+                eff.statups.put(MapleBuffStat.SPIRIT_CLAW, 0);
                 break;
             default:
                 //System.out.println("暗夜行者 skill not coded: " + skill);

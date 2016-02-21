@@ -17,7 +17,7 @@ function action(mode, type, selection) {
                 ms.teachSkill(40020001, 1, 1);//無限的靈力
                 ms.teachSkill(40020109, 1, 1);//花狐
                 ms.showEffect(false, "JPKanna/text0");
-                ms.getDirectionEffect(1, "", [7000]);
+                ms.exceTime(7000);
             } else {
                 ms.dispose();
                 ms.warp(807100100, 0);
@@ -28,10 +28,10 @@ function action(mode, type, selection) {
                 ms.getDirectionStatus(true);
                 ms.lockUI(true);
                 ms.disableOthers(true);
-                ms.getDirectionEffect(3, "", [2]);
-                ms.getDirectionEffect(1, "", [2500]);
+                ms.playerMoveRight();
+                ms.exceTime(2500);
             } else if (status == 1) {
-                ms.getDirectionEffect(3, "", [0]);
+                ms.playerWaite();
                 ms.sendNextS("快要進入境內時， 就能感覺到濃濃的黑暗氣息。", 1, 9131003, 9131003);
             } else if (status == 2) {
                 ms.sendNextPrevS("可怕的失魂落魄。", 3);

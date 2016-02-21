@@ -55,7 +55,7 @@ import tools.packet.JobPacket;
 import tools.packet.JobPacket.AvengerPacket;
 import tools.packet.JobPacket.PhantomPacket;
 import tools.packet.SkillPacket;
-import tools.packet.provider.SpecialEffectType;
+import extensions.temporary.SpecialEffectType;
 
 public class MapleStatEffect implements Serializable {
 
@@ -1703,7 +1703,7 @@ public class MapleStatEffect implements Serializable {
         } else if (sourceid == 4341006) {
             applyto.cancelEffectFromBuffStat(MapleBuffStat.SHADOWPARTNER);
         } else if (this.sourceid == 14111024) {
-            stat.put(MapleBuffStat.IDA_BUFF_374, 1);
+            stat.put(MapleBuffStat.DARK_SERVANT, 1);
             buff = BuffPacket.giveBuff(this.sourceid, localDuration, stat, this, applyto);
         } else if (this.sourceid == 1301013) {
             stat.put(MapleBuffStat.BEHOLDER, Integer.valueOf(level));
@@ -2308,10 +2308,6 @@ public class MapleStatEffect implements Serializable {
                 normal = false;
                 break;
             }
-            case 24121004:
-                applyto.getClient().getSession().write(PhantomPacket.giveAriaBuff(level, sourceid, localDuration));
-                //System.out.println("Applying aria buff");
-                break;
             case 5211006: // Homing Beacon
             case 22151002: //killer wings
             case 5220011: {// Bullseye
@@ -3494,6 +3490,9 @@ public class MapleStatEffect implements Serializable {
             case 12001004:
             case 12111004:
             case 14001005:
+            case 32100010:
+            case 32110017:
+            case 32120019:
             case 35111001:
             case 35111009:
             case 35111010:

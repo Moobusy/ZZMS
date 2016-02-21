@@ -20,40 +20,40 @@ function action(mode, type, selection) {
         ms.playMovie("Mercedes.avi");
     } else if (status === i++) {
         ms.disableOthers(true);
-        ms.getDirectionEffect(3, "", [4]);
-        ms.wait(2000);
+        ms.playerMoveDown();
+        ms.exceTime(2000);
     } else if (status === i++) {
         ms.getDirectionEffect(2, "Effect/Direction5.img/effect/mercedesInIce/merBalloon/0", [2000, 0, -100, 1, 0, 0]);
-        ms.wait(3000);
+        ms.exceTime(3000);
     } else if (status === i++) {
-        ms.getDirectionEffect(3, "", [2]);
+        ms.playerMoveRight();
     } else if (status === i++) {
         ms.getDirectionEffect(2, "Effect/Direction5.img/effect/mercedesInIce/merBalloon/1", [2000, 0, -100, 1, 0, 0]);
-        ms.wait(2000);
+        ms.exceTime(2000);
     } else if (status === i++) {
-        ms.getDirectionEffect(3, "", [2]);
+        ms.playerMoveRight();
         ms.getDirectionStatus(true);
     } else if (status === i++) {
         ms.getDirectionEffect(2, "Effect/Direction5.img/effect/mercedesInIce/merBalloon/2", [2000, 0, -100, 1, 0, 0]);
-        ms.wait(2000);
+        ms.exceTime(2000);
     } else if (status === i++) {
-        ms.getDirectionEffect(3, "", [2]);
+        ms.playerMoveRight();
         ms.getDirectionStatus(true);
     } else if (status === i++) {
         ms.getDirectionEffect(2, "Effect/Direction5.img/effect/mercedesInIce/merBalloon/3", [2000, 0, -100, 1, 0, 0]);
-        ms.wait(2000);
+        ms.exceTime(2000);
     } else if (status === i++) {
-        ms.getDirectionEffect(3, "", [2]);
+        ms.playerMoveRight();
         ms.getDirectionStatus(true);
     } else if (status === i++) {
         ms.getDirectionEffect(2, "Effect/Direction5.img/effect/mercedesInIce/merBalloon/4", [2000, 0, -100, 1, 0, 0]);
-        ms.wait(2000);
+        ms.exceTime(2000);
     } else if (status === i++) {
-        ms.getDirectionEffect(3, "", [2]);
+        ms.playerMoveRight();
         ms.getDirectionStatus(true);
     } else if (status === i++) {
         ms.getDirectionEffect(2, "Effect/Direction5.img/effect/mercedesInIce/merBalloon/5", [2000, 0, -100, 1, 0, 0]);
-        ms.wait(2000);
+        ms.exceTime(2000);
     } else if (status === i++) {
         ms.lockUI(false);
         ms.disableOthers(false);

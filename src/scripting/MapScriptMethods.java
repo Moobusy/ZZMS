@@ -720,6 +720,7 @@ public class MapScriptMethods {
                 break;
             }
             case "magnus_summon": {
+                c.getPlayer().getMap().spawnObtacleAtom();
                 c.getPlayer().getMap().resetFully();
                 c.getPlayer().getMap().spawnMonsterOnGroundBelow(MapleLifeFactory.getMonster(8880000), c.getPlayer().getPosition());
                 break;

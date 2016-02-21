@@ -197,7 +197,6 @@ public class MagicianBuff extends AbstractBuffClass {
                 eff.statups.put(MapleBuffStat.HEAVEN_IS_DOOR, 1);
                 break;
             case 2321054: //復仇天使Avenging Angel
-                eff.statups.clear();
                 eff.statups.put(MapleBuffStat.IGNORE_DEF, eff.info.get(MapleStatInfo.ignoreMobpdpR));
                 eff.statups.put(MapleBuffStat.AVENGING_ANGEL, (int) eff.getLevel());
                 eff.statups.put(MapleBuffStat.INDIE_MAD, eff.info.get(MapleStatInfo.indieMad));

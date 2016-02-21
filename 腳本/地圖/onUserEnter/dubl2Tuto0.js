@@ -18,12 +18,12 @@ function action(mode, type, selection) {
         ms.getDirectionStatus(true);
         ms.disableOthers(true);
         ms.lockUI(true);
-        ms.getDirectionEffect(3, "", [0]);
-        ms.wait(3000);
+        ms.playerWaite();
+        ms.exceTime(3000);
         ms.showDarkEffect(false);
         ms.showDarkEffect(true);
     } else if (status === i++) {
-        ms.getDirectionEffect(3, "", [2]);
+        ms.playerMoveRight();
     } else if (status === i++) {
         ms.disableOthers(false);
         ms.lockUI(false);

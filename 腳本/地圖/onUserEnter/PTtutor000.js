@@ -22,36 +22,36 @@ function action(mode, type, selection) {
         ms.playMovie("phantom_memory.avi");
     } else if (status === i++) {
         ms.showEffect(false, "phantom/mapname1");
-        ms.getDirectionEffect(3, "", [1]);
-        ms.wait(1000);
+        ms.playerMoveLeft();
+        ms.exceTime(1000);
     } else if (status === i++) {
-        ms.getDirectionEffect(3, "", [0]);
-        ms.wait(1000);
+        ms.playerWaite();
+        ms.exceTime(1000);
     } else if (status === i++) {
-        ms.getDirectionEffect(3, "", [2]);
-        ms.wait(1000);
+        ms.playerMoveRight();
+        ms.exceTime(1000);
     } else if (status === i++) {
-        ms.getDirectionEffect(3, "", [0]);
-        ms.wait(1000);
+        ms.playerWaite();
+        ms.exceTime(1000);
     } else if (status === i++) {
-        ms.getDirectionEffect(3, "", [1]);
-        ms.wait(1000);
+        ms.playerMoveLeft();
+        ms.exceTime(1000);
         ms.showWZEffectNew("Effect/OnUserEff.img/questEffect/phantom/tutorial");
     } else if (status === i++) {
-        ms.getDirectionEffect(3, "", [0]);
-        ms.wait(1000);
+        ms.playerWaite();
+        ms.exceTime(1000);
     } else if (status === i++) {
-        ms.getDirectionEffect(3, "", [2]);
-        ms.wait(1000);
+        ms.playerMoveRight();
+        ms.exceTime(1000);
     } else if (status === i++) {
-        ms.getDirectionEffect(3, "", [0]);
-        ms.wait(1000);
+        ms.playerWaite();
+        ms.exceTime(1000);
     } else if (status === i++) {
-        ms.getDirectionEffect(3, "", [1]);
-        ms.wait(500);
+        ms.playerMoveLeft();
+        ms.exceTime(500);
     } else if (status === i++) {
-        ms.getDirectionEffect(3, "", [0]);
-        ms.wait(1000);
+        ms.playerWaite();
+        ms.exceTime(1000);
     } else if (status === i++) {
         ms.sendNextS("終於到了決戰的時間了嗎。", 17, 0, 0);
     } else if (status === i++) {

@@ -17,15 +17,15 @@ function action(mode, type, selection) {
         ms.lockUI(true);
         ms.disableOthers(true);
         ms.showEffect(false, "phantom/mapname3");
-        ms.wait(3000);
+        ms.exceTime(3000);
     } else if (status === i++) {
         ms.sendNextS("（果然全都聚集了。雖然似乎還沒有開始的樣子…因為她還沒有出現。看到適當的位置，就去那邊坐吧。）", 17);
     } else if (status === i++) {
-        ms.getDirectionEffect(3, "", [2]);
-        ms.wait(1500);
+        ms.playerMoveRight();
+        ms.exceTime(1500);
     } else if (status === i++) {
-        ms.getDirectionEffect(3, "", [0]);
-        ms.wait(500);
+        ms.playerWaite();
+        ms.exceTime(500);
     } else if (status === i++) {
         ms.sendNextS("（是目前的女帝和騎士們嗎…？氣氛不是很好。大家都擺出相當不悅的表情。也是，以目前的情況來說，這也是理所當然的。）", 17);
     } else if (status === i++) {
@@ -33,7 +33,7 @@ function action(mode, type, selection) {
     } else if (status === i++) {
         ms.wait(2000);
     } else if (status === i++) {
-        ms.getDirectionEffect(3, "", [0]);
+        ms.playerWaite();
         ms.sendOthersTalk("西格諾斯竟然不是真正的女皇…會是真的嗎？", 1402200, [false, true]);
     } else if (status === i++) {
         ms.sendOthersTalk("你說話太過份了。什麼叫做不是真正的女皇？難道我們在伺候一名冒牌的女皇嗎？西格諾斯現在也還是女皇。", 1402201, [true, true]);
@@ -52,21 +52,21 @@ function action(mode, type, selection) {
     } else if (status === i++) {
         ms.sendOthersTalk("噓…好像終於到了。", 1402201, [true, true]);
     } else if (status === i++) {
-        ms.getDirectionEffect(3, "", [0]);
-        ms.wait(500);
+        ms.playerWaite();
+        ms.exceTime(500);
     } else if (status === i++) {
         ms.sendOthersTalk("（…終於，這一點也不有趣的戲劇編劇者登場了。）", 1402201, [false, true], 17);
     } else if (status === i++) {
         ms.showEffect(false, "phantom/hillah");
         ms.playSound("Magatia/alceCircle");
-        ms.wait(1200);
+        ms.exceTime(1200);
     } else if (status === i++) {
         ms.spawnNPCRequestController(1402400, -131, -7);
         ms.spawnNPCRequestController(1402401, -209, -7);
         ms.spawnNPCRequestController(1402401, -282, -7, 0, 1402402);
         ms.spawnNPCRequestController(1402401, -59, -7, 0, 1402403);
-        ms.getDirectionEffect(3, "", [0]);
-        ms.wait(4500);
+        ms.playerWaite();
+        ms.exceTime(4500);
     } else if (status === i++) {
         ms.sendOthersTalk("看來聚集了相當多人呢。這也意味著大家都有仔細聽我說的話吧？真是太感謝了。我就是那個自稱擁有真正女皇血統的希拉。", 1402400, [false, true]);
     } else if (status === i++) {
@@ -130,8 +130,8 @@ function action(mode, type, selection) {
     } else if (status === i++) {
         ms.showEffect(false, "phantom/skaia");
         ms.playSound("phantom/skaia");
-        ms.getDirectionEffect(3, "", [0]);
-        ms.wait(7500);
+        ms.playerWaite();
+        ms.exceTime(7500);
     } else if (status === i++) {
         ms.sendOthersTalk("...啊...", 1402100, [false, true]);
     } else if (status === i++) {
@@ -168,12 +168,12 @@ function action(mode, type, selection) {
         ms.sendOthersTalk("（阿普雷德應該已經準備好了吧…輪到我上場了嗎？好，那麼先深呼吸，一、二、三！）", 1402400, [true, true], 17);
     } else if (status === i++) {
         ms.showEffect(false, "phantom/phantom");
-        ms.getDirectionEffect(3, "", [0]);
-        ms.wait(1500);
+        ms.playerWaite();
+        ms.exceTime(1500);
     } else if (status === i++) {
         ms.sendOthersTalk("還沒到下結論的時候吧?", 1402400, [false, true], 17);
     } else if (status === i++) {
-        ms.wait(500);
+        ms.exceTime(500);
     } else if (status === i++) {
         ms.forceStartQuest(25001);
         ms.lockUI(false);

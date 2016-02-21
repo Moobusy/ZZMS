@@ -1,4 +1,4 @@
-/* global ms */
+﻿/* global ms */
 
 var status = -1;
 
@@ -19,14 +19,14 @@ function action(mode, type, selection) {
         ms.hidePlayer(true);
         ms.spawnNPCRequestController(9072302, -3, -30);
         ms.darkEnv(1, 200, 1300);
-        ms.wait(1600);
+        ms.exceTime(1600);
     } else if (status == i++) {
         ms.sendTellStory("今天又是和平的皮卡啾世界…", true);
     } else if (status == i++) {
         ms.darkEnv(0, 0, 1300);
-        ms.wait(1600);
+        ms.exceTime(1600);
     } else if (status == i++) {
-        ms.wait(3000);
+        ms.exceTime(3000);
     } else if (status == i++) {
         ms.setNPCSpecialAction(9072302, "yawn", 1800, true, 0);
         ms.playSound("Sound/SoundEff.img/PinkBean/yawn");
@@ -112,7 +112,7 @@ function action(mode, type, selection) {
     } else if (status == i++) {
         ms.resetNPCController(9072302);
         ms.spawnNPCRequestController(9072300, -116, -25);
-        ms.wait(1000);
+        ms.exceTime(1000);
     } else if (status == i++) {
         ms.setNPCSpecialAction(9072302, "discovery2", 2500, true, 0);
         ms.playSound("Sound/SoundEff.img/PinkBean/discovery");
@@ -148,7 +148,7 @@ function action(mode, type, selection) {
         ms.playSound("Sound/SoundEff.img/PinkBean/potal");
     } else if (status == i++) {
         ms.spawnNPCRequestController(9072301, 112, -25);
-        ms.wait(360);
+        ms.exceTime(360);
     } else if (status == i++) {
         ms.setNPCSpecialAction(9072303, "giggle", -1, true);
         ms.playSound("Sound/SoundEff.img/PinkBean/giggle");
@@ -160,9 +160,9 @@ function action(mode, type, selection) {
         ms.playSound("Sound/SoundEff.img/PinkBean/blackbeanmoving");
     } else if (status == i++) {
         ms.removeNPCRequestController(9072303);
-        ms.wait(1000);
+        ms.exceTime(1000);
     } else if (status == i++) {
-        ms.wait(500);
+        ms.exceTime(500);
     } else if (status == i++) {
         ms.setNPCSpecialAction(9072302, "discovery", 500, true, 0);
         ms.playSound("Sound/SoundEff.img/PinkBean/discovery");

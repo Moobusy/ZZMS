@@ -11,6 +11,16 @@ public class ObtacleAtom {
 
     public ObtacleAtom(Point Position) {
         this.Position = Position;
+        this.type = 1;
+        this.uniqueID = 1;
+        this.maxSpeed = 25;
+        this.acceleration = 3;
+        this.unk = 0;
+        this.explodeSpeed = 25;
+        this.damagePercent = -5;
+        this.spawnDelay = 1000;
+        this.distance = 800;
+        this.angle = 80;
     }
     
     public void setType(int type) {

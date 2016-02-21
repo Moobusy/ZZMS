@@ -8,16 +8,16 @@ function action(mode, type, selection) {
     if (status == 0) {
         ms.lockUI(true);
         ms.disableOthers(true);
-        ms.getDirectionEffect(3, "", [1]);
-        ms.getDirectionEffect(1, "", [30]);
+        ms.playerMoveLeft();
+        ms.exceTime(30);
         ms.getDirectionStatus(true);
     } else if (status == 0) {
-        ms.getDirectionEffect(3, "", [0]);
+        ms.playerWaite();
         ms.showEffect(false, "demonSlayer/text13");
-        ms.getDirectionEffect(1, "", [500]);
+        ms.exceTime(500);
     } else if (status == 1) {
         ms.showEffect(false, "demonSlayer/text14");
-        ms.getDirectionEffect(1, "", [4000]);
+        ms.exceTime(4000);
     } else {
         ms.lockUI(false);
         ms.dispose();

@@ -52,7 +52,7 @@ import tools.packet.CField.UIPacket;
 import tools.packet.CWvsContext;
 import tools.packet.CWvsContext.InfoPacket;
 import tools.packet.PetPacket;
-import tools.packet.provider.SpecialEffectType;
+import extensions.temporary.SpecialEffectType;
 
 public abstract class AbstractPlayerInteraction {
 

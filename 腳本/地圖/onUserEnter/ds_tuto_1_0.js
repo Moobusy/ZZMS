@@ -8,11 +8,11 @@ function action(mode, type, selection) {
     if (status == 0) {
         ms.lockUI(true);
         ms.disableOthers(true);
-        ms.getDirectionEffect(3, "", [1]);
-        ms.getDirectionEffect(1, "", [30]);
+        ms.playerMoveLeft();
+        ms.exceTime(30);
         ms.getDirectionStatus(true);
     } else {
-        ms.getDirectionEffect(3, "", [0]);
+        ms.playerWaite();
         ms.dispose();
         ms.openNpc(2159310);
     }

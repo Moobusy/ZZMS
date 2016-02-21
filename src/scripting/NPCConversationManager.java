@@ -19,6 +19,8 @@ import constants.ItemConstants;
 import constants.ServerConfig;
 import tools.SearchGenerator;
 import database.DatabaseConnection;
+import extensions.temporary.DirectionType;
+import extensions.temporary.NPCTalk;
 import handling.SendPacketOpcode;
 import handling.channel.ChannelServer;
 import handling.channel.MapleGuildRanking;
@@ -75,7 +77,7 @@ import tools.packet.CField.UIPacket;
 import tools.packet.CWvsContext;
 import tools.packet.CWvsContext.GuildPacket;
 import tools.packet.CWvsContext.InfoPacket;
-import tools.packet.provider.SpecialEffectType;
+import extensions.temporary.SpecialEffectType;
 
 public class NPCConversationManager extends AbstractPlayerInteraction {
 
@@ -123,7 +125,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     public void sendSlideMenu(final int type, final String sel) {
         int lasticon = 0;
         c.getSession().write(NPCPacket.getSlideMenu(id, type, lasticon, sel));
-        lastMsg = 0x12;//was12
+        lastMsg = NPCTalk.SLIDE_MENU.getType();//was12
     }
 
     public String getDimensionalMirror(MapleCharacter character) {
@@ -537,7 +539,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
 
     public void askAngelicBusterAvatar() {
         c.getSession().write(NPCPacket.getAngelicBusterAvatarSelect(id));
-        lastMsg = 0x18;
+        lastMsg = 0x19;
     }
 
     public void askAvatar(String text, int... args) {
@@ -1042,7 +1044,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     public void getNPCBubble(int npcid, String data, int exclamation, int bubbleType, int time, int directionTime) {
         c.getSession().write(CField.EffectPacket.showEffect(true, c.getPlayer(), SpecialEffectType.NPC_BUBBLE, new int[]{exclamation, bubbleType, 0, time, 1, 0, 0, 0, 4, npcid}, new String[]{data}, null, null));
         if (directionTime > -1) {
-            wait(directionTime > 0 ? directionTime : time);
+            exceTime(directionTime > 0 ? directionTime : time);
         }
     }
 
@@ -1063,7 +1065,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
         }
         c.getSession().write(NPCPacket.setNPCSpecialAction(npc.getObjectId(), action, time, unk));
         if (directionTime > -1) {
-            wait(directionTime > 0 ? directionTime : time);
+            exceTime(directionTime > 0 ? directionTime : time);
         }
     }
 
@@ -1084,7 +1086,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
         } else {
             return;
         }
-        c.getSession().write(CField.UIPacket.getDirectionEffect(2, data, new int[]{value, x, y, 1, 1, 0, 0, npc.getObjectId()}));
+        c.getSession().write(CField.UIPacket.getDirectionInfo(2, data, new int[]{value, x, y, 1, 1, 0, 0, npc.getObjectId()}));
     }
 
     public void removeNPCRequestController(int npcid) {
@@ -1140,32 +1142,53 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     }
 
     public final void hidePlayer(boolean hide) {
-        getDirectionEffect(9, null, new int[]{hide ? 1 : 0});
+        getDirectionEffect(DirectionType.HIDE_PLAYER.getValue(), null, new int[]{hide ? 1 : 0});
     }
 
-    public void wait(int time) {
-        getDirectionEffect(1, null, new int[]{time});
+    public void exceTime(int time) {
+        getDirectionEffect(DirectionType.EXEC_TIME.getValue(), null, new int[]{time});
+    }
+    
+    public void playerWaite() {
+        getDirectionEffect(DirectionType.ACTION.getValue(), null, new int[]{0});
+    }
+    
+    public void playerMoveLeft() {
+        getDirectionEffect(DirectionType.ACTION.getValue(), null, new int[]{1});
+    }
+    
+    public void playerMoveRight() {
+        getDirectionEffect(DirectionType.ACTION.getValue(), null, new int[]{2});
+    }
+    
+    public void playerJump() {
+        getDirectionEffect(DirectionType.ACTION.getValue(), null, new int[]{3});
+    }
+    
+    public void playerMoveDown() {
+        getDirectionEffect(DirectionType.ACTION.getValue(), null, new int[]{4});
     }
 
     public void sendTellStory(String data, boolean canNext) {
-        getDirectionEffect(11, data, new int[]{canNext ? 1 : 0});
+        getDirectionEffect(DirectionType.TELL_STORY.TELL_STORY.getValue(), data, new int[]{canNext ? 1 : 0});
     }
 
     public void getDirectionEffect(int mod, String data, int[] values) {
-        c.getSession().write(UIPacket.getDirectionEffect(mod, data, values));
+        c.getSession().write(UIPacket.getDirectionInfo(mod, data, values));
         if (lastMsg != -1) {
             return;
         }
-        switch (mod) {
-            case 1:
-            case 3:
-            case 4:
-            case 5:
-                lastMsg = 0x13;
+        DirectionType dt = DirectionType.getType(mod);
+        switch (dt) {
+            case EXEC_TIME:
+            case ACTION:
+            case UNK4:
+            case UNK5:
+                lastMsg = NPCTalk.DIRECTION_SCRIPT_ACTION.getType();
                 break;
-            case 0xB:
+            case TELL_STORY:
                 if (values[0] == 1) {
-                    lastMsg = 0x23;
+                    lastMsg = NPCTalk.TELL_STORY.getType();
                 }
                 break;
         }
@@ -2554,9 +2577,9 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
 
     public void mihileNeinheartDisappear() {
         try {
-            c.getSession().write(UIPacket.getDirectionEffect(2, "Effect/Direction7.img/effect/tuto/step0/4", new int[]{2000, 0, -100, 1, 0, 0}));
+            c.getSession().write(UIPacket.getDirectionInfo(2, "Effect/Direction7.img/effect/tuto/step0/4", new int[]{2000, 0, -100, 1, 0, 0}));
             c.getSession().write(UIPacket.getDirectionFacialExpression(6, 2000));
-            c.getPlayer().getClient().getSession().write(CField.UIPacket.getDirectionEffect(1, null, new int[]{2000}));
+            exceTime(2000);
             Thread.sleep(2000);
             NPCScriptManager.getInstance().start(c, 1106000, "tuto002");
         } catch (InterruptedException e) {
@@ -2565,8 +2588,8 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
 
     public void mihileMove913070001() {
         try {
-            c.getPlayer().getClient().getSession().write(CField.UIPacket.getDirectionEffect(3, null, new int[]{2}));
-            c.getPlayer().getClient().getSession().write(CField.UIPacket.getDirectionEffect(1, null, new int[]{800}));
+            c.getPlayer().getClient().getSession().write(CField.UIPacket.getDirectionInfo(3, null, new int[]{2}));
+            exceTime(800);
             Thread.sleep(800);
         } catch (InterruptedException e) {
         }
@@ -2581,7 +2604,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
 
     public void mihileSoul() {
         try {
-            c.getSession().write(UIPacket.getDirectionEffect(2, "Effect/Direction7.img/effect/tuto/soul/0", new int[]{4000, 0, -100, 1, 0, 0}));
+            c.getSession().write(UIPacket.getDirectionInfo(2, "Effect/Direction7.img/effect/tuto/soul/0", new int[]{4000, 0, -100, 1, 0, 0}));
             Thread.sleep(4000);
         } catch (InterruptedException e) {
         }
@@ -2590,10 +2613,10 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
 
     public void mihileMove913070050() {
         try {
-            c.getPlayer().getClient().getSession().write(CField.UIPacket.getDirectionEffect(3, null, new int[]{2}));
-            c.getPlayer().getClient().getSession().write(CField.UIPacket.getDirectionEffect(1, null, new int[]{6000}));
+            c.getPlayer().getClient().getSession().write(CField.UIPacket.getDirectionInfo(3, null, new int[]{2}));
+            exceTime(6000);
             Thread.sleep(5000);
-            c.getPlayer().getClient().getSession().write(CField.UIPacket.getDirectionEffect(3, null, new int[]{0}));
+            c.getPlayer().getClient().getSession().write(CField.UIPacket.getDirectionInfo(3, null, new int[]{0}));
             NPCScriptManager.getInstance().start(c, 1106001, "tuto005");
         } catch (InterruptedException e) {
         }
@@ -2782,67 +2805,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
 
     public void setCustomMeso(long meso) {
         c.getPlayer().getQuestNAdd(MapleQuest.getInstance(GameConstants.CUSTOM_BANK)).setCustomData(meso + "");
-    }
-
-    public void enter_931060110() {
-        try {
-            c.getSession().write(UIPacket.getDirectionEffect(2, "Effect/CharacterEff.img/farmEnterTuto/menuUI", new int[]{6000, 285, 186, 1, 0, 0, 0, 0}));
-            c.getSession().write(CField.UIPacket.getDirectionEffect(1, null, new int[]{900}));
-            Thread.sleep(900);
-            c.getSession().write(CWvsContext.getTopMsg("First, click MENU at the bottom of the screen."));
-            c.getSession().write(UIPacket.getDirectionEffect(2, "Effect/CharacterEff.img/farmEnterTuto/mouseMoveToMenu", new int[]{1740, -114, -14, 1, 3, 0, 0, 0}));
-            c.getSession().write(CField.UIPacket.getDirectionEffect(1, null, new int[]{1680}));
-            Thread.sleep(1680);
-            c.getSession().write(UIPacket.getDirectionEffect(2, "Effect/CharacterEff.img/farmEnterTuto/mouseClick", new int[]{1440, 246, 196, 1, 3, 0, 0, 0}));
-            c.getSession().write(CField.UIPacket.getDirectionEffect(1, null, new int[]{1440}));
-            Thread.sleep(1440);
-            c.getSession().write(CWvsContext.getTopMsg("Now, select Go to Farm."));
-            c.getSession().write(CField.UIPacket.getDirectionEffect(1, null, new int[]{600}));
-            Thread.sleep(600);
-            c.getSession().write(UIPacket.getDirectionEffect(2, "Effect/CharacterEff.img/farmEnterTuto/menuOpen", new int[]{50000, 285, 186, 1, 2, 0, 0, 0}));
-            c.getSession().write(CField.UIPacket.getDirectionEffect(1, null, new int[]{600}));
-            Thread.sleep(600);
-            c.getSession().write(UIPacket.getDirectionEffect(2, "Effect/CharacterEff.img/farmEnterTuto/mouseMoveToMyfarm", new int[]{750, 246, 196, 1, 2, 0, 0, 0}));
-            c.getSession().write(CField.UIPacket.getDirectionEffect(1, null, new int[]{720}));
-            Thread.sleep(720);
-            c.getSession().write(UIPacket.getDirectionEffect(2, "Effect/CharacterEff.img/farmEnterTuto/menuMouseOver", new int[]{50000, 285, 186, 1, 2, 0, 0, 0}));
-            c.getSession().write(UIPacket.getDirectionEffect(2, "Effect/CharacterEff.img/farmEnterTuto/mouseClick", new int[]{50000, 246, 166, 1, 3, 0, 0, 0}));
-            c.getSession().write(CField.UIPacket.getDirectionEffect(1, null, new int[]{1440}));
-            Thread.sleep(1440);
-        } catch (InterruptedException ex) {
-        }
-    }
-
-    public void enter_931060120() {
-        try {
-            c.getSession().write(UIPacket.getDirectionEffect(2, "Effect/CharacterEff.img/farmEnterTuto/character", new int[]{120000, -200, 0, 1, 1, 0, 0, 0}));
-            c.getSession().write(CField.UIPacket.getDirectionEffect(1, null, new int[]{1200}));
-            Thread.sleep(1200);
-            c.getSession().write(CWvsContext.getTopMsg("Hover over any other character..."));
-            c.getSession().write(UIPacket.getDirectionEffect(2, "Effect/CharacterEff.img/farmEnterTuto/mouseMoveToChar", new int[]{1680, -400, -210, 1, 3, 0, 0, 0}));
-            c.getSession().write(CField.UIPacket.getDirectionEffect(1, null, new int[]{1650}));
-            Thread.sleep(1650);
-            c.getSession().write(UIPacket.getDirectionEffect(2, "Effect/CharacterEff.img/farmEnterTuto/mouseUp", new int[]{600, -190, -30, 1, 3, 0, 0, 0}));
-            c.getSession().write(CWvsContext.getTopMsg("Then right-click."));
-            c.getSession().write(CField.UIPacket.getDirectionEffect(1, null, new int[]{540}));
-            Thread.sleep(540);
-            c.getSession().write(UIPacket.getDirectionEffect(2, "Effect/CharacterEff.img/farmEnterTuto/mouseClick", new int[]{1200, -190, -30, 1, 3, 0, 0, 0}));
-            c.getSession().write(CField.UIPacket.getDirectionEffect(1, null, new int[]{1200}));
-            Thread.sleep(1200);
-            c.getSession().write(UIPacket.getDirectionEffect(2, "Effect/CharacterEff.img/farmEnterTuto/characterMenu", new int[]{50000, -200, 0, 1, 2, 0, 0, 0}));
-            c.getSession().write(CField.UIPacket.getDirectionEffect(1, null, new int[]{900}));
-            Thread.sleep(900);
-            c.getSession().write(CWvsContext.getTopMsg("When the Character Menu appears, click Go to Farm."));
-            c.getSession().write(UIPacket.getDirectionEffect(2, "Effect/CharacterEff.img/farmEnterTuto/mouseMoveToOtherfarm", new int[]{1440, -190, -30, 1, 5, 0, 0, 0}));
-            c.getSession().write(CField.UIPacket.getDirectionEffect(1, null, new int[]{1380}));
-            Thread.sleep(1380);
-            c.getSession().write(UIPacket.getDirectionEffect(2, "Effect/CharacterEff.img/farmEnterTuto/menuMouseOver", new int[]{50000, -200, 0, 1, 4, 0, 0, 0}));
-            c.getSession().write(UIPacket.getDirectionEffect(2, "Effect/CharacterEff.img/farmEnterTuto/mouseClick", new int[]{60000, -130, 150, 1, 6, 0, 0, 0}));
-            c.getSession().write(CField.UIPacket.getDirectionEffect(1, null, new int[]{1200}));
-            Thread.sleep(1200);
-        } catch (InterruptedException ex) {
-        }
-    }
+    }    
 
     public static String getMobImg(int mob) {
         MapleMonster monster = MapleLifeFactory.getMonster(mob);
@@ -2855,41 +2818,6 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
             mobStr = newStr;
         }
         return "#fMob/" + mobStr + ".img/stand/0#";
-    }
-
-    public void showBeastTamerTutScene() {
-        c.getSession().write(CField.UIPacket.lockUI(false));
-        NPCScriptManager.getInstance().dispose(c);
-        c.removeClickedNPC();
-        NPCScriptManager.getInstance().start(c, 9390305, "BeastTamerTut01");
-    }
-
-    public void showBeastTamerTutScene1() {
-        try {
-            c.getSession().write(UIPacket.getDirectionStatus(true));
-            c.getSession().write(CField.UIPacket.getDirectionEffect(1, null, new int[]{1000}));
-            c.getSession().write(CField.UIPacket.getDirectionEffect(1, null, new int[]{1000}));
-            Thread.sleep(2000);
-            c.getSession().write(UIPacket.getDirectionEffect(2, "Effect/Direction14.img/effect/ShamanBT/balloonMsg/10", new int[]{2000, 0, -120, 1, 0, 0, 0, 0}));
-            c.getSession().write(CField.UIPacket.getDirectionEffect(1, null, new int[]{800}));
-            Thread.sleep(800);
-            c.getSession().write(CField.UIPacket.getDirectionEffect(5, null, new int[]{0, 1000, 700, 0}));
-            c.getSession().write(CField.UIPacket.getDirectionEffect(1, null, new int[]{1200}));
-            Thread.sleep(1200);
-            c.getSession().write(UIPacket.getDirectionEffect(2, "Effect/Direction14.img/effect/ShamanBT/BalloonMsg1/7", new int[]{2000, 571, -120, 1, 0, 0, 0, 0}));
-            c.getSession().write(CField.environmentChange("ShamanBTTuto/sound0", 5));
-            c.getSession().write(UIPacket.getDirectionEffect(1, null, new int[]{3000}));
-            Thread.sleep(3000);
-            c.getSession().write(UIPacket.getDirectionEffect(1, null, new int[]{1000}));
-            c.getSession().write(UIPacket.getDirectionEffect(1, null, new int[]{500}));
-            Thread.sleep(1500);
-            c.getSession().write(UIPacket.getDirectionFacialExpression(4, 5000));
-            Thread.sleep(3000);
-        } catch (InterruptedException ex) {
-        }
-        NPCScriptManager.getInstance().dispose(c);
-        c.removeClickedNPC();
-        NPCScriptManager.getInstance().start(c, 9390305, "BeastTamerTut02");
     }
 
     public String getSkillMenu(int skillMaster, int job) {

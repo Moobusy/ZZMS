@@ -16,7 +16,7 @@ function action(mode, type, selection) {
         ms.resetMap(ms.getMapId());
         ms.getDirectionStatus(true);
         ms.lockUI(true);
-        ms.getDirectionEffect(3, "", [0]);
+        ms.playerWaite();
         ms.disableOthers(true);
         ms.spawnNPCRequestController(9390442, 77, 0);
         ms.spawnNPCRequestController(9390432, 184, 0);
@@ -30,18 +30,18 @@ function action(mode, type, selection) {
         ms.spawnNPCRequestController(9390308, -259, 0);
         ms.spawnNPCRequestController(9390309, -409, 0);
         ms.spawnNPCRequestController(9390310, -459, 0);
-        ms.wait(800);
+        ms.exceTime(800);
         ms.showDarkEffect(false);
     } else if (status === i++) {
-        ms.wait(800);
+        ms.exceTime(800);
     } else if (status === i++) {
-        ms.getDirectionEffect(3, "", [1]);
-        ms.wait(100);
+        ms.playerMoveLeft();
+        ms.exceTime(100);
     } else if (status === i++) {
-        ms.getDirectionEffect(3, "", [0]);
+        ms.playerWaite();
         ms.getDirectionEffect(5, "", [0, 1000, 0, 0]);
     } else if (status === i++) {
-        ms.wait(1700);
+        ms.exceTime(1700);
     } else if (status === i++) {
         ms.setNPCSpecialAction(9390442, "attack1", 0, true, 300);
     } else if (status === i++) {
@@ -59,20 +59,20 @@ function action(mode, type, selection) {
     } else if (status === i++) {
         ms.getDirectionEffect(5, "", [1, 1000]);
     } else if (status === i++) {
-        ms.wait(1000);
+        ms.exceTime(1000);
     } else if (status === i++) {
         ms.getDirectionEffect(2, "Effect/Direction14.img/effect/ShamanBT/balloonMsg/10", [2000, 0, -100, 1, 0, 0]);
         ms.getDirectionFacialExpression(5, 1500);
-        ms.wait(2100);
+        ms.exceTime(2100);
     } else if (status === i++) {
         ms.getDirectionEffect(2, "Effect/Direction14.img/effect/ShamanBT/BalloonMsg1/9", [2000, 0, -100, 1, 0, 0]);
-        ms.wait(1000);
+        ms.exceTime(1000);
     } else if (status === i++) {
         ms.updateNPCSpecialAction(9390434, 1, 100, 100);
-        ms.wait(500);
+        ms.exceTime(500);
     } else if (status === i++) {
         ms.updateNPCSpecialAction(9390435, 1, 120, 100);
-        ms.wait(1000);
+        ms.exceTime(1000);
     } else if (status === i++) {
         ms.setNPCSpecialAction(9390442, "attack1", 0, true, 100);
         ms.playSound("ShamanBTTuto/mobattack0");
@@ -89,15 +89,15 @@ function action(mode, type, selection) {
     } else if (status === i++) {
         ms.getDirectionFacialExpression(5, 5000);
         ms.getDirectionEffect(2, "Effect/Direction14.img/effect/ShamanBT/BalloonMsg1/10", [1000, 0, -120, 1, 0, 0]);
-        ms.wait(1000);
+        ms.exceTime(1000);
     } else if (status === i++) {
         ms.getDirectionEffect(0, "", [436, 540]);
-        ms.wait(1000);
+        ms.exceTime(1000);
     } else if (status === i++) {
-        ms.wait(1000);
+        ms.exceTime(1000);
     } else if (status === i++) {
         ms.getDirectionEffect(2, "Effect/Direction14.img/effect/ShamanBT/ChapterA/7", [3620, -160, 0, 1, 0, 0]);
-        ms.wait(300);
+        ms.exceTime(300);
     } else if (status === i++) {
         ms.playSound("ShamanBTTuto/RaiUse0");
         ms.trembleEffect(0, 300);
@@ -123,26 +123,26 @@ function action(mode, type, selection) {
     } else if (status === i++) {
         ms.playSound("ShamanBTTuto/RaiUse0");
         ms.removeNPCRequestController(9390434);
-        ms.wait(100);
+        ms.exceTime(100);
     } else if (status === i++) {
         ms.removeNPCRequestController(9390433);
-        ms.wait(100);
+        ms.exceTime(100);
     } else if (status === i++) {
         ms.removeNPCRequestController(9390432);
-        ms.wait(100);
+        ms.exceTime(100);
     } else if (status === i++) {
         ms.removeNPCRequestController(9390442);
-        ms.wait(740);
+        ms.exceTime(740);
     } else if (status === i++) {
         ms.showBlackBGEffect(0, 3000, 1000, -1);
-        ms.wait(1500);
+        ms.exceTime(1500);
         ms.showWZEffect3("Effect/Direction14.img/effect/ShamanBT/ChapterA/9", [1, 1, 1, 0, 0]);
     } else if (status === i++) {
         ms.spawnNPCRequestController(9390383, 540, 0, 1);
-        ms.wait(1300);
+        ms.exceTime(1300);
     } else if (status === i++) {
         ms.changeMusic("BgmBT.img/rock'nBattleTiger");
-        ms.wait(2000);
+        ms.exceTime(2000);
         ms.showWZEffect3("Effect/Direction14.img/effect/ShamanBT/ChapterA/9", [1, 0]);
     } else if (status === i++) {
         ms.setNPCSpecialAction(9390383, "special0", 0, true, 1000);
@@ -169,7 +169,7 @@ function action(mode, type, selection) {
     } else if (status === i++) {
         ms.sendOthersTalk("喂~ 小鬼,沒時間了啦. \r\n快點和我擊掌3次!!", 9390383, [true, true], 1);
     } else if (status === i++) {
-        ms.wait(1000);
+        ms.exceTime(1000);
     } else if (status === i++) {
         ms.setNPCSpecialAction(9390383, "special0", 0, true, 1000);
         ms.getDirectionEffect(0, "", [990, 1010]);
@@ -178,7 +178,7 @@ function action(mode, type, selection) {
         ms.playSound("ShamanBTTuto/Contract");
         ms.sendOthersTalk("拍, 拍, 拍!!", 9390383, [false, true], 3);
     } else if (status === i++) {
-        ms.wait(1000);
+        ms.exceTime(1000);
     } else if (status === i++) {
         ms.sendOthersTalk("喂?這樣就結束了?", 9390383, [false, true], 3);
     } else if (status === i++) {
@@ -188,7 +188,7 @@ function action(mode, type, selection) {
             ms.forceCompleteQuest(59008);
             ms.gainExp(16);
         }
-        ms.wait(1000);
+        ms.exceTime(1000);
     } else if (status === i++) {
         ms.removeNPCRequestController(9390383);
         ms.removeNPCRequestController(9390304);

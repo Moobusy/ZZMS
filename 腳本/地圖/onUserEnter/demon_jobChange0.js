@@ -22,9 +22,9 @@ function action(mode, type, selection) {
         ms.lockUI(true);
         ms.disableOthers(true);
         ms.getDirectionStatus(true);
-        ms.getDirectionEffect(3, "", [2]);
+        ms.playerMoveRight();
     } else if (status == 1) {
-        ms.getDirectionEffect(3, "", [0]);
+        ms.playerWaite();
         ms.sendNextS("#b腦袋一團混亂...", 3);
     } else if (status == 2) {
         ms.sendNextPrevS("#b但是我的力量將近都消失是無法改變的事實。", 3);

@@ -197,7 +197,7 @@ public enum MapleBuffStat implements Serializable, Buffstat {
     MANA_REFLECTION(88),
     //誘惑                              [IDA找的-186]
     SEDUCE(89),
-    //暗器傷人                          [IDA找的-186]
+    //精神投擲                          [IDA找的-186]
     SPIRIT_CLAW(90),
     //時空門                            [IDA找的-186]
     MYSTIC_DOOR(90),
@@ -355,9 +355,7 @@ public enum MapleBuffStat implements Serializable, Buffstat {
     //戰鬥命令                          [IDA找的-186]
     COMBAT_ORDERS(163),
     //追隨者                            [IDA找的-186]
-    BEHOLDER(164),
-    //功能不知道                        [IDA找的-186]
-    IDA_UNK_BUFF11(164),
+    BEHOLDER(164),    
     //裝備潛能無效化                    [IDA找的-186]
     DISABLE_POTENTIAL(165),    
     //                                  [IDA找的-186]
@@ -830,8 +828,8 @@ public enum MapleBuffStat implements Serializable, Buffstat {
     IDA_BUFF_373(373),
     // 更新BUFF用                   [IDA找的-186]
     IDA_BUFF_374(374),
-    // 更新BUFF用                   [IDA找的-186]
-    IDA_BUFF_375(375),
+    // 暗影僕從                     [IDA找的-186]
+    DARK_SERVANT(375),
     // 更新BUFF用                   [IDA找的-186]
     IDA_BUFF_376(376),    
     //功能不知道                     [IDA找的-186]
@@ -986,8 +984,8 @@ public enum MapleBuffStat implements Serializable, Buffstat {
     IDA_BUFF_447(447), 
     // 更新BUFF用                     [IDA找的-186]
     IDA_BUFF_448(448), 
-    // 更新BUFF用                     [IDA找的-186]
-    IDA_BUFF_449(449), 
+    // ESP數量                        [IDA找的-186]
+    ESP_COUNT(449), 
     // 更新BUFF用                     [IDA找的-186]
     IDA_BUFF_450(450), 
     // 更新BUFF用                     [IDA找的-186]
@@ -1078,8 +1076,10 @@ public enum MapleBuffStat implements Serializable, Buffstat {
     
     public static MapleBuffStat getMapleBuffStat(int buff) 
     {
+        int buf = 1 << (31 - (buff % 32));
+        int fir = (int) Math.floor(buff / 32);
         for (MapleBuffStat bb : values()){
-            if (bb.getValue() == buff) {
+            if (bb.buffstat == buf && bb.first == fir) {
                 return bb;
             }
         }

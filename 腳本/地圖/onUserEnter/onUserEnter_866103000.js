@@ -18,7 +18,7 @@ function action(mode, type, selection) {
         ms.spawnMob(9390935, 278, 70);
         ms.getDirectionStatus(true);
         ms.lockUI(true);
-        ms.getDirectionEffect(3, "", [0]);
+        ms.playerWaite();
         ms.disableOthers(true);
         ms.sendOthersTalk("喂!將來的楓之谷英雄!!, 到了大人們也害怕的野狼森林!!", 9390300, [false, true], 3);
     } else if (status === i++) {

@@ -48,8 +48,8 @@ public class LuminousBuff extends AbstractBuffClass {
                 eff.statups.put(MapleBuffStat.BOOSTER, eff.info.get(MapleStatInfo.x));
                 break;
             case 27111004: // 魔力護盾 - Shadow Shell
-                eff.statups.put(MapleBuffStat.ABNORMAL_BUFF_RESISTANCES, eff.info.get(MapleStatInfo.asrR));
-                eff.statups.put(MapleBuffStat.ABNORMAL_BUFF_RESISTANCES, eff.info.get(MapleStatInfo.terR));
+                eff.info.put(MapleStatInfo.time, 0);
+                eff.statups.put(MapleBuffStat.ABNORMAL_BUFF_RESISTANCES, 3);
                 break;
             case 27111005: // 光暗之盾 - Dusk Guard
                 eff.statups.put(MapleBuffStat.INDIE_PDD, eff.info.get(MapleStatInfo.pdd));
@@ -64,6 +64,9 @@ public class LuminousBuff extends AbstractBuffClass {
             case 27121006: // 黑暗魔心 - Arcane Pitch
                 eff.statups.put(MapleBuffStat.IGNORE_DEF, eff.info.get(MapleStatInfo.x));
                 eff.statups.put(MapleBuffStat.FINALATTACK, eff.info.get(MapleStatInfo.y));
+                break;
+            case 27121009: // 楓葉祝福
+                eff.statups.put(MapleBuffStat.MAPLE_WARRIOR, eff.info.get(MapleStatInfo.x));
                 break;
             default:
                 System.out.println("夜光未註冊 - Buff: " + skill);

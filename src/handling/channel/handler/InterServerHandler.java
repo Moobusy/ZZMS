@@ -33,6 +33,7 @@ import tools.packet.CWvsContext.BuddylistPacket;
 import tools.packet.CWvsContext.GuildPacket;
 import tools.packet.CWvsContext.InventoryPacket;
 import tools.packet.FarmPacket;
+import tools.packet.JobPacket;
 import tools.packet.JobPacket.AvengerPacket;
 
 public class InterServerHandler {
@@ -297,6 +298,15 @@ public class InterServerHandler {
         }
         if (MapleJob.is惡魔復仇者(player.getJob())) {
             c.getSession().write(AvengerPacket.giveAvengerHpBuff(player.getStat().getHp()));
+        }
+        if (MapleJob.is凱內西斯(player.getJob())) {
+            c.getSession().write(JobPacket.KinesisPacket.showESPCount(player.getStat().getMp()));
+        }
+        if (MapleJob.is幻影俠盜(player.getJob())) {
+            c.getSession().write(JobPacket.KinesisPacket.showESPCount(player.getStat().getMp()));
+        }
+        if (MapleJob.is劍豪(player.getJob())) {
+//            c.getSession().write(JobPacket.KinesisPacket.showESPCount(player.getStat().getMp()));
         }
         player.spawnClones();
         player.spawnSavedPets();

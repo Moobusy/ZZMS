@@ -16,35 +16,35 @@ function action(mode, type, selection) {
         ms.resetMap(ms.getMapId());
         ms.getDirectionStatus(true);
         ms.lockUI(true);
-        ms.getDirectionEffect(3, "", [0]);
+        ms.playerWaite();
         ms.disableOthers(true);
         ms.spawnNPCRequestController(9390383, -622, -529, 1);
         ms.spawnNPCRequestController(9390382, -652, -529, 1);
         ms.spawnNPCRequestController(9390306, -661, -526, 1);
-        ms.wait(300);
+        ms.exceTime(300);
         ms.showDarkEffect(false);
     } else if (status === i++) {
         ms.sendOthersTalk("現在怎麼辦?\r\n不能一直這樣下去啊.", 9390383, [false, true], 3);
     } else if (status === i++) {
-        ms.wait(300);
+        ms.exceTime(300);
     } else if (status === i++) {
         ms.sendOthersTalk("現在無論怎麼擊退下面那些傢伙們,說不定又會像剛才那些怪物一樣,蜂擁而至, BOSS.", 9390383, [false, true], 1);
     } else if (status === i++) {
-        ms.wait(300);
+        ms.exceTime(300);
     } else if (status === i++) {
         ms.sendOthersTalk("有吧, 有吧. 不能封住前往村莊的門嗎?", 9390382, [false, true], 1);
     } else if (status === i++) {
-        ms.wait(300);
+        ms.exceTime(300);
     } else if (status === i++) {
         ms.sendOthersTalk("但要把門關上的話,必需要爬到瞭望台上轉動控制桿. \r\n 下面的怪物實在太多了,要去那邊很危險啊.", 9390382, [false, true], 3);
     } else if (status === i++) {
-        ms.wait(300);
+        ms.exceTime(300);
     } else if (status === i++) {
         ms.sendOthersTalk("無論怎麼爬上去瞭望台,梯子都會粉碎,也是進退兩難啊.", 9390383, [false, true], 1);
     } else if (status === i++) {
         ms.sendOthersTalk("這種時候要是能飛到天上就好了...", 9390383, [true, true], 3);
     } else if (status === i++) {
-        ms.wait(1000);
+        ms.exceTime(1000);
     } else if (status === i++) {
         ms.sendOthersTalk("布蘭登, 這可不能開玩笑,很危險的,會掉下去啊!", 9390305, [false, true], 1);
     } else if (status === i++) {
@@ -53,7 +53,7 @@ function action(mode, type, selection) {
         ms.getDirectionEffect(2, "Effect/Direction14.img/effect/ShamanBT/balloonMsg/21", [800, -470, -50, 1, 0, 0]);
         ms.getDirectionEffect(2, "Effect/Direction14.img/effect/ShamanBT/balloonMsg/23", [800, -320, -50, 1, 0, 0]);
         ms.getDirectionEffect(2, "Effect/Direction14.img/effect/ShamanBT/balloonMsg1/5", [800, 0, -100, 1, 0, 0]);
-        ms.wait(900);
+        ms.exceTime(900);
     } else if (status === i++) {
         ms.setNPCSpecialAction(9390306, "falling", 0, true, 300);
     } else if (status === i++) {
@@ -61,27 +61,27 @@ function action(mode, type, selection) {
         ms.getDirectionEffect(2, "Effect/Direction14.img/effect/ShamanBT/ChapterA/18", [2600, -189, 0, 1, 0, 0]);
         ms.getDirectionEffect(5, "", [0, 1000, -604, -250]);
     } else if (status === i++) {
-        ms.wait(800);
+        ms.exceTime(800);
     } else if (status === i++) {
-        ms.wait(400);
+        ms.exceTime(400);
     } else if (status === i++) {
-        ms.wait(400);
+        ms.exceTime(400);
     } else if (status === i++) {
         ms.showBlackBGEffect(0, 2000, 500, -1);
-        ms.wait(500);
+        ms.exceTime(500);
         ms.showWZEffect3("Effect/Direction14.img/effect/ShamanBT/ChapterA/19", [1, 1, 1, 0, 0]);
     } else if (status === i++) {
         ms.changeMusic("BgmBT.img/FightingPinkBeenHawk");
         ms.spawnNPCRequestController(9390306, -690, -526, 1);
-        ms.wait(1500);
+        ms.exceTime(1500);
     } else if (status === i++) {
         ms.getDirectionEffect(5, "", [1, 1000]);
     } else if (status === i++) {
         ms.showWZEffect3("Effect/Direction14.img/effect/ShamanBT/ChapterA/19", [1, 0]);
-        ms.wait(500);
+        ms.exceTime(500);
     } else if (status === i++) {
         ms.spawnNPCRequestController(9390384, -330, -529);
-        ms.wait(1300);
+        ms.exceTime(1300);
     } else if (status === i++) {
         ms.sendOthersTalk("哇啊! 艾卡來了!", 9390382, [false, true], 1);
     } else if (status === i++) {
@@ -89,7 +89,7 @@ function action(mode, type, selection) {
     } else if (status === i++) {
         ms.sendOthersTalk("來了啊,姐姐! \r\n 我們都在等你. 傻小子.", 9390383, [true, true], 1);
     } else if (status === i++) {
-        ms.wait(500);
+        ms.exceTime(500);
     } else if (status === i++) {
         ms.sendOthersTalk("咦? 萊伊的態度改變了.", 9390383, [false, true], 3);
     } else if (status === i++) {
@@ -97,7 +97,7 @@ function action(mode, type, selection) {
     } else if (status === i++) {
         ms.sendOthersTalk("就正在眼前啊,姐姐.", 9390383, [true, true], 1);
     } else if (status === i++) {
-        ms.wait(500);
+        ms.exceTime(500);
     } else if (status === i++) {
         ms.setNPCSpecialAction(9390384, "attack1", 0, true, 800);
     } else if (status === i++) {
@@ -123,17 +123,17 @@ function action(mode, type, selection) {
     } else if (status === i++) {
         ms.sendOthersTalk("姐姐和BOSS簽訂合約,借助力量的話...\r\n 就可以飛到那個瞭望台上面把村莊的門關起來了.", 9390383, [true, true], 1);
     } else if (status === i++) {
-        ms.wait(500);
+        ms.exceTime(500);
     } else if (status === i++) {
         ms.setNPCSpecialAction(9390384, "attack1", 0, true, 800);
         ms.playSound("ShamanBTTuto/Eka1");
     } else if (status === i++) {
         ms.sendOthersTalk("#b(呃啊... 這次是萊伊在虎視耽耽...)#k", 9390383, [false, true], 3);
     } else if (status === i++) {
-        ms.wait(500);
+        ms.exceTime(500);
     } else if (status === i++) {
         ms.getDirectionEffect(2, "Effect/Direction14.img/effect/ShamanBT/balloonMsg/22", [800, -80, -150, 1, 0, 0]);
-        ms.wait(1000);
+        ms.exceTime(1000);
     } else if (status === i++) {
         ms.sendOthersTalk("名字是 #h0#對吧?  \r\n首先, 你已經和那些笨蛋簽訂合約了,而且現在也沒時間猶豫. \r\n但不要誤會,並不代表我完全接受你了?\r\n知道方法吧?", 9390384, [false, true], 1);
     } else if (status === i++) {
@@ -143,12 +143,12 @@ function action(mode, type, selection) {
     } else if (status === i++) {
         ms.getDirectionEffect(0, "", [1002, 1000]);
         ms.getDirectionEffect(2, "Effect/Direction14.img/effect/ShamanBT/ChapterA/13", [700, 60, -529, 1, 0, 0]);
-        ms.wait(1000);
+        ms.exceTime(1000);
     } else if (status === i++) {
         ms.playSound("ShamanBTTuto/Contract");
         ms.sendOthersTalk("拍, 拍, 拍!!!", 9390384, [false, true], 3);
     } else if (status === i++) {
-        ms.wait(1000);
+        ms.exceTime(1000);
     } else if (status === i++) {
         ms.sendOthersTalk("艾卡. 現在和我簽約了...", 9390384, [false, true], 3);
     } else if (status === i++) {

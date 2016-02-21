@@ -232,7 +232,15 @@ public class EquipmentEnchant {
                 if (item == null || EquipStat.EnhanctBuff.EQUIP_MARK.check(item.getEnhanctBuff())) {
                     return;
                 }
-                c.getSession().write(CWvsContext.Enchant.getEnchantList(c, item, getEchantScrolls(item), ServerConstants.FEVER_TIME));
+                
+                int count_rate = 1;
+                if (item.getReqLevel() > 30) {
+                    count_rate = (item.getReqLevel() - 30 / 10) + (Math.abs(7 - item.getUpgradeSlots()) + 1);
+                } else {
+                    count_rate = Math.abs(7 - item.getUpgradeSlots()) + 1;
+                }
+                
+                c.getSession().write(CWvsContext.Enchant.getEnchantList(c, item, getEchantScrolls(item), count_rate, ServerConstants.FEVER_TIME));
                 break;
             }
             case 0x34: { // 星力強化 放置道具

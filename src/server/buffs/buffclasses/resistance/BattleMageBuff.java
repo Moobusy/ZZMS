@@ -83,7 +83,9 @@ public class BattleMageBuff extends AbstractBuffClass {
             case 32121007: //楓葉祝福
                 eff.statups.put(MapleBuffStat.MAPLE_WARRIOR, eff.info.get(MapleStatInfo.x));
                 break;
-            case 32121053: //自由意志                
+            case 32121053: //自由意志       
+                eff.statups.put(MapleBuffStat.INDIE_DAM_R, eff.info.get(MapleStatInfo.indieDamR));
+                eff.statups.put(MapleBuffStat.INDIE_MAX_DAMAGE_OVER, eff.info.get(MapleStatInfo.indieMaxDamageOver));
                 break;
             case 32121054: //聯盟繩索                
                 break;
@@ -111,8 +113,8 @@ public class BattleMageBuff extends AbstractBuffClass {
                 break;
             case 32001016: // 黃色光環
                 eff.statups.put(MapleBuffStat.NEW_AURA, (int) eff.getLevel());
-                eff.statups.put(MapleBuffStat.INDIE_BOOSTER, eff.info.get(MapleStatInfo.indieSpeed));
-                eff.statups.put(MapleBuffStat.INDIE_SPEED, eff.info.get(MapleStatInfo.indieBooster));
+                eff.statups.put(MapleBuffStat.INDIE_BOOSTER, eff.info.get(MapleStatInfo.indieBooster));
+                eff.statups.put(MapleBuffStat.INDIE_SPEED, eff.info.get(MapleStatInfo.indieSpeed));
                 eff.info.put(MapleStatInfo.time, 2100000000);
                 break;
             case 32100010: // 死神契約I
@@ -128,7 +130,7 @@ public class BattleMageBuff extends AbstractBuffClass {
                 eff.statups.put(MapleBuffStat.GRIM_CONTRACT, eff.info.get(MapleStatInfo.x));
                 break;
             case 32111016: // 黑暗閃電                               
-                eff.info.put(MapleStatInfo.time, 2100000000);
+                eff.info.put(MapleStatInfo.time, 0);
                 eff.statups.put(MapleBuffStat.DARK_SHOCK, 1); 
                 break;
             default:

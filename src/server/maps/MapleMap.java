@@ -105,7 +105,7 @@ import tools.packet.CWvsContext;
 import tools.packet.CWvsContext.PartyPacket;
 import tools.packet.JobPacket.PhantomPacket;
 import tools.packet.SkillPacket;
-import tools.packet.provider.SpecialEffectType;
+import extensions.temporary.SpecialEffectType;
 
 public final class MapleMap {
 
@@ -1547,6 +1547,13 @@ public final class MapleMap {
     public final void spawnMonster_sSack(final MapleMonster mob, final Point pos, final int spawnType) {
         mob.setPosition(calcPointBelow(new Point(pos.x, pos.y - 1)));
         spawnMonster(mob, spawnType);
+    }
+    
+    public final void spawnObtacleAtom() {
+        List<ObtacleAtom> loa = new ArrayList<>();
+        ObtacleAtom oa = new ObtacleAtom(new Point(900,-1347));
+        loa.add(oa);
+        CField.spawnObtacleAtomBomb(loa);
     }
 
     public final void spawnMonsterOnGroundBelow(final MapleMonster mob, final Point pos) {

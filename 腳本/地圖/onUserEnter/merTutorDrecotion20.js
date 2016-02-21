@@ -15,10 +15,10 @@ function action(mode, type, selection) {
     } else if (status === i++) {
         ms.lockUI(true);
         ms.getDirectionEffect(2, "Effect/Direction5.img/effect/mercedesInIce/merBalloon/9", [2000, 0, -100, 1, 0, 0]);
-        ms.wait(2000);
+        ms.exceTime(2000);
         ms.getDirectionStatus(true);
     } else if (status === i++) {
-        ms.getDirectionEffect(3, "", [1]);
+        ms.playerMoveLeft();
     } else if (status === i++) {
         ms.lockKey(true);
         ms.dispose();

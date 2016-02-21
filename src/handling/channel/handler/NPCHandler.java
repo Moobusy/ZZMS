@@ -12,6 +12,7 @@ import client.RockPaperScissors;
 import client.inventory.ItemFlag;
 import constants.ItemConstants;
 import constants.QuickMove;
+import extensions.temporary.NPCTalk;
 import handling.SendPacketOpcode;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -420,7 +421,7 @@ public class NPCHandler {
     public static void NPCMoreTalk(final LittleEndianAccessor slea, final MapleClient c) {
         final byte lastMsg = slea.readByte(); // 00 (last msg type I think)
 
-        if (lastMsg == 0x22) {
+        if (lastMsg == NPCTalk.TELL_STORY.getType()) {
             final NPCConversationManager cm = NPCScriptManager.getInstance().getCM(c);
             if (cm == null || c.getPlayer().getConversation() == 0 || cm.getLastMsg() != lastMsg) {
                 return;
@@ -466,7 +467,7 @@ public class NPCHandler {
                 cm.dispose();
             }
         } else {
-            if (lastMsg == 0x13 && action == 0) {
+            if (lastMsg == NPCTalk.DIRECTION_PLAYMOVE.getType() && action == 0) {
                 c.getSession().write(CWvsContext.getTopMsg("影片播放失敗。"));
             }
             int selection = -1;

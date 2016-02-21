@@ -16,16 +16,16 @@ function action(mode, type, selection) {
         ms.resetMap(ms.getMapId());
         ms.getDirectionStatus(true);
         ms.lockUI(true);
-        ms.getDirectionEffect(3, "", [0]);
+        ms.playerWaite();
         ms.disableOthers(true);
         ms.getDirectionEffect(5, "", [0, 1000, 1000, -480]);
         ms.showDarkEffect(false);
     } else if (status === i++) {
-        ms.wait(2506);
+        ms.exceTime(2506);
     } else if (status === i++) {
         ms.getDirectionEffect(5, "", [1, 1000]);
     } else if (status === i++) {
-        ms.wait(500);
+        ms.exceTime(500);
     } else if (status === i++) {
         ms.sendOthersTalk("好,現在為了要讓你飛到那邊借給你我的翅膀.", 9390384, [false, true], 1);
     } else if (status === i++) {

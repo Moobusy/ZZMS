@@ -815,13 +815,14 @@ public enum SendPacketOpcode implements WritableIntValueHolder {
     QUICK_MOVE(0x1CB),
     
     // 0x1CC
+    
     // 招喚障礙物[完成]
     SPAWN_OBTACLE_ATOM(0x1CD),
     // 0x1CE
     // 0x1CF
-    // 0x1D0 // 副本BOSS技能特效
+    // 0x1D0 
     // 0x1D1
-    // 0x1D2 // 副本BOSS技能特效
+    // 0x1D2 
     // 0x1D3
     // 0x1D4
     // 0x1D5

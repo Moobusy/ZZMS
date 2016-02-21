@@ -24,6 +24,7 @@ import server.MapleItemInformationProvider;
 import server.MapleStatEffect;
 import server.StructFamiliar;
 import server.life.PlayerNPC;
+import server.maps.MapleSummon;
 import server.stores.HiredMerchant;
 import server.stores.MaplePlayerShopItem;
 import tools.DateUtil;
@@ -3822,24 +3823,6 @@ public class CWvsContext {
             return mplew.getPacket();
         }
 
-        public static byte[] 灵魂助力特殊(int time, boolean isScream, boolean isControl) {
-            MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-            mplew.writeShort(SendPacketOpcode.GIVE_BUFF.getValue());
-            PacketHelper.writeSingleMask(mplew, MapleBuffStat.BEHOLDER);
-            mplew.writeShort(1);
-            mplew.writeInt(1301013);
-            mplew.writeInt(time);
-            mplew.writeInt(0);
-            mplew.write(9);//???
-            mplew.writeInt(isControl ? 1311013 : 1301013);
-            mplew.writeInt(isScream ? 1311014 : 0);
-            mplew.writeInt(0);
-            mplew.writeInt(0);
-            mplew.write(1);
-            mplew.writeInt(0);
-            return mplew.getPacket();
-        }
-
         public static byte[] giveBuff(int buffid, int bufflength, Map<MapleBuffStat, Integer> statups, MapleStatEffect effect, MapleCharacter chr) {
             if (ServerConfig.LOG_PACKETS) {
                 System.out.println("調用位置: " + new java.lang.Throwable().getStackTrace()[0]);
@@ -3848,26 +3831,26 @@ public class CWvsContext {
 
             mplew.writeShort(SendPacketOpcode.GIVE_BUFF.getValue());
             PacketHelper.writeBuffMask(mplew, statups);
-            boolean specialBuff = false;
-            for (Map.Entry<MapleBuffStat, Integer> stat : statups.entrySet()) {
-                if (GameConstants.isIDA_SpecialBuff(stat.getKey())) {
-                    specialBuff = true;
-                }
-            }
-            for (Map.Entry<MapleBuffStat, Integer> stat : statups.entrySet()) {
-                if (!stat.getKey().canStack() && stat.getKey() != MapleBuffStat.DEFAULTBUFF4) {
-//                    System.out.println("一般Buff::" + stat.getKey().name()); // 查看排列順序用                    
-                    if (specialBuff) {
-                        mplew.writeInt(stat.getValue());
-                    } else {
-                        mplew.writeShort(stat.getValue());
-                    }
-                    mplew.writeInt(buffid);
-                    mplew.writeInt(bufflength);
-                }
-            }
+//            boolean specialBuff = false;
+//            for (Map.Entry<MapleBuffStat, Integer> stat : statups.entrySet()) {
+//                if (GameConstants.isIDA_SpecialBuff(stat.getKey())) {
+//                    specialBuff = true;
+//                }
+//            }
+//            for (Map.Entry<MapleBuffStat, Integer> stat : statups.entrySet()) {
+//                if (!stat.getKey().canStack() && stat.getKey() != MapleBuffStat.DEFAULTBUFF4) {
+////                    System.out.println("一般Buff::" + stat.getKey().name()); // 查看排列順序用                    
+//                    if (specialBuff) {
+//                        mplew.writeInt(stat.getValue());
+//                    } else {
+//                        mplew.writeShort(stat.getValue());
+//                    }
+//                    mplew.writeInt(buffid);
+//                    mplew.writeInt(bufflength);
+//                }
+//            }
             
-//            IsBaseBuff(mplew, statups, effect, chr, buffid, bufflength);
+            IsBaseBuff(mplew, statups, effect, chr, buffid, bufflength);
 
             // IDA 確定的部分...太多寫到另一個Function
             IsSpecialBuff(mplew, statups, effect, chr, buffid, bufflength);
@@ -3920,6 +3903,9 @@ public class CWvsContext {
             if (statups.containsKey(MapleBuffStat.IDA_BUFF_462)) {
                 mplew.writeInt(0);
             }
+            if (statups.containsKey(MapleBuffStat.DARK_SERVANT)) {
+                mplew.writeInt(0);
+            }
             // IDA 確認的格式
             mplew.writeShort(0); //MoopleDEV 寫 delay ??
             mplew.write(0);
@@ -3928,7 +3914,7 @@ public class CWvsContext {
 
             for (Map.Entry<MapleBuffStat, Integer> stat : statups.entrySet()) {
                 if (GameConstants.isMovementAffectingStat(stat.getKey())) {
-                    mplew.write(0);
+                    mplew.write(buffid == 32001016 ? 8 : 0);
                 }
             }
 
@@ -8016,6 +8002,8 @@ public class CWvsContext {
             if (statups.containsKey(MapleBuffStat.IGNORE_DEF)) {
                 if (effect.getSourceId() == 15001022) {
                     mplew.writeInt(statups.get(MapleBuffStat.IGNORE_DEF) / 5);
+                } else {
+                    mplew.writeInt(0);
                 }
             }
             if (statups.containsKey(MapleBuffStat.TEMPEST_BLADES)) {
@@ -8089,9 +8077,13 @@ public class CWvsContext {
             if (statups.containsKey(MapleBuffStat.SOLUNA_EFFECT)) {
                 mplew.write(1);
             }
-            if (statups.containsKey(MapleBuffStat.IDA_UNK_BUFF11)) {
-                mplew.writeInt(0);
-                mplew.writeInt(0);
+            if (statups.containsKey(MapleBuffStat.BEHOLDER)) {
+                for (MapleSummon ms : chr.getMap().getAllSummonsThreadsafe()) {
+                    if (ms.getOwner().equals(chr)) {
+                        mplew.writeInt(ms.getControl() ? 1311013 : 1301013);
+                        mplew.writeInt(ms.setScream(false) ? 1311014 : 0);
+                    } 
+                }
             }
             if (statups.containsKey(MapleBuffStat.CROSS_SURGE)) {
                 mplew.writeInt(0);
@@ -9395,7 +9387,7 @@ public class CWvsContext {
 
     public static class Enchant {
 
-        public static byte[] getEnchantList(MapleClient c, Equip item, ArrayList<EchantScroll> scrolls, boolean feverTime) {
+        public static byte[] getEnchantList(MapleClient c, Equip item, ArrayList<EchantScroll> scrolls, int count_rate, boolean feverTime) {
             MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
             mplew.writeShort(SendPacketOpcode.EQUIPMENT_ENCHANT.getValue());
@@ -9411,7 +9403,8 @@ public class CWvsContext {
                         mplew.writeInt(i);
                     }
                 }
-                mplew.writeInt(scroll.getCost());
+                mplew.writeInt(count_rate * scroll.getCost());
+                mplew.write(scroll.getViewType() == 0 ? 1 : 0);
             }
 
             return mplew.getPacket();

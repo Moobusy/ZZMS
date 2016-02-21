@@ -34,6 +34,7 @@ import tools.StringUtil;
 import tools.data.LittleEndianAccessor;
 import tools.packet.CField;
 import tools.packet.CWvsContext;
+import tools.packet.JobPacket;
 import tools.packet.SkillPacket;
 
 public class DamageParse {
@@ -319,6 +320,9 @@ public class DamageParse {
                         if (player.getBuffedValue(MapleBuffStat.STORM_BRINGER) != null && rdz <= 30) {
                             player.handleTriflingWhim(monster.getObjectId(), (rdz <= a_rate), true);
                         }
+                    }
+                    if (MapleJob.is凱內西斯(player.getJob())) {
+                        player.getClient().getSession().write(JobPacket.KinesisPacket.showESPCount(player.getStat().getMp()));
                     }
                     if (attack.skill != 1221011) {
                         monster.damage(player, totDamageToOneMonster, true, attack.skill);

@@ -6,6 +6,8 @@ import constants.GameConstants;
 import constants.QuickMove.QuickMoveNPC;
 import constants.ServerConfig;
 import constants.ServerConstants;
+import extensions.temporary.DirectionType;
+import extensions.temporary.NPCTalk;
 import handling.SendPacketOpcode;
 import handling.channel.handler.AttackInfo;
 import handling.channel.handler.PlayerInteractionHandler;
@@ -28,7 +30,7 @@ import tools.HexTool;
 import tools.Pair;
 import tools.Triple;
 import tools.data.MaplePacketLittleEndianWriter;
-import tools.packet.provider.SpecialEffectType;
+import extensions.temporary.SpecialEffectType;
 
 public class CField {
 
@@ -2911,7 +2913,6 @@ public class CField {
         mplew.writeInt(mist.getObjectId());
 
         mplew.write(mist.isMobMist() ? 0 : mist.isPoisonMist());
-        //mplew.write(0);
         mplew.writeInt(mist.getOwnerId());
         if (mist.getMobSkill() == null) {
             mplew.writeInt(mist.getSourceSkill().getId());
@@ -2933,6 +2934,10 @@ public class CField {
             mplew.writeInt(0);
         } else {
             switch (skil.getId()) {
+                case 4121015:
+                case 51120057:
+                case 131001107:
+                case 131001207:
                 case 33111013:
                 case 33121012:
                 case 33121016:
@@ -4122,7 +4127,7 @@ public class CField {
             mplew.write(4); // slide menu
             mplew.writeInt(npcid);
             mplew.write(0); // Boolean
-            mplew.write(0x12);
+            mplew.write(NPCTalk.SLIDE_MENU.getType());
             mplew.write(0);
             mplew.write(0); // 175+
             mplew.writeInt(type); // 選單類型
@@ -4274,7 +4279,7 @@ public class CField {
             mplew.writeInt(0);
             mplew.write(1); // Boolean
             mplew.writeInt(2159311); // npcID
-            mplew.write(0x17);
+            mplew.write(NPCTalk.JOB_SELECTION.getType());
             mplew.write(1);
             mplew.write(0);
             mplew.writeShort(1);
@@ -4290,7 +4295,7 @@ public class CField {
             mplew.writeInt(0);
             mplew.write(1);
             mplew.writeInt(2159311); //npc
-            mplew.write(0x17);
+            mplew.write(NPCTalk.JOB_SELECTION.getType());
             mplew.write(1);
             mplew.write(0);
             mplew.writeShort(0);
@@ -4308,7 +4313,7 @@ public class CField {
             mplew.write(4);
             mplew.writeInt(npc);
             mplew.write(0); // Boolean
-            mplew.write(0x18);
+            mplew.write(0x19);
             mplew.write(0);
             mplew.write(0);
 
@@ -4548,12 +4553,14 @@ public class CField {
             mplew.writeInt(summon.getOwnerId());
             mplew.writeInt(summon.getObjectId());
             mplew.writeInt(summon.getSkill());
-            mplew.write(summon.getOwnerLevel() - 1);
-            mplew.write(summon.getSkillLevel());
+            mplew.write(summon.getOwnerLevel());
+            mplew.write(summon.getOwnerLevel());
             mplew.writePos(summon.getPosition());
             mplew.write((summon.getSkill() == 32111006) || (summon.getSkill() == 33101005) ? 5 : 4);// Summon Reaper Buff - Call of the Wild
             if ((summon.getSkill() == 35121003) && (summon.getOwner().getMap() != null)) {//Giant Robot SG-88
                 mplew.writeShort(summon.getOwner().getMap().getFootholds().findBelow(summon.getPosition(), true).getId());
+            } else if (summon.getSkill() == 32120019) {
+                mplew.writeShort(0x115);
             } else {
                 mplew.writeShort(0);
             }
@@ -4591,7 +4598,19 @@ public class CField {
                 mplew.writeShort(0);
             }
             mplew.write(0);
-            mplew.writeInt(0);
+            int delay = 0;
+            switch (summon.getSkill()) {
+                case 32120019:
+                    delay = 5000;
+                    break;
+                case 32110017:
+                    delay = 8000;
+                    break;
+                case 32100010:
+                    delay = 9000;
+                    break;
+            }
+            mplew.writeInt(delay); // 應該是下次發動時間??
 
             return mplew.getPacket();
         }
@@ -4860,15 +4879,15 @@ public class CField {
         }
 
         public static byte[] getDirectionInfo(int type, int value) {
-            return getDirectionInfo(type, value, 0);
+            return UIPacket.getDirectionInfo(type, value, 0);
         }
 
         public static byte[] getDirectionInfo(int type, int value, int value2) {
-            return getDirectionEffect(type, null, new int[]{value, value2, 0, 0, 0, 0, 0, 0});
+            return getDirectionInfo(type, null, new int[]{value, value2, 0, 0, 0, 0, 0, 0});
         }
 
         public static byte[] getDirectionInfo(String data, int value, int x, int y, int a, int b) {
-            return getDirectionEffect(2, data, new int[]{value, x, y, a, b, 0, 0, 0});
+            return getDirectionInfo(2, data, new int[]{value, x, y, a, b, 0, 0, 0});
         }
 
         public static byte[] getDirectionEffect(String data, int value, int x, int y) {
@@ -4878,7 +4897,7 @@ public class CField {
         public static byte[] getDirectionEffect(String data, int value, int x, int y, int npc) {
             //[02]  [02 00 31 31] [84 03 00 00] [00 00 00 00] [88 FF FF FF] [01] [00 00 00 00] [01] [29 C2 1D 00] [00] [00]
             //[mod] [data       ] [value      ] [value2     ] [value3     ] [a1] [a3         ] [a2] [npc        ] [  ] [a4]
-            return getDirectionEffect(2, data, new int[]{value, x, y, 1, 1, 0, 0, npc});
+            return getDirectionInfo(2, data, new int[]{value, x, y, 1, 1, 0, 0, npc});
         }
 
         public static byte[] getDirectionInfoNew(byte x, int value) {
@@ -4887,11 +4906,11 @@ public class CField {
 
         public static byte[] getDirectionInfoNew(byte x, int value, int a, int b) {
             //[mod] [data] [value] [value2] [value3] [a1] ....
-            return getDirectionEffect(5, null, new int[]{x, value, a, b, 0, 0, 0, 0});
+            return getDirectionInfo(5, null, new int[]{x, value, a, b, 0, 0, 0, 0});
         }
-
+        
         //int value, int value2, int value3, int a1, int a2, int a3, int a4, int npc
-        public static byte[] getDirectionEffect(int mod, String data, int[] value) {
+        public static byte[] getDirectionInfo(int mod, String data, int[] value) {
             MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
             mplew.writeShort(SendPacketOpcode.DIRECTION_INFO.getValue());
@@ -4899,7 +4918,7 @@ public class CField {
             switch (mod) {
                 case 0:
                     mplew.writeInt(value[0]);
-                    if (value[0] <= 0x4AB) {
+                    if (value[0] <= 0x553) {
                         mplew.writeInt(value[1]);
                     }
                     break;
@@ -5240,7 +5259,7 @@ public class CField {
             mplew.write(3);
             mplew.writeInt(0);
             mplew.writeShort(0);
-            mplew.writeShort(0x24);
+            mplew.writeShort(0x25);
             mplew.writeInt(2400010); // 2400009 남자, 2400010 여자
             mplew.writeMapleAsciiString("#face1#滾開！");
             mplew.write(HexTool.getByteArrayFromHexString("01 01"));

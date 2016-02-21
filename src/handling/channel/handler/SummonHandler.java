@@ -40,6 +40,7 @@ import client.PlayerStats;
 import handling.world.World;
 import java.awt.Rectangle;
 import java.lang.ref.WeakReference;
+import java.util.EnumMap;
 import java.util.Map;
 import server.MapleItemInformationProvider;
 import server.MapleStatEffect;
@@ -61,7 +62,8 @@ import tools.packet.CField.EffectPacket;
 import tools.packet.CField;
 import tools.packet.CField.SummonPacket;
 import tools.packet.CWvsContext;
-import tools.packet.provider.SpecialEffectType;
+import static tools.packet.CWvsContext.BuffPacket.giveBuff;
+import extensions.temporary.SpecialEffectType;
 
 public class SummonHandler {
 
@@ -191,7 +193,9 @@ public class SummonHandler {
             //TODO 添加灵魂助力震惊的效果 
             chr.getMap().broadcastMessage(chr, SummonPacket.summonSkill(chr.getId(), 217592, 141), false);
             chr.getMap().broadcastMessage(chr, CField.EffectPacket.showBuffEffect(true, chr, 1301013, SpecialEffectType.REMOTE_SKILL, chr.getLevel(), 1), false);
-            c.getSession().write(CWvsContext.BuffPacket.灵魂助力特殊(summon.SummonTime(360000), summon.setScream(false), summon.getControl()));
+            Map<MapleBuffStat, Integer> statups = new EnumMap<>(MapleBuffStat.class);
+            statups.put(MapleBuffStat.BEHOLDER, 1);
+            c.getSession().write(CWvsContext.BuffPacket.giveBuff(summon.getSkill(), summon.SummonTime(360000), statups, null, null));
         }
         if (sse != null) {
             int count = sse.mobCount;

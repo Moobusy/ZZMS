@@ -17,7 +17,7 @@ function action(mode, type, selection) {
         ms.getDirectionEffect(2, "Effect/Direction6.img/effect/tuto/balloonMsg1/3", [1500, 0, -100, 1, 1, 0, 0, 2159341]);
         ms.getDirectionEffect(2, "Effect/Direction6.img/effect/tuto/balloonMsg1/3", [1500, 0, -100, 1, 1, 0, 0, 2159342]);
         ms.getDirectionEffect(2, "Effect/Direction6.img/effect/tuto/balloonMsg2/0", [1500, 0, -100, 0, 0]);
-        ms.getDirectionEffect(1, "", [1500]);
+        ms.exceTime(1500);
     } else {
         ms.dispose();
         ms.openNpc(2159340);

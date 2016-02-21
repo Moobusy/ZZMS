@@ -564,9 +564,9 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     // 0x19D
     
     // 狂郎勇士連擊
-    ARAN_COMBO(0x19E),
+    ARAN_COMBO(0x1AD),
     // 怪物CRC Key改變回傳
-    MONSTER_CRC_KEY(0x19F),
+    MONSTER_CRC_KEY(0x1AE),
     // 製作道具完成[完成]
     CRAFT_DONE(0x1B2),
     // 製作道具效果[完成]
@@ -893,16 +893,21 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     // 取得符文
     USE_RUNE(0x359),
     
+    // 儲值樂豆點[完成]
+    CS_BUY_CASH(0x3DF),
     // 購物商城更新[完成]
     CS_UPDATE(0x3E0),
     // 購買點數道具[完成]
     BUY_CS_ITEM(0x3E1),
-    // 使用兌換券
+    // 使用兌換券[完成]
     COUPON_CODE(0x3E2),
-    // 購物商城送禮
-    CS_GIFT(0x3E3),
-    // 儲存造型設計
-    CASH_CATEGORY(0x3E4),
+    // 購物商城送禮[完成]
+    CS_GIFT(0x3E4),
+    // 儲存造型設計[完成]
+    CASH_CATEGORY(0x3E6),    
+    // 里程[完成]
+    CS_MILEAGE(0x3E7),
+    
     // 創建角色二次密碼認證[完成]
     CREATE_CHAR_AUTH(0x3EF),
     // 使用黃金鐵鎚
@@ -914,6 +919,9 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     
     // 使用白金鎚子
     PLATINUM_HAMMER(0x3D9),
+    
+    // 陶德的槌子
+    TOAD_HAMMER(0x7FFF),
     
     // 戰鬥分析開始[完成]
     BATTLE_STATISTICS(0x404),

@@ -15,12 +15,12 @@ function action(mode, type, selection) {
     } else if (status === i++) {
         ms.getDirectionStatus(true);
         ms.lockUI(true);
-        ms.getDirectionEffect(3, "", [0]);
+        ms.playerWaite();
         ms.disableOthers(true);
         ms.showBlackBGEffect(300, 3300, 3000, -1);
-        ms.wait(300);
+        ms.exceTime(300);
     } else if (status === i++) {
-        ms.wait(3000);
+        ms.exceTime(3000);
         ms.showWZEffect3("Effect/Direction14.img/effect/ShamanBT/ChapterA/20", [1, 1, 1, 0, 0]);
     } else if (status === i++) {
         ms.sendOthersTalk("還好嗎? 喵嗚?", 9390300, [false, true], 3);

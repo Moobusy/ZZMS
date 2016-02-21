@@ -49,7 +49,7 @@ import tools.packet.JobPacket;
 import tools.packet.JobPacket.AngelicPacket;
 import tools.packet.MobPacket;
 import tools.packet.SkillPacket;
-import tools.packet.provider.SpecialEffectType;
+import extensions.temporary.SpecialEffectType;
 
 public class PlayerHandler {
 

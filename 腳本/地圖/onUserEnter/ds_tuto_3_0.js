@@ -8,14 +8,14 @@ function action(mode, type, selection) {
     if (status == 0) {
         ms.lockUI(true);
         ms.disableOthers(true);
-        ms.getDirectionEffect(1, "", [3000]);
+        ms.exceTime(3000);
         ms.getDirectionStatus(true);
     } else if (status == 1) {
         ms.showEffect(false, "demonSlayer/text12");
-        ms.getDirectionEffect(3, "", [1]);
-        ms.getDirectionEffect(1, "", [10]);
+        ms.playerMoveLeft();
+        ms.exceTime(10);
     } else {
-        ms.getDirectionEffect(3, "", [0]);
+        ms.playerWaite();
         ms.dispose();
         ms.openNpc(2159311);
     }
